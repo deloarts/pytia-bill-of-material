@@ -1,0 +1,22 @@
+{
+    "cSpell.words": [
+        "catia",
+        "catvbs",
+        "CNEXT",
+        "gaierror",
+        "getpid",
+        "pylint",
+        "pylintrc",
+        "pyproject",
+        "pythonw",
+        "pytia",
+        "pyversion",
+        "rcfile",
+        "tkmsg"
+    ],
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

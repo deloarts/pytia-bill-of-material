@@ -1,0 +1,12 @@
+[
+    {
+        "name": "pytia",
+        "version": "0.2.0",
+        "local": true
+    },
+    {
+        "name": "pytia_ui_tools",
+        "version": "0.4.1",
+        "local": true
+    }
+]

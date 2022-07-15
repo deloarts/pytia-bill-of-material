@@ -1,0 +1,28 @@
+[tool.poetry]
+authors = ["Philip Delorenzo <git@deloarts.com>"]
+classifiers = ["Operating System :: Windows"]
+description = "A gui for exporting the bill of material from a catia v5 product"
+name = "pytia-bill-of-material"
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.2.0"}
+pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.4.1"}
+
+[tool.poetry.dev-dependencies]
+Jinja2 = "^3.1.2"
+black = "^22.3.0"
+packaging = "^21.3"
+pdoc3 = "^0.10.0"
+pre-commit = "^2.19.0"
+pylint = "2.13.9"
+pytest = "^7.1.1"
+setuptools = "^62.3.1"
+toml = "^0.10.2"
+validators = "^0.19.0"
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
