@@ -10,11 +10,37 @@ import importlib.resources
 import json
 import os
 import tkinter.messagebox as tkmsg
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from typing import Dict, List, Literal, Optional
 
-from const import APP_VERSION, APPDATA, CONFIG_APPDATA, CONFIG_SETTINGS
+from const import (
+    APP_VERSION,
+    APPDATA,
+    CONFIG_APPDATA,
+    CONFIG_BOM,
+    CONFIG_BOM_DEFAULT,
+    CONFIG_DOCKET,
+    CONFIG_FILTERS,
+    CONFIG_FILTERS_DEFAULT,
+    CONFIG_INFOS,
+    CONFIG_INFOS_DEFAULT,
+    CONFIG_KEYWORDS,
+    CONFIG_PROPS,
+    CONFIG_PROPS_DEFAULT,
+    CONFIG_SETTINGS,
+    CONFIG_USERS,
+    LOGON,
+)
+
+
+@dataclass(slots=True, kw_only=True, frozen=True)
+class SettingsExport:
+    """Dataclass for export settings."""
+
+    apply_username_in_bom: bool
+    apply_username_in_docket: bool
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -25,6 +51,7 @@ class SettingsRestrictions:
     allow_all_editors: bool
     allow_unsaved: bool
     allow_outside_workspace: bool
+    strict_project: bool
     enable_information: bool
 
 
@@ -41,6 +68,7 @@ class SettingsPaths:
 class SettingsFiles:
     """Dataclass for files (settings.json)."""
 
+    bom_export: str
     app: str
     launcher: str
     workspace: str
@@ -66,6 +94,7 @@ class Settings:  # pylint: disable=R0902
 
     title: str
     debug: bool
+    export: SettingsExport
     restrictions: SettingsRestrictions
     files: SettingsFiles
     paths: SettingsPaths
@@ -73,11 +102,154 @@ class Settings:  # pylint: disable=R0902
     mails: SettingsMails
 
     def __post_init__(self) -> None:
+        self.export = SettingsExport(**dict(self.export))  # type: ignore
         self.restrictions = SettingsRestrictions(**dict(self.restrictions))  # type: ignore
         self.files = SettingsFiles(**dict(self.files))  # type: ignore
         self.paths = SettingsPaths(**dict(self.paths))  # type: ignore
         self.urls = SettingsUrls(**dict(self.urls))  # type: ignore
         self.mails = SettingsMails(**dict(self.mails))  # type: ignore
+
+
+@dataclass(slots=True, kw_only=True, frozen=True)
+class Props:
+    """Dataclass for properties on the part (properties.json)."""
+
+    project: str
+    machine: str
+    creator: str
+    modifier: str
+
+    @property
+    def keys(self) -> List[str]:
+        """Returns a list of all keys from the Props dataclass."""
+        return [f.name for f in fields(self)]
+
+    @property
+    def values(self) -> List[str]:
+        """Returns a list of all values from the Props dataclass."""
+        return [getattr(self, f.name) for f in fields(self)]
+
+
+@dataclass(slots=True, kw_only=True)
+class KeywordElements:
+    """Dataclass for keyword elements."""
+
+    partnumber: str
+    revision: str
+    definition: str
+    nomenclature: str
+    source: str
+    made: str
+    bought: str
+    description: str
+    number: str
+    type: str
+    part: str
+    assembly: str
+    quantity: str
+    bom: str
+    summary: str
+
+
+@dataclass(slots=True, kw_only=True)
+class Keywords:
+    """Dataclass for language specific keywords."""
+
+    en: KeywordElements
+    de: KeywordElements
+
+    def __post_init__(self) -> None:
+        self.en = KeywordElements(**dict(self.en))  # type: ignore
+        self.de = KeywordElements(**dict(self.de))  # type: ignore
+
+
+@dataclass(slots=True, kw_only=True)
+class Filters:
+    """Filters dataclass."""
+
+    property_name: str
+    criteria: str
+    condition: Dict[str, str] | bool
+
+
+@dataclass(slots=True, kw_only=True)
+class BOMSort:
+    """Sort dataclass."""
+
+    made: str
+    bought: str
+
+
+@dataclass(slots=True, kw_only=True)
+class RequiredHeaderItems:
+    """Required headers dataclass."""
+
+    project: str
+    machine: str
+    partnumber: str
+    revision: str
+    quantity: str
+
+    @property
+    def keys(self) -> List[str]:
+        """Returns a list of all keys from the RequiredHeaderItems dataclass."""
+        return [f.name for f in fields(self)]
+
+    @property
+    def values(self) -> List[str]:
+        """Returns a list of all values from the RequiredHeaderItems dataclass."""
+        return [getattr(self, f.name) for f in fields(self)]
+
+
+@dataclass(slots=True, kw_only=True)
+class BOM:
+    """Bill of material dataclass."""
+
+    header_row: int | None
+    data_row: int
+    header_items: List[str]
+    sort: BOMSort
+    required_header_items: RequiredHeaderItems
+    font: str
+    size: int
+    header_color: str
+    header_bg_color: str
+    data_color_1: str
+    data_bg_color_1: str
+    data_color_2: str
+    data_bg_color_2: str
+
+    def __post_init__(self) -> None:
+        self.sort = BOMSort(**dict(self.sort))  # type: ignore
+        self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
+
+
+@dataclass(slots=True, kw_only=True, frozen=True)
+class User:
+    """Dataclass a user (users.json)."""
+
+    logon: str
+    id: str
+    name: str
+    mail: str
+
+    @property
+    def keys(self) -> List[str]:
+        """Returns a list of all keys from the User dataclass."""
+        return [f.name for f in fields(self)]
+
+    @property
+    def values(self) -> List[str]:
+        """Returns a list of all values from the User dataclass."""
+        return [getattr(self, f.name) for f in fields(self)]
+
+
+@dataclass(slots=True, kw_only=True, frozen=True)
+class Info:
+    """Dataclass for an info messages (information.json)."""
+
+    counter: int
+    msg: str
 
 
 @dataclass(slots=True, kw_only=True)
@@ -100,11 +272,25 @@ class Resources:  # pylint: disable=R0902
 
     __slots__ = (
         "_settings",
+        "_keywords",
         "_appdata",
+        "_bom",
+        "_props",
+        "_filters",
+        "_infos",
+        "_users",
+        "_docket",
     )
 
     def __init__(self) -> None:
         self._read_settings()
+        self._read_props()
+        self._read_keywords()
+        self._read_bom()
+        self._read_filters()
+        self._read_users()
+        self._read_docket()
+        self._read_infos()
         self._read_appdata()
 
         atexit.register(self._write_appdata)
@@ -115,6 +301,41 @@ class Resources:  # pylint: disable=R0902
         return self._settings
 
     @property
+    def props(self) -> Props:
+        """properties.json"""
+        return self._props
+
+    @property
+    def keywords(self) -> Keywords:
+        """keywords.json"""
+        return self._keywords
+
+    @property
+    def filters(self) -> List[Filters]:
+        """filters.json"""
+        return self._filters
+
+    @property
+    def bom(self) -> BOM:
+        """bom.json"""
+        return self._bom
+
+    @property
+    def users(self) -> List[User]:
+        """users.json"""
+        return self._users
+
+    @property
+    def docket(self) -> dict:
+        """docket.json"""
+        return self._docket
+
+    @property
+    def infos(self) -> List[Info]:
+        """infos.json"""
+        return self._infos
+
+    @property
     def appdata(self) -> AppData:
         """Property for the appdata config file."""
         return self._appdata
@@ -123,6 +344,61 @@ class Resources:  # pylint: disable=R0902
         """Reads the settings json from the resources folder."""
         with importlib.resources.open_binary("resources", CONFIG_SETTINGS) as f:
             self._settings = Settings(**json.load(f))
+
+    def _read_props(self) -> None:
+        """Reads the props json from the resources folder."""
+        props_resource = (
+            CONFIG_PROPS
+            if importlib.resources.is_resource("resources", CONFIG_PROPS)
+            else CONFIG_PROPS_DEFAULT
+        )
+        with importlib.resources.open_binary("resources", props_resource) as f:
+            self._props = Props(**json.load(f))
+
+    def _read_keywords(self) -> None:
+        """Reads the keywords json from the resources folder."""
+        with importlib.resources.open_binary("resources", CONFIG_KEYWORDS) as f:
+            self._keywords = Keywords(**json.load(f))
+
+    def _read_docket(self) -> None:
+        """Reads the docket json from the resources folder."""
+        with importlib.resources.open_binary("resources", CONFIG_DOCKET) as f:
+            self._docket = json.load(f)
+
+    def _read_bom(self) -> None:
+        """Reads the export json from the resources folder."""
+        bom_resource = (
+            CONFIG_BOM
+            if importlib.resources.is_resource("resources", CONFIG_BOM)
+            else CONFIG_BOM_DEFAULT
+        )
+        with importlib.resources.open_binary("resources", bom_resource) as f:
+            self._bom = BOM(**json.load(f))
+
+    def _read_filters(self) -> None:
+        """Reads the filters json from the resources folder."""
+        filters_resource = (
+            CONFIG_FILTERS
+            if importlib.resources.is_resource("resources", CONFIG_FILTERS)
+            else CONFIG_FILTERS_DEFAULT
+        )
+        with importlib.resources.open_binary("resources", filters_resource) as f:
+            self._filters = [Filters(**i) for i in json.load(f)]
+
+    def _read_users(self) -> None:
+        """Reads the users json from the resources folder."""
+        with importlib.resources.open_binary("resources", CONFIG_USERS) as f:
+            self._users = [User(**i) for i in json.load(f)]
+
+    def _read_infos(self) -> None:
+        """Reads the information json from the resources folder."""
+        infos_resource = (
+            CONFIG_INFOS
+            if importlib.resources.is_resource("resources", CONFIG_INFOS)
+            else CONFIG_INFOS_DEFAULT
+        )
+        with importlib.resources.open_binary("resources", infos_resource) as f:
+            self._infos = [Info(**i) for i in json.load(f)]
 
     def _read_appdata(self) -> None:
         """Reads the json config file from the appdata folder."""
@@ -146,6 +422,217 @@ class Resources:  # pylint: disable=R0902
         os.makedirs(APPDATA, exist_ok=True)
         with open(f"{APPDATA}\\{CONFIG_APPDATA}", "w", encoding="utf8") as f:
             json.dump(asdict(self._appdata), f)
+
+    def logon_exists(self, logon: Optional[str] = None) -> bool:
+        """
+        Returns wether the users logon exists in the dataclass, or not. Uses the logon-value of the
+        current session if logon is omitted.
+
+        Args:
+            logon (str): The logon name to search for.
+
+        Returns:
+            bool: The user from the dataclass list that matches the provided logon name.
+        """
+        if logon is None:
+            logon = LOGON
+
+        for user in self._users:
+            if user.logon == logon:
+                return True
+        return False
+
+    def apply_keywords_to_bom(self, language: Literal["en", "de"]) -> None:
+        """
+        Applies the keywords from the keywords.json to the bom.json's `header_items`.
+
+        Detailed explanation:
+            The bom.json contains a key named `header_items`, which contains a list of
+            keywords. Those keywords are used to create the header of the bill of material.
+            Some of those keywords may represent CATIA standard properties, like `partnumber`,
+            `source`, etc. Those names change with the UI language settings of CATIA
+            (English: partnumber = "part number", German: partnumber = "Teilenummer", ...).
+
+            It is therefor necessary to overwrite those `header_items` values with the
+            corresponding names of the current UI language setting.
+            All `header_items` that represent CATIA standard properties must be prefixed with
+            a dollar sign `$`. Those names will be translated to the matching name of the
+            keywords.json. Names without the dollar sign won't be changed.
+
+            Example (bom.json -> German):
+                original: "header_items": ["$number", "$partnumber", "Foo", "Bar"]
+                translated: "header_items": ["Nummer", "Teilenummer", "Foo", "Bar"]
+
+            Note: Not only the `header_items` values will be translated, but the `sort` items too.
+
+
+        Args:
+            language (Literal[&quot;en&quot;, &quot;de&quot;]): The language from which the \
+                keywords will be applied to the bom.json config file.
+        """
+
+        # header items
+        keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
+        for index, item in enumerate(self._bom.header_items):
+            if item.startswith("$") and (key := item.split("$")[1]) in keywords:
+                self._bom.header_items[index] = keywords[key]
+
+        # sort
+        # TODO: A better solution for applying the keywords to the `sort` items.
+        if (
+            self._bom.sort.made.startswith("$")
+            and (key := self._bom.sort.made.split("$")[1]) in keywords
+        ):
+            self._bom.sort.made = keywords[key]
+
+        if (
+            self._bom.sort.bought.startswith("$")
+            and (key := self._bom.sort.bought.split("$")[1]) in keywords
+        ):
+            self._bom.sort.bought = keywords[key]
+
+        # docket args
+        # TODO: A better solution for applying the keywords to the `required_header_items` items.
+        if (
+            self._bom.required_header_items.project.startswith("$")
+            and (key := self._bom.required_header_items.project.split("$")[1])
+            in keywords
+        ):
+            self._bom.required_header_items.project = keywords[key]
+
+        if (
+            self._bom.required_header_items.machine.startswith("$")
+            and (key := self._bom.required_header_items.machine.split("$")[1])
+            in keywords
+        ):
+            self._bom.required_header_items.machine = keywords[key]
+
+        if (
+            self._bom.required_header_items.partnumber.startswith("$")
+            and (key := self._bom.required_header_items.partnumber.split("$")[1])
+            in keywords
+        ):
+            self._bom.required_header_items.partnumber = keywords[key]
+
+        if (
+            self._bom.required_header_items.revision.startswith("$")
+            and (key := self._bom.required_header_items.revision.split("$")[1])
+            in keywords
+        ):
+            self._bom.required_header_items.revision = keywords[key]
+
+        if (
+            self._bom.required_header_items.quantity.startswith("$")
+            and (key := self._bom.required_header_items.quantity.split("$")[1])
+            in keywords
+        ):
+            self._bom.required_header_items.quantity = keywords[key]
+
+    def apply_keywords_to_filters(self, language: Literal["en", "de"]) -> None:
+        """
+        Applies the keywords from the keywords.json to the filters.json.
+
+        Detailed explanation:
+            The filters.json contains the `property_name` key and `conditions` with key-value pairs.
+            Those filter items are used to verify the exported bill of material. A set of rules, if
+            you will.
+            
+            Those property_names and condition-pairs may represent CATIA standard properties, like
+            `partnumber`, `source`, ...,  that change their name with the CATIA UI language setting.
+
+            It is therefor necessary to overwrite those names with the corresponding names that
+            matches the CATIA language setting. All property_names and condition-pairs that 
+            represent CATIA standard properties must be prefixed with a dollar sign `$`. Those
+            names property names will be translated to the matching name of the keyword.json.
+            Names without a dollar sign won't be translated.
+
+            Example (filters.json -> German):
+                original: {"property_name": "$number", "criteria": "^\\d+$", "condition": {"$type": "$part"}}
+                translated: {"property_name": "Nummer", "criteria": "^\\d+$", "condition": {"Typ": "Teil"}}
+
+        Args:
+            language (Literal[&quot;en&quot;, &quot;de&quot;]): The language from which the \
+                keywords will be applied to the filters.json config file.
+        """
+        keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
+        for item in self._filters:
+            # translate the `property_name` value.
+            if (
+                item.property_name.startswith("$")
+                and (key := item.property_name.split("$")[1]) in keywords
+            ):
+                item.property_name = keywords[key]
+
+            # translate the condition dict (can be a bool, so check type first)
+            if isinstance(item.condition, dict):
+                new_condition = {}
+                for cond_key in item.condition:
+                    # translate condition values
+                    if (
+                        item.condition[cond_key].startswith("$")
+                        and (key := item.condition[cond_key].split("$")[1]) in keywords
+                    ):
+                        item.condition[cond_key] = keywords[key]
+
+                    # translate condition keys
+                    # since the keys can be translated as well, we need to create a new dict
+                    # and overwrite the existing condition-dict with the new one.
+                    if (
+                        cond_key.startswith("$")
+                        and (key := cond_key.split("$")[1]) in keywords
+                    ):
+                        new_condition[keywords[key]] = item.condition[cond_key]
+                    else:
+                        new_condition[cond_key] = item.condition[cond_key]
+
+                item.condition = new_condition
+        # print(self._filters)
+
+    def get_info_msg_by_counter(self) -> List[str]:
+        """
+        Returns the info message by the app usage counter.
+
+        Returns:
+            List[str]: A list of all messages that should be shown at the counter value.
+        """
+        values = []
+        for index, value in enumerate(self._infos):
+            if value.counter == self._appdata.counter:
+                values.append(self._infos[index].msg)
+        return values
+
+    def get_user_by_logon(self, logon: str) -> User:
+        """
+        Returns the user dataclass that matches the logon value.
+
+        Args:
+            user (str): The user to fetch from the dataclass list.
+
+        Raises:
+            ValueError: Raised when the user doesn't exist.
+
+        Returns:
+            User: The user from the dataclass list that matches the provided logon name.
+        """
+        for index, value in enumerate(self._users):
+            if value.logon == logon:
+                return self._users[index]
+        raise ValueError
+
+    def user_exists(self, logon: str) -> bool:
+        """
+        Returns wether the user exists in the dataclass list, or not.
+
+        Args:
+            logon (str): The logon name to search for.
+
+        Returns:
+            bool: The user from the dataclass list that matches the provided logon name.
+        """
+        for user in self._users:
+            if user.logon == logon:
+                return True
+        return False
 
 
 resource = Resources()

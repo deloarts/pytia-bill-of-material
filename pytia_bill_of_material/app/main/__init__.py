@@ -1,0 +1,3 @@
+"""
+    The apps main window.
+"""

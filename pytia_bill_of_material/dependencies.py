@@ -57,7 +57,7 @@ class Dependencies:
         self._required_packages = self._read_dependencies_file()
         self._missing_packages = self.get_missing_packages()
         self._runs_in_venv = (
-            VENV_PYTHON in sys.executable or VENV_PYTHONW in sys.executable
+            str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable
         )
 
     @staticmethod
@@ -240,8 +240,8 @@ class VisualInstaller(tk.Tk):
         """Installs python packages using pip."""
         for index, key in enumerate(self.packages.keys()):
             python_exe = sys.executable
-            if VENV_PYTHONW in python_exe:
-                python_exe = python_exe.replace(VENV_PYTHONW, VENV_PYTHON)
+            if str(VENV_PYTHONW) in python_exe:
+                python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
             command = f"start /wait {python_exe} -m pip install {self.packages[key]} --no-cache-dir"
             self.message.set(
                 f"Installing package {index+1} of {len(self.packages)}: {key}"

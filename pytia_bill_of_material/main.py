@@ -24,7 +24,7 @@ def main() -> None:
 
     from pytia.log import log  # pylint: disable=C0415
 
-    from gui import GUI  # pylint: disable=C0415
+    from app.main_ui import MainUI  # pylint: disable=C0415
 
     with open(PID_FILE, "w") as f:
         f.write(str(PID))
@@ -37,7 +37,7 @@ def main() -> None:
     log.add_file_handler(folder=LOGS, filename=LOG)
     log.info(f"Running PYTIA Bounding Box {APP_VERSION}, PID={PID}")
 
-    gui = GUI()
+    gui = MainUI()
     gui.run()
 
 
