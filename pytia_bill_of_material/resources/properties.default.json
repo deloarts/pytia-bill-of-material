@@ -1,0 +1,6 @@
+{
+    "project": "pytia.project",
+    "machine": "pytia.machine",
+    "creator": "pytia.creator",
+    "modifier": "pytia.modifier"
+}

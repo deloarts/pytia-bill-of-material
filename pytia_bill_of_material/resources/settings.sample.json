@@ -1,11 +1,16 @@
 {
     "title": "PYTIA Bill Of Material",
     "debug": false,
+    "export": {
+        "apply_username_in_bom": true,
+        "apply_username_in_docket": true
+    },
     "restrictions": {
-        "allow_all_users": true,
-        "allow_all_editors": true,
-        "allow_unsaved": true,
+        "allow_all_users": false,
+        "allow_all_editors": false,
+        "allow_unsaved": false,
         "allow_outside_workspace": true,
+        "strict_project": true,
         "enable_information": true
     },
     "paths": {
@@ -14,6 +19,7 @@
         "release": "C:\\pytia\\release"
     },
     "files": {
+        "bom_export": "Bill of Material.xlsx",
         "app": "pytia_bill_of_material.pyz",
         "launcher": "pytia_bill_of_material.catvbs",
         "workspace": "workspace.yml"

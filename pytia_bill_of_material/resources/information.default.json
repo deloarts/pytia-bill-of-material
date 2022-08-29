@@ -1,0 +1,18 @@
+[
+    {
+        "counter": 5,
+        "msg": "If you need help using this app, or if you just want to know more about the available features: Press F1."
+    },
+    {
+        "counter": 20,
+        "msg": "You can exit this app by pressing the Escape key on your keyboard."
+    },
+    {
+        "counter": 60,
+        "msg": "You can always reload the properties by pressing F5."
+    },
+    {
+        "counter": 1000,
+        "msg": "You used this app for a thousand times!"
+    }
+]
