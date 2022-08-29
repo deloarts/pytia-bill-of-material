@@ -29,6 +29,8 @@ def test_versions():
             assert f"v{item['version']}" == pyproject["pytia"]["tag"]
         if item["name"] == "pytia_ui_tools":
             assert f"v{item['version']}" == pyproject["pytia-ui-tools"]["tag"]
+        if item["name"] == "openpyxl":
+            assert item["version"] == pyproject["openpyxl"]
 
 
 def test_imports():
