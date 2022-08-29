@@ -1,0 +1,33 @@
+{
+    "title": "PYTIA Bill Of Material",
+    "debug": false,
+    "export": {
+        "apply_username_in_bom": true,
+        "apply_username_in_docket": true
+    },
+    "restrictions": {
+        "allow_all_users": false,
+        "allow_all_editors": false,
+        "allow_unsaved": false,
+        "allow_outside_workspace": true,
+        "strict_project": true,
+        "enable_information": true
+    },
+    "paths": {
+        "catia": "C:\\CATIA\\V5-6R2017\\B27",
+        "local_dependencies": "C:\\pytia\\local_deps",
+        "release": "C:\\pytia\\release"
+    },
+    "files": {
+        "bom_export": "Bill of Material.xlsx",
+        "app": "pytia_bill_of_material.pyz",
+        "launcher": "pytia_bill_of_material.catvbs",
+        "workspace": "workspace.yml"
+    },
+    "urls": {
+        "help": "https://github.com/deloarts/pytia-bill-of-material"
+    },
+    "mails": {
+        "admin": "admin@company.com"
+    }
+}

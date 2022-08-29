@@ -1,0 +1,376 @@
+{
+    "texts": [
+        {
+            "name": "arg.project",
+            "value": "project",
+            "view": "bg"
+        },
+        {
+            "name": "property.machine",
+            "value": "pytia.machine",
+            "view": "bg"
+        },
+        {
+            "name": "property.partnumber",
+            "value": "partnumber",
+            "view": "bg"
+        },
+        {
+            "name": "text.creator",
+            "value": "Creator",
+            "view": "bg"
+        },
+        {
+            "name": "arg.creator",
+            "value": "creator",
+            "view": "bg"
+        },
+        {
+            "name": "text.modifier",
+            "value": "Modifier",
+            "view": "bg"
+        },
+        {
+            "name": "arg.modifier",
+            "value": "modifier",
+            "view": "bg"
+        },
+        {
+            "name": "text.publisher",
+            "value": "Publisher",
+            "view": "bg"
+        },
+        {
+            "name": "arg.publisher",
+            "value": "publisher",
+            "view": "bg"
+        },
+        {
+            "name": "text.base_size",
+            "value": "Base Size",
+            "view": "bg"
+        },
+        {
+            "name": "property.base_size",
+            "value": "pytia.base_size",
+            "view": "bg"
+        },
+        {
+            "name": "text.date_release",
+            "value": "Release Date",
+            "view": "bg"
+        },
+        {
+            "name": "object.date",
+            "value": "%d.%m.%Y",
+            "view": "bg"
+        },
+        {
+            "name": "text.date_finish",
+            "value": "Finish Date",
+            "view": "bg"
+        },
+        {
+            "name": "text.quantity",
+            "value": "Quantity",
+            "view": "bg"
+        },
+        {
+            "name": "arg.quantity",
+            "value": "quantity",
+            "view": "bg"
+        },
+        {
+            "name": "text.revision",
+            "value": "Revision",
+            "view": "bg"
+        },
+        {
+            "name": "property.revision",
+            "value": "revision",
+            "view": "bg"
+        },
+        {
+            "name": "text.material",
+            "value": "Material",
+            "view": "bg"
+        },
+        {
+            "name": "property.material",
+            "value": "pytia.material",
+            "view": "bg"
+        },
+        {
+            "name": "text.definition",
+            "value": "Definition",
+            "view": "bg"
+        },
+        {
+            "name": "property.definition",
+            "value": "definition",
+            "view": "bg"
+        },
+        {
+            "name": "text.manufacturer",
+            "value": "Manufacturer",
+            "view": "bg"
+        },
+        {
+            "name": "property.manufacturer",
+            "value": "pytia.manufacturer",
+            "view": "bg"
+        },
+        {
+            "name": "text.programmer",
+            "value": "Programmer",
+            "view": "bg"
+        },
+        {
+            "name": "text.program_name",
+            "value": "Program Name",
+            "view": "bg"
+        },
+        {
+            "name": "text.tolerance",
+            "value": "Tolerance",
+            "view": "bg"
+        },
+        {
+            "name": "property.tolerance",
+            "value": "pytia.tolerance",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_1",
+            "value": "Process 1",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_1",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_1",
+            "value": "pytia.process_1",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_1",
+            "value": "Note Process 1",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_1",
+            "value": "pytia.note_process_1",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_2",
+            "value": "Process 2",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_2",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_2",
+            "value": "pytia.process_2",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_2",
+            "value": "Note Process 2",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_2",
+            "value": "pytia.note_process_2",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_3",
+            "value": "Process 3",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_3",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_3",
+            "value": "pytia.process_3",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_3",
+            "value": "Note Process 3",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_3",
+            "value": "pytia.note_process_3",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_4",
+            "value": "Process 4",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_4",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_4",
+            "value": "pytia.process_4",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_4",
+            "value": "Note Process 4",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_4",
+            "value": "pytia.note_process_4",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_5",
+            "value": "Process 5",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_5",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_5",
+            "value": "pytia.process_5",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_5",
+            "value": "Note Process 5",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_5",
+            "value": "pytia.note_process_5",
+            "view": "bg"
+        },
+        {
+            "name": "text.process_6",
+            "value": "Process 6",
+            "view": "bg"
+        },
+        {
+            "name": "text.sign_6",
+            "value": "Sign",
+            "view": "bg"
+        },
+        {
+            "name": "property.process_6",
+            "value": "pytia.process_6",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_process_6",
+            "value": "Note Process 6",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_process_6",
+            "value": "pytia.note_process_6",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_general",
+            "value": "Note",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_general",
+            "value": "pytia.note_general",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_material",
+            "value": "Note Material",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_material",
+            "value": "pytia.note_material",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_base_size",
+            "value": "Note Base Size",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_base_size",
+            "value": "pytia.note_base_size",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_production",
+            "value": "Note Production",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_production",
+            "value": "pytia.note_production",
+            "view": "bg"
+        },
+        {
+            "name": "text.note_supplier",
+            "value": "Note Supplier",
+            "view": "bg"
+        },
+        {
+            "name": "property.note_supplier",
+            "value": "pytia.note_supplier",
+            "view": "bg"
+        },
+        {
+            "name": "text.legal_notice",
+            "value": "This document must stay with its part as long as the part is not assembled in its final position. It is not allowed to copy this document due to its clarity and traceability.",
+            "view": "bg"
+        }
+    ],
+    "views": [
+        {
+            "name": "isometric",
+            "x": 65,
+            "y": 258.5,
+            "max_width": 85,
+            "max_height": 52,
+            "definition": [
+                -0.707107,
+                0.707107,
+                0.000000,
+                -0.408248,
+                -0.408248,
+                0.816497
+            ]
+        }
+    ],
+    "images": [
+        {
+            "name": "qr",
+            "path_argument": "qr_path",
+            "x": 170,
+            "y": 200,
+            "width": 30,
+            "height": 30
+        }
+    ]
+}

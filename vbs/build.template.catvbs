@@ -1,0 +1,110 @@
+' {{ launcher }}
+'
+' Launcher for {{ title }} {{ version }}
+'
+' Creator: {{ creator }}
+' Date:    {{ date }}
+' Target:  {{ path }}
+' Version: {{ version }}
+' Project: https://github.com/deloarts/pytia-bill-of-material
+'
+' This script has been created automatically!
+' Do not change the content of this file, only update the build.template.catvbs file.
+
+Option Explicit
+
+Sub CATMain()
+    On Error Resume Next
+
+    Dim Shell, Fso
+    Dim Prefix, Postfix
+    Dim AppData, VenvFolder, VenvVersionFolder, PythonwExe, PythonVersionFile
+    Dim Folders, Folder, Output, Version, Major, Minor
+    Dim GetVersionCmd, CreateVenvCmd, LaunchAppCmd
+    Dim Title, Options
+
+    Set Shell = CreateObject("WScript.Shell")
+    Set Fso = CreateObject("Scripting.FileSystemObject")
+
+    ' Environment
+    AppData = Shell.ExpandEnvironmentStrings("%APPDATA%") & "\pytia\pytia_bill_of_material"
+    VenvFolder = AppData & "\.env"
+    VenvVersionFolder = VenvFolder & "\{{ version }}"
+    PythonVersionFile = AppData & "\pyversion.txt"
+    PythonwExe = VenvVersionFolder & "\Scripts\pythonw.exe"
+
+    ' MsgBox configuration
+    Title = "{{ title }} Launcher"
+    Options = 0 + 16 + 4096 + 65536
+    Prefix = "Cannot launch {{ title }}. " & vbCrLf & vbCrLf
+    Postfix = vbCrLf & "Please contact your administrator immediately."
+
+    ' Commands
+    GetVersionCmd = "cmd.exe /C python -V > """ & PythonVersionFile & """"
+    CreateVenvCmd = "python -m venv """ & VenvVersionFolder & """"
+    LaunchAppCmd = PythonwExe & " ""{{ path }}"""
+    
+    ' Check main script
+    If Fso.FileExists("{{ path }}") = 0 Then
+        MsgBox Prefix & "App not found at: ""{{ path }}""" & Postfix, Options, Title
+        Exit Sub
+    End If
+    
+    ' Check environment folder for the current app version
+    If Not Fso.FolderExists(VenvVersionFolder) Then
+        MsgBox "The app requires an update. Click OK to continue.", 0 + 64 + 65536 + 4096, "PYTIA Bill Of Material"
+
+        If Fso.FolderExists(VenvFolder) Then
+            ' Delete old version folder
+            Set Folders = Fso.GetFolder(VenvFolder)
+            For each Folder In Folders.SubFolders
+                Fso.DeleteFolder(Folder)
+            Next
+        Else
+            CreateFolder VenvFolder
+        End If
+        
+        ' Delete old pyversion.txt file
+        If Fso.FileExists(PythonVersionFile) Then
+            Fso.DeleteFile(PythonVersionFile)
+        End If
+
+        Err.Clear
+        Shell.Run GetVersionCmd, 0, True
+        Output = Fso.OpenTextFile(PythonVersionFile).ReadAll()
+        Version = Split(Output)(1)
+        Major = CInt(Split(Version, ".")(0))
+        Minor = CInt(Split(Version, ".")(1))
+        If Err.Number <> 0 Then
+            MsgBox Prefix & "Python is not installed on this machine." & Postfix, Options, Title
+            Exit Sub
+        ElseIf Major <> {{ major }} or Minor < {{ minor }} Then
+            MsgBox Prefix & "Wrong Python version." & vbCrLf & _
+                "  Required: {{ major }}.{{ minor }}" & vbCrLf & _
+                "  Installed: " & Major & "." & Minor & vbCrLf & Postfix, Options, Title
+            Exit Sub
+        Else
+            Shell.Run CreateVenvCmd, 1, true
+        End If
+    End If
+
+    ' Run the main script
+    Err.Clear
+    CATIA.SystemService.ExecuteBackGroundProcessus LaunchAppCmd
+    If Err.Number <> 0 Then
+        MsgBox Prefix & Err.Description & vbCrLf & Postfix, Options, Title
+    End If
+
+    Set Shell = Nothing
+    Set Fso = Nothing
+End Sub
+
+Sub CreateFolder(ByVal FullPath)
+    Dim Fso
+    Set Fso = CreateObject("Scripting.FileSystemObject")
+
+    If Not Fso.FolderExists(FullPath) Then
+        CreateFolder Fso.GetParentFolderName(FullPath)
+        Fso.CreateFolder FullPath
+    End If
+End Sub

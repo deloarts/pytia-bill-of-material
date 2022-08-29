@@ -1,0 +1,66 @@
+[
+    {
+        "property_name": "pytia.project",
+        "criteria": "^P\\d{5}$",
+        "condition": true
+    },
+    {
+        "property_name": "pytia.machine",
+        "criteria": "^M\\d{5}$",
+        "condition": true
+    },
+    {
+        "property_name": "$revision",
+        "criteria": "^\\d+$",
+        "condition": true
+    },
+    {
+        "property_name": "$partnumber",
+        "criteria": ".*",
+        "condition": true
+    },
+    {
+        "property_name": "$number",
+        "criteria": "^\\d+$",
+        "condition": {
+            "$type": "$part"
+        }
+    },
+    {
+        "property_name": "pytia.material",
+        "criteria": ".*",
+        "condition": {
+            "$type": "$part",
+            "$source": "$made"
+        }
+    },
+    {
+        "property_name": "pytia.base_size",
+        "criteria": ".*",
+        "condition": {
+            "$type": "$part",
+            "$source": "$made"
+        }
+    },
+    {
+        "property_name": "pytia.process_1",
+        "criteria": ".*",
+        "condition": {
+            "$source": "$made"
+        }
+    },
+    {
+        "property_name": "$definition",
+        "criteria": ".*",
+        "condition": {
+            "$source": "$bought"
+        }
+    },
+    {
+        "property_name": "pytia.manufacturer",
+        "criteria": ".*",
+        "condition": {
+            "$source": "$bought"
+        }
+    }
+]

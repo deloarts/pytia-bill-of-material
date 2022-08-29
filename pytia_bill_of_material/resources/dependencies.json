@@ -1,0 +1,17 @@
+[
+    {
+        "name": "pytia",
+        "version": "0.2.2",
+        "local": true
+    },
+    {
+        "name": "pytia_ui_tools",
+        "version": "0.5.0",
+        "local": true
+    },
+    {
+        "name": "openpyxl",
+        "version": "3.0.10",
+        "local": false
+    }
+]
