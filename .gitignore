@@ -17,8 +17,14 @@ global_modules.txt
 # Config files
 information.json
 properties.json
+bom.json
+filters.json
 settings.json
 users.json
+docket.json
+
+# Template files
+docket.CATDrawing
 
 # VS Code files
 .vscode/*
