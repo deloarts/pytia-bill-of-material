@@ -100,9 +100,7 @@ lazy-object-proxy==1.7.1; python_version >= "3.6" and python_full_version >= "3.
     --hash=sha256:2130db8ed69a48a3440103d4a520b89d8a9405f1b06e2cc81640509e8bf6548f \
     --hash=sha256:677ea950bef409b47e51e733283544ac3d660b709cfce7b187f5ace137960d61 \
     --hash=sha256:d66906d5785da8e0be7360912e99c9188b70f52c422f9fc18223347235691a84
-mako==1.2.1; python_version >= "3.7" \
-    --hash=sha256:df3921c3081b013c8a2d5ff03c18375651684921ae83fd12e64800b7da923257 \
-    --hash=sha256:f054a5ff4743492f1aa9ecc47172cb33b42b9d993cffcc146c9de17e717b0307
+mako==1.2.2; python_version >= "3.7"
 markdown==3.4.1; python_version >= "3.7"
 markupsafe==2.1.1; python_version >= "3.10" and python_version < "4.0" \
     --hash=sha256:86b1f75c4e7c2ac2ccdaec2b9022845dbb81880ca318bb7a0a01fbf7813e3812 \
