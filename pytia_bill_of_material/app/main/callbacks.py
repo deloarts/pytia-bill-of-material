@@ -263,7 +263,7 @@ class Callbacks:
 
         initial_dir = Path(self.vars.bom_export_path.get()).parent
         if (
-            not initial_dir.exists()
+            not initial_dir.is_absolute()
             and self.workspace.workspace_folder
             and self.workspace.workspace_folder.exists()
         ):
