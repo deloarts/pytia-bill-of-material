@@ -113,12 +113,14 @@ This file contains the set of rules by which the items of the bill of material a
         "criteria": "^\\d+$",
         "condition": {
             "$type": "$part"
-        }
+        },
+        "description": "The number must be set. Have you forgotten to run the 'Generate Numbering' command?"
     },
     {
         "property_name": "$revision",
         "criteria": "^\\d+$",
-        "condition": true
+        "condition": true,
+        "description": "The revision must be a number."
     },
     {
         "property_name": "pytia.material",
@@ -126,7 +128,8 @@ This file contains the set of rules by which the items of the bill of material a
         "condition": {
             "$type": "$part",
             "$source": "$made"
-        }
+        },
+        "description": "The material must be set for 'made' parts."
     },
     ...
 ]
@@ -139,6 +142,7 @@ name | type | description
 property_name | `str` | The name of the property that is being tested. Note: This is not the name of a part/product property, it is the name of the item from the `header_items` list from the `bom.json` config file.
 criteria | `str` | The criteria that must be satisfied. Use regular expressions for matching.
 condition | `dict` or `bool` | The condition that must be satisfied in order to match the criteria with the value of the property. If the condition is not satisfied, the property won't be tested against the criteria.<br><br>If `bool`: When `true`, the criterial must always be satisfied for the property.<br><br>If `dict`: The dict represents properties as keys and the condition for this property as values. Only if all dict-items are satisfied the criteria will be tested against the value of the property. Example: See the file content above: The property `pytia.material` must not be empty (criteria=`.*`), but only if the document type is a part and the source is made. (`$type`, `$source`, `$made` and `$part` are all special keywords, see the keywords.json)
+description | `str` | A human readable description of the criteria. Will be visible in the report.
 
 ## 3 information.default.json
 

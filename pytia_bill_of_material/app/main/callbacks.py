@@ -42,6 +42,9 @@ class Commons:
             self.layout.tree_report_failed_props.delete(
                 *self.layout.tree_report_failed_props.get_children()
             )
+            self.layout.text_description.configure(state=NORMAL)
+            self.layout.text_description.delete("1.0", "end")
+            self.layout.text_description.configure(state=DISABLED)
 
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)
@@ -144,6 +147,9 @@ class Callbacks:
         )
         self.layout.tree_report_failed_items.bind(
             "<ButtonRelease-3>", self.on_tree_failed_items_button_3
+        )
+        self.layout.tree_report_failed_props.bind(
+            "<ButtonRelease-1>", self.on_tree_failed_props_button_1
         )
 
     def on_btn_export(self) -> None:
@@ -367,3 +373,28 @@ class Callbacks:
         Event handler for the treeview 'failed items': Right mouse button: Removes the selection.
         """
         self.commons.remove_selection_from_failed_items()
+
+    def on_tree_failed_props_button_1(self, *_) -> None:
+        """
+        Event handler fot the treeview 'failed props': Left mouse button: Shows the description of
+        the failed property.
+        """
+        self.layout.text_description.configure(state=NORMAL)
+        self.layout.text_description.delete("1.0", "end")
+        selection = self.layout.tree_report_failed_props.selection()
+        for selection_item in selection:
+            if property_name := self.layout.tree_report_failed_props.item(
+                selection_item, "values"
+            )[0]:
+                if filter_element := resource.get_filter_element_by_property_name(
+                    property_name
+                ):
+                    self.layout.text_description.insert(
+                        "end", filter_element.description
+                    )
+                    return
+                else:
+                    self.layout.text_description.insert(
+                        "end", "No description available."
+                    )
+        self.layout.text_description.configure(state=DISABLED)
