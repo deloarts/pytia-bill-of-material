@@ -1,7 +1,7 @@
 """
     The layout of the app.
 """
-from tkinter import DISABLED, HORIZONTAL, Tk, ttk
+from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk, ttk
 
 from app.main.frames import Frames
 from app.main.vars import Variables
@@ -309,7 +309,7 @@ class Layout:
             padx=(Layout.MARGIN_X, 5),
             pady=Layout.MARGIN_Y,
             sticky="nsew",
-            rowspan=4,
+            rowspan=5,
         )
 
         self._tree_report_failed_props = ttk.Treeview(
@@ -325,11 +325,24 @@ class Layout:
             sticky="nsew",
         )
 
+        self._text_description = Text(
+            frames.report,
+            height=5,
+            width=1,
+            state=DISABLED,
+            cursor="arrow",
+            font=("Segoe UI", 9),
+            wrap=WORD,
+        )
+        self._text_description.grid(
+            row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky="sew"
+        )
+
         self._btn_open_document = ttk.Button(
             frames.report, text="Open Document", style="Footer.TButton", state=DISABLED
         )
         self._btn_open_document.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(5, 2),
@@ -340,7 +353,7 @@ class Layout:
             frames.report, text="Open Parent", style="Footer.TButton", state=DISABLED
         )
         self._btn_open_parent.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, 2),
@@ -351,7 +364,7 @@ class Layout:
             frames.report, text="Close Document", style="Footer.TButton", state=DISABLED
         )
         self._btn_close_document.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -453,6 +466,10 @@ class Layout:
     @property
     def tree_report_failed_props(self) -> ttk.Treeview:
         return self._tree_report_failed_props
+
+    @property
+    def text_description(self) -> Text:
+        return self._text_description
 
     @property
     def button_export(self) -> ttk.Button:

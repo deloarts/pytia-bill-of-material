@@ -164,12 +164,13 @@ class Keywords:
 
 
 @dataclass(slots=True, kw_only=True)
-class Filters:
+class FilterElement:
     """Filters dataclass."""
 
     property_name: str
     criteria: str
     condition: Dict[str, str] | bool
+    description: str
 
 
 @dataclass(slots=True, kw_only=True)
@@ -311,7 +312,7 @@ class Resources:  # pylint: disable=R0902
         return self._keywords
 
     @property
-    def filters(self) -> List[Filters]:
+    def filters(self) -> List[FilterElement]:
         """filters.json"""
         return self._filters
 
@@ -383,7 +384,7 @@ class Resources:  # pylint: disable=R0902
             else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary("resources", filters_resource) as f:
-            self._filters = [Filters(**i) for i in json.load(f)]
+            self._filters = [FilterElement(**i) for i in json.load(f)]
 
     def _read_users(self) -> None:
         """Reads the users json from the resources folder."""
@@ -633,6 +634,21 @@ class Resources:  # pylint: disable=R0902
             if user.logon == logon:
                 return True
         return False
+
+    def get_filter_element_by_property_name(self, name: str) -> Optional[FilterElement]:
+        """
+        Returns the filter dataclass that matches its property name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements property name.
+
+        Returns:
+            User: The filter element from the dataclass list that matches the provided name.
+        """
+        for index, value in enumerate(self._filters):
+            if value.property_name == name:
+                return self._filters[index]
+        return None
 
 
 resource = Resources()

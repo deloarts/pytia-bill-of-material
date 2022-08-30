@@ -2,29 +2,34 @@
     {
         "property_name": "pytia.project",
         "criteria": "^P\\d{5}$",
-        "condition": true
+        "condition": true,
+        "description": "The project number must start with a 'P', followed by a five digit number."
     },
     {
         "property_name": "pytia.machine",
         "criteria": "^M\\d{5}$",
-        "condition": true
+        "condition": true,
+        "description": "The machine number must start with a 'M', followed by a five digit number."
     },
     {
         "property_name": "$revision",
         "criteria": "^\\d+$",
-        "condition": true
+        "condition": true,
+        "description": "The revision must be a number."
     },
     {
         "property_name": "$partnumber",
         "criteria": ".*",
-        "condition": true
+        "condition": true,
+        "description": "The partnumber must have a value."
     },
     {
         "property_name": "$number",
         "criteria": "^\\d+$",
         "condition": {
             "$type": "$part"
-        }
+        },
+        "description": "The number must be set. Have you forgotten to run the 'Generate Numbering' command?"
     },
     {
         "property_name": "pytia.material",
@@ -32,7 +37,8 @@
         "condition": {
             "$type": "$part",
             "$source": "$made"
-        }
+        },
+        "description": "The material must be set for 'made' parts."
     },
     {
         "property_name": "pytia.base_size",
@@ -40,27 +46,31 @@
         "condition": {
             "$type": "$part",
             "$source": "$made"
-        }
+        },
+        "description": "The base size must be set for 'made' parts."
     },
     {
         "property_name": "pytia.process_1",
         "criteria": ".*",
         "condition": {
             "$source": "$made"
-        }
+        },
+        "description": "At least the first process must be defined for 'made' parts and products."
     },
     {
         "property_name": "$definition",
         "criteria": ".*",
         "condition": {
             "$source": "$bought"
-        }
+        },
+        "description": "The definition must be set for 'bought' parts and products."
     },
     {
         "property_name": "pytia.manufacturer",
         "criteria": ".*",
         "condition": {
             "$source": "$bought"
-        }
+        },
+        "description": "The manufacturer must be set for 'bought' parts and products."
     }
 ]

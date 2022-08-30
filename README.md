@@ -188,7 +188,7 @@ After the installation the app starts automatically:
 
 The app retrieves all information from the documents properties, except the material value, which is fetched from the applied material.
 
-The usage itself is pretty straight forward, as long as all config files are setup properly. 
+The usage itself is pretty straight forward, as long as all config files are setup properly.
 
 Object | Description
 --- | ---
