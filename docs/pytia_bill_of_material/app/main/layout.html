@@ -30,7 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;
     The layout of the app.
 &#34;&#34;&#34;
-from tkinter import DISABLED, HORIZONTAL, Tk, ttk
+from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk, ttk
 
 from app.main.frames import Frames
 from app.main.vars import Variables
@@ -338,7 +338,7 @@ class Layout:
             padx=(Layout.MARGIN_X, 5),
             pady=Layout.MARGIN_Y,
             sticky=&#34;nsew&#34;,
-            rowspan=4,
+            rowspan=5,
         )
 
         self._tree_report_failed_props = ttk.Treeview(
@@ -354,11 +354,24 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
+        self._text_description = Text(
+            frames.report,
+            height=5,
+            width=1,
+            state=DISABLED,
+            cursor=&#34;arrow&#34;,
+            font=(&#34;Segoe UI&#34;, 9),
+            wrap=WORD,
+        )
+        self._text_description.grid(
+            row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky=&#34;sew&#34;
+        )
+
         self._btn_open_document = ttk.Button(
             frames.report, text=&#34;Open Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_open_document.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(5, 2),
@@ -369,7 +382,7 @@ class Layout:
             frames.report, text=&#34;Open Parent&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_open_parent.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, 2),
@@ -380,7 +393,7 @@ class Layout:
             frames.report, text=&#34;Close Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_close_document.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -482,6 +495,10 @@ class Layout:
     @property
     def tree_report_failed_props(self) -&gt; ttk.Treeview:
         return self._tree_report_failed_props
+
+    @property
+    def text_description(self) -&gt; Text:
+        return self._text_description
 
     @property
     def button_export(self) -&gt; ttk.Button:
@@ -845,7 +862,7 @@ class Layout:
             padx=(Layout.MARGIN_X, 5),
             pady=Layout.MARGIN_Y,
             sticky=&#34;nsew&#34;,
-            rowspan=4,
+            rowspan=5,
         )
 
         self._tree_report_failed_props = ttk.Treeview(
@@ -861,11 +878,24 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
+        self._text_description = Text(
+            frames.report,
+            height=5,
+            width=1,
+            state=DISABLED,
+            cursor=&#34;arrow&#34;,
+            font=(&#34;Segoe UI&#34;, 9),
+            wrap=WORD,
+        )
+        self._text_description.grid(
+            row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky=&#34;sew&#34;
+        )
+
         self._btn_open_document = ttk.Button(
             frames.report, text=&#34;Open Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_open_document.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(5, 2),
@@ -876,7 +906,7 @@ class Layout:
             frames.report, text=&#34;Open Parent&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_open_parent.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, 2),
@@ -887,7 +917,7 @@ class Layout:
             frames.report, text=&#34;Close Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
         )
         self._btn_close_document.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -989,6 +1019,10 @@ class Layout:
     @property
     def tree_report_failed_props(self) -&gt; ttk.Treeview:
         return self._tree_report_failed_props
+
+    @property
+    def text_description(self) -&gt; Text:
+        return self._text_description
 
     @property
     def button_export(self) -&gt; ttk.Button:
@@ -1268,6 +1302,18 @@ def progress_bar(self) -&gt; ttk.Progressbar:
     return self._progress_bar</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.text_description"><code class="name">var <span class="ident">text_description</span> : tkinter.Text</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def text_description(self) -&gt; Text:
+    return self._text_description</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items"><code class="name">var <span class="ident">tree_report_failed_items</span> : tkinter.ttk.Treeview</code></dt>
 <dd>
 <div class="desc"></div>
@@ -1334,6 +1380,7 @@ def tree_report_failed_props(self) -&gt; ttk.Treeview:
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path">input_stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path">input_stp_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.progress_bar" href="#pytia_bill_of_material.app.main.layout.Layout.progress_bar">progress_bar</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.text_description" href="#pytia_bill_of_material.app.main.layout.Layout.text_description">text_description</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items" href="#pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items">tree_report_failed_items</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_props" href="#pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_props">tree_report_failed_props</a></code></li>
 </ul>

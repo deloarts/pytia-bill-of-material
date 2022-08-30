@@ -127,7 +127,10 @@ class Traces:
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
         if (
-            (is_dir := os.path.isdir(self.vars.docket_export_path.get()))
+            is_dir := bool(
+                os.path.isdir(self.vars.docket_export_path.get())
+                and os.path.isabs(self.vars.docket_export_path.get())
+            )
             and templates.docket_path is not None
             and os.path.isfile(templates.docket_path)
         ):
@@ -145,7 +148,9 @@ class Traces:
         &#34;&#34;&#34;Trace callback for the `stp_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
-        if os.path.isdir(self.vars.stp_export_path.get()):
+        if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(
+            self.vars.stp_export_path.get()
+        ):
             self.layout.input_stp_export_path.configure(foreground=&#34;black&#34;)
             self.layout.checkbox_export_stp.configure(state=NORMAL)
             self.vars.export_stp.set(True)
@@ -158,7 +163,9 @@ class Traces:
         &#34;&#34;&#34;Trace callback for the `stl_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
-        if os.path.isdir(self.vars.stl_export_path.get()):
+        if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(
+            self.vars.stl_export_path.get()
+        ):
             self.layout.input_stl_export_path.configure(foreground=&#34;black&#34;)
             self.layout.checkbox_export_stl.configure(state=NORMAL)
             self.vars.export_stl.set(True)
@@ -316,7 +323,10 @@ class Traces:
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
         if (
-            (is_dir := os.path.isdir(self.vars.docket_export_path.get()))
+            is_dir := bool(
+                os.path.isdir(self.vars.docket_export_path.get())
+                and os.path.isabs(self.vars.docket_export_path.get())
+            )
             and templates.docket_path is not None
             and os.path.isfile(templates.docket_path)
         ):
@@ -334,7 +344,9 @@ class Traces:
         &#34;&#34;&#34;Trace callback for the `stp_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
-        if os.path.isdir(self.vars.stp_export_path.get()):
+        if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(
+            self.vars.stp_export_path.get()
+        ):
             self.layout.input_stp_export_path.configure(foreground=&#34;black&#34;)
             self.layout.checkbox_export_stp.configure(state=NORMAL)
             self.vars.export_stp.set(True)
@@ -347,7 +359,9 @@ class Traces:
         &#34;&#34;&#34;Trace callback for the `stl_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         &#34;&#34;&#34;
-        if os.path.isdir(self.vars.stl_export_path.get()):
+        if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(
+            self.vars.stl_export_path.get()
+        ):
             self.layout.input_stl_export_path.configure(foreground=&#34;black&#34;)
             self.layout.checkbox_export_stl.configure(state=NORMAL)
             self.vars.export_stl.set(True)
@@ -434,7 +448,10 @@ of the checkbox accordingly to the path variable.</p></div>
     of the checkbox accordingly to the path variable.
     &#34;&#34;&#34;
     if (
-        (is_dir := os.path.isdir(self.vars.docket_export_path.get()))
+        is_dir := bool(
+            os.path.isdir(self.vars.docket_export_path.get())
+            and os.path.isabs(self.vars.docket_export_path.get())
+        )
         and templates.docket_path is not None
         and os.path.isfile(templates.docket_path)
     ):
@@ -536,7 +553,9 @@ of the checkbox accordingly to the path variable.</p></div>
     &#34;&#34;&#34;Trace callback for the `stl_export_path` StringVar. Validates the path and sets the state
     of the checkbox accordingly to the path variable.
     &#34;&#34;&#34;
-    if os.path.isdir(self.vars.stl_export_path.get()):
+    if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(
+        self.vars.stl_export_path.get()
+    ):
         self.layout.input_stl_export_path.configure(foreground=&#34;black&#34;)
         self.layout.checkbox_export_stl.configure(state=NORMAL)
         self.vars.export_stl.set(True)
@@ -560,7 +579,9 @@ of the checkbox accordingly to the path variable.</p></div>
     &#34;&#34;&#34;Trace callback for the `stp_export_path` StringVar. Validates the path and sets the state
     of the checkbox accordingly to the path variable.
     &#34;&#34;&#34;
-    if os.path.isdir(self.vars.stp_export_path.get()):
+    if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(
+        self.vars.stp_export_path.get()
+    ):
         self.layout.input_stp_export_path.configure(foreground=&#34;black&#34;)
         self.layout.checkbox_export_stp.configure(state=NORMAL)
         self.vars.export_stp.set(True)

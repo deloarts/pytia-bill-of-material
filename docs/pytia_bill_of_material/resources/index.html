@@ -195,12 +195,13 @@ class Keywords:
 
 
 @dataclass(slots=True, kw_only=True)
-class Filters:
+class FilterElement:
     &#34;&#34;&#34;Filters dataclass.&#34;&#34;&#34;
 
     property_name: str
     criteria: str
     condition: Dict[str, str] | bool
+    description: str
 
 
 @dataclass(slots=True, kw_only=True)
@@ -342,7 +343,7 @@ class Resources:  # pylint: disable=R0902
         return self._keywords
 
     @property
-    def filters(self) -&gt; List[Filters]:
+    def filters(self) -&gt; List[FilterElement]:
         &#34;&#34;&#34;filters.json&#34;&#34;&#34;
         return self._filters
 
@@ -414,7 +415,7 @@ class Resources:  # pylint: disable=R0902
             else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, filters_resource) as f:
-            self._filters = [Filters(**i) for i in json.load(f)]
+            self._filters = [FilterElement(**i) for i in json.load(f)]
 
     def _read_users(self) -&gt; None:
         &#34;&#34;&#34;Reads the users json from the resources folder.&#34;&#34;&#34;
@@ -665,6 +666,21 @@ class Resources:  # pylint: disable=R0902
                 return True
         return False
 
+    def get_filter_element_by_property_name(self, name: str) -&gt; Optional[FilterElement]:
+        &#34;&#34;&#34;
+        Returns the filter dataclass that matches its property name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements property name.
+
+        Returns:
+            User: The filter element from the dataclass list that matches the provided name.
+        &#34;&#34;&#34;
+        for index, value in enumerate(self._filters):
+            if value.property_name == name:
+                return self._filters[index]
+        return None
+
 
 resource = Resources()</code></pre>
 </details>
@@ -680,7 +696,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.1.0', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.1.1', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -835,9 +851,9 @@ class BOMSort:
 </dd>
 </dl>
 </dd>
-<dt id="pytia_bill_of_material.resources.Filters"><code class="flex name class">
-<span>class <span class="ident">Filters</span></span>
-<span>(</span><span>*, property_name: str, criteria: str, condition: Union[Dict[str, str], bool])</span>
+<dt id="pytia_bill_of_material.resources.FilterElement"><code class="flex name class">
+<span>class <span class="ident">FilterElement</span></span>
+<span>(</span><span>*, property_name: str, criteria: str, condition: Union[Dict[str, str], bool], description: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Filters dataclass.</p></div>
@@ -846,24 +862,29 @@ class BOMSort:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@dataclass(slots=True, kw_only=True)
-class Filters:
+class FilterElement:
     &#34;&#34;&#34;Filters dataclass.&#34;&#34;&#34;
 
     property_name: str
     criteria: str
-    condition: Dict[str, str] | bool</code></pre>
+    condition: Dict[str, str] | bool
+    description: str</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pytia_bill_of_material.resources.Filters.condition"><code class="name">var <span class="ident">condition</span> : Union[Dict[str, str], bool]</code></dt>
+<dt id="pytia_bill_of_material.resources.FilterElement.condition"><code class="name">var <span class="ident">condition</span> : Union[Dict[str, str], bool]</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.resources.Filters.criteria"><code class="name">var <span class="ident">criteria</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.FilterElement.criteria"><code class="name">var <span class="ident">criteria</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.resources.Filters.property_name"><code class="name">var <span class="ident">property_name</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.FilterElement.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.FilterElement.property_name"><code class="name">var <span class="ident">property_name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1233,7 +1254,7 @@ def values(self) -&gt; List[str]:
         return self._keywords
 
     @property
-    def filters(self) -&gt; List[Filters]:
+    def filters(self) -&gt; List[FilterElement]:
         &#34;&#34;&#34;filters.json&#34;&#34;&#34;
         return self._filters
 
@@ -1305,7 +1326,7 @@ def values(self) -&gt; List[str]:
             else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, filters_resource) as f:
-            self._filters = [Filters(**i) for i in json.load(f)]
+            self._filters = [FilterElement(**i) for i in json.load(f)]
 
     def _read_users(self) -&gt; None:
         &#34;&#34;&#34;Reads the users json from the resources folder.&#34;&#34;&#34;
@@ -1554,7 +1575,22 @@ def values(self) -&gt; List[str]:
         for user in self._users:
             if user.logon == logon:
                 return True
-        return False</code></pre>
+        return False
+
+    def get_filter_element_by_property_name(self, name: str) -&gt; Optional[FilterElement]:
+        &#34;&#34;&#34;
+        Returns the filter dataclass that matches its property name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements property name.
+
+        Returns:
+            User: The filter element from the dataclass list that matches the provided name.
+        &#34;&#34;&#34;
+        for index, value in enumerate(self._filters):
+            if value.property_name == name:
+                return self._filters[index]
+        return None</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1597,7 +1633,7 @@ def docket(self) -&gt; dict:
     return self._docket</code></pre>
 </details>
 </dd>
-<dt id="pytia_bill_of_material.resources.Resources.filters"><code class="name">var <span class="ident">filters</span> : List[<a title="pytia_bill_of_material.resources.Filters" href="#pytia_bill_of_material.resources.Filters">Filters</a>]</code></dt>
+<dt id="pytia_bill_of_material.resources.Resources.filters"><code class="name">var <span class="ident">filters</span> : List[<a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a>]</code></dt>
 <dd>
 <div class="desc"><p>filters.json</p></div>
 <details class="source">
@@ -1605,7 +1641,7 @@ def docket(self) -&gt; dict:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def filters(self) -&gt; List[Filters]:
+def filters(self) -&gt; List[FilterElement]:
     &#34;&#34;&#34;filters.json&#34;&#34;&#34;
     return self._filters</code></pre>
 </details>
@@ -1883,6 +1919,41 @@ keywords will be applied to the filters.json config file.</p></div>
 
             item.condition = new_condition
     # print(self._filters)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name"><code class="name flex">
+<span>def <span class="ident">get_filter_element_by_property_name</span></span>(<span>self, name: str) ‑> Optional[<a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the filter dataclass that matches its property name.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The filter to fetch from the dataclass list by the elements property name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pytia_bill_of_material.resources.User" href="#pytia_bill_of_material.resources.User">User</a></code></dt>
+<dd>The filter element from the dataclass list that matches the provided name.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_filter_element_by_property_name(self, name: str) -&gt; Optional[FilterElement]:
+    &#34;&#34;&#34;
+    Returns the filter dataclass that matches its property name.
+
+    Args:
+        name (str): The filter to fetch from the dataclass list by the elements property name.
+
+    Returns:
+        User: The filter element from the dataclass list that matches the provided name.
+    &#34;&#34;&#34;
+    for index, value in enumerate(self._filters):
+        if value.property_name == name:
+            return self._filters[index]
+    return None</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.resources.Resources.get_info_msg_by_counter"><code class="name flex">
@@ -2424,11 +2495,12 @@ def values(self) -&gt; List[str]:
 </ul>
 </li>
 <li>
-<h4><code><a title="pytia_bill_of_material.resources.Filters" href="#pytia_bill_of_material.resources.Filters">Filters</a></code></h4>
+<h4><code><a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a></code></h4>
 <ul class="">
-<li><code><a title="pytia_bill_of_material.resources.Filters.condition" href="#pytia_bill_of_material.resources.Filters.condition">condition</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.Filters.criteria" href="#pytia_bill_of_material.resources.Filters.criteria">criteria</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.Filters.property_name" href="#pytia_bill_of_material.resources.Filters.property_name">property_name</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.FilterElement.condition" href="#pytia_bill_of_material.resources.FilterElement.condition">condition</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.FilterElement.criteria" href="#pytia_bill_of_material.resources.FilterElement.criteria">criteria</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.FilterElement.description" href="#pytia_bill_of_material.resources.FilterElement.description">description</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.FilterElement.property_name" href="#pytia_bill_of_material.resources.FilterElement.property_name">property_name</a></code></li>
 </ul>
 </li>
 <li>
@@ -2497,6 +2569,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.Resources.bom" href="#pytia_bill_of_material.resources.Resources.bom">bom</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.docket" href="#pytia_bill_of_material.resources.Resources.docket">docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.filters" href="#pytia_bill_of_material.resources.Resources.filters">filters</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name" href="#pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name">get_filter_element_by_property_name</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.get_info_msg_by_counter" href="#pytia_bill_of_material.resources.Resources.get_info_msg_by_counter">get_info_msg_by_counter</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.get_user_by_logon" href="#pytia_bill_of_material.resources.Resources.get_user_by_logon">get_user_by_logon</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.infos" href="#pytia_bill_of_material.resources.Resources.infos">infos</a></code></li>
