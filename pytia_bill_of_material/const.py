@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 PYTIA = "pytia"
 PYTIA_BILL_OF_MATERIAL = "pytia_bill_of_material"

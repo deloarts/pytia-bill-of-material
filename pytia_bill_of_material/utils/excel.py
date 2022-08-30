@@ -328,7 +328,7 @@ def retrieve_bom_from_catia_export(
                     # parts and products are setup with the pytia-property-manager.
                     cell_value = cell_value.replace("_x000D_\n", "\n")
 
-                if isinstance(cell_value, str) and re.match(r"\s+", cell_value):
+                if isinstance(cell_value, str) and re.match(r"^\s+$", cell_value):
                     # CATIA exports empty cells as chr(13). This results in a space
                     # string " " instead of a truly empty cell. This is fixed by checking
                     # for only-whitespace characters and replacing them with None.

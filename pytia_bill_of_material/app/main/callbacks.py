@@ -259,11 +259,21 @@ class Callbacks:
         Event handler for the browse bom export path button. Asks the user to select a xlsx file,
         to which to export the final bill of material.
         """
+        log.info("Callback for button 'Browse bom export path'.")
+
+        initial_dir = Path(self.vars.bom_export_path.get()).parent
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
         if path := WindowsPath(
             filedialog.asksaveasfilename(
                 filetypes=[("EXCEL Worksheet", "*.xlsx")],
                 defaultextension=".xlsx",
-                initialdir=Path(self.vars.bom_export_path.get()).parent,
+                initialdir=initial_dir,
                 initialfile=get_bom_export_name(
                     workspace=self.workspace,
                     project=self.vars.project.get(),
@@ -280,9 +290,18 @@ class Callbacks:
         into which to export the docket files.
         """
         log.info("Callback for button 'Browse docket export path'.")
+
+        initial_dir = Path(self.vars.docket_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
         if path := WindowsPath(
             filedialog.askdirectory(
-                initialdir=self.vars.docket_export_path.get(),
+                initialdir=initial_dir,
                 title=resource.settings.title,
             )
         ):
@@ -294,9 +313,18 @@ class Callbacks:
         into which to export the stp files.
         """
         log.info("Callback for button 'Browse STP export path'.")
+
+        initial_dir = Path(self.vars.stp_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
         if path := WindowsPath(
             filedialog.askdirectory(
-                initialdir=self.vars.stp_export_path.get(),
+                initialdir=initial_dir,
                 title=resource.settings.title,
             )
         ):
@@ -308,9 +336,18 @@ class Callbacks:
         into which to export the stl files.
         """
         log.info("Callback for button 'Browse STL export path'.")
+
+        initial_dir = Path(self.vars.stl_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
         if path := WindowsPath(
             filedialog.askdirectory(
-                initialdir=self.vars.stl_export_path.get(),
+                initialdir=initial_dir,
                 title=resource.settings.title,
             )
         ):
