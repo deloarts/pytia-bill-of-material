@@ -29,10 +29,12 @@ class FileUtility:
 
     @property
     def delete_items(self) -> List[FileUtilityDeleteModel]:
+        """Returns a list of all files that should be deleted as FileUtilityDeleteModel."""
         return self._delete_list
 
     @property
     def move_items(self) -> List[FileUtilityMoveModel]:
+        """Returns a list of all files that should be moved as FileUtilityMoveModel."""
         return self._move_list
 
     @property
@@ -203,15 +205,18 @@ class FileUtility:
         self._move_list.append(item)
 
     def delete_all_exit(self) -> None:
+        """Deletes all file, including those marked as 'delete at exit'."""
         for item in self._delete_list:
             self.delete_item(item)
 
     def delete_all(self) -> None:
+        """Deletes all files, except those marked as 'delete at exit'."""
         for item in self._delete_list:
             if not item.at_exit:
                 self.delete_item(item)
 
     def move_all(self) -> None:
+        """Moves all files."""
         for item in self._move_list:
             self.move_item(item)
 
