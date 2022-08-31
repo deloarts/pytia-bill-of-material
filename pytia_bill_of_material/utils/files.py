@@ -25,7 +25,7 @@ class FileUtility:
         self._delete_list: List[FileUtilityDeleteModel] = []
         self._move_list: List[FileUtilityMoveModel] = []
 
-        atexit.register(self.delete_all)
+        atexit.register(self.delete_all_exit)
 
     @property
     def delete_items(self) -> List[FileUtilityDeleteModel]:
@@ -146,6 +146,7 @@ class FileUtility:
         path: Path,
         ask_retry: bool = True,
         skip_silent: bool = False,
+        at_exit: bool = False,
     ) -> None:
         """
         Adds a file to delete later.
@@ -156,15 +157,14 @@ class FileUtility:
                 deleted due to a permission error. Defaults to True.
             skip_silent (bool, optional): Skips without a user prompt if the file cannot be \
                 deleted. Defaults to False.
+            at_exit (bool, optional): Deletes the file only at application exit. Defaults to False.
         """
         if not path.is_file():
             log.error(f"Cannot delete file at {str(path)!r}: Not a file.")
             return
 
         item = FileUtilityDeleteModel(
-            path=path,
-            ask_retry=ask_retry,
-            skip_silent=skip_silent,
+            path=path, ask_retry=ask_retry, skip_silent=skip_silent, at_exit=at_exit
         )
         self._delete_list.append(item)
 
@@ -202,9 +202,14 @@ class FileUtility:
         )
         self._move_list.append(item)
 
-    def delete_all(self) -> None:
+    def delete_all_exit(self) -> None:
         for item in self._delete_list:
             self.delete_item(item)
+
+    def delete_all(self) -> None:
+        for item in self._delete_list:
+            if not item.at_exit:
+                self.delete_item(item)
 
     def move_all(self) -> None:
         for item in self._move_list:
