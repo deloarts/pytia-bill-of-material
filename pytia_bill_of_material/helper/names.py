@@ -40,7 +40,7 @@ def get_bom_export_name(workspace: Workspace, project: str, machine: str) -> str
     if ".xlsx" not in initial_file:
         initial_file += ".xlsx"
 
-    return initial_file
+    return initial_file.lstrip()
 
 
 def get_data_export_name(bom_item: BOMAssemblyItem) -> str:
