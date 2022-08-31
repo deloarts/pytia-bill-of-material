@@ -14,6 +14,7 @@ class FileUtilityDeleteModel:
     path: Path
     ask_retry: bool
     skip_silent: bool
+    at_exit: bool
 
 
 @dataclass(slots=True, kw_only=True)

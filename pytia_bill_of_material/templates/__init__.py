@@ -54,7 +54,9 @@ class Templates:
                 zfile.extract(
                     member=f"templates/{TEMPLATE_DOCKET}", path=self.tempfolder
                 )
-            file_utility.add_delete(path=self.temp_docket_path, skip_silent=True)
+            file_utility.add_delete(
+                path=self.temp_docket_path, skip_silent=True, at_exit=True
+            )
         except:
             pass
 

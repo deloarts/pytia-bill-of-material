@@ -54,14 +54,16 @@ class FileUtility:
         self._delete_list: List[FileUtilityDeleteModel] = []
         self._move_list: List[FileUtilityMoveModel] = []
 
-        atexit.register(self.delete_all)
+        atexit.register(self.delete_all_exit)
 
     @property
     def delete_items(self) -&gt; List[FileUtilityDeleteModel]:
+        &#34;&#34;&#34;Returns a list of all files that should be deleted as FileUtilityDeleteModel.&#34;&#34;&#34;
         return self._delete_list
 
     @property
     def move_items(self) -&gt; List[FileUtilityMoveModel]:
+        &#34;&#34;&#34;Returns a list of all files that should be moved as FileUtilityMoveModel.&#34;&#34;&#34;
         return self._move_list
 
     @property
@@ -175,6 +177,7 @@ class FileUtility:
         path: Path,
         ask_retry: bool = True,
         skip_silent: bool = False,
+        at_exit: bool = False,
     ) -&gt; None:
         &#34;&#34;&#34;
         Adds a file to delete later.
@@ -185,15 +188,14 @@ class FileUtility:
                 deleted due to a permission error. Defaults to True.
             skip_silent (bool, optional): Skips without a user prompt if the file cannot be \
                 deleted. Defaults to False.
+            at_exit (bool, optional): Deletes the file only at application exit. Defaults to False.
         &#34;&#34;&#34;
         if not path.is_file():
             log.error(f&#34;Cannot delete file at {str(path)!r}: Not a file.&#34;)
             return
 
         item = FileUtilityDeleteModel(
-            path=path,
-            ask_retry=ask_retry,
-            skip_silent=skip_silent,
+            path=path, ask_retry=ask_retry, skip_silent=skip_silent, at_exit=at_exit
         )
         self._delete_list.append(item)
 
@@ -231,11 +233,19 @@ class FileUtility:
         )
         self._move_list.append(item)
 
-    def delete_all(self) -&gt; None:
+    def delete_all_exit(self) -&gt; None:
+        &#34;&#34;&#34;Deletes all file, including those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
         for item in self._delete_list:
             self.delete_item(item)
 
+    def delete_all(self) -&gt; None:
+        &#34;&#34;&#34;Deletes all files, except those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
+        for item in self._delete_list:
+            if not item.at_exit:
+                self.delete_item(item)
+
     def move_all(self) -&gt; None:
+        &#34;&#34;&#34;Moves all files.&#34;&#34;&#34;
         for item in self._move_list:
             self.move_item(item)
 
@@ -298,14 +308,16 @@ useful file related functions.</p>
         self._delete_list: List[FileUtilityDeleteModel] = []
         self._move_list: List[FileUtilityMoveModel] = []
 
-        atexit.register(self.delete_all)
+        atexit.register(self.delete_all_exit)
 
     @property
     def delete_items(self) -&gt; List[FileUtilityDeleteModel]:
+        &#34;&#34;&#34;Returns a list of all files that should be deleted as FileUtilityDeleteModel.&#34;&#34;&#34;
         return self._delete_list
 
     @property
     def move_items(self) -&gt; List[FileUtilityMoveModel]:
+        &#34;&#34;&#34;Returns a list of all files that should be moved as FileUtilityMoveModel.&#34;&#34;&#34;
         return self._move_list
 
     @property
@@ -419,6 +431,7 @@ useful file related functions.</p>
         path: Path,
         ask_retry: bool = True,
         skip_silent: bool = False,
+        at_exit: bool = False,
     ) -&gt; None:
         &#34;&#34;&#34;
         Adds a file to delete later.
@@ -429,15 +442,14 @@ useful file related functions.</p>
                 deleted due to a permission error. Defaults to True.
             skip_silent (bool, optional): Skips without a user prompt if the file cannot be \
                 deleted. Defaults to False.
+            at_exit (bool, optional): Deletes the file only at application exit. Defaults to False.
         &#34;&#34;&#34;
         if not path.is_file():
             log.error(f&#34;Cannot delete file at {str(path)!r}: Not a file.&#34;)
             return
 
         item = FileUtilityDeleteModel(
-            path=path,
-            ask_retry=ask_retry,
-            skip_silent=skip_silent,
+            path=path, ask_retry=ask_retry, skip_silent=skip_silent, at_exit=at_exit
         )
         self._delete_list.append(item)
 
@@ -475,11 +487,19 @@ useful file related functions.</p>
         )
         self._move_list.append(item)
 
-    def delete_all(self) -&gt; None:
+    def delete_all_exit(self) -&gt; None:
+        &#34;&#34;&#34;Deletes all file, including those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
         for item in self._delete_list:
             self.delete_item(item)
 
+    def delete_all(self) -&gt; None:
+        &#34;&#34;&#34;Deletes all files, except those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
+        for item in self._delete_list:
+            if not item.at_exit:
+                self.delete_item(item)
+
     def move_all(self) -&gt; None:
+        &#34;&#34;&#34;Moves all files.&#34;&#34;&#34;
         for item in self._move_list:
             self.move_item(item)
 
@@ -593,25 +613,27 @@ def all_moved(self) -&gt; bool:
 </dd>
 <dt id="pytia_bill_of_material.utils.files.FileUtility.delete_items"><code class="name">var <span class="ident">delete_items</span> : List[models.files.FileUtilityDeleteModel]</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns a list of all files that should be deleted as FileUtilityDeleteModel.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def delete_items(self) -&gt; List[FileUtilityDeleteModel]:
+    &#34;&#34;&#34;Returns a list of all files that should be deleted as FileUtilityDeleteModel.&#34;&#34;&#34;
     return self._delete_list</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.utils.files.FileUtility.move_items"><code class="name">var <span class="ident">move_items</span> : List[models.files.FileUtilityMoveModel]</code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns a list of all files that should be moved as FileUtilityMoveModel.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
 def move_items(self) -&gt; List[FileUtilityMoveModel]:
+    &#34;&#34;&#34;Returns a list of all files that should be moved as FileUtilityMoveModel.&#34;&#34;&#34;
     return self._move_list</code></pre>
 </details>
 </dd>
@@ -619,7 +641,7 @@ def move_items(self) -&gt; List[FileUtilityMoveModel]:
 <h3>Methods</h3>
 <dl>
 <dt id="pytia_bill_of_material.utils.files.FileUtility.add_delete"><code class="name flex">
-<span>def <span class="ident">add_delete</span></span>(<span>self, path: pathlib.Path, ask_retry: bool = True, skip_silent: bool = False) ‑> None</span>
+<span>def <span class="ident">add_delete</span></span>(<span>self, path: pathlib.Path, ask_retry: bool = True, skip_silent: bool = False, at_exit: bool = False) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds a file to delete later.</p>
@@ -633,6 +655,8 @@ deleted due to a permission error. Defaults to True.</dd>
 <dt><strong><code>skip_silent</code></strong> :&ensp;<code>bool</code>, optional</dt>
 <dd>Skips without a user prompt if the file cannot be
 deleted. Defaults to False.</dd>
+<dt><strong><code>at_exit</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Deletes the file only at application exit. Defaults to False.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -643,6 +667,7 @@ deleted. Defaults to False.</dd>
     path: Path,
     ask_retry: bool = True,
     skip_silent: bool = False,
+    at_exit: bool = False,
 ) -&gt; None:
     &#34;&#34;&#34;
     Adds a file to delete later.
@@ -653,15 +678,14 @@ deleted. Defaults to False.</dd>
             deleted due to a permission error. Defaults to True.
         skip_silent (bool, optional): Skips without a user prompt if the file cannot be \
             deleted. Defaults to False.
+        at_exit (bool, optional): Deletes the file only at application exit. Defaults to False.
     &#34;&#34;&#34;
     if not path.is_file():
         log.error(f&#34;Cannot delete file at {str(path)!r}: Not a file.&#34;)
         return
 
     item = FileUtilityDeleteModel(
-        path=path,
-        ask_retry=ask_retry,
-        skip_silent=skip_silent,
+        path=path, ask_retry=ask_retry, skip_silent=skip_silent, at_exit=at_exit
     )
     self._delete_list.append(item)</code></pre>
 </details>
@@ -730,12 +754,29 @@ Defaults to True.</dd>
 <span>def <span class="ident">delete_all</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Deletes all files, except those marked as 'delete at exit'.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def delete_all(self) -&gt; None:
+    &#34;&#34;&#34;Deletes all files, except those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
+    for item in self._delete_list:
+        if not item.at_exit:
+            self.delete_item(item)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.utils.files.FileUtility.delete_all_exit"><code class="name flex">
+<span>def <span class="ident">delete_all_exit</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deletes all file, including those marked as 'delete at exit'.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_all_exit(self) -&gt; None:
+    &#34;&#34;&#34;Deletes all file, including those marked as &#39;delete at exit&#39;.&#34;&#34;&#34;
     for item in self._delete_list:
         self.delete_item(item)</code></pre>
 </details>
@@ -803,12 +844,13 @@ Defaults to True.</dd>
 <span>def <span class="ident">move_all</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Moves all files.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def move_all(self) -&gt; None:
+    &#34;&#34;&#34;Moves all files.&#34;&#34;&#34;
     for item in self._move_list:
         self.move_item(item)</code></pre>
 </details>
@@ -900,6 +942,7 @@ Defaults to True.</dd>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.all_deleted" href="#pytia_bill_of_material.utils.files.FileUtility.all_deleted">all_deleted</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.all_moved" href="#pytia_bill_of_material.utils.files.FileUtility.all_moved">all_moved</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.delete_all" href="#pytia_bill_of_material.utils.files.FileUtility.delete_all">delete_all</a></code></li>
+<li><code><a title="pytia_bill_of_material.utils.files.FileUtility.delete_all_exit" href="#pytia_bill_of_material.utils.files.FileUtility.delete_all_exit">delete_all_exit</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.delete_item" href="#pytia_bill_of_material.utils.files.FileUtility.delete_item">delete_item</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.delete_items" href="#pytia_bill_of_material.utils.files.FileUtility.delete_items">delete_items</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.files.FileUtility.get_random_filename" href="#pytia_bill_of_material.utils.files.FileUtility.get_random_filename">get_random_filename</a></code></li>
