@@ -301,11 +301,11 @@ pyparsing = ">=2.0.2,<3.0.5 || >3.0.5"
 
 [[package]]
 name = "pathspec"
-version = "0.9.0"
+version = "0.10.0"
 description = "Utility library for gitignore style pattern matching of file paths."
 category = "dev"
 optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+python-versions = ">=3.7"
 
 [[package]]
 name = "pdoc3"
@@ -479,7 +479,7 @@ resolved_reference = "9c735717517e7801b87c082dfaa507e7f64d2912"
 
 [[package]]
 name = "pytia-ui-tools"
-version = "0.5.0"
+version = "0.5.1"
 description = "Helper functions and widgets for all pytia ui apps."
 category = "main"
 optional = false
@@ -497,8 +497,8 @@ qrcode = "7.3.1"
 [package.source]
 type = "git"
 url = "ssh://git@github.com/deloarts/pytia-ui-tools.git"
-reference = "v0.5.0"
-resolved_reference = "1a009427f2a090fa2ccbab128b13c2e5cb8b66d8"
+reference = "v0.5.1"
+resolved_reference = "5bcc369721801bec0962061ea1b972d115011fd4"
 
 [[package]]
 name = "pywin32"
@@ -566,7 +566,7 @@ test = ["pytest (>=2.2.3)", "flake8 (>=2.4.0)", "isort (>=4.2.2)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.16.3"
+version = "20.16.4"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -592,7 +592,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "38ec714a50a8f4b9ea57d49b8f624b0be3476eb547195b74800add0f743a17cb"
+content-hash = "7ecb5972bfc57007649fd38a6d2407508903affd8df924b8c92cfeaac897a678"
 
 [metadata.files]
 astroid = []
@@ -775,10 +775,7 @@ packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
 ]
-pathspec = [
-    {file = "pathspec-0.9.0-py2.py3-none-any.whl", hash = "sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a"},
-    {file = "pathspec-0.9.0.tar.gz", hash = "sha256:e564499435a2673d586f6b2130bb5b95f04a3ba06f81b8f895b651a3c76aabb1"},
-]
+pathspec = []
 pdoc3 = [
     {file = "pdoc3-0.10.0-py3-none-any.whl", hash = "sha256:ba45d1ada1bd987427d2bf5cdec30b2631a3ff5fb01f6d0e77648a572ce6028b"},
     {file = "pdoc3-0.10.0.tar.gz", hash = "sha256:5f22e7bcb969006738e1aa4219c75a32f34c2d62d46dc9d2fb2d3e0b0287e4b7"},
