@@ -58,11 +58,13 @@ class Traces:
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
         self.vars.show_report.trace_add("write", self.trace_show_report)
 
+    def _validate_button_export(self) -> None:
+        self.set_ui.set_button_export()
+
     def trace_project(self, *_) -> None:
         """Trace callback for the `project` StringVar. Handles the filename for the export path."""
-        current_path = Path(self.vars.bom_export_path.get())
-        current_folder = current_path.parent
-
+        # Apply project number to the excel export path
+        current_folder = Path(self.vars.bom_export_path.get()).parent
         if os.path.exists(current_folder):
             self.vars.bom_export_path.set(
                 str(
@@ -77,6 +79,8 @@ class Traces:
                 )
             )
 
+        self._validate_button_export()
+
     def trace_bom_export_path(self, *_) -> None:
         """
         Trace callback for the `bom_export_path` StringVar. Validates the path and sets the state
@@ -86,11 +90,11 @@ class Traces:
             os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
             and ".xlsx" in self.vars.bom_export_path.get()
         ):
-            self.layout.button_export.configure(state=NORMAL)
             self.layout.input_bom_export_path.configure(foreground="black")
         else:
-            self.layout.button_export.configure(state=DISABLED)
             self.layout.input_bom_export_path.configure(foreground="red")
+
+        self._validate_button_export()
 
     def trace_docket_export_path(self, *_) -> None:
         """

@@ -7,6 +7,7 @@
 """
 
 import os
+import re
 import tkinter as tk
 from pathlib import Path
 
@@ -92,12 +93,7 @@ class UISetter:
             else tk.DISABLED
         )
 
-        self.layout.button_export.configure(
-            state=tk.NORMAL
-            if os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
-            and ".xlsx" in self.vars.bom_export_path.get()
-            else tk.DISABLED
-        )
+        self.set_button_export()
         self.layout.button_exit.configure(state=tk.NORMAL)
 
         self.root.config(cursor="arrow")
@@ -141,3 +137,17 @@ class UISetter:
         self.disabled()
         self.root.config(cursor="wait")
         self.layout.button_exit.configure(state=tk.DISABLED)
+
+    def set_button_export(self) -> None:
+        """
+        Sets the state of the 'Export button' depending on a set of rules.
+        """
+        if (
+            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            and ".xlsx" in self.vars.bom_export_path.get()
+            and self.vars.project.get()
+            and not re.match(r"^\s+$", self.vars.project.get())
+        ):
+            self.layout.button_export.configure(state=tk.NORMAL)
+        else:
+            self.layout.button_export.configure(state=tk.DISABLED)
