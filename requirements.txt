@@ -159,9 +159,7 @@ openpyxl==3.0.10; python_version >= "3.6"
 packaging==21.3; python_version >= "3.6" \
     --hash=sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522 \
     --hash=sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb
-pathspec==0.9.0; python_full_version >= "3.6.2" \
-    --hash=sha256:7d15c4ddb0b5c802d161efc417ec1a2558ea2653c2e8ad9c19098201dc1c993a \
-    --hash=sha256:e564499435a2673d586f6b2130bb5b95f04a3ba06f81b8f895b651a3c76aabb1
+pathspec==0.10.0; python_version >= "3.7" and python_full_version >= "3.6.2"
 pdoc3==0.10.0; python_version >= "3.6" \
     --hash=sha256:ba45d1ada1bd987427d2bf5cdec30b2631a3ff5fb01f6d0e77648a572ce6028b \
     --hash=sha256:5f22e7bcb969006738e1aa4219c75a32f34c2d62d46dc9d2fb2d3e0b0287e4b7
@@ -260,7 +258,7 @@ pytest==7.1.2; python_version >= "3.7" \
     --hash=sha256:13d0e3ccfc2b6e26be000cb6568c832ba67ba32e719443bfe725814d3c42433c \
     --hash=sha256:a06a0425453864a270bc45e71f783330a7428defb4230fb5e6a731fde06ecd45
 pytia @ git+ssh://git@github.com/deloarts/pytia.git@v0.2.2 ; python_version >= "3.10" and python_version < "4.0"
-pytia-ui-tools @ git+ssh://git@github.com/deloarts/pytia-ui-tools.git@v0.5.0 ; python_version >= "3.10" and python_version < "4.0"
+pytia-ui-tools @ git+ssh://git@github.com/deloarts/pytia-ui-tools.git@v0.5.1 ; python_version >= "3.10" and python_version < "4.0"
 pywin32==304; python_version >= "3.10" and python_version < "4.0" \
     --hash=sha256:3c7bacf5e24298c86314f03fa20e16558a4e4138fc34615d7de4070c23e65af3 \
     --hash=sha256:4f32145913a2447736dad62495199a8e280a77a0ca662daa2332acf849f0be48 \
@@ -319,7 +317,7 @@ tomli==2.0.1; python_full_version < "3.11.0a7" and python_full_version >= "3.6.2
     --hash=sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f
 validators==0.19.0; python_version >= "3.4" \
     --hash=sha256:dec45f4381f042f1e705cfa74949505b77f1e27e8b05409096fee8152c839cbe
-virtualenv==20.16.3; python_version >= "3.7"
+virtualenv==20.16.4; python_version >= "3.7"
 wrapt==1.14.1; python_full_version >= "3.6.2" \
     --hash=sha256:1b376b3f4896e7930f1f772ac4b064ac12598d1c38d04907e696cc4d794b43d3 \
     --hash=sha256:903500616422a40a98a5a3c4ff4ed9d0066f3b4c951fa286018ecdf0750194ef \
