@@ -326,7 +326,7 @@ class MainTask:
                 if item.properties[self.keywords.source] == self.keywords.made:
                     self.items_to_export.append(item)
 
-            progress_increment = 100 / len(self.variables.bom.summary.items)
+            progress_increment = 100 / len(self.items_to_export)
             self.variables.progress.set(1)
             self.main_ui.update_idletasks()
             for item in self.items_to_export:
@@ -623,7 +623,7 @@ class MainTask:
                 if item.properties[self.keywords.source] == self.keywords.made:
                     self.items_to_export.append(item)
 
-            progress_increment = 100 / len(self.variables.bom.summary.items)
+            progress_increment = 100 / len(self.items_to_export)
             self.variables.progress.set(1)
             self.main_ui.update_idletasks()
             for item in self.items_to_export:
