@@ -39,7 +39,7 @@ def get_excel() -> CDispatch:
     try:
         # app = EnsureDispatch("EXCEL.Application")
         app = Dispatch("EXCEL.Application")
-        return app
+        return app  # type: ignore
     except COMException as e:
         raise PytiaNotInstalledError(
             f"Excel is not installed on this system: {e}"
