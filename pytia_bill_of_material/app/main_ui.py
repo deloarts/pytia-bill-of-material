@@ -82,6 +82,7 @@ class MainUI(tk.Tk):
             f"{'(DEBUG MODE)' if resource.settings.debug else APP_VERSION}"
         )
         self.attributes("-topmost", True)
+        self.attributes("-toolwindow", True)
         self.config(cursor="wait")
         self.default_font = font.nametofont("TkDefaultFont")
         self.default_font.configure(family="Segoe UI", size=9)
