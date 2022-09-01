@@ -30,6 +30,7 @@
         "pdoc",
         "Produktbeschreibung",
         "psutil",
+        "pygit",
         "pylint",
         "pylintrc",
         "pyproject",
