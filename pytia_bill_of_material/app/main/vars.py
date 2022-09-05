@@ -13,7 +13,6 @@ class Variables:
     """Dataclass for the main windows variables."""
 
     # Process variables
-    bom: BOM
     report: Report
 
     # Infrastructure variables
