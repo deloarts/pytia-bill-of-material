@@ -6,6 +6,7 @@ from pathlib import Path
 
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
+from protocols.task_protocol import TaskProtocol
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.framework import framework
 from pytia.framework.in_interfaces.document import Document
@@ -17,7 +18,7 @@ from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
 
 
-class PrepareTask:
+class PrepareTask(TaskProtocol):
     __slots__ = ("_doc_helper", "_paths", "_docket_config")
 
     def __init__(self, doc_helper: LazyDocumentHelper) -> None:
@@ -74,11 +75,17 @@ class PrepareTask:
 
         def iterate_tree(parent_product: Product) -> None:
             for i in range(1, parent_product.products.count + 1):
-                current_product = parent_product.products.item(i)
-                current_partnumber = Product(current_product.com_object).part_number
-                current_path = Path(Product(current_product.com_object).full_name)
-                paths.items[current_partnumber] = current_path
-                iterate_tree(current_product)
+                try:
+                    # If there are items in the tree that aren't parts or products the
+                    # iteration will fail, because the reference product cannot be fetched.
+                    # Maybe this should be done in a better way, without a try-except clause.
+                    current_product = parent_product.products.item(i)
+                    current_partnumber = Product(current_product.com_object).part_number
+                    current_path = Path(Product(current_product.com_object).full_name)
+                    paths.items[current_partnumber] = current_path
+                    iterate_tree(current_product)
+                except:
+                    pass
 
         iterate_tree(product.product)
         return paths

@@ -38,6 +38,7 @@ class Layout:
             frames.infrastructure,
             values=[],
             textvariable=variables.project,
+            state=DISABLED,
         )
         self._combo_project.grid(
             row=0,

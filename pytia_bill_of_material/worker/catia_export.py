@@ -11,13 +11,13 @@ from exceptions import PytiaConvertError
 from helper.lazy_loaders import LazyDocumentHelper
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
-from pytia.wrapper.documents.product_documents import PyProductDocument
 from utils.excel import get_excel
 from utils.files import file_utility
 from utils.system import application_is_running
+from protocols.task_protocol import TaskProtocol
 
 
-class CatiaExportTask:
+class CatiaExportTask(TaskProtocol):
     __slots__ = ("_doc_helper", "_xls", "_xlsx", "_bom")
 
     def __init__(self, doc_helper: LazyDocumentHelper) -> None:

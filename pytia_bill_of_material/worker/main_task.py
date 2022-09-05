@@ -11,7 +11,6 @@
 from pathlib import Path
 from tkinter import Tk
 from tkinter import messagebox as tkmsg
-from typing import Callable
 
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
@@ -28,8 +27,10 @@ from utils.system import explorer
 from .catia_export import CatiaExportTask
 from .export_items import ExportItemsTask
 from .make_report import MakeReportTask
+from .move_files import MoveFilesTask
 from .prepare import PrepareTask
 from .process_bom import ProcessBomTask
+from .runner import Runner
 from .save_bom import SaveBomTask
 
 
@@ -56,15 +57,29 @@ class MainTask:
         self._docket_config: DocketConfig
         self._bom: BOM
 
-        self.variables.progress.set(0)
-        self.layout.progress_bar.grid()
+        self.runner_main = Runner(
+            root=self.main_ui,
+            callback_variable=self.variables.progress,
+            progress_bar=self.layout.progress_bar,
+        )
+        self.runner_item_export = Runner(
+            root=self.main_ui,
+            callback_variable=self.variables.progress,
+            progress_bar=self.layout.progress_bar,
+        )
+        self.runner_move_files = Runner(
+            root=self.main_ui,
+            callback_variable=self.variables.progress,
+            progress_bar=self.layout.progress_bar,
+        )
+
+        self.runner_main.add(func=self._prepare, name="Prepare Export")
+        self.runner_main.add(func=self._catia_export, name="Catia Export")
+        self.runner_main.add(func=self._process_bom, name="Process Bill of Material")
+        self.runner_main.add(func=self._create_report, name="Create Report")
 
     def run(self) -> None:
-        self._run_task(self._prepare)
-        self._run_task(self._catia_export)
-        self._run_task(self._process_bom)
-        self._run_task(self._create_report)
-        self.variables.progress.set(100)
+        self.runner_main.run_tasks()
 
         if self._status == Status.OK:
             self._save_bom()
@@ -104,26 +119,20 @@ class MainTask:
         self.layout.progress_bar.grid_remove()
         self.ui_setter.normal()
 
-    def _run_task(self, task: Callable) -> None:
-        if not self._abort:
-            task()
-            self.variables.progress.set(self.variables.progress.get() + int(100 / 4))
-            self.main_ui.update_idletasks()
-
-    def _prepare(self) -> None:
+    def _prepare(self, *_) -> None:
         task = PrepareTask(doc_helper=self.doc_helper)
         task.run()
 
         self._paths = task.paths
         self._docket_config = task.docket_config
 
-    def _catia_export(self) -> None:
+    def _catia_export(self, *_) -> None:
         task = CatiaExportTask(doc_helper=self.doc_helper)
         task.run()
 
         self._xlsx = task.xlsx
 
-    def _process_bom(self) -> None:
+    def _process_bom(self, *_) -> None:
         task = ProcessBomTask(
             xlsx=self._xlsx, project_number=self._project, paths=self._paths
         )
@@ -131,23 +140,22 @@ class MainTask:
 
         self._bom = task.bom
 
-    def _create_report(self) -> None:
+    def _create_report(self, *_) -> None:
         task = MakeReportTask(bom=self._bom)
         task.run()
 
         self._status = task.status
         self.variables.report = task.report
 
-    def _save_bom(self) -> None:
+    def _save_bom(self, *_) -> None:
         task = SaveBomTask(
             bom=self._bom, path=Path(self.variables.bom_export_path.get())
         )
         task.run()
 
-    def _export_items(self) -> None:
+    def _export_items(self, *_) -> None:
         task = ExportItemsTask(
-            root=self.main_ui,
-            progress_callback=self.variables.progress,
+            runner=self.runner_item_export,
             bom=self._bom,
             export_docket=self.variables.export_docket.get(),
             export_stp=self.variables.export_stp.get(),
@@ -159,15 +167,6 @@ class MainTask:
         )
         task.run()
 
-    def _move_files(self) -> None:
-        progress_increment = 100 / len(file_utility.move_items)
-        self.variables.progress.set(0)
-
-        for item in file_utility.move_items:
-            file_utility.move_item(item)
-            self.variables.progress.set(
-                self.variables.progress.get() + progress_increment
-            )
-            self.main_ui.update_idletasks()
-
-        file_utility.delete_all()
+    def _move_files(self, *_) -> None:
+        task = MoveFilesTask(runner=self.runner_move_files)
+        task.run()

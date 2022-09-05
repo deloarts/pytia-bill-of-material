@@ -13,12 +13,13 @@ from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.worksheet import Worksheet
+from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import row_is_empty
 
 
-class ProcessBomTask:
+class ProcessBomTask(TaskProtocol):
     __slots__ = ("_xlsx", "_project", "_paths", "_bom")
 
     def __init__(self, xlsx: Path, project_number: str, paths: Paths) -> None:
@@ -142,8 +143,6 @@ class ProcessBomTask:
                         header_position=position, cell_value=cell_value
                     )
 
-                    print(type(cell_value))
-
                     row_data[position] = cell_value
 
                 if is_summary:
@@ -160,7 +159,9 @@ class ProcessBomTask:
                     raise ValueError("The value for the partnumber is empty.")
 
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
-                    raise KeyError(f"Cannot find path for BOM item {_name!r}.")
+                    raise KeyError(
+                        f"Cannot find path for BOM item {row_data[resource.applied_keywords.partnumber]!r}."
+                    )
 
                 assembly_item = BOMAssemblyItem(
                     partnumber=row_data[resource.applied_keywords.partnumber],

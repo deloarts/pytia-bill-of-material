@@ -11,9 +11,10 @@ from pytia.log import log
 from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
 from utils.files import file_utility
+from protocols.task_protocol import TaskProtocol
 
 
-class SaveBomTask:
+class SaveBomTask(TaskProtocol):
     __slots__ = ("_bom", "_path")
 
     def __init__(self, bom: BOM, path: Path) -> None:

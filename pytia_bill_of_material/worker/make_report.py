@@ -9,9 +9,10 @@ from models.bom import BOM
 from models.report import Report, ReportItem
 from pytia.log import log
 from resources import resource
+from protocols.task_protocol import TaskProtocol
 
 
-class MakeReportTask:
+class MakeReportTask(TaskProtocol):
     __slots__ = ("_bom", "_report", "_status")
 
     def __init__(self, bom: BOM) -> None:

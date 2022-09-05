@@ -3,12 +3,11 @@
 """
 
 from pathlib import Path
-from tkinter import DoubleVar, Tk
-from typing import List
 
 from const import LOGON, TEMP_EXPORT
 from helper.names import get_data_export_name
 from models.bom import BOM, BOMAssemblyItem
+from protocols.task_protocol import TaskProtocol
 from pytia.exceptions import PytiaWrongDocumentTypeError
 from pytia.log import log
 from pytia.utilities.docket import DocketConfig
@@ -19,11 +18,12 @@ from resources import resource
 from utils import export
 from utils.files import file_utility
 
+from .runner import Runner
 
-class ExportItemsTask:
+
+class ExportItemsTask(TaskProtocol):
     __slots__ = (
-        "_root",
-        "_progress_callback",
+        "_runner",
         "_bom",
         "_export_docket",
         "_export_stp",
@@ -37,8 +37,7 @@ class ExportItemsTask:
 
     def __init__(
         self,
-        root: Tk,
-        progress_callback: DoubleVar,
+        runner: Runner,
         bom: BOM,
         export_docket: bool,
         export_stp: bool,
@@ -48,8 +47,7 @@ class ExportItemsTask:
         stl_path: Path,
         docket_config: DocketConfig,
     ) -> None:
-        self._root = root
-        self._progress_callback = progress_callback
+        self._runner = runner
         self._bom = bom
         self._export_docket = export_docket
         self._export_stp = export_stp
@@ -58,8 +56,6 @@ class ExportItemsTask:
         self._stp_path = stp_path
         self._stl_path = stl_path
         self._docket_config = docket_config
-
-        self.items_to_export: List[BOMAssemblyItem] = []
 
     def run(self) -> None:
         log.info("Exporting selected items.")
@@ -73,17 +69,13 @@ class ExportItemsTask:
                     item.properties[resource.applied_keywords.source]
                     == resource.applied_keywords.made
                 ):
-                    self.items_to_export.append(item)
+                    self._runner.add(
+                        func=self._export_item,
+                        name=f"Export item {item.partnumber!r}",
+                        bom_item=item,
+                    )
 
-            progress_increment = 100 / len(self.items_to_export)
-            self._progress_callback.set(1)
-            self._root.update_idletasks()
-            for item in self.items_to_export:
-                self._export_item(bom_item=item)
-                self._progress_callback.set(
-                    self._progress_callback.get() + progress_increment
-                )
-                self._root.update_idletasks()
+            self._runner.run_tasks()
             log.info("Finished item export.")
         else:
             log.info("Skipping item export: None selected.")
@@ -108,7 +100,6 @@ class ExportItemsTask:
                 file_utility.get_random_filename(filetype="png"),
             )
         )
-        # atexit.register(lambda: delete_file(qr_path, warning=True))
         file_utility.add_delete(path=qr_path, skip_silent=True)
         return qr_path
 
