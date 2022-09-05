@@ -151,6 +151,11 @@ class KeywordElements:
     summary: str
 
 
+@dataclass
+class AppliedKeywords(KeywordElements):
+    ...
+
+
 @dataclass(slots=True, kw_only=True)
 class Keywords:
     """Dataclass for language specific keywords."""
@@ -271,19 +276,10 @@ class AppData:
 class Resources:  # pylint: disable=R0902
     """Class for handling resource files."""
 
-    __slots__ = (
-        "_settings",
-        "_keywords",
-        "_appdata",
-        "_bom",
-        "_props",
-        "_filters",
-        "_infos",
-        "_users",
-        "_docket",
-    )
-
     def __init__(self) -> None:
+        self._language_applied = False
+        self._applied_keywords: AppliedKeywords
+
         self._read_settings()
         self._read_props()
         self._read_keywords()
@@ -312,13 +308,24 @@ class Resources:  # pylint: disable=R0902
         return self._keywords
 
     @property
+    def applied_keywords(self) -> AppliedKeywords:
+        """Translated version of the keywords json."""
+        if not self._language_applied:
+            raise Exception("Language has not been applied to filters.json.")
+        return self._applied_keywords
+
+    @property
     def filters(self) -> List[FilterElement]:
         """filters.json"""
+        if not self._language_applied:
+            raise Exception("Language has not been applied to filters.json.")
         return self._filters
 
     @property
     def bom(self) -> BOM:
         """bom.json"""
+        if not self._language_applied:
+            raise Exception("Language has not been applied to filters.json.")
         return self._bom
 
     @property
@@ -443,7 +450,7 @@ class Resources:  # pylint: disable=R0902
                 return True
         return False
 
-    def apply_keywords_to_bom(self, language: Literal["en", "de"]) -> None:
+    def _apply_keywords_to_bom(self, language: Literal["en", "de"]) -> None:
         """
         Applies the keywords from the keywords.json to the bom.json's `header_items`.
 
@@ -529,7 +536,7 @@ class Resources:  # pylint: disable=R0902
         ):
             self._bom.required_header_items.quantity = keywords[key]
 
-    def apply_keywords_to_filters(self, language: Literal["en", "de"]) -> None:
+    def _apply_keywords_to_filters(self, language: Literal["en", "de"]) -> None:
         """
         Applies the keywords from the keywords.json to the filters.json.
 
@@ -587,7 +594,16 @@ class Resources:  # pylint: disable=R0902
                         new_condition[cond_key] = item.condition[cond_key]
 
                 item.condition = new_condition
-        # print(self._filters)
+
+    def apply_language(self, language=Literal["en", "de"]) -> None:
+        self._apply_keywords_to_bom(language)  # type: ignore
+        self._apply_keywords_to_filters(language)  # type: ignore
+        self._applied_keywords = AppliedKeywords(
+            **asdict(
+                resource._keywords.en if language == "en" else resource._keywords.de
+            )
+        )
+        self._language_applied = True
 
     def get_info_msg_by_counter(self) -> List[str]:
         """

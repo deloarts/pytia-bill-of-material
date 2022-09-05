@@ -5,7 +5,7 @@
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Literal
+from typing import Any, Dict, List
 
 from const import EXCEL_EXE, KEEP, X000D
 from exceptions import PytiaConvertError, PytiaDispatchError, PytiaNotInstalledError
@@ -259,7 +259,6 @@ def style_worksheet(worksheet: Worksheet) -> None:
 def retrieve_bom_from_catia_export(
     worksheet: Worksheet | ReadOnlyWorksheet,
     paths: Paths,
-    language: Literal["en", "de"],
     overwrite_project: str = KEEP,
 ) -> BOM:
     """
@@ -270,7 +269,6 @@ def retrieve_bom_from_catia_export(
     Args:
         worksheet (Worksheet | ReadOnlyWorksheet): The worksheet from which to extract the data.
         paths (Paths): The paths from all CATIA partnumbers in the BOM.
-        language (Literal[en | de]): The UI language.
         overwrite_project (str): The project number that will be written into the BOM object. \
             If set to `KEEP` all existing project number will be left, otherwise the provided 
             string will be written into the BOM object.
@@ -291,8 +289,6 @@ def retrieve_bom_from_catia_export(
     log.info("Retrieving bill of material from exported Excel file.")
     header_items = tuple(item for item in resource.bom.header_items)
 
-    keywords = resource.keywords.en if language == "en" else resource.keywords.de
-
     for ri in range(1, worksheet.max_row + 1):
         _bom_or_summary = str(worksheet.cell(ri, 1).value).split(": ")[0]
         _name = str(worksheet.cell(ri, 1).value).split(": ")[-1]
@@ -301,7 +297,7 @@ def retrieve_bom_from_catia_export(
             bom.assemblies.append(assembly)
             assembly = None
 
-        elif keywords.bom in _bom_or_summary:
+        elif resource.applied_keywords.bom in _bom_or_summary:
             assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
             header_positions = get_header_positions(
                 worksheet=worksheet, row=ri + 1, header_items=header_items
@@ -309,7 +305,7 @@ def retrieve_bom_from_catia_export(
             data_row = ri + 2
             log.info(f"Processing BOM of element {_name!r}.")
 
-        elif keywords.summary in _bom_or_summary:
+        elif resource.applied_keywords.summary in _bom_or_summary:
             is_summary = True
             assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
             header_positions = get_header_positions(
@@ -351,23 +347,23 @@ def retrieve_bom_from_catia_export(
             if is_summary:
                 bom.summary = assembly
 
-            if not keywords.partnumber in row_data:
+            if not resource.applied_keywords.partnumber in row_data:
                 raise KeyError(
-                    f"Cannot find keyword {keywords.partnumber!r} in exported Excel file. "
+                    f"Cannot find keyword {resource.applied_keywords.partnumber!r} in exported Excel file. "
                     "Are your language settings correct? Or is the $partnumber keyword not set "
                     "in the bom.json's header_items?"
                 )
 
-            if row_data[keywords.partnumber] is None:
+            if row_data[resource.applied_keywords.partnumber] is None:
                 raise ValueError("The value for the partnumber is empty.")
 
-            if row_data[keywords.partnumber] not in paths.items:
+            if row_data[resource.applied_keywords.partnumber] not in paths.items:
                 raise KeyError(f"Cannot find path for BOM item {_name!r}.")
 
             assembly_item = BOMAssemblyItem(
-                partnumber=row_data[keywords.partnumber],
+                partnumber=row_data[resource.applied_keywords.partnumber],
                 properties=row_data,
-                path=paths.items[row_data[keywords.partnumber]],
+                path=paths.items[row_data[resource.applied_keywords.partnumber]],
             )
             assembly.items.append(assembly_item)
     return bom

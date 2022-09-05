@@ -11,7 +11,7 @@
 from pathlib import Path
 from tkinter import Tk
 from tkinter import messagebox as tkmsg
-from typing import Callable, List, Literal
+from typing import Callable, List
 
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
@@ -38,7 +38,6 @@ from utils.excel import (
     retrieve_bom_from_catia_export,
 )
 from utils.files import file_utility
-from utils.language import get_ui_language
 from utils.product import export_bill_of_material, retrieve_paths, set_catia_bom_format
 from utils.system import explorer
 
@@ -57,12 +56,6 @@ class MainTask:
         self.ui_setter = ui_setter
         self.doc_helper = doc_helper
         self.variables = variables
-        self.language: Literal["en", "de"] = get_ui_language(
-            product=self.doc_helper.document
-        )
-        self.keywords = (
-            resource.keywords.en if self.language == "en" else resource.keywords.de
-        )
         self.paths: Paths
         self.xls_path: Path
         self.xlsx_path: Path
@@ -133,13 +126,11 @@ class MainTask:
         log.info("Preparing to export bill of material.")
 
         document = Document(framework.catia.active_document.com_object)
-        if document.full_name != self.variables.initial_filepath:
+        if document.full_name != self.doc_helper.path:
             raise PytiaDifferentDocumentError(
                 "The document has changed. Please open the original document and try again."
             )
 
-        resource.apply_keywords_to_bom(language=self.language)
-        resource.apply_keywords_to_filters(language=self.language)
         set_catia_bom_format()
         self.paths: Paths = retrieve_paths(self.doc_helper.document)
         self.docket_config = DocketConfig.from_dict(resource.docket)
@@ -155,10 +146,9 @@ class MainTask:
         self.variables.bom = retrieve_bom_from_catia_export(
             worksheet=wb.worksheets[0],
             paths=self.paths,
-            language=self.language,
             overwrite_project=self.variables.project.get(),
         )
-        sort_bom(bom=self.variables.bom, language=self.language)
+        sort_bom(bom=self.variables.bom)
         file_utility.add_delete(path=self.xls_path, ask_retry=True)
         file_utility.add_delete(path=self.xlsx_path, ask_retry=True)
 
@@ -261,7 +251,9 @@ class MainTask:
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        quantity=bom_item.properties[self.keywords.quantity],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
                         logon=LOGON,
                         qr_path=qr_path,
                     )
@@ -287,11 +279,14 @@ class MainTask:
             ]
         ):
             for item in self.variables.bom.summary.items:
-                if not self.keywords.source in item.properties:
+                if not resource.applied_keywords.source in item.properties:
                     raise Exception(
-                        f"Keyword {self.keywords.source!r} not in bill of material."
+                        f"Keyword {resource.applied_keywords.source!r} not in bill of material."
                     )
-                if item.properties[self.keywords.source] == self.keywords.made:
+                if (
+                    item.properties[resource.applied_keywords.source]
+                    == resource.applied_keywords.made
+                ):
                     self.items_to_export.append(item)
 
             progress_increment = 100 / len(self.items_to_export)

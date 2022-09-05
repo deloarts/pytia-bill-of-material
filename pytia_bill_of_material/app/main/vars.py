@@ -15,7 +15,6 @@ class Variables:
     # Process variables
     bom: BOM
     report: Report
-    initial_filepath: str
 
     # Infrastructure variables
     project: StringVar

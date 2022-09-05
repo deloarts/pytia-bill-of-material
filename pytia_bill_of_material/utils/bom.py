@@ -4,7 +4,6 @@
 
 import re
 from pathlib import Path
-from typing import Literal
 
 from const import Status
 from models.bom import BOM, BOMAssemblyItem
@@ -17,7 +16,7 @@ from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
 
 
-def sort_bom(bom: BOM, language: Literal["en", "de"]) -> None:
+def sort_bom(bom: BOM) -> None:
     """
     Sorts the BOM model according to the `sort` item in the bom.json.
     Note: This depends on the language of the CATIA UI. Make sure that you have
@@ -25,9 +24,7 @@ def sort_bom(bom: BOM, language: Literal["en", "de"]) -> None:
 
     Args:
         bom (BOM): The BOM object to be sorted.
-        language (Literal[&quot;en&quot;, &quot;de&quot;]): The language of the CATIA UI.
     """
-    keywords = resource.keywords.en if language == "en" else resource.keywords.de
 
     def _partnumber(assembly_item: BOMAssemblyItem):
         return assembly_item.partnumber
@@ -37,7 +34,7 @@ def sort_bom(bom: BOM, language: Literal["en", "de"]) -> None:
         log.info(f"Sorting 'made' items by {resource.bom.sort.made!r}")
         return (
             props[resource.bom.sort.made]
-            if props[keywords.source] == keywords.made
+            if props[resource.applied_keywords.source] == resource.applied_keywords.made
             else None
         )
 
@@ -46,7 +43,8 @@ def sort_bom(bom: BOM, language: Literal["en", "de"]) -> None:
         log.info(f"Sorting 'bought' items by {resource.bom.sort.bought!r}")
         return (
             props[resource.bom.sort.bought]
-            if props[keywords.source] == keywords.bought
+            if props[resource.applied_keywords.source]
+            == resource.applied_keywords.bought
             else None
         )
 

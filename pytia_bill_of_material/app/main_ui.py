@@ -117,7 +117,6 @@ class MainUI(tk.Tk):
 
         # Setup doc helper
         self.doc_helper = LazyDocumentHelper()
-        self.vars.initial_filepath = self.doc_helper.path
 
         # Setup the workspace
         self.workspace = Workspace(
