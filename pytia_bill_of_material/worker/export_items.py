@@ -104,8 +104,13 @@ class ExportItemsTask(TaskProtocol):
         return qr_path
 
     def _export_item(self, bom_item: BOMAssemblyItem) -> None:
-        log.info(f"Exporting data of item {bom_item.partnumber!r}.")
+        if bom_item.path is None:
+            log.warning(
+                f"Skipped export of item {bom_item.partnumber!r}: Path of item not found."
+            )
+            return
 
+        log.info(f"Exporting data of item {bom_item.partnumber!r}.")
         export_filename = get_data_export_name(bom_item)
         qr_path = self._generate_qr(bom_item=bom_item)
 

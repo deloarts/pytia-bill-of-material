@@ -159,16 +159,24 @@ class ProcessBomTask(TaskProtocol):
                     raise ValueError("The value for the partnumber is empty.")
 
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
-                    raise KeyError(
-                        f"Cannot find path for BOM item {row_data[resource.applied_keywords.partnumber]!r}."
+                    item_path = None
+                    log.warning(
+                        f"No path found for item {row_data[resource.applied_keywords.partnumber]!r}."
                     )
+                else:
+                    item_path = paths.items[
+                        row_data[resource.applied_keywords.partnumber]
+                    ]
 
                 assembly_item = BOMAssemblyItem(
                     partnumber=row_data[resource.applied_keywords.partnumber],
                     properties=row_data,
-                    path=paths.items[row_data[resource.applied_keywords.partnumber]],
+                    path=item_path,
                 )
                 assembly.items.append(assembly_item)
+                log.info(
+                    f" - Added item {row_data[resource.applied_keywords.partnumber]!r} to element."
+                )
         return bom
 
     @staticmethod
@@ -221,7 +229,7 @@ class ProcessBomTask(TaskProtocol):
                     "bill of material. Please add this header to the bom.json."
                 )
 
-        log.info("Retrieved header items from excel worksheet.")
+        log.debug("Retrieved header items from excel worksheet.")
         return header
 
     @staticmethod
@@ -316,4 +324,5 @@ class ProcessBomTask(TaskProtocol):
             # assembly.items.sort(key=_source, reverse=True)
             assembly.items.sort(key=lambda x: (_bought(x) is None, _bought(x)))
             assembly.items.sort(key=lambda x: (_made(x) is None, _made(x)))
-            log.info(f"Sorted BOM items of {assembly.partnumber}.")
+            log.debug(f"Sorted BOM items of {assembly.partnumber}.")
+        log.info("Sorted BOM items of all assemblies.")

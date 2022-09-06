@@ -59,7 +59,7 @@ class Callbacks:
 
         # The treeview widget 'failed items' selection returns path variables.
         # Those are stored here. Maybe they should be moved to the variables class.
-        self.report_selected_doc_path: Path
+        self.report_selected_doc_path: Path | None
         self.report_selected_doc_parent_path: Path
 
         self._bind_button_callbacks()
@@ -163,7 +163,8 @@ class Callbacks:
         treeview selection.
         """
         log.info("Callback for button 'Open Document'.")
-        self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)
+        if self.report_selected_doc_path is not None:
+            self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)
 
     def on_btn_open_parent(self) -> None:
         """
@@ -323,10 +324,19 @@ class Callbacks:
                                 self.layout.tree_report_failed_props.insert(
                                     "", "end", values=(detail,)
                                 )
-                if os.path.isfile(self.report_selected_doc_path):
-                    self.layout.button_open_document.configure(state=NORMAL)
+
                 if os.path.isfile(self.report_selected_doc_parent_path):
                     self.layout.button_open_parent.configure(state=NORMAL)
+
+                if self.report_selected_doc_path is None:
+                    self.layout.text_description.configure(state=NORMAL)
+                    self.layout.text_description.delete("1.0", "end")
+                    self.layout.text_description.insert(
+                        "end", "Path for element not found."
+                    )
+                    self.layout.text_description.configure(state=DISABLED)
+                elif os.path.isfile(self.report_selected_doc_path):
+                    self.layout.button_open_document.configure(state=NORMAL)
             else:
                 self.layout.button_open_document.configure(state=DISABLED)
                 self.layout.button_open_parent.configure(state=DISABLED)

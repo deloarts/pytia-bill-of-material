@@ -2,8 +2,11 @@
     Preparation Task: Prepares the document for the export.
 """
 
+import json
+from dataclasses import asdict
 from pathlib import Path
 
+from const import TEMP_EXPORT
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -16,6 +19,7 @@ from pytia.utilities.bill_of_material import set_current_format, set_secondary_f
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
+from utils.files import file_utility
 
 
 class PrepareTask(TaskProtocol):
@@ -75,17 +79,31 @@ class PrepareTask(TaskProtocol):
 
         def iterate_tree(parent_product: Product) -> None:
             for i in range(1, parent_product.products.count + 1):
+                current_product = parent_product.products.item(i)
                 try:
                     # If there are items in the tree that aren't parts or products the
                     # iteration will fail, because the reference product cannot be fetched.
                     # Maybe this should be done in a better way, without a try-except clause.
-                    current_product = parent_product.products.item(i)
                     current_partnumber = Product(current_product.com_object).part_number
                     current_path = Path(Product(current_product.com_object).full_name)
                     paths.items[current_partnumber] = current_path
+                    log.info(
+                        f"Indexed item {current_product.name!r} to {str(current_path)!r}."
+                    )
                     iterate_tree(current_product)
-                except:
-                    pass
+                except Exception as e:
+                    log.warning(
+                        f"Skipped adding item {current_product.name!r} to paths: {e}"
+                    )
 
         iterate_tree(product.product)
+
+        # if resource.settings.debug:
+        #     with open(
+        #         Path(TEMP_EXPORT, file_utility.get_random_filename(filetype="json")),
+        #         "w",
+        #     ) as json_file:
+        #         json.dump(asdict(paths), json_file, ensure_ascii=False, indent=2)
+        #     log.info(f"Exported paths-data to {TEMP_EXPORT!r}.")
+
         return paths
