@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>pytia_bill_of_material.utils API documentation</title>
-<meta name="description" content="Utilities submodule for the app." />
+<title>pytia_bill_of_material.worker.runner API documentation</title>
+<meta name="description" content="Runner for the main task." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,53 +19,146 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pytia_bill_of_material.utils</code></h1>
+<h1 class="title">Module <code>pytia_bill_of_material.worker.runner</code></h1>
 </header>
 <section id="section-intro">
-<p>Utilities submodule for the app.</p>
+<p>Runner for the main task.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-    Utilities submodule for the app.
-&#34;&#34;&#34;</code></pre>
+    Runner for the main task.
+&#34;&#34;&#34;
+
+from tkinter import DoubleVar, Tk, ttk
+from typing import Callable, List
+
+from models.runner import RunnerModel
+from pytia.log import log
+
+
+class Runner:
+    def __init__(
+        self,
+        root: Tk,
+        callback_variable: DoubleVar,
+        progress_bar: ttk.Progressbar,
+    ) -&gt; None:
+        self.root = root
+        self.progress_callback = callback_variable
+        self.progress_bar = progress_bar
+
+        self.runners: List[RunnerModel] = []
+
+    def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+        self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))
+
+    def run_tasks(self) -&gt; None:
+        self._update_progress(1)
+        for fn in self.runners:
+            log.info(f&#34;Running task {fn.name!r}.&#34;)
+            fn.func(**fn.kwargs)
+            self._update_progress(
+                self.progress_callback.get() + int(100 / len(self.runners))
+            )
+            self.root.update_idletasks()
+        self._update_progress(100)
+
+    def _update_progress(self, value: int | float) -&gt; None:
+        self.progress_callback.set(value)
+        self.root.update_idletasks()</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.excel" href="excel.html">pytia_bill_of_material.utils.excel</a></code></dt>
+<dt id="pytia_bill_of_material.worker.runner.Runner"><code class="flex name class">
+<span>class <span class="ident">Runner</span></span>
+<span>(</span><span>root: tkinter.Tk, callback_variable: tkinter.DoubleVar, progress_bar: tkinter.ttk.Progressbar)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Excel utility: Functions for handling Excel files.</p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Runner:
+    def __init__(
+        self,
+        root: Tk,
+        callback_variable: DoubleVar,
+        progress_bar: ttk.Progressbar,
+    ) -&gt; None:
+        self.root = root
+        self.progress_callback = callback_variable
+        self.progress_bar = progress_bar
+
+        self.runners: List[RunnerModel] = []
+
+    def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+        self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))
+
+    def run_tasks(self) -&gt; None:
+        self._update_progress(1)
+        for fn in self.runners:
+            log.info(f&#34;Running task {fn.name!r}.&#34;)
+            fn.func(**fn.kwargs)
+            self._update_progress(
+                self.progress_callback.get() + int(100 / len(self.runners))
+            )
+            self.root.update_idletasks()
+        self._update_progress(100)
+
+    def _update_progress(self, value: int | float) -&gt; None:
+        self.progress_callback.set(value)
+        self.root.update_idletasks()</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="pytia_bill_of_material.worker.runner.Runner.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, func: Callable, name: str, **kwargs) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+    self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))</code></pre>
+</details>
 </dd>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.export" href="export.html">pytia_bill_of_material.utils.export</a></code></dt>
+<dt id="pytia_bill_of_material.worker.runner.Runner.run_tasks"><code class="name flex">
+<span>def <span class="ident">run_tasks</span></span>(<span>self) ‑> None</span>
+</code></dt>
 <dd>
-<div class="desc"><p>Export submodule. Holds utility functions for handling data exports.</p></div>
-</dd>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.files" href="files.html">pytia_bill_of_material.utils.files</a></code></dt>
-<dd>
-<div class="desc"><p>File utility submodule.</p></div>
-</dd>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.handler" href="handler.html">pytia_bill_of_material.utils.handler</a></code></dt>
-<dd>
-<div class="desc"><p>Handler submodule.</p></div>
-</dd>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.language" href="language.html">pytia_bill_of_material.utils.language</a></code></dt>
-<dd>
-<div class="desc"><p>Submodule for language related functions.</p></div>
-</dd>
-<dt><code class="name"><a title="pytia_bill_of_material.utils.system" href="system.html">pytia_bill_of_material.utils.system</a></code></dt>
-<dd>
-<div class="desc"><p>Submodule for system related functions.</p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run_tasks(self) -&gt; None:
+    self._update_progress(1)
+    for fn in self.runners:
+        log.info(f&#34;Running task {fn.name!r}.&#34;)
+        fn.func(**fn.kwargs)
+        self._update_progress(
+            self.progress_callback.get() + int(100 / len(self.runners))
+        )
+        self.root.update_idletasks()
+    self._update_progress(100)</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -76,17 +169,18 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pytia_bill_of_material" href="../index.html">pytia_bill_of_material</a></code></li>
+<li><code><a title="pytia_bill_of_material.worker" href="index.html">pytia_bill_of_material.worker</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="pytia_bill_of_material.utils.excel" href="excel.html">pytia_bill_of_material.utils.excel</a></code></li>
-<li><code><a title="pytia_bill_of_material.utils.export" href="export.html">pytia_bill_of_material.utils.export</a></code></li>
-<li><code><a title="pytia_bill_of_material.utils.files" href="files.html">pytia_bill_of_material.utils.files</a></code></li>
-<li><code><a title="pytia_bill_of_material.utils.handler" href="handler.html">pytia_bill_of_material.utils.handler</a></code></li>
-<li><code><a title="pytia_bill_of_material.utils.language" href="language.html">pytia_bill_of_material.utils.language</a></code></li>
-<li><code><a title="pytia_bill_of_material.utils.system" href="system.html">pytia_bill_of_material.utils.system</a></code></li>
+<li>
+<h4><code><a title="pytia_bill_of_material.worker.runner.Runner" href="#pytia_bill_of_material.worker.runner.Runner">Runner</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.worker.runner.Runner.add" href="#pytia_bill_of_material.worker.runner.Runner.add">add</a></code></li>
+<li><code><a title="pytia_bill_of_material.worker.runner.Runner.run_tasks" href="#pytia_bill_of_material.worker.runner.Runner.run_tasks">run_tasks</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

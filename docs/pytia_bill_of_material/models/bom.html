@@ -41,7 +41,7 @@ from typing import List
 class BOMAssemblyItem:
     partnumber: str
     properties: dict
-    path: Path
+    path: Path | None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -133,10 +133,10 @@ class BOMAssembly:
 </dd>
 <dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem"><code class="flex name class">
 <span>class <span class="ident">BOMAssemblyItem</span></span>
-<span>(</span><span>*, partnumber: str, properties: dict, path: pathlib.Path)</span>
+<span>(</span><span>*, partnumber: str, properties: dict, path: pathlib.Path | None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>BOMAssemblyItem(*, partnumber: str, properties: dict, path: pathlib.Path)</p></div>
+<div class="desc"><p>BOMAssemblyItem(*, partnumber: str, properties: dict, path: pathlib.Path | None)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -145,7 +145,7 @@ class BOMAssembly:
 class BOMAssemblyItem:
     partnumber: str
     properties: dict
-    path: Path</code></pre>
+    path: Path | None</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -153,7 +153,7 @@ class BOMAssemblyItem:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem.path"><code class="name">var <span class="ident">path</span> : pathlib.Path</code></dt>
+<dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem.path"><code class="name">var <span class="ident">path</span> : pathlib.Path | None</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>

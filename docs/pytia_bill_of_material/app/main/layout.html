@@ -67,6 +67,7 @@ class Layout:
             frames.infrastructure,
             values=[],
             textvariable=variables.project,
+            state=DISABLED,
         )
         self._combo_project.grid(
             row=0,
@@ -406,6 +407,22 @@ class Layout:
         self._btn_close_report.grid(row=0, column=0, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
 
+        # region FRAME Log  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._text_log = Text(
+            frames.log,
+            height=1,
+            width=1,
+            state=DISABLED,
+            cursor=&#34;arrow&#34;,
+            font=(&#34;Segoe UI&#34;, 7),
+            background=&#34;#f0f0f0&#34;,
+            highlightthickness=0,
+            borderwidth=0,
+            wrap=&#34;none&#34;,
+        )
+        self._text_log.grid(row=0, column=0, padx=(5, 5), pady=(5, 5), sticky=&#34;nsew&#34;)
+        # endregion
+
         # region FRAME Footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region progress
         self._progress_bar = ttk.Progressbar(
@@ -499,6 +516,10 @@ class Layout:
     @property
     def text_description(self) -&gt; Text:
         return self._text_description
+
+    @property
+    def text_log(self) -&gt; Text:
+        return self._text_log
 
     @property
     def button_export(self) -&gt; ttk.Button:
@@ -591,6 +612,7 @@ class Layout:
             frames.infrastructure,
             values=[],
             textvariable=variables.project,
+            state=DISABLED,
         )
         self._combo_project.grid(
             row=0,
@@ -930,6 +952,22 @@ class Layout:
         self._btn_close_report.grid(row=0, column=0, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
 
+        # region FRAME Log  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._text_log = Text(
+            frames.log,
+            height=1,
+            width=1,
+            state=DISABLED,
+            cursor=&#34;arrow&#34;,
+            font=(&#34;Segoe UI&#34;, 7),
+            background=&#34;#f0f0f0&#34;,
+            highlightthickness=0,
+            borderwidth=0,
+            wrap=&#34;none&#34;,
+        )
+        self._text_log.grid(row=0, column=0, padx=(5, 5), pady=(5, 5), sticky=&#34;nsew&#34;)
+        # endregion
+
         # region FRAME Footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region progress
         self._progress_bar = ttk.Progressbar(
@@ -1023,6 +1061,10 @@ class Layout:
     @property
     def text_description(self) -&gt; Text:
         return self._text_description
+
+    @property
+    def text_log(self) -&gt; Text:
+        return self._text_log
 
     @property
     def button_export(self) -&gt; ttk.Button:
@@ -1314,6 +1356,18 @@ def text_description(self) -&gt; Text:
     return self._text_description</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.text_log"><code class="name">var <span class="ident">text_log</span> : tkinter.Text</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def text_log(self) -&gt; Text:
+    return self._text_log</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items"><code class="name">var <span class="ident">tree_report_failed_items</span> : tkinter.ttk.Treeview</code></dt>
 <dd>
 <div class="desc"></div>
@@ -1381,6 +1435,7 @@ def tree_report_failed_props(self) -&gt; ttk.Treeview:
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path">input_stp_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.progress_bar" href="#pytia_bill_of_material.app.main.layout.Layout.progress_bar">progress_bar</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.text_description" href="#pytia_bill_of_material.app.main.layout.Layout.text_description">text_description</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.text_log" href="#pytia_bill_of_material.app.main.layout.Layout.text_log">text_log</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items" href="#pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_items">tree_report_failed_items</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_props" href="#pytia_bill_of_material.app.main.layout.Layout.tree_report_failed_props">tree_report_failed_props</a></code></li>
 </ul>

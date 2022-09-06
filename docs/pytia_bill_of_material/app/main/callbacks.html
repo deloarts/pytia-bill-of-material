@@ -36,51 +36,20 @@ from pathlib import Path, WindowsPath
 from tkinter import DISABLED, NORMAL, Tk, filedialog
 from tkinter import messagebox as tkmsg
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
 from const import Status
+from helper.commons import CallbackCommons
+from helper.documents import ReportDocument
 from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_bom_export_name
-from pytia.framework import framework
-from pytia.framework.in_interfaces.document import Document
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.helper.values import add_current_value_to_combobox_list
 from resources import resource
 from worker.main_task import MainTask
-
-
-class Commons:
-    &#34;&#34;&#34;Commons class for the callback class.&#34;&#34;&#34;
-
-    def __init__(self, layout: Layout) -&gt; None:
-        &#34;&#34;&#34;
-        Inits the Commons class. Requires the layout of the main window.
-
-        Args:
-            layout (Layout): The layout of the main window.
-        &#34;&#34;&#34;
-        self.layout = layout
-
-    def remove_selection_from_failed_items(self) -&gt; None:
-        &#34;&#34;&#34;Removes the selection from the failed items widget.&#34;&#34;&#34;
-        try:
-            selection = self.layout.tree_report_failed_items.selection()[0]
-            self.layout.tree_report_failed_items.delete(selection)
-            self.layout.tree_report_failed_props.delete(
-                *self.layout.tree_report_failed_props.get_children()
-            )
-            self.layout.text_description.configure(state=NORMAL)
-            self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-            self.layout.text_description.configure(state=DISABLED)
-
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=DISABLED)
-            self.layout.tree_report_failed_items.state((&#34;!disabled&#34;,))
-        except IndexError:
-            pass
 
 
 class Callbacks:
@@ -96,6 +65,7 @@ class Callbacks:
         layout: Layout,
         workspace: Workspace,
         ui_setter: UISetter,
+        frames: Frames,
     ) -&gt; None:
         &#34;&#34;&#34;
         Initializes the callbacks class.
@@ -108,18 +78,20 @@ class Callbacks:
             workspace (Workspace): The workspace instance.
             ui_setter (UISetter): The ui setter instance of the main window.
         &#34;&#34;&#34;
-        self.commons = Commons(layout=layout)
-
         self.root = root
         self.vars = variables
         self.doc_helper = lazy_document_helper
         self.layout = layout
         self.workspace = workspace
         self.set_ui = ui_setter
+        self.frames = frames
+
+        self.commons = CallbackCommons(layout=layout)
+        self.report_doc = ReportDocument(root=root, commons=self.commons, layout=layout)
 
         # The treeview widget &#39;failed items&#39; selection returns path variables.
         # Those are stored here. Maybe they should be moved to the variables class.
-        self.report_selected_doc_path: Path
+        self.report_selected_doc_path: Path | None
         self.report_selected_doc_parent_path: Path
 
         self._bind_button_callbacks()
@@ -193,6 +165,7 @@ class Callbacks:
             ui_setter=self.set_ui,
             doc_helper=self.doc_helper,
             variables=self.vars,
+            frames=self.frames,
         )
         self.root.after(100, main_task.run)
 
@@ -223,26 +196,8 @@ class Callbacks:
         treeview selection.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Open Document&#39;.&#34;)
-        if self.report_selected_doc_path and os.path.isfile(
-            self.report_selected_doc_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(f&#34;Cannot open document {self.report_selected_doc_path!r}.&#34;),
-            )
+        if self.report_selected_doc_path is not None:
+            self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)
 
     def on_btn_open_parent(self) -&gt; None:
         &#34;&#34;&#34;
@@ -250,38 +205,14 @@ class Callbacks:
         treeview selection.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Open Parent&#39;.&#34;)
-        if self.report_selected_doc_parent_path and os.path.isfile(
-            self.report_selected_doc_parent_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_parent_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(
-                    f&#34;Cannot open document {self.report_selected_doc_parent_path!r}.&#34;
-                ),
-            )
+        self.report_doc.open_wait_for_close(path=self.report_selected_doc_parent_path)
 
     def on_btn_close_document(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the close document button. Closes the current document.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Close Document&#39;.&#34;)
-        document = Document(framework.catia.active_document.com_object)
-        document.save()
-        document.close()
-        self.commons.remove_selection_from_failed_items()
+        self.report_doc.close()
 
     def on_btn_bom_export_path(self) -&gt; None:
         &#34;&#34;&#34;
@@ -426,10 +357,19 @@ class Callbacks:
                                 self.layout.tree_report_failed_props.insert(
                                     &#34;&#34;, &#34;end&#34;, values=(detail,)
                                 )
-                if os.path.isfile(self.report_selected_doc_path):
-                    self.layout.button_open_document.configure(state=NORMAL)
+
                 if os.path.isfile(self.report_selected_doc_parent_path):
                     self.layout.button_open_parent.configure(state=NORMAL)
+
+                if self.report_selected_doc_path is None:
+                    self.layout.text_description.configure(state=NORMAL)
+                    self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
+                    self.layout.text_description.insert(
+                        &#34;end&#34;, &#34;Path for element not found.&#34;
+                    )
+                    self.layout.text_description.configure(state=DISABLED)
+                elif os.path.isfile(self.report_selected_doc_path):
+                    self.layout.button_open_document.configure(state=NORMAL)
             else:
                 self.layout.button_open_document.configure(state=DISABLED)
                 self.layout.button_open_parent.configure(state=DISABLED)
@@ -477,7 +417,7 @@ class Callbacks:
 <dl>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks"><code class="flex name class">
 <span>class <span class="ident">Callbacks</span></span>
-<span>(</span><span>root: tkinter.Tk, variables: app.main.vars.Variables, lazy_document_helper: helper.lazy_loaders.LazyDocumentHelper, layout: app.main.layout.Layout, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace, ui_setter: app.main.ui_setter.UISetter)</span>
+<span>(</span><span>root: tkinter.Tk, variables: app.main.vars.Variables, lazy_document_helper: helper.lazy_loaders.LazyDocumentHelper, layout: app.main.layout.Layout, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace, ui_setter: app.main.ui_setter.UISetter, frames: app.main.frames.Frames)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The callbacks class for the main window.</p>
@@ -514,6 +454,7 @@ class Callbacks:
         layout: Layout,
         workspace: Workspace,
         ui_setter: UISetter,
+        frames: Frames,
     ) -&gt; None:
         &#34;&#34;&#34;
         Initializes the callbacks class.
@@ -526,18 +467,20 @@ class Callbacks:
             workspace (Workspace): The workspace instance.
             ui_setter (UISetter): The ui setter instance of the main window.
         &#34;&#34;&#34;
-        self.commons = Commons(layout=layout)
-
         self.root = root
         self.vars = variables
         self.doc_helper = lazy_document_helper
         self.layout = layout
         self.workspace = workspace
         self.set_ui = ui_setter
+        self.frames = frames
+
+        self.commons = CallbackCommons(layout=layout)
+        self.report_doc = ReportDocument(root=root, commons=self.commons, layout=layout)
 
         # The treeview widget &#39;failed items&#39; selection returns path variables.
         # Those are stored here. Maybe they should be moved to the variables class.
-        self.report_selected_doc_path: Path
+        self.report_selected_doc_path: Path | None
         self.report_selected_doc_parent_path: Path
 
         self._bind_button_callbacks()
@@ -611,6 +554,7 @@ class Callbacks:
             ui_setter=self.set_ui,
             doc_helper=self.doc_helper,
             variables=self.vars,
+            frames=self.frames,
         )
         self.root.after(100, main_task.run)
 
@@ -641,26 +585,8 @@ class Callbacks:
         treeview selection.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Open Document&#39;.&#34;)
-        if self.report_selected_doc_path and os.path.isfile(
-            self.report_selected_doc_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(f&#34;Cannot open document {self.report_selected_doc_path!r}.&#34;),
-            )
+        if self.report_selected_doc_path is not None:
+            self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)
 
     def on_btn_open_parent(self) -&gt; None:
         &#34;&#34;&#34;
@@ -668,38 +594,14 @@ class Callbacks:
         treeview selection.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Open Parent&#39;.&#34;)
-        if self.report_selected_doc_parent_path and os.path.isfile(
-            self.report_selected_doc_parent_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_parent_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(
-                    f&#34;Cannot open document {self.report_selected_doc_parent_path!r}.&#34;
-                ),
-            )
+        self.report_doc.open_wait_for_close(path=self.report_selected_doc_parent_path)
 
     def on_btn_close_document(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the close document button. Closes the current document.
         &#34;&#34;&#34;
         log.info(&#34;Callback for button &#39;Close Document&#39;.&#34;)
-        document = Document(framework.catia.active_document.com_object)
-        document.save()
-        document.close()
-        self.commons.remove_selection_from_failed_items()
+        self.report_doc.close()
 
     def on_btn_bom_export_path(self) -&gt; None:
         &#34;&#34;&#34;
@@ -844,10 +746,19 @@ class Callbacks:
                                 self.layout.tree_report_failed_props.insert(
                                     &#34;&#34;, &#34;end&#34;, values=(detail,)
                                 )
-                if os.path.isfile(self.report_selected_doc_path):
-                    self.layout.button_open_document.configure(state=NORMAL)
+
                 if os.path.isfile(self.report_selected_doc_parent_path):
                     self.layout.button_open_parent.configure(state=NORMAL)
+
+                if self.report_selected_doc_path is None:
+                    self.layout.text_description.configure(state=NORMAL)
+                    self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
+                    self.layout.text_description.insert(
+                        &#34;end&#34;, &#34;Path for element not found.&#34;
+                    )
+                    self.layout.text_description.configure(state=DISABLED)
+                elif os.path.isfile(self.report_selected_doc_path):
+                    self.layout.button_open_document.configure(state=NORMAL)
             else:
                 self.layout.button_open_document.configure(state=DISABLED)
                 self.layout.button_open_parent.configure(state=DISABLED)
@@ -940,10 +851,7 @@ to which to export the final bill of material.</p></div>
     Event handler for the close document button. Closes the current document.
     &#34;&#34;&#34;
     log.info(&#34;Callback for button &#39;Close Document&#39;.&#34;)
-    document = Document(framework.catia.active_document.com_object)
-    document.save()
-    document.close()
-    self.commons.remove_selection_from_failed_items()</code></pre>
+    self.report_doc.close()</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_report"><code class="name flex">
@@ -1043,6 +951,7 @@ into which to export the docket files.</p></div>
         ui_setter=self.set_ui,
         doc_helper=self.doc_helper,
         variables=self.vars,
+        frames=self.frames,
     )
     self.root.after(100, main_task.run)</code></pre>
 </details>
@@ -1063,26 +972,8 @@ treeview selection.</p></div>
     treeview selection.
     &#34;&#34;&#34;
     log.info(&#34;Callback for button &#39;Open Document&#39;.&#34;)
-    if self.report_selected_doc_path and os.path.isfile(
-        self.report_selected_doc_path
-    ):
-        framework.catia.documents.open(self.report_selected_doc_path)
-        self.layout.button_open_document.configure(state=DISABLED)
-        self.layout.button_open_parent.configure(state=DISABLED)
-        self.layout.button_close_document.configure(state=NORMAL)
-        self.layout.tree_report_failed_items.state(
-            (DISABLED,)
-        )  # FIXME: This doesn&#39;t really
-        # disable the widget. Somehow
-        # the user can still select
-        # other items. This results
-        # in false behaviour for the
-        # open doc button.
-    else:
-        tkmsg.showerror(
-            title=resource.settings.title,
-            message=(f&#34;Cannot open document {self.report_selected_doc_path!r}.&#34;),
-        )</code></pre>
+    if self.report_selected_doc_path is not None:
+        self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_parent"><code class="name flex">
@@ -1101,28 +992,7 @@ treeview selection.</p></div>
     treeview selection.
     &#34;&#34;&#34;
     log.info(&#34;Callback for button &#39;Open Parent&#39;.&#34;)
-    if self.report_selected_doc_parent_path and os.path.isfile(
-        self.report_selected_doc_parent_path
-    ):
-        framework.catia.documents.open(self.report_selected_doc_parent_path)
-        self.layout.button_open_document.configure(state=DISABLED)
-        self.layout.button_open_parent.configure(state=DISABLED)
-        self.layout.button_close_document.configure(state=NORMAL)
-        self.layout.tree_report_failed_items.state(
-            (DISABLED,)
-        )  # FIXME: This doesn&#39;t really
-        # disable the widget. Somehow
-        # the user can still select
-        # other items. This results
-        # in false behaviour for the
-        # open doc button.
-    else:
-        tkmsg.showerror(
-            title=resource.settings.title,
-            message=(
-                f&#34;Cannot open document {self.report_selected_doc_parent_path!r}.&#34;
-            ),
-        )</code></pre>
+    self.report_doc.open_wait_for_close(path=self.report_selected_doc_parent_path)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_stl_export_path"><code class="name flex">
@@ -1278,10 +1148,19 @@ adds the failed properties from the report to the 'failed props' treeview widget
                             self.layout.tree_report_failed_props.insert(
                                 &#34;&#34;, &#34;end&#34;, values=(detail,)
                             )
-            if os.path.isfile(self.report_selected_doc_path):
-                self.layout.button_open_document.configure(state=NORMAL)
+
             if os.path.isfile(self.report_selected_doc_parent_path):
                 self.layout.button_open_parent.configure(state=NORMAL)
+
+            if self.report_selected_doc_path is None:
+                self.layout.text_description.configure(state=NORMAL)
+                self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
+                self.layout.text_description.insert(
+                    &#34;end&#34;, &#34;Path for element not found.&#34;
+                )
+                self.layout.text_description.configure(state=DISABLED)
+            elif os.path.isfile(self.report_selected_doc_path):
+                self.layout.button_open_document.configure(state=NORMAL)
         else:
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)</code></pre>
@@ -1341,86 +1220,6 @@ the failed property.</p></div>
 </dd>
 </dl>
 </dd>
-<dt id="pytia_bill_of_material.app.main.callbacks.Commons"><code class="flex name class">
-<span>class <span class="ident">Commons</span></span>
-<span>(</span><span>layout: app.main.layout.Layout)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Commons class for the callback class.</p>
-<p>Inits the Commons class. Requires the layout of the main window.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>layout</code></strong> :&ensp;<code>Layout</code></dt>
-<dd>The layout of the main window.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Commons:
-    &#34;&#34;&#34;Commons class for the callback class.&#34;&#34;&#34;
-
-    def __init__(self, layout: Layout) -&gt; None:
-        &#34;&#34;&#34;
-        Inits the Commons class. Requires the layout of the main window.
-
-        Args:
-            layout (Layout): The layout of the main window.
-        &#34;&#34;&#34;
-        self.layout = layout
-
-    def remove_selection_from_failed_items(self) -&gt; None:
-        &#34;&#34;&#34;Removes the selection from the failed items widget.&#34;&#34;&#34;
-        try:
-            selection = self.layout.tree_report_failed_items.selection()[0]
-            self.layout.tree_report_failed_items.delete(selection)
-            self.layout.tree_report_failed_props.delete(
-                *self.layout.tree_report_failed_props.get_children()
-            )
-            self.layout.text_description.configure(state=NORMAL)
-            self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-            self.layout.text_description.configure(state=DISABLED)
-
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=DISABLED)
-            self.layout.tree_report_failed_items.state((&#34;!disabled&#34;,))
-        except IndexError:
-            pass</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="pytia_bill_of_material.app.main.callbacks.Commons.remove_selection_from_failed_items"><code class="name flex">
-<span>def <span class="ident">remove_selection_from_failed_items</span></span>(<span>self) ‑> None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Removes the selection from the failed items widget.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def remove_selection_from_failed_items(self) -&gt; None:
-    &#34;&#34;&#34;Removes the selection from the failed items widget.&#34;&#34;&#34;
-    try:
-        selection = self.layout.tree_report_failed_items.selection()[0]
-        self.layout.tree_report_failed_items.delete(selection)
-        self.layout.tree_report_failed_props.delete(
-            *self.layout.tree_report_failed_props.get_children()
-        )
-        self.layout.text_description.configure(state=NORMAL)
-        self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-        self.layout.text_description.configure(state=DISABLED)
-
-        self.layout.button_open_document.configure(state=DISABLED)
-        self.layout.button_open_parent.configure(state=DISABLED)
-        self.layout.button_close_document.configure(state=DISABLED)
-        self.layout.tree_report_failed_items.state((&#34;!disabled&#34;,))
-    except IndexError:
-        pass</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 </dl>
 </section>
 </article>
@@ -1456,12 +1255,6 @@ the failed property.</p></div>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_1" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_1">on_tree_failed_items_button_1</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_3" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_3">on_tree_failed_items_button_3</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_props_button_1" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_props_button_1">on_tree_failed_props_button_1</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="pytia_bill_of_material.app.main.callbacks.Commons" href="#pytia_bill_of_material.app.main.callbacks.Commons">Commons</a></code></h4>
-<ul class="">
-<li><code><a title="pytia_bill_of_material.app.main.callbacks.Commons.remove_selection_from_failed_items" href="#pytia_bill_of_material.app.main.callbacks.Commons.remove_selection_from_failed_items">remove_selection_from_failed_items</a></code></li>
 </ul>
 </li>
 </ul>

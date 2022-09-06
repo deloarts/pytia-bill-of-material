@@ -85,6 +85,16 @@ class Frames:
         self._frame_report_footer.grid_columnconfigure(0, weight=1)
         self._frame_report_footer.grid_remove()
 
+        self._frame_log = ttk.Labelframe(
+            master=root, style=&#34;Log.TLabelframe&#34;, text=&#34;Log&#34;
+        )
+        self._frame_log.grid(
+            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+        )
+        self._frame_log.grid_columnconfigure(0, weight=1)
+        self._frame_log.grid_rowconfigure(0, weight=1)
+        self._frame_log.grid_remove()
+
         self._frame_footer = ttk.Frame(master=root, height=30, style=&#34;Footer.TFrame&#34;)
         self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10))
         self._frame_footer.grid_columnconfigure(0, weight=1)
@@ -111,6 +121,11 @@ class Frames:
     def report(self) -&gt; ttk.Labelframe:
         &#34;&#34;&#34;Returns the report frame.&#34;&#34;&#34;
         return self._frame_report
+
+    @property
+    def log(self) -&gt; ttk.Labelframe:
+        &#34;&#34;&#34;Returns the log frame.&#34;&#34;&#34;
+        return self._frame_log
 
     @property
     def footer(self) -&gt; ttk.Frame:
@@ -193,6 +208,16 @@ class Frames:
         self._frame_report_footer.grid_columnconfigure(0, weight=1)
         self._frame_report_footer.grid_remove()
 
+        self._frame_log = ttk.Labelframe(
+            master=root, style=&#34;Log.TLabelframe&#34;, text=&#34;Log&#34;
+        )
+        self._frame_log.grid(
+            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+        )
+        self._frame_log.grid_columnconfigure(0, weight=1)
+        self._frame_log.grid_rowconfigure(0, weight=1)
+        self._frame_log.grid_remove()
+
         self._frame_footer = ttk.Frame(master=root, height=30, style=&#34;Footer.TFrame&#34;)
         self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10))
         self._frame_footer.grid_columnconfigure(0, weight=1)
@@ -219,6 +244,11 @@ class Frames:
     def report(self) -&gt; ttk.Labelframe:
         &#34;&#34;&#34;Returns the report frame.&#34;&#34;&#34;
         return self._frame_report
+
+    @property
+    def log(self) -&gt; ttk.Labelframe:
+        &#34;&#34;&#34;Returns the log frame.&#34;&#34;&#34;
+        return self._frame_log
 
     @property
     def footer(self) -&gt; ttk.Frame:
@@ -269,6 +299,19 @@ def footer(self) -&gt; ttk.Frame:
 def infrastructure(self) -&gt; ttk.Labelframe:
     &#34;&#34;&#34;Returns the infrastructure frame.&#34;&#34;&#34;
     return self._frame_infra</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.frames.Frames.log"><code class="name">var <span class="ident">log</span> : tkinter.ttk.Labelframe</code></dt>
+<dd>
+<div class="desc"><p>Returns the log frame.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def log(self) -&gt; ttk.Labelframe:
+    &#34;&#34;&#34;Returns the log frame.&#34;&#34;&#34;
+    return self._frame_log</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.frames.Frames.paths"><code class="name">var <span class="ident">paths</span> : tkinter.ttk.Labelframe</code></dt>
@@ -334,6 +377,7 @@ def report_footer(self) -&gt; ttk.Frame:
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.export" href="#pytia_bill_of_material.app.main.frames.Frames.export">export</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.footer" href="#pytia_bill_of_material.app.main.frames.Frames.footer">footer</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.infrastructure" href="#pytia_bill_of_material.app.main.frames.Frames.infrastructure">infrastructure</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.frames.Frames.log" href="#pytia_bill_of_material.app.main.frames.Frames.log">log</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.paths" href="#pytia_bill_of_material.app.main.frames.Frames.paths">paths</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.report" href="#pytia_bill_of_material.app.main.frames.Frames.report">report</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.report_footer" href="#pytia_bill_of_material.app.main.frames.Frames.report_footer">report_footer</a></code></li>
