@@ -163,7 +163,7 @@ class Controller:
         if self.workspace.elements.projects:
             project_values.extend(self.workspace.elements.projects)
         self.layout.input_project.configure(values=project_values)
-        self.vars.project.set(KEEP)
+        # self.vars.project.set(KEEP)
 
         # Write default bom export path
         bom_folder: Path
@@ -359,7 +359,7 @@ class Controller:
         if self.workspace.elements.projects:
             project_values.extend(self.workspace.elements.projects)
         self.layout.input_project.configure(values=project_values)
-        self.vars.project.set(KEEP)
+        # self.vars.project.set(KEEP)
 
         # Write default bom export path
         bom_folder: Path

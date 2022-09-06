@@ -41,7 +41,7 @@ from const import Status
 @dataclass
 class ReportItem:
     partnumber: str
-    path: Path
+    path: Path | None
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)
@@ -91,10 +91,10 @@ class Report:
 </dd>
 <dt id="pytia_bill_of_material.models.report.ReportItem"><code class="flex name class">
 <span>class <span class="ident">ReportItem</span></span>
-<span>(</span><span>partnumber: str, path: pathlib.Path, parent_path: pathlib.Path, details: Dict[str, const.Status] = &lt;factory&gt;, status: const.Status = Status.OK)</span>
+<span>(</span><span>partnumber: str, path: pathlib.Path | None, parent_path: pathlib.Path, details: Dict[str, const.Status] = &lt;factory&gt;, status: const.Status = Status.OK)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>ReportItem(partnumber: str, path: pathlib.Path, parent_path: pathlib.Path, details: Dict[str, const.Status] = <factory>, status: const.Status = <Status.OK: 'ok'>)</p></div>
+<div class="desc"><p>ReportItem(partnumber: str, path: pathlib.Path | None, parent_path: pathlib.Path, details: Dict[str, const.Status] = <factory>, status: const.Status = <Status.OK: 'ok'>)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -102,7 +102,7 @@ class Report:
 <pre><code class="python">@dataclass
 class ReportItem:
     partnumber: str
-    path: Path
+    path: Path | None
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)</code></pre>
@@ -121,7 +121,7 @@ class ReportItem:
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="pytia_bill_of_material.models.report.ReportItem.path"><code class="name">var <span class="ident">path</span> : pathlib.Path</code></dt>
+<dt id="pytia_bill_of_material.models.report.ReportItem.path"><code class="name">var <span class="ident">path</span> : pathlib.Path | None</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>

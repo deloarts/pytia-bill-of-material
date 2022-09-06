@@ -10,6 +10,7 @@ from typing import Optional
 from pytia.exceptions import PytiaDifferentDocumentError, PytiaDocumentNotSavedError
 from pytia.log import log
 from resources import resource
+from utils.language import get_ui_language
 
 
 class LazyDocumentHelper:
@@ -41,6 +42,7 @@ class LazyDocumentHelper:
             ".CATProduct"
         )[0]
         self.name = self.document.document.name
+        resource.apply_language(get_ui_language(self.document))  # type: ignore
 
         if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(
             self.document.document.full_name

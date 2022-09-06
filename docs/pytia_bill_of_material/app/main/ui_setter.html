@@ -42,9 +42,11 @@ Two states are available:</p>
 &#34;&#34;&#34;
 
 import os
+import re
 import tkinter as tk
 from pathlib import Path
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.vars import Variables
 from helper.lazy_loaders import LazyDocumentHelper
@@ -61,6 +63,7 @@ class UISetter:
         root: tk.Tk,
         layout: Layout,
         variables: Variables,
+        frames: Frames,
         lazy_document_helper: LazyDocumentHelper,
         workspace: Workspace,
     ) -&gt; None:
@@ -70,6 +73,7 @@ class UISetter:
             root (tk.Tk): The main window object.
             layout (Layout): The layout of the main window.
             variables (Variables): The variables of the main window.
+            frames (Frames): The frames of the main.
             lazy_document_helper (LazyDocumentHelper): The lazy document helper instance.
             workspace (Workspace): The workspace instance.
         &#34;&#34;&#34;
@@ -77,6 +81,7 @@ class UISetter:
         self.layout = layout
         self.doc_helper = lazy_document_helper
         self.vars = variables
+        self.frames = frames
         self.workspace = workspace
 
         self._state_checkbox_export_docket = tk.NORMAL
@@ -87,6 +92,15 @@ class UISetter:
         &#34;&#34;&#34;
         Sets the UI to state &#39;Normal&#39;. Sets the cursor to &#39;arrow&#39;.
         &#34;&#34;&#34;
+
+        self.layout.progress_bar.grid_remove()
+        self.frames.log.grid_remove()
+
+        if not self.vars.show_report.get():
+            self.frames.infrastructure.grid()
+            self.frames.paths.grid()
+            self.frames.export.grid()
+
         self.layout.input_project.configure(
             state=&#34;readonly&#34;
             if resource.settings.restrictions.strict_project
@@ -127,12 +141,7 @@ class UISetter:
             else tk.DISABLED
         )
 
-        self.layout.button_export.configure(
-            state=tk.NORMAL
-            if os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
-            and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
-            else tk.DISABLED
-        )
+        self.set_button_export()
         self.layout.button_exit.configure(state=tk.NORMAL)
 
         self.root.config(cursor=&#34;arrow&#34;)
@@ -174,8 +183,30 @@ class UISetter:
         Sets the UI to state &#39;Working&#39;. Sets the cursor to &#39;wait&#39;.
         &#34;&#34;&#34;
         self.disabled()
+
+        self.frames.infrastructure.grid_remove()
+        self.frames.paths.grid_remove()
+        self.frames.export.grid_remove()
+        self.layout.progress_bar.grid()
+        self.frames.log.grid()
+
         self.root.config(cursor=&#34;wait&#34;)
-        self.layout.button_exit.configure(state=tk.DISABLED)</code></pre>
+        self.layout.button_exit.configure(state=tk.DISABLED)
+        self.root.update_idletasks()
+
+    def set_button_export(self) -&gt; None:
+        &#34;&#34;&#34;
+        Sets the state of the &#39;Export button&#39; depending on a set of rules.
+        &#34;&#34;&#34;
+        if (
+            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
+            and self.vars.project.get()
+            and not re.match(r&#34;^\s+$&#34;, self.vars.project.get())
+        ):
+            self.layout.button_export.configure(state=tk.NORMAL)
+        else:
+            self.layout.button_export.configure(state=tk.DISABLED)</code></pre>
 </details>
 </section>
 <section>
@@ -189,7 +220,7 @@ class UISetter:
 <dl>
 <dt id="pytia_bill_of_material.app.main.ui_setter.UISetter"><code class="flex name class">
 <span>class <span class="ident">UISetter</span></span>
-<span>(</span><span>root: tkinter.Tk, layout: app.main.layout.Layout, variables: app.main.vars.Variables, lazy_document_helper: helper.lazy_loaders.LazyDocumentHelper, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
+<span>(</span><span>root: tkinter.Tk, layout: app.main.layout.Layout, variables: app.main.vars.Variables, frames: app.main.frames.Frames, lazy_document_helper: helper.lazy_loaders.LazyDocumentHelper, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>UI Setter class for the main window.</p>
@@ -202,6 +233,8 @@ class UISetter:
 <dd>The layout of the main window.</dd>
 <dt><strong><code>variables</code></strong> :&ensp;<code>Variables</code></dt>
 <dd>The variables of the main window.</dd>
+<dt><strong><code>frames</code></strong> :&ensp;<code>Frames</code></dt>
+<dd>The frames of the main.</dd>
 <dt><strong><code>lazy_document_helper</code></strong> :&ensp;<code>LazyDocumentHelper</code></dt>
 <dd>The lazy document helper instance.</dd>
 <dt><strong><code>workspace</code></strong> :&ensp;<code>Workspace</code></dt>
@@ -219,6 +252,7 @@ class UISetter:
         root: tk.Tk,
         layout: Layout,
         variables: Variables,
+        frames: Frames,
         lazy_document_helper: LazyDocumentHelper,
         workspace: Workspace,
     ) -&gt; None:
@@ -228,6 +262,7 @@ class UISetter:
             root (tk.Tk): The main window object.
             layout (Layout): The layout of the main window.
             variables (Variables): The variables of the main window.
+            frames (Frames): The frames of the main.
             lazy_document_helper (LazyDocumentHelper): The lazy document helper instance.
             workspace (Workspace): The workspace instance.
         &#34;&#34;&#34;
@@ -235,6 +270,7 @@ class UISetter:
         self.layout = layout
         self.doc_helper = lazy_document_helper
         self.vars = variables
+        self.frames = frames
         self.workspace = workspace
 
         self._state_checkbox_export_docket = tk.NORMAL
@@ -245,6 +281,15 @@ class UISetter:
         &#34;&#34;&#34;
         Sets the UI to state &#39;Normal&#39;. Sets the cursor to &#39;arrow&#39;.
         &#34;&#34;&#34;
+
+        self.layout.progress_bar.grid_remove()
+        self.frames.log.grid_remove()
+
+        if not self.vars.show_report.get():
+            self.frames.infrastructure.grid()
+            self.frames.paths.grid()
+            self.frames.export.grid()
+
         self.layout.input_project.configure(
             state=&#34;readonly&#34;
             if resource.settings.restrictions.strict_project
@@ -285,12 +330,7 @@ class UISetter:
             else tk.DISABLED
         )
 
-        self.layout.button_export.configure(
-            state=tk.NORMAL
-            if os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
-            and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
-            else tk.DISABLED
-        )
+        self.set_button_export()
         self.layout.button_exit.configure(state=tk.NORMAL)
 
         self.root.config(cursor=&#34;arrow&#34;)
@@ -332,8 +372,30 @@ class UISetter:
         Sets the UI to state &#39;Working&#39;. Sets the cursor to &#39;wait&#39;.
         &#34;&#34;&#34;
         self.disabled()
+
+        self.frames.infrastructure.grid_remove()
+        self.frames.paths.grid_remove()
+        self.frames.export.grid_remove()
+        self.layout.progress_bar.grid()
+        self.frames.log.grid()
+
         self.root.config(cursor=&#34;wait&#34;)
-        self.layout.button_exit.configure(state=tk.DISABLED)</code></pre>
+        self.layout.button_exit.configure(state=tk.DISABLED)
+        self.root.update_idletasks()
+
+    def set_button_export(self) -&gt; None:
+        &#34;&#34;&#34;
+        Sets the state of the &#39;Export button&#39; depending on a set of rules.
+        &#34;&#34;&#34;
+        if (
+            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
+            and self.vars.project.get()
+            and not re.match(r&#34;^\s+$&#34;, self.vars.project.get())
+        ):
+            self.layout.button_export.configure(state=tk.NORMAL)
+        else:
+            self.layout.button_export.configure(state=tk.DISABLED)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -393,6 +455,15 @@ Sets the cursor to 'arrow'.</p></div>
     &#34;&#34;&#34;
     Sets the UI to state &#39;Normal&#39;. Sets the cursor to &#39;arrow&#39;.
     &#34;&#34;&#34;
+
+    self.layout.progress_bar.grid_remove()
+    self.frames.log.grid_remove()
+
+    if not self.vars.show_report.get():
+        self.frames.infrastructure.grid()
+        self.frames.paths.grid()
+        self.frames.export.grid()
+
     self.layout.input_project.configure(
         state=&#34;readonly&#34;
         if resource.settings.restrictions.strict_project
@@ -433,15 +504,34 @@ Sets the cursor to 'arrow'.</p></div>
         else tk.DISABLED
     )
 
-    self.layout.button_export.configure(
-        state=tk.NORMAL
-        if os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
-        and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
-        else tk.DISABLED
-    )
+    self.set_button_export()
     self.layout.button_exit.configure(state=tk.NORMAL)
 
     self.root.config(cursor=&#34;arrow&#34;)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.ui_setter.UISetter.set_button_export"><code class="name flex">
+<span>def <span class="ident">set_button_export</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the state of the 'Export button' depending on a set of rules.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_button_export(self) -&gt; None:
+    &#34;&#34;&#34;
+    Sets the state of the &#39;Export button&#39; depending on a set of rules.
+    &#34;&#34;&#34;
+    if (
+        os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+        and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
+        and self.vars.project.get()
+        and not re.match(r&#34;^\s+$&#34;, self.vars.project.get())
+    ):
+        self.layout.button_export.configure(state=tk.NORMAL)
+    else:
+        self.layout.button_export.configure(state=tk.DISABLED)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.ui_setter.UISetter.working"><code class="name flex">
@@ -458,8 +548,16 @@ Sets the cursor to 'arrow'.</p></div>
     Sets the UI to state &#39;Working&#39;. Sets the cursor to &#39;wait&#39;.
     &#34;&#34;&#34;
     self.disabled()
+
+    self.frames.infrastructure.grid_remove()
+    self.frames.paths.grid_remove()
+    self.frames.export.grid_remove()
+    self.layout.progress_bar.grid()
+    self.frames.log.grid()
+
     self.root.config(cursor=&#34;wait&#34;)
-    self.layout.button_exit.configure(state=tk.DISABLED)</code></pre>
+    self.layout.button_exit.configure(state=tk.DISABLED)
+    self.root.update_idletasks()</code></pre>
 </details>
 </dd>
 </dl>
@@ -485,6 +583,7 @@ Sets the cursor to 'arrow'.</p></div>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.ui_setter.UISetter.disabled" href="#pytia_bill_of_material.app.main.ui_setter.UISetter.disabled">disabled</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.ui_setter.UISetter.normal" href="#pytia_bill_of_material.app.main.ui_setter.UISetter.normal">normal</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.ui_setter.UISetter.set_button_export" href="#pytia_bill_of_material.app.main.ui_setter.UISetter.set_button_export">set_button_export</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.ui_setter.UISetter.working" href="#pytia_bill_of_material.app.main.ui_setter.UISetter.working">working</a></code></li>
 </ul>
 </li>

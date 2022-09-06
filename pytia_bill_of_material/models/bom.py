@@ -12,7 +12,7 @@ from typing import List
 class BOMAssemblyItem:
     partnumber: str
     properties: dict
-    path: Path
+    path: Path | None
 
 
 @dataclass(kw_only=True, slots=True)

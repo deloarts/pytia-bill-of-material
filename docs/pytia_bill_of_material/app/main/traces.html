@@ -87,11 +87,13 @@ class Traces:
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
+    def _validate_button_export(self) -&gt; None:
+        self.set_ui.set_button_export()
+
     def trace_project(self, *_) -&gt; None:
         &#34;&#34;&#34;Trace callback for the `project` StringVar. Handles the filename for the export path.&#34;&#34;&#34;
-        current_path = Path(self.vars.bom_export_path.get())
-        current_folder = current_path.parent
-
+        # Apply project number to the excel export path
+        current_folder = Path(self.vars.bom_export_path.get()).parent
         if os.path.exists(current_folder):
             self.vars.bom_export_path.set(
                 str(
@@ -106,20 +108,22 @@ class Traces:
                 )
             )
 
+        self._validate_button_export()
+
     def trace_bom_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
         Trace callback for the `bom_export_path` StringVar. Validates the path and sets the state
         of the export button accordingly to the path variable.
         &#34;&#34;&#34;
         if (
-            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
         ):
-            self.layout.button_export.configure(state=NORMAL)
             self.layout.input_bom_export_path.configure(foreground=&#34;black&#34;)
         else:
-            self.layout.button_export.configure(state=DISABLED)
             self.layout.input_bom_export_path.configure(foreground=&#34;red&#34;)
+
+        self._validate_button_export()
 
     def trace_docket_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -188,6 +192,7 @@ class Traces:
             self.frames.infrastructure.grid_remove()
             self.frames.paths.grid_remove()
             self.frames.export.grid_remove()
+            self.frames.log.grid_remove()
             self.frames.footer.grid_remove()
 
             self.frames.report.grid()
@@ -283,11 +288,13 @@ class Traces:
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
+    def _validate_button_export(self) -&gt; None:
+        self.set_ui.set_button_export()
+
     def trace_project(self, *_) -&gt; None:
         &#34;&#34;&#34;Trace callback for the `project` StringVar. Handles the filename for the export path.&#34;&#34;&#34;
-        current_path = Path(self.vars.bom_export_path.get())
-        current_folder = current_path.parent
-
+        # Apply project number to the excel export path
+        current_folder = Path(self.vars.bom_export_path.get()).parent
         if os.path.exists(current_folder):
             self.vars.bom_export_path.set(
                 str(
@@ -302,20 +309,22 @@ class Traces:
                 )
             )
 
+        self._validate_button_export()
+
     def trace_bom_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
         Trace callback for the `bom_export_path` StringVar. Validates the path and sets the state
         of the export button accordingly to the path variable.
         &#34;&#34;&#34;
         if (
-            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
         ):
-            self.layout.button_export.configure(state=NORMAL)
             self.layout.input_bom_export_path.configure(foreground=&#34;black&#34;)
         else:
-            self.layout.button_export.configure(state=DISABLED)
             self.layout.input_bom_export_path.configure(foreground=&#34;red&#34;)
+
+        self._validate_button_export()
 
     def trace_docket_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -384,6 +393,7 @@ class Traces:
             self.frames.infrastructure.grid_remove()
             self.frames.paths.grid_remove()
             self.frames.export.grid_remove()
+            self.frames.log.grid_remove()
             self.frames.footer.grid_remove()
 
             self.frames.report.grid()
@@ -422,14 +432,14 @@ of the export button accordingly to the path variable.</p></div>
     of the export button accordingly to the path variable.
     &#34;&#34;&#34;
     if (
-        os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+        os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
         and &#34;.xlsx&#34; in self.vars.bom_export_path.get()
     ):
-        self.layout.button_export.configure(state=NORMAL)
         self.layout.input_bom_export_path.configure(foreground=&#34;black&#34;)
     else:
-        self.layout.button_export.configure(state=DISABLED)
-        self.layout.input_bom_export_path.configure(foreground=&#34;red&#34;)</code></pre>
+        self.layout.input_bom_export_path.configure(foreground=&#34;red&#34;)
+
+    self._validate_button_export()</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path"><code class="name flex">
@@ -477,9 +487,8 @@ of the checkbox accordingly to the path variable.</p></div>
 </summary>
 <pre><code class="python">def trace_project(self, *_) -&gt; None:
     &#34;&#34;&#34;Trace callback for the `project` StringVar. Handles the filename for the export path.&#34;&#34;&#34;
-    current_path = Path(self.vars.bom_export_path.get())
-    current_folder = current_path.parent
-
+    # Apply project number to the excel export path
+    current_folder = Path(self.vars.bom_export_path.get()).parent
     if os.path.exists(current_folder):
         self.vars.bom_export_path.set(
             str(
@@ -492,7 +501,9 @@ of the checkbox accordingly to the path variable.</p></div>
                     ),
                 )
             )
-        )</code></pre>
+        )
+
+    self._validate_button_export()</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.traces.Traces.trace_show_report"><code class="name flex">
@@ -518,6 +529,7 @@ of the checkbox accordingly to the path variable.</p></div>
         self.frames.infrastructure.grid_remove()
         self.frames.paths.grid_remove()
         self.frames.export.grid_remove()
+        self.frames.log.grid_remove()
         self.frames.footer.grid_remove()
 
         self.frames.report.grid()

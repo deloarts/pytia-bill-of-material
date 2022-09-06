@@ -182,6 +182,11 @@ class KeywordElements:
     summary: str
 
 
+@dataclass
+class AppliedKeywords(KeywordElements):
+    ...
+
+
 @dataclass(slots=True, kw_only=True)
 class Keywords:
     &#34;&#34;&#34;Dataclass for language specific keywords.&#34;&#34;&#34;
@@ -302,19 +307,10 @@ class AppData:
 class Resources:  # pylint: disable=R0902
     &#34;&#34;&#34;Class for handling resource files.&#34;&#34;&#34;
 
-    __slots__ = (
-        &#34;_settings&#34;,
-        &#34;_keywords&#34;,
-        &#34;_appdata&#34;,
-        &#34;_bom&#34;,
-        &#34;_props&#34;,
-        &#34;_filters&#34;,
-        &#34;_infos&#34;,
-        &#34;_users&#34;,
-        &#34;_docket&#34;,
-    )
-
     def __init__(self) -&gt; None:
+        self._language_applied = False
+        self._applied_keywords: AppliedKeywords
+
         self._read_settings()
         self._read_props()
         self._read_keywords()
@@ -343,13 +339,24 @@ class Resources:  # pylint: disable=R0902
         return self._keywords
 
     @property
+    def applied_keywords(self) -&gt; AppliedKeywords:
+        &#34;&#34;&#34;Translated version of the keywords json.&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
+        return self._applied_keywords
+
+    @property
     def filters(self) -&gt; List[FilterElement]:
         &#34;&#34;&#34;filters.json&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
         return self._filters
 
     @property
     def bom(self) -&gt; BOM:
         &#34;&#34;&#34;bom.json&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
         return self._bom
 
     @property
@@ -474,7 +481,7 @@ class Resources:  # pylint: disable=R0902
                 return True
         return False
 
-    def apply_keywords_to_bom(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+    def _apply_keywords_to_bom(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
         Applies the keywords from the keywords.json to the bom.json&#39;s `header_items`.
 
@@ -560,7 +567,7 @@ class Resources:  # pylint: disable=R0902
         ):
             self._bom.required_header_items.quantity = keywords[key]
 
-    def apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+    def _apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
         Applies the keywords from the keywords.json to the filters.json.
 
@@ -618,7 +625,16 @@ class Resources:  # pylint: disable=R0902
                         new_condition[cond_key] = item.condition[cond_key]
 
                 item.condition = new_condition
-        # print(self._filters)
+
+    def apply_language(self, language=Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+        self._apply_keywords_to_bom(language)  # type: ignore
+        self._apply_keywords_to_filters(language)  # type: ignore
+        self._applied_keywords = AppliedKeywords(
+            **asdict(
+                resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
+            )
+        )
+        self._language_applied = True
 
     def get_info_msg_by_counter(self) -&gt; List[str]:
         &#34;&#34;&#34;
@@ -696,7 +712,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.1.2', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.2.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -733,6 +749,47 @@ class AppData:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 </dl>
+</dd>
+<dt id="pytia_bill_of_material.resources.AppliedKeywords"><code class="flex name class">
+<span>class <span class="ident">AppliedKeywords</span></span>
+<span>(</span><span>*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>AppliedKeywords(*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class AppliedKeywords(KeywordElements):
+    ...</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="pytia_bill_of_material.resources.KeywordElements" href="#pytia_bill_of_material.resources.KeywordElements">KeywordElements</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="pytia_bill_of_material.resources.KeywordElements" href="#pytia_bill_of_material.resources.KeywordElements">KeywordElements</a></b></code>:
+<ul class="hlist">
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.assembly" href="#pytia_bill_of_material.resources.KeywordElements.assembly">assembly</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.bom" href="#pytia_bill_of_material.resources.KeywordElements.bom">bom</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.bought" href="#pytia_bill_of_material.resources.KeywordElements.bought">bought</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.definition" href="#pytia_bill_of_material.resources.KeywordElements.definition">definition</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.description" href="#pytia_bill_of_material.resources.KeywordElements.description">description</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.made" href="#pytia_bill_of_material.resources.KeywordElements.made">made</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.nomenclature" href="#pytia_bill_of_material.resources.KeywordElements.nomenclature">nomenclature</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.number" href="#pytia_bill_of_material.resources.KeywordElements.number">number</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.part" href="#pytia_bill_of_material.resources.KeywordElements.part">part</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.partnumber" href="#pytia_bill_of_material.resources.KeywordElements.partnumber">partnumber</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.quantity" href="#pytia_bill_of_material.resources.KeywordElements.quantity">quantity</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.revision" href="#pytia_bill_of_material.resources.KeywordElements.revision">revision</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.source" href="#pytia_bill_of_material.resources.KeywordElements.source">source</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.summary" href="#pytia_bill_of_material.resources.KeywordElements.summary">summary</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.type" href="#pytia_bill_of_material.resources.KeywordElements.type">type</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM"><code class="flex name class">
 <span>class <span class="ident">BOM</span></span>
@@ -949,6 +1006,10 @@ class KeywordElements:
     bom: str
     summary: str</code></pre>
 </details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="pytia_bill_of_material.resources.AppliedKeywords" href="#pytia_bill_of_material.resources.AppliedKeywords">AppliedKeywords</a></li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="pytia_bill_of_material.resources.KeywordElements.assembly"><code class="name">var <span class="ident">assembly</span> : str</code></dt>
@@ -1213,19 +1274,10 @@ def values(self) -&gt; List[str]:
 <pre><code class="python">class Resources:  # pylint: disable=R0902
     &#34;&#34;&#34;Class for handling resource files.&#34;&#34;&#34;
 
-    __slots__ = (
-        &#34;_settings&#34;,
-        &#34;_keywords&#34;,
-        &#34;_appdata&#34;,
-        &#34;_bom&#34;,
-        &#34;_props&#34;,
-        &#34;_filters&#34;,
-        &#34;_infos&#34;,
-        &#34;_users&#34;,
-        &#34;_docket&#34;,
-    )
-
     def __init__(self) -&gt; None:
+        self._language_applied = False
+        self._applied_keywords: AppliedKeywords
+
         self._read_settings()
         self._read_props()
         self._read_keywords()
@@ -1254,13 +1306,24 @@ def values(self) -&gt; List[str]:
         return self._keywords
 
     @property
+    def applied_keywords(self) -&gt; AppliedKeywords:
+        &#34;&#34;&#34;Translated version of the keywords json.&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
+        return self._applied_keywords
+
+    @property
     def filters(self) -&gt; List[FilterElement]:
         &#34;&#34;&#34;filters.json&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
         return self._filters
 
     @property
     def bom(self) -&gt; BOM:
         &#34;&#34;&#34;bom.json&#34;&#34;&#34;
+        if not self._language_applied:
+            raise Exception(&#34;Language has not been applied to filters.json.&#34;)
         return self._bom
 
     @property
@@ -1385,7 +1448,7 @@ def values(self) -&gt; List[str]:
                 return True
         return False
 
-    def apply_keywords_to_bom(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+    def _apply_keywords_to_bom(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
         Applies the keywords from the keywords.json to the bom.json&#39;s `header_items`.
 
@@ -1471,7 +1534,7 @@ def values(self) -&gt; List[str]:
         ):
             self._bom.required_header_items.quantity = keywords[key]
 
-    def apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+    def _apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
         Applies the keywords from the keywords.json to the filters.json.
 
@@ -1529,7 +1592,16 @@ def values(self) -&gt; List[str]:
                         new_condition[cond_key] = item.condition[cond_key]
 
                 item.condition = new_condition
-        # print(self._filters)
+
+    def apply_language(self, language=Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+        self._apply_keywords_to_bom(language)  # type: ignore
+        self._apply_keywords_to_filters(language)  # type: ignore
+        self._applied_keywords = AppliedKeywords(
+            **asdict(
+                resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
+            )
+        )
+        self._language_applied = True
 
     def get_info_msg_by_counter(self) -&gt; List[str]:
         &#34;&#34;&#34;
@@ -1607,6 +1679,21 @@ def appdata(self) -&gt; AppData:
     return self._appdata</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.resources.Resources.applied_keywords"><code class="name">var <span class="ident">applied_keywords</span> : <a title="pytia_bill_of_material.resources.AppliedKeywords" href="#pytia_bill_of_material.resources.AppliedKeywords">AppliedKeywords</a></code></dt>
+<dd>
+<div class="desc"><p>Translated version of the keywords json.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def applied_keywords(self) -&gt; AppliedKeywords:
+    &#34;&#34;&#34;Translated version of the keywords json.&#34;&#34;&#34;
+    if not self._language_applied:
+        raise Exception(&#34;Language has not been applied to filters.json.&#34;)
+    return self._applied_keywords</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.resources.Resources.bom"><code class="name">var <span class="ident">bom</span> : <a title="pytia_bill_of_material.resources.BOM" href="#pytia_bill_of_material.resources.BOM">BOM</a></code></dt>
 <dd>
 <div class="desc"><p>bom.json</p></div>
@@ -1617,6 +1704,8 @@ def appdata(self) -&gt; AppData:
 <pre><code class="python">@property
 def bom(self) -&gt; BOM:
     &#34;&#34;&#34;bom.json&#34;&#34;&#34;
+    if not self._language_applied:
+        raise Exception(&#34;Language has not been applied to filters.json.&#34;)
     return self._bom</code></pre>
 </details>
 </dd>
@@ -1643,6 +1732,8 @@ def docket(self) -&gt; dict:
 <pre><code class="python">@property
 def filters(self) -&gt; List[FilterElement]:
     &#34;&#34;&#34;filters.json&#34;&#34;&#34;
+    if not self._language_applied:
+        raise Exception(&#34;Language has not been applied to filters.json.&#34;)
     return self._filters</code></pre>
 </details>
 </dd>
@@ -1714,211 +1805,24 @@ def users(self) -&gt; List[User]:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="pytia_bill_of_material.resources.Resources.apply_keywords_to_bom"><code class="name flex">
-<span>def <span class="ident">apply_keywords_to_bom</span></span>(<span>self, language: Literal['en', 'de']) ‑> None</span>
+<dt id="pytia_bill_of_material.resources.Resources.apply_language"><code class="name flex">
+<span>def <span class="ident">apply_language</span></span>(<span>self, language=typing.Literal['en', 'de']) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Applies the keywords from the keywords.json to the bom.json's <code>header_items</code>.</p>
-<p>Detailed explanation:
-The bom.json contains a key named <code>header_items</code>, which contains a list of
-keywords. Those keywords are used to create the header of the bill of material.
-Some of those keywords may represent CATIA standard properties, like <code>partnumber</code>,
-<code>source</code>, etc. Those names change with the UI language settings of CATIA
-(English: partnumber = "part number", German: partnumber = "Teilenummer", &hellip;).</p>
-<pre><code>It is therefor necessary to overwrite those &lt;code&gt;header\_items&lt;/code&gt; values with the
-corresponding names of the current UI language setting.
-All &lt;code&gt;header\_items&lt;/code&gt; that represent CATIA standard properties must be prefixed with
-a dollar sign `$`. Those names will be translated to the matching name of the
-keywords.json. Names without the dollar sign won't be changed.
-
-Example (bom.json -&gt; German):
-    original: "header_items": ["$number", "$partnumber", "Foo", "Bar"]
-    translated: "header_items": ["Nummer", "Teilenummer", "Foo", "Bar"]
-
-Note: Not only the &lt;code&gt;header\_items&lt;/code&gt; values will be translated, but the &lt;code&gt;sort&lt;/code&gt; items too.
-</code></pre>
-<h2 id="args">Args</h2>
-<p>language (Literal[&quot;en&quot;, &quot;de&quot;]): The language from which the
-keywords will be applied to the bom.json config file.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def apply_keywords_to_bom(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
-    &#34;&#34;&#34;
-    Applies the keywords from the keywords.json to the bom.json&#39;s `header_items`.
-
-    Detailed explanation:
-        The bom.json contains a key named `header_items`, which contains a list of
-        keywords. Those keywords are used to create the header of the bill of material.
-        Some of those keywords may represent CATIA standard properties, like `partnumber`,
-        `source`, etc. Those names change with the UI language settings of CATIA
-        (English: partnumber = &#34;part number&#34;, German: partnumber = &#34;Teilenummer&#34;, ...).
-
-        It is therefor necessary to overwrite those `header_items` values with the
-        corresponding names of the current UI language setting.
-        All `header_items` that represent CATIA standard properties must be prefixed with
-        a dollar sign `$`. Those names will be translated to the matching name of the
-        keywords.json. Names without the dollar sign won&#39;t be changed.
-
-        Example (bom.json -&gt; German):
-            original: &#34;header_items&#34;: [&#34;$number&#34;, &#34;$partnumber&#34;, &#34;Foo&#34;, &#34;Bar&#34;]
-            translated: &#34;header_items&#34;: [&#34;Nummer&#34;, &#34;Teilenummer&#34;, &#34;Foo&#34;, &#34;Bar&#34;]
-
-        Note: Not only the `header_items` values will be translated, but the `sort` items too.
-
-
-    Args:
-        language (Literal[&amp;quot;en&amp;quot;, &amp;quot;de&amp;quot;]): The language from which the \
-            keywords will be applied to the bom.json config file.
-    &#34;&#34;&#34;
-
-    # header items
-    keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
-    for index, item in enumerate(self._bom.header_items):
-        if item.startswith(&#34;$&#34;) and (key := item.split(&#34;$&#34;)[1]) in keywords:
-            self._bom.header_items[index] = keywords[key]
-
-    # sort
-    # TODO: A better solution for applying the keywords to the `sort` items.
-    if (
-        self._bom.sort.made.startswith(&#34;$&#34;)
-        and (key := self._bom.sort.made.split(&#34;$&#34;)[1]) in keywords
-    ):
-        self._bom.sort.made = keywords[key]
-
-    if (
-        self._bom.sort.bought.startswith(&#34;$&#34;)
-        and (key := self._bom.sort.bought.split(&#34;$&#34;)[1]) in keywords
-    ):
-        self._bom.sort.bought = keywords[key]
-
-    # docket args
-    # TODO: A better solution for applying the keywords to the `required_header_items` items.
-    if (
-        self._bom.required_header_items.project.startswith(&#34;$&#34;)
-        and (key := self._bom.required_header_items.project.split(&#34;$&#34;)[1])
-        in keywords
-    ):
-        self._bom.required_header_items.project = keywords[key]
-
-    if (
-        self._bom.required_header_items.machine.startswith(&#34;$&#34;)
-        and (key := self._bom.required_header_items.machine.split(&#34;$&#34;)[1])
-        in keywords
-    ):
-        self._bom.required_header_items.machine = keywords[key]
-
-    if (
-        self._bom.required_header_items.partnumber.startswith(&#34;$&#34;)
-        and (key := self._bom.required_header_items.partnumber.split(&#34;$&#34;)[1])
-        in keywords
-    ):
-        self._bom.required_header_items.partnumber = keywords[key]
-
-    if (
-        self._bom.required_header_items.revision.startswith(&#34;$&#34;)
-        and (key := self._bom.required_header_items.revision.split(&#34;$&#34;)[1])
-        in keywords
-    ):
-        self._bom.required_header_items.revision = keywords[key]
-
-    if (
-        self._bom.required_header_items.quantity.startswith(&#34;$&#34;)
-        and (key := self._bom.required_header_items.quantity.split(&#34;$&#34;)[1])
-        in keywords
-    ):
-        self._bom.required_header_items.quantity = keywords[key]</code></pre>
-</details>
-</dd>
-<dt id="pytia_bill_of_material.resources.Resources.apply_keywords_to_filters"><code class="name flex">
-<span>def <span class="ident">apply_keywords_to_filters</span></span>(<span>self, language: Literal['en', 'de']) ‑> None</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Applies the keywords from the keywords.json to the filters.json.</p>
-<p>Detailed explanation:
-The filters.json contains the <code>property_name</code> key and <code>conditions</code> with key-value pairs.
-Those filter items are used to verify the exported bill of material. A set of rules, if
-you will.</p>
-<pre><code>Those property_names and condition-pairs may represent CATIA standard properties, like
-&lt;code&gt;partnumber&lt;/code&gt;, &lt;code&gt;source&lt;/code&gt;, ...,  that change their name with the CATIA UI language setting.
-
-It is therefor necessary to overwrite those names with the corresponding names that
-matches the CATIA language setting. All property_names and condition-pairs that 
-represent CATIA standard properties must be prefixed with a dollar sign `$`. Those
-names property names will be translated to the matching name of the keyword.json.
-Names without a dollar sign won't be translated.
-
-Example (filters.json -&gt; German):
-    original: {"property_name": "$number", "criteria": "^\d+$", "condition": {"$type": "$part"}}
-    translated: {"property_name": "Nummer", "criteria": "^\d+$", "condition": {"Typ": "Teil"}}
-</code></pre>
-<h2 id="args">Args</h2>
-<p>language (Literal[&quot;en&quot;, &quot;de&quot;]): The language from which the
-keywords will be applied to the filters.json config file.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
-    &#34;&#34;&#34;
-    Applies the keywords from the keywords.json to the filters.json.
-
-    Detailed explanation:
-        The filters.json contains the `property_name` key and `conditions` with key-value pairs.
-        Those filter items are used to verify the exported bill of material. A set of rules, if
-        you will.
-        
-        Those property_names and condition-pairs may represent CATIA standard properties, like
-        `partnumber`, `source`, ...,  that change their name with the CATIA UI language setting.
-
-        It is therefor necessary to overwrite those names with the corresponding names that
-        matches the CATIA language setting. All property_names and condition-pairs that 
-        represent CATIA standard properties must be prefixed with a dollar sign `$`. Those
-        names property names will be translated to the matching name of the keyword.json.
-        Names without a dollar sign won&#39;t be translated.
-
-        Example (filters.json -&gt; German):
-            original: {&#34;property_name&#34;: &#34;$number&#34;, &#34;criteria&#34;: &#34;^\\d+$&#34;, &#34;condition&#34;: {&#34;$type&#34;: &#34;$part&#34;}}
-            translated: {&#34;property_name&#34;: &#34;Nummer&#34;, &#34;criteria&#34;: &#34;^\\d+$&#34;, &#34;condition&#34;: {&#34;Typ&#34;: &#34;Teil&#34;}}
-
-    Args:
-        language (Literal[&amp;quot;en&amp;quot;, &amp;quot;de&amp;quot;]): The language from which the \
-            keywords will be applied to the filters.json config file.
-    &#34;&#34;&#34;
-    keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
-    for item in self._filters:
-        # translate the `property_name` value.
-        if (
-            item.property_name.startswith(&#34;$&#34;)
-            and (key := item.property_name.split(&#34;$&#34;)[1]) in keywords
-        ):
-            item.property_name = keywords[key]
-
-        # translate the condition dict (can be a bool, so check type first)
-        if isinstance(item.condition, dict):
-            new_condition = {}
-            for cond_key in item.condition:
-                # translate condition values
-                if (
-                    item.condition[cond_key].startswith(&#34;$&#34;)
-                    and (key := item.condition[cond_key].split(&#34;$&#34;)[1]) in keywords
-                ):
-                    item.condition[cond_key] = keywords[key]
-
-                # translate condition keys
-                # since the keys can be translated as well, we need to create a new dict
-                # and overwrite the existing condition-dict with the new one.
-                if (
-                    cond_key.startswith(&#34;$&#34;)
-                    and (key := cond_key.split(&#34;$&#34;)[1]) in keywords
-                ):
-                    new_condition[keywords[key]] = item.condition[cond_key]
-                else:
-                    new_condition[cond_key] = item.condition[cond_key]
-
-            item.condition = new_condition
-    # print(self._filters)</code></pre>
+<pre><code class="python">def apply_language(self, language=Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
+    self._apply_keywords_to_bom(language)  # type: ignore
+    self._apply_keywords_to_filters(language)  # type: ignore
+    self._applied_keywords = AppliedKeywords(
+        **asdict(
+            resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
+        )
+    )
+    self._language_applied = True</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name"><code class="name flex">
@@ -2470,6 +2374,9 @@ def values(self) -&gt; List[str]:
 </ul>
 </li>
 <li>
+<h4><code><a title="pytia_bill_of_material.resources.AppliedKeywords" href="#pytia_bill_of_material.resources.AppliedKeywords">AppliedKeywords</a></code></h4>
+</li>
+<li>
 <h4><code><a title="pytia_bill_of_material.resources.BOM" href="#pytia_bill_of_material.resources.BOM">BOM</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.resources.BOM.data_bg_color_1" href="#pytia_bill_of_material.resources.BOM.data_bg_color_1">data_bg_color_1</a></code></li>
@@ -2564,8 +2471,8 @@ def values(self) -&gt; List[str]:
 <h4><code><a title="pytia_bill_of_material.resources.Resources" href="#pytia_bill_of_material.resources.Resources">Resources</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.resources.Resources.appdata" href="#pytia_bill_of_material.resources.Resources.appdata">appdata</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.Resources.apply_keywords_to_bom" href="#pytia_bill_of_material.resources.Resources.apply_keywords_to_bom">apply_keywords_to_bom</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.Resources.apply_keywords_to_filters" href="#pytia_bill_of_material.resources.Resources.apply_keywords_to_filters">apply_keywords_to_filters</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.Resources.applied_keywords" href="#pytia_bill_of_material.resources.Resources.applied_keywords">applied_keywords</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.Resources.apply_language" href="#pytia_bill_of_material.resources.Resources.apply_language">apply_language</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.bom" href="#pytia_bill_of_material.resources.Resources.bom">bom</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.docket" href="#pytia_bill_of_material.resources.Resources.docket">docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.filters" href="#pytia_bill_of_material.resources.Resources.filters">filters</a></code></li>

@@ -12,7 +12,7 @@ from const import Status
 @dataclass
 class ReportItem:
     partnumber: str
-    path: Path
+    path: Path | None
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)

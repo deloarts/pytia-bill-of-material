@@ -58,11 +58,13 @@ class Traces:
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
         self.vars.show_report.trace_add("write", self.trace_show_report)
 
+    def _validate_button_export(self) -> None:
+        self.set_ui.set_button_export()
+
     def trace_project(self, *_) -> None:
         """Trace callback for the `project` StringVar. Handles the filename for the export path."""
-        current_path = Path(self.vars.bom_export_path.get())
-        current_folder = current_path.parent
-
+        # Apply project number to the excel export path
+        current_folder = Path(self.vars.bom_export_path.get()).parent
         if os.path.exists(current_folder):
             self.vars.bom_export_path.set(
                 str(
@@ -77,20 +79,22 @@ class Traces:
                 )
             )
 
+        self._validate_button_export()
+
     def trace_bom_export_path(self, *_) -> None:
         """
         Trace callback for the `bom_export_path` StringVar. Validates the path and sets the state
         of the export button accordingly to the path variable.
         """
         if (
-            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and ".xlsx" in self.vars.bom_export_path.get()
         ):
-            self.layout.button_export.configure(state=NORMAL)
             self.layout.input_bom_export_path.configure(foreground="black")
         else:
-            self.layout.button_export.configure(state=DISABLED)
             self.layout.input_bom_export_path.configure(foreground="red")
+
+        self._validate_button_export()
 
     def trace_docket_export_path(self, *_) -> None:
         """
@@ -159,6 +163,7 @@ class Traces:
             self.frames.infrastructure.grid_remove()
             self.frames.paths.grid_remove()
             self.frames.export.grid_remove()
+            self.frames.log.grid_remove()
             self.frames.footer.grid_remove()
 
             self.frames.report.grid()

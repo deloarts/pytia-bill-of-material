@@ -2,6 +2,7 @@
     The GUI for the application.
 """
 
+import logging
 import tkinter as tk
 from pathlib import Path
 from tkinter import font, ttk
@@ -17,12 +18,14 @@ from pytia.exceptions import (
     PytiaPropertyNotFoundError,
     PytiaWrongDocumentTypeError,
 )
+from pytia.log import log
 from pytia_ui_tools.exceptions import PytiaUiToolsOutsideWorkspaceError
 from pytia_ui_tools.handlers.error_handler import ErrorHandler
 from pytia_ui_tools.handlers.mail_handler import MailHandler
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.window_manager import WindowManager
 from resources import resource
+from utils.handler import WidgetLogHandler
 
 from app.main.callbacks import Callbacks
 from app.main.controller import Controller
@@ -82,6 +85,7 @@ class MainUI(tk.Tk):
             f"{'(DEBUG MODE)' if resource.settings.debug else APP_VERSION}"
         )
         self.attributes("-topmost", True)
+        self.attributes("-toolwindow", True)
         self.config(cursor="wait")
         self.default_font = font.nametofont("TkDefaultFont")
         self.default_font.configure(family="Segoe UI", size=9)
@@ -101,6 +105,7 @@ class MainUI(tk.Tk):
         style.configure("Paths.TLabelframe.Label", foreground="grey")
         style.configure("Export.TLabelframe.Label", foreground="grey")
         style.configure("Report.TLabelframe.Label", foreground="grey")
+        style.configure("Log.TLabelframe.Label", foreground="grey")
         style.configure("Footer.TButton", width=14)
 
         self.update()
@@ -116,7 +121,6 @@ class MainUI(tk.Tk):
 
         # Setup doc helper
         self.doc_helper = LazyDocumentHelper()
-        self.vars.initial_filepath = self.doc_helper.path
 
         # Setup the workspace
         self.workspace = Workspace(
@@ -133,6 +137,7 @@ class MainUI(tk.Tk):
             root=self,
             layout=self.layout,
             variables=self.vars,
+            frames=self.frames,
             lazy_document_helper=self.doc_helper,
             workspace=self.workspace,
         )
@@ -154,6 +159,13 @@ class MainUI(tk.Tk):
         self.bindings()
         self.tooltips()
 
+        # Add pytia logger to log Text widget
+        log_format = logging.Formatter(f"%(asctime)s  %(levelname)s  %(message)s")
+        widget_handler = WidgetLogHandler(self, self.layout.text_log)
+        widget_handler.setLevel(logging.INFO)
+        widget_handler.setFormatter(log_format)
+        log.logger.addHandler(widget_handler)
+
     def bindings(self) -> None:
         """Key bindings."""
         self.bind("<Escape>", lambda _: self.destroy())
@@ -168,6 +180,7 @@ class MainUI(tk.Tk):
             layout=self.layout,
             workspace=self.workspace,
             ui_setter=self.set_ui,
+            frames=self.frames,
         )
 
     def traces(self) -> None:

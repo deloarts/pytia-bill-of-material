@@ -56,6 +56,16 @@ class Frames:
         self._frame_report_footer.grid_columnconfigure(0, weight=1)
         self._frame_report_footer.grid_remove()
 
+        self._frame_log = ttk.Labelframe(
+            master=root, style="Log.TLabelframe", text="Log"
+        )
+        self._frame_log.grid(
+            row=0, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
+        )
+        self._frame_log.grid_columnconfigure(0, weight=1)
+        self._frame_log.grid_rowconfigure(0, weight=1)
+        self._frame_log.grid_remove()
+
         self._frame_footer = ttk.Frame(master=root, height=30, style="Footer.TFrame")
         self._frame_footer.grid(row=4, column=0, sticky="swe", padx=10, pady=(5, 10))
         self._frame_footer.grid_columnconfigure(0, weight=1)
@@ -82,6 +92,11 @@ class Frames:
     def report(self) -> ttk.Labelframe:
         """Returns the report frame."""
         return self._frame_report
+
+    @property
+    def log(self) -> ttk.Labelframe:
+        """Returns the log frame."""
+        return self._frame_log
 
     @property
     def footer(self) -> ttk.Frame:

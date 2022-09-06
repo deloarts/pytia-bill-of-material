@@ -7,51 +7,20 @@ from pathlib import Path, WindowsPath
 from tkinter import DISABLED, NORMAL, Tk, filedialog
 from tkinter import messagebox as tkmsg
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
 from const import Status
+from helper.commons import CallbackCommons
+from helper.documents import ReportDocument
 from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_bom_export_name
-from pytia.framework import framework
-from pytia.framework.in_interfaces.document import Document
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.helper.values import add_current_value_to_combobox_list
 from resources import resource
 from worker.main_task import MainTask
-
-
-class Commons:
-    """Commons class for the callback class."""
-
-    def __init__(self, layout: Layout) -> None:
-        """
-        Inits the Commons class. Requires the layout of the main window.
-
-        Args:
-            layout (Layout): The layout of the main window.
-        """
-        self.layout = layout
-
-    def remove_selection_from_failed_items(self) -> None:
-        """Removes the selection from the failed items widget."""
-        try:
-            selection = self.layout.tree_report_failed_items.selection()[0]
-            self.layout.tree_report_failed_items.delete(selection)
-            self.layout.tree_report_failed_props.delete(
-                *self.layout.tree_report_failed_props.get_children()
-            )
-            self.layout.text_description.configure(state=NORMAL)
-            self.layout.text_description.delete("1.0", "end")
-            self.layout.text_description.configure(state=DISABLED)
-
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=DISABLED)
-            self.layout.tree_report_failed_items.state(("!disabled",))
-        except IndexError:
-            pass
 
 
 class Callbacks:
@@ -67,6 +36,7 @@ class Callbacks:
         layout: Layout,
         workspace: Workspace,
         ui_setter: UISetter,
+        frames: Frames,
     ) -> None:
         """
         Initializes the callbacks class.
@@ -79,18 +49,20 @@ class Callbacks:
             workspace (Workspace): The workspace instance.
             ui_setter (UISetter): The ui setter instance of the main window.
         """
-        self.commons = Commons(layout=layout)
-
         self.root = root
         self.vars = variables
         self.doc_helper = lazy_document_helper
         self.layout = layout
         self.workspace = workspace
         self.set_ui = ui_setter
+        self.frames = frames
+
+        self.commons = CallbackCommons(layout=layout)
+        self.report_doc = ReportDocument(root=root, commons=self.commons, layout=layout)
 
         # The treeview widget 'failed items' selection returns path variables.
         # Those are stored here. Maybe they should be moved to the variables class.
-        self.report_selected_doc_path: Path
+        self.report_selected_doc_path: Path | None
         self.report_selected_doc_parent_path: Path
 
         self._bind_button_callbacks()
@@ -164,6 +136,7 @@ class Callbacks:
             ui_setter=self.set_ui,
             doc_helper=self.doc_helper,
             variables=self.vars,
+            frames=self.frames,
         )
         self.root.after(100, main_task.run)
 
@@ -194,26 +167,8 @@ class Callbacks:
         treeview selection.
         """
         log.info("Callback for button 'Open Document'.")
-        if self.report_selected_doc_path and os.path.isfile(
-            self.report_selected_doc_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn't really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(f"Cannot open document {self.report_selected_doc_path!r}."),
-            )
+        if self.report_selected_doc_path is not None:
+            self.report_doc.open_wait_for_close(path=self.report_selected_doc_path)
 
     def on_btn_open_parent(self) -> None:
         """
@@ -221,38 +176,14 @@ class Callbacks:
         treeview selection.
         """
         log.info("Callback for button 'Open Parent'.")
-        if self.report_selected_doc_parent_path and os.path.isfile(
-            self.report_selected_doc_parent_path
-        ):
-            framework.catia.documents.open(self.report_selected_doc_parent_path)
-            self.layout.button_open_document.configure(state=DISABLED)
-            self.layout.button_open_parent.configure(state=DISABLED)
-            self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn't really
-            # disable the widget. Somehow
-            # the user can still select
-            # other items. This results
-            # in false behaviour for the
-            # open doc button.
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(
-                    f"Cannot open document {self.report_selected_doc_parent_path!r}."
-                ),
-            )
+        self.report_doc.open_wait_for_close(path=self.report_selected_doc_parent_path)
 
     def on_btn_close_document(self) -> None:
         """
         Event handler for the close document button. Closes the current document.
         """
         log.info("Callback for button 'Close Document'.")
-        document = Document(framework.catia.active_document.com_object)
-        document.save()
-        document.close()
-        self.commons.remove_selection_from_failed_items()
+        self.report_doc.close()
 
     def on_btn_bom_export_path(self) -> None:
         """
@@ -397,10 +328,19 @@ class Callbacks:
                                 self.layout.tree_report_failed_props.insert(
                                     "", "end", values=(detail,)
                                 )
-                if os.path.isfile(self.report_selected_doc_path):
-                    self.layout.button_open_document.configure(state=NORMAL)
+
                 if os.path.isfile(self.report_selected_doc_parent_path):
                     self.layout.button_open_parent.configure(state=NORMAL)
+
+                if self.report_selected_doc_path is None:
+                    self.layout.text_description.configure(state=NORMAL)
+                    self.layout.text_description.delete("1.0", "end")
+                    self.layout.text_description.insert(
+                        "end", "Path for element not found."
+                    )
+                    self.layout.text_description.configure(state=DISABLED)
+                elif os.path.isfile(self.report_selected_doc_path):
+                    self.layout.button_open_document.configure(state=NORMAL)
             else:
                 self.layout.button_open_document.configure(state=DISABLED)
                 self.layout.button_open_parent.configure(state=DISABLED)

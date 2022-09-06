@@ -13,9 +13,7 @@ class Variables:
     """Dataclass for the main windows variables."""
 
     # Process variables
-    bom: BOM
     report: Report
-    initial_filepath: str
 
     # Infrastructure variables
     project: StringVar
