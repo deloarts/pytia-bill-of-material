@@ -7,6 +7,7 @@ from pathlib import Path, WindowsPath
 from tkinter import DISABLED, NORMAL, Tk, filedialog
 from tkinter import messagebox as tkmsg
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
@@ -35,6 +36,7 @@ class Callbacks:
         layout: Layout,
         workspace: Workspace,
         ui_setter: UISetter,
+        frames: Frames,
     ) -> None:
         """
         Initializes the callbacks class.
@@ -53,6 +55,7 @@ class Callbacks:
         self.layout = layout
         self.workspace = workspace
         self.set_ui = ui_setter
+        self.frames = frames
 
         self.commons = CallbackCommons(layout=layout)
         self.report_doc = ReportDocument(root=root, commons=self.commons, layout=layout)
@@ -133,6 +136,7 @@ class Callbacks:
             ui_setter=self.set_ui,
             doc_helper=self.doc_helper,
             variables=self.vars,
+            frames=self.frames,
         )
         self.root.after(100, main_task.run)
 

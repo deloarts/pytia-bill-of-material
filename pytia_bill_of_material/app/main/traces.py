@@ -87,7 +87,7 @@ class Traces:
         of the export button accordingly to the path variable.
         """
         if (
-            os.path.isdir(Path(self.vars.bom_export_path.get()).parent)
+            os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and ".xlsx" in self.vars.bom_export_path.get()
         ):
             self.layout.input_bom_export_path.configure(foreground="black")
@@ -163,6 +163,7 @@ class Traces:
             self.frames.infrastructure.grid_remove()
             self.frames.paths.grid_remove()
             self.frames.export.grid_remove()
+            self.frames.log.grid_remove()
             self.frames.footer.grid_remove()
 
             self.frames.report.grid()

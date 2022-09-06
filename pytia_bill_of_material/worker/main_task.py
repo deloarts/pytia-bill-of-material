@@ -12,6 +12,7 @@ from pathlib import Path
 from tkinter import Tk
 from tkinter import messagebox as tkmsg
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
@@ -19,6 +20,7 @@ from const import Status
 from helper.lazy_loaders import LazyDocumentHelper
 from models.bom import BOM
 from models.paths import Paths
+from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from resources import resource
 from utils.files import file_utility
@@ -42,12 +44,14 @@ class MainTask:
         ui_setter: UISetter,
         doc_helper: LazyDocumentHelper,
         variables: Variables,
+        frames: Frames,
     ):
         self.main_ui = main_ui
         self.layout = layout
         self.ui_setter = ui_setter
         self.doc_helper = doc_helper
         self.variables = variables
+        self.frames = frames
 
         self._abort = False
         self._project = variables.project.get()
@@ -87,6 +91,7 @@ class MainTask:
             self._move_files()
 
             if file_utility.all_moved:
+                log.info("Export completed successfully.")
                 if tkmsg.askyesno(
                     title=resource.settings.title,
                     message=(
@@ -96,6 +101,7 @@ class MainTask:
                 ):
                     explorer(Path(self.variables.bom_export_path.get()))
             else:
+                log.info("Export completed with skipped files.")
                 tkmsg.showwarning(
                     title=resource.settings.title,
                     message=(
@@ -105,6 +111,7 @@ class MainTask:
                 )
 
         elif self._status == Status.FAILED:
+            log.info("Export failed: Some properties don't match the filters.")
             self.variables.show_report.set(
                 tkmsg.askyesno(
                     title=resource.settings.title,
@@ -116,7 +123,6 @@ class MainTask:
                 )
             )
 
-        self.layout.progress_bar.grid_remove()
         self.ui_setter.normal()
 
     def _prepare(self, *_) -> None:

@@ -1,0 +1,78 @@
+"""
+    Handler submodule.
+"""
+
+import logging
+from tkinter import END, Text, Tk
+
+
+class WidgetLogHandler(logging.Handler):
+    """
+    Handles logging to Text widgets. Highlights log levels.
+
+    Example:
+    ```
+        log_format = logging.Formatter(f"%(asctime)s  %(levelname)s  %(message)s")
+        widget_handler = WidgetLogHandler(self, self.layout.text_log)
+        widget_handler.setLevel(logging.INFO)
+        widget_handler.setFormatter(log_format)
+        logger.addHandler(widget_handler)
+    ```
+    """
+
+    def __init__(self, root: Tk, widget: Text):
+        """
+        Inits the WidgetLogHandler.
+
+        Args:
+            root (Tk): The root tkinter window.
+            widget (Text): The widget to which the handler is attached.
+        """
+        logging.Handler.__init__(self)
+
+        self._root = root
+        self._widget = widget
+
+        self._widget.tag_config("DEBUG", foreground="blue")
+        self._widget.tag_config("INFO", foreground="green")
+        self._widget.tag_config("WARNING", foreground="orange")
+        self._widget.tag_config("ERROR", foreground="red")
+        self._widget.tag_config("EXCEPTION", foreground="black", background="red")
+
+    def emit(self, record) -> None:
+        """
+        Prints a new log record to the widget.
+        """
+        msg = self.format(record).replace("\n", " ")
+        self._widget.configure(state="normal")
+        self._widget.insert(END, msg + "\n")
+        self._widget.configure(state="disabled")
+        self._widget.yview(END)
+
+        self.search("DEBUG")
+        self.search("INFO")
+        self.search("WARNING")
+        self.search("ERROR")
+        self.search("EXCEPTION")
+
+        self._root.update_idletasks()
+
+    def search(self, keyword: str, tag: str | None = None) -> None:
+        """
+        Search for keywords and highlight them in the widget.
+
+        Args:
+            keyword (str): The keyword to search for.
+            tag (str | None, optional): The widget tag to use. If None the keyword will be used \
+                as tag. Defaults to None.
+        """
+        if tag is None:
+            tag = keyword
+
+        pos = "1.0"
+        while True:
+            idx = self._widget.search(keyword, pos, END)
+            if not idx:
+                break
+            pos = f"{idx}+{len(keyword)}c"
+            self._widget.tag_add(tag, idx, pos)

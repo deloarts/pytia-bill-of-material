@@ -378,6 +378,22 @@ class Layout:
         self._btn_close_report.grid(row=0, column=0, padx=(2, 0), pady=0, sticky="e")
         # endregion
 
+        # region FRAME Log  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        self._text_log = Text(
+            frames.log,
+            height=1,
+            width=1,
+            state=DISABLED,
+            cursor="arrow",
+            font=("Segoe UI", 7),
+            background="#f0f0f0",
+            highlightthickness=0,
+            borderwidth=0,
+            wrap="none",
+        )
+        self._text_log.grid(row=0, column=0, padx=(5, 5), pady=(5, 5), sticky="nsew")
+        # endregion
+
         # region FRAME Footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region progress
         self._progress_bar = ttk.Progressbar(
@@ -471,6 +487,10 @@ class Layout:
     @property
     def text_description(self) -> Text:
         return self._text_description
+
+    @property
+    def text_log(self) -> Text:
+        return self._text_log
 
     @property
     def button_export(self) -> ttk.Button:

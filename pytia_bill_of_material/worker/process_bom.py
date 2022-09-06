@@ -298,7 +298,7 @@ class ProcessBomTask(TaskProtocol):
 
         def _made(assembly_item: BOMAssemblyItem):
             props = assembly_item.properties
-            log.info(f"Sorting 'made' items by {resource.bom.sort.made!r}")
+            log.debug(f"Sorting 'made' items by {resource.bom.sort.made!r}")
             return (
                 props[resource.bom.sort.made]
                 if props[resource.applied_keywords.source]
@@ -308,7 +308,7 @@ class ProcessBomTask(TaskProtocol):
 
         def _bought(assembly_item: BOMAssemblyItem):
             props = assembly_item.properties
-            log.info(f"Sorting 'bought' items by {resource.bom.sort.bought!r}")
+            log.debug(f"Sorting 'bought' items by {resource.bom.sort.bought!r}")
             return (
                 props[resource.bom.sort.bought]
                 if props[resource.applied_keywords.source]

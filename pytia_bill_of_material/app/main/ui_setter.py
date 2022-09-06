@@ -11,6 +11,7 @@ import re
 import tkinter as tk
 from pathlib import Path
 
+from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.vars import Variables
 from helper.lazy_loaders import LazyDocumentHelper
@@ -27,6 +28,7 @@ class UISetter:
         root: tk.Tk,
         layout: Layout,
         variables: Variables,
+        frames: Frames,
         lazy_document_helper: LazyDocumentHelper,
         workspace: Workspace,
     ) -> None:
@@ -36,6 +38,7 @@ class UISetter:
             root (tk.Tk): The main window object.
             layout (Layout): The layout of the main window.
             variables (Variables): The variables of the main window.
+            frames (Frames): The frames of the main.
             lazy_document_helper (LazyDocumentHelper): The lazy document helper instance.
             workspace (Workspace): The workspace instance.
         """
@@ -43,6 +46,7 @@ class UISetter:
         self.layout = layout
         self.doc_helper = lazy_document_helper
         self.vars = variables
+        self.frames = frames
         self.workspace = workspace
 
         self._state_checkbox_export_docket = tk.NORMAL
@@ -53,6 +57,15 @@ class UISetter:
         """
         Sets the UI to state 'Normal'. Sets the cursor to 'arrow'.
         """
+
+        self.layout.progress_bar.grid_remove()
+        self.frames.log.grid_remove()
+
+        if not self.vars.show_report.get():
+            self.frames.infrastructure.grid()
+            self.frames.paths.grid()
+            self.frames.export.grid()
+
         self.layout.input_project.configure(
             state="readonly"
             if resource.settings.restrictions.strict_project
@@ -135,8 +148,16 @@ class UISetter:
         Sets the UI to state 'Working'. Sets the cursor to 'wait'.
         """
         self.disabled()
+
+        self.frames.infrastructure.grid_remove()
+        self.frames.paths.grid_remove()
+        self.frames.export.grid_remove()
+        self.layout.progress_bar.grid()
+        self.frames.log.grid()
+
         self.root.config(cursor="wait")
         self.layout.button_exit.configure(state=tk.DISABLED)
+        self.root.update_idletasks()
 
     def set_button_export(self) -> None:
         """

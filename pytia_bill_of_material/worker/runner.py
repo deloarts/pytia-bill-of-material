@@ -11,7 +11,10 @@ from pytia.log import log
 
 class Runner:
     def __init__(
-        self, root: Tk, callback_variable: DoubleVar, progress_bar: ttk.Progressbar
+        self,
+        root: Tk,
+        callback_variable: DoubleVar,
+        progress_bar: ttk.Progressbar,
     ) -> None:
         self.root = root
         self.progress_callback = callback_variable
@@ -23,7 +26,6 @@ class Runner:
         self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))
 
     def run_tasks(self) -> None:
-        self.progress_bar.grid()
         self._update_progress(1)
         for fn in self.runners:
             log.info(f"Running task {fn.name!r}.")
