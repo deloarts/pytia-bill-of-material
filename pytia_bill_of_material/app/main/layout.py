@@ -385,7 +385,7 @@ class Layout:
             width=1,
             state=DISABLED,
             cursor="arrow",
-            font=("Segoe UI", 7),
+            font=("Monospac821 BT", 7),
             background="#f0f0f0",
             highlightthickness=0,
             borderwidth=0,
