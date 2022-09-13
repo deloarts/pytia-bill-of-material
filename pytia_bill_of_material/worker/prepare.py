@@ -19,7 +19,6 @@ from pytia.utilities.bill_of_material import set_current_format, set_secondary_f
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
-from utils.files import file_utility
 
 
 class PrepareTask(TaskProtocol):
@@ -29,7 +28,7 @@ class PrepareTask(TaskProtocol):
         self._doc_helper = doc_helper
 
         document = Document(framework.catia.active_document.com_object)
-        if document.full_name != self._doc_helper.path:
+        if document.full_name != str(self._doc_helper.path):
             raise PytiaDifferentDocumentError(
                 "The document has changed. Please open the original document and try again."
             )

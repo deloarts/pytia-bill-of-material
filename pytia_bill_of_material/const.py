@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 PYTIA = "pytia"
 PYTIA_BILL_OF_MATERIAL = "pytia_bill_of_material"
@@ -46,6 +46,8 @@ CONFIG_INFOS_DEFAULT = "information.default.json"
 CONFIG_USERS = "users.json"
 CONFIG_DOCKET = "docket.json"
 CONFIG_PROPERTIES = "properties.json"
+
+PROP_DRAWING_PATH = "pytia.drawing_path"
 
 TEMPLATE_DOCKET = "docket.CATDrawing"
 

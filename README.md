@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-Alpha-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.2.0-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.3.0-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -35,6 +35,8 @@ Recommended python install options for the user:
 ```powershell
 python-installer.exe /passive PrependPath=1 Include_doc=0 Include_test=0 SimpleInstall=1 SimpleInstallDescription="python for pytia"
 ```
+
+For convenience there is a powershell script that will install the required python version for you, see [assets/python_installer.ps1](assets/python_installer.ps1).
 
 ### 1.2 developer
 
@@ -89,7 +91,7 @@ Some dependencies are not publicly available on PyPi or GitHub (because they are
 Name | Link | Version
 --- | --- | ---
 **pytia** | <https://github.com/deloarts/pytia> | [0.2.2](https://github.com/deloarts/pytia/releases/tag/v0.2.2)
-**pytia-ui-tools** | <https://github.com/deloarts/pytia-ui-tools> | [0.5.1](https://github.com/deloarts/pytia-ui-tools/releases/tag/v0.5.1)
+**pytia-ui-tools** | <https://github.com/deloarts/pytia-ui-tools> | [0.5.3](https://github.com/deloarts/pytia-ui-tools/releases/tag/v0.5.3)
 
 > ❗️ The folder where you provide the local dependencies must match the **paths.local_dependencies** entry of the **settings.json**. The user must have at least read access on this folder.
 >
@@ -195,6 +197,7 @@ Object | Description
 Project | The user can overwrite the project number for all items of the bill of material. If set to `Keep` no project number will be overwritten.
 Bill of Material File | The full path to the bill of material xlsx file. The folder must exist, otherwise the `Export` button will be disabled.
 Docket Folder | The folder into which all generated docket files will be stored. The folder must exist, otherwise the `Export Docket` checkbox will be disabled.
+Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled.
 STP Folder | The folder into which all generated step files will be stored. The folder must exist, otherwise the `Export STP` checkbox will be disabled.
 STL Folder | The folder into which all generated stl files will be stored. The folder must exist, otherwise the `Export STL` checkbox will be disabled.
 
@@ -234,6 +237,7 @@ The filename of the workspace file can be changed in the **settings.json** file,
 
 ## 6 changelog
 
+**v0.3.0**: Add drawing export feature.  
 **v0.2.0**: Add report document handler and log console.  
 **v0.1.2**: Fix deleting template files too early.  
 **v0.1.1**: Add failed property description.  

@@ -33,6 +33,8 @@ class WidgetLogHandler(logging.Handler):
         self._root = root
         self._widget = widget
 
+        self._widget.tag_config("DATE", foreground="grey")
+        self._widget.tag_config("TIME", foreground="grey")
         self._widget.tag_config("DEBUG", foreground="blue")
         self._widget.tag_config("INFO", foreground="green")
         self._widget.tag_config("WARNING", foreground="orange")
@@ -49,6 +51,7 @@ class WidgetLogHandler(logging.Handler):
         self._widget.configure(state="disabled")
         self._widget.yview(END)
 
+        self.search(keyword=r"(\d{4}-\d{2}-\d{2})", tag="DATE", regex=True)
         self.search("DEBUG")
         self.search("INFO")
         self.search("WARNING")
@@ -57,7 +60,7 @@ class WidgetLogHandler(logging.Handler):
 
         self._root.update_idletasks()
 
-    def search(self, keyword: str, tag: str | None = None) -> None:
+    def search(self, keyword: str, tag: str | None = None, regex: bool = False) -> None:
         """
         Search for keywords and highlight them in the widget.
 
@@ -65,13 +68,15 @@ class WidgetLogHandler(logging.Handler):
             keyword (str): The keyword to search for.
             tag (str | None, optional): The widget tag to use. If None the keyword will be used \
                 as tag. Defaults to None.
+            regex (bool): Whether to match the keyword using regular expressions or not. Defaults \
+                to False.
         """
         if tag is None:
             tag = keyword
 
         pos = "1.0"
         while True:
-            idx = self._widget.search(keyword, pos, END)
+            idx = self._widget.search(keyword, pos, END, regexp=regex)
             if not idx:
                 break
             pos = f"{idx}+{len(keyword)}c"

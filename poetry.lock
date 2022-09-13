@@ -500,7 +500,7 @@ resolved_reference = "9c735717517e7801b87c082dfaa507e7f64d2912"
 
 [[package]]
 name = "pytia-ui-tools"
-version = "0.5.1"
+version = "0.5.3"
 description = "Helper functions and widgets for all pytia ui apps."
 category = "main"
 optional = false
@@ -518,8 +518,8 @@ qrcode = "7.3.1"
 [package.source]
 type = "git"
 url = "ssh://git@github.com/deloarts/pytia-ui-tools.git"
-reference = "v0.5.1"
-resolved_reference = "5bcc369721801bec0962061ea1b972d115011fd4"
+reference = "v0.5.3"
+resolved_reference = "21c5321f386c56f59e373fbd3ef92c5b95de4721"
 
 [[package]]
 name = "pywin32"
@@ -587,7 +587,7 @@ test = ["pytest (>=2.2.3)", "flake8 (>=2.4.0)", "isort (>=4.2.2)"]
 
 [[package]]
 name = "virtualenv"
-version = "20.16.4"
+version = "20.16.5"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
@@ -613,7 +613,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5ff77841aa8e685107912e7827ff42129e509041bda1fd8c8bbb677ab72e1f41"
+content-hash = "d61a6673b4ad9c22818c8d4504d5419eb8f189cb2035bc0ec08a69b4a31be4a7"
 
 [metadata.files]
 astroid = []

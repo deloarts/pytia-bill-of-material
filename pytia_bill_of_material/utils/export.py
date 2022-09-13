@@ -4,7 +4,7 @@
 from pathlib import Path
 from typing import Literal
 
-from const import LOGON, TEMP_EXPORT
+from const import LOGON, PROP_DRAWING_PATH, TEMP_EXPORT
 from pytia.exceptions import PytiaFileOperationError
 from pytia.log import log
 from pytia.utilities.docket import (
@@ -12,6 +12,7 @@ from pytia.utilities.docket import (
     create_docket_from_template,
     export_docket_as_pdf,
 )
+from pytia.wrapper.documents.drawing_documents import PyDrawingDocument
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
@@ -114,6 +115,64 @@ def export_docket(
         delete_existing=True,
         ask_retry=True,
     )
+
+
+def export_drawing(
+    filename: str,
+    folder: Path,
+    document: PyProductDocument | PyPartDocument,
+) -> None:
+    """
+    Exports the drawing into a pdf and dxf file. The files will be exported into the temp folder
+    and moved after the main task has finished.
+
+    This export only works if the 'pytia.drawing_path' property is set and valid. This property
+    is created when using the https://github.com/deloarts/pytia-title-block app.
+
+    Args:
+        filename (str): The filename of the pdf and dxf files.
+        folder (Path): The folder into which the data will be exported.
+        document (PyProductDocument | PyPartDocument): The document from which to export the data.
+    """
+    if document.properties.exists(PROP_DRAWING_PATH):
+        drawing_path = Path(document.properties.get_by_name(PROP_DRAWING_PATH).value)
+        if drawing_path.exists():
+            pdf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype="pdf")
+            )
+            pdf_target_path = Path(folder, filename + ".pdf")
+            dxf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype="dxf")
+            )
+            dxf_target_path = Path(folder, filename + ".dxf")
+
+            with PyDrawingDocument() as drawing_document:
+                drawing_document.open(drawing_path)
+                drawing_document.drawing_document.export_data(
+                    pdf_export_path, "pdf", overwrite=True
+                )
+                drawing_document.drawing_document.export_data(
+                    dxf_export_path, "dxf", overwrite=True
+                )
+
+            file_utility.add_move(
+                source=pdf_export_path,
+                target=pdf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+            file_utility.add_move(
+                source=dxf_export_path,
+                target=dxf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+        else:
+            log.warning(
+                f"Skipped drawing export of {document.document.name!r}: Path not valid."
+            )
+    else:
+        log.info(f"Skipped drawing export of {document.document.name!r}: Path not set.")
 
 
 def _export_stp_stl(

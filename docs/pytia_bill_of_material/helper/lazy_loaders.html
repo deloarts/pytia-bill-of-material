@@ -34,6 +34,7 @@
 import functools
 import os
 import time
+from pathlib import Path
 from typing import Optional
 
 from pytia.exceptions import PytiaDifferentDocumentError, PytiaDocumentNotSavedError
@@ -85,9 +86,9 @@ class LazyDocumentHelper:
         log.debug(f&#34;Loaded document in {(end_time-start_time):.4f}s&#34;)
 
     @property
-    def path(self) -&gt; str:
+    def path(self) -&gt; Path:
         &#34;&#34;&#34;Returns the documents absolute path with filename and file extension.&#34;&#34;&#34;
-        return self.document.document.full_name
+        return Path(self.document.document.full_name)
 
     @property
     def partnumber(self) -&gt; str:
@@ -278,9 +279,9 @@ document changes all operations will be made on the original document.</p>
         log.debug(f&#34;Loaded document in {(end_time-start_time):.4f}s&#34;)
 
     @property
-    def path(self) -&gt; str:
+    def path(self) -&gt; Path:
         &#34;&#34;&#34;Returns the documents absolute path with filename and file extension.&#34;&#34;&#34;
-        return self.document.document.full_name
+        return Path(self.document.document.full_name)
 
     @property
     def partnumber(self) -&gt; str:
@@ -460,7 +461,7 @@ def partnumber(self) -&gt; str:
     return self.document.product.part_number</code></pre>
 </details>
 </dd>
-<dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.path"><code class="name">var <span class="ident">path</span> : str</code></dt>
+<dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.path"><code class="name">var <span class="ident">path</span> : pathlib.Path</code></dt>
 <dd>
 <div class="desc"><p>Returns the documents absolute path with filename and file extension.</p></div>
 <details class="source">
@@ -468,9 +469,9 @@ def partnumber(self) -&gt; str:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def path(self) -&gt; str:
+def path(self) -&gt; Path:
     &#34;&#34;&#34;Returns the documents absolute path with filename and file extension.&#34;&#34;&#34;
-    return self.document.document.full_name</code></pre>
+    return Path(self.document.document.full_name)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.revision"><code class="name">var <span class="ident">revision</span> : str</code></dt>

@@ -40,6 +40,7 @@ class ExportItemsTask(TaskProtocol):
         runner: Runner,
         bom: BOM,
         export_docket: bool,
+        export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
         docket_path: Path,
@@ -50,6 +51,7 @@ class ExportItemsTask(TaskProtocol):
         self._runner = runner
         self._bom = bom
         self._export_docket = export_docket
+        self._export_drawing = export_drawing
         self._export_stp = export_stp
         self._export_stl = export_stl
         self._docket_path = docket_path
@@ -111,7 +113,8 @@ class ExportItemsTask(TaskProtocol):
             return
 
         log.info(f"Exporting data of item {bom_item.partnumber!r}.")
-        export_filename = get_data_export_name(bom_item)
+        export_filename = get_data_export_name(bom_item, with_project=False)
+        export_filename_with_project = get_data_export_name(bom_item, with_project=True)
         qr_path = self._generate_qr(bom_item=bom_item)
 
         if ".CATPart" in str(bom_item.path):
@@ -119,7 +122,7 @@ class ExportItemsTask(TaskProtocol):
                 part_document.open(bom_item.path)
                 if self._export_docket:
                     export.export_docket(
-                        filename=export_filename,
+                        filename=export_filename_with_project,
                         folder=self._docket_path,
                         document=part_document,
                         config=self._docket_config,
@@ -141,6 +144,12 @@ class ExportItemsTask(TaskProtocol):
                         qr_path=qr_path,
                     )
 
+                if self._export_drawing:
+                    export.export_drawing(
+                        filename=export_filename,
+                        folder=self._stp_path,
+                        document=part_document,
+                    )
                 if self._export_stp:
                     export.export_stp(
                         filename=export_filename,
@@ -159,7 +168,7 @@ class ExportItemsTask(TaskProtocol):
                 product_document.open(bom_item.path)
                 if self._export_docket:
                     export.export_docket(
-                        filename=export_filename,
+                        filename=export_filename_with_project,
                         folder=self._docket_path,
                         document=product_document,
                         config=self._docket_config,
@@ -171,6 +180,12 @@ class ExportItemsTask(TaskProtocol):
                         ],
                         logon=LOGON,
                         qr_path=qr_path,
+                    )
+                if self._export_drawing:
+                    export.export_drawing(
+                        filename=export_filename,
+                        folder=self._stp_path,
+                        document=product_document,
                     )
                 if self._export_stp:
                     export.export_stp(

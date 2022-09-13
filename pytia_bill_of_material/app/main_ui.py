@@ -41,7 +41,7 @@ class MainUI(tk.Tk):
     """The user interface of the app."""
 
     WIDTH = 600
-    HEIGHT = 410
+    HEIGHT = 470
 
     def __init__(self) -> None:
         tk.Tk.__init__(self)
@@ -160,7 +160,9 @@ class MainUI(tk.Tk):
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(f"%(asctime)s  %(levelname)s  %(message)s")
+        log_format = logging.Formatter(
+            r"%(asctime)s  %(levelname)s  %(message)s", datefmt=r"%Y-%m-%d %H:%M:%S"
+        )
         widget_handler = WidgetLogHandler(self, self.layout.text_log)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)

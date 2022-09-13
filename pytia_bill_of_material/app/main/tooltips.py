@@ -97,6 +97,20 @@ class ToolTips:
             text=("Select the folder into which all docket files will be exported."),
         )
 
+        drawing_path_tooltip = (
+            "Defines the export folder of the drawing files (pdf and dxf). "
+            "Existing files are going to be overwritten."
+        )
+        if workspace.elements.drawing_folder is not None:
+            drawing_path_tooltip += (
+                "\n\nThe path has been pre-selected from the workspace file."
+            )
+        ToolTip(widget=layout.input_drawing_export_path, text=drawing_path_tooltip)
+        ToolTip(
+            widget=layout.button_drawing_export_path,
+            text=("Select the folder into which all drawing files will be exported."),
+        )
+
         stp_path_tooltip = (
             "Defines the export folder of the generated stp files. "
             "Existing files are going to be overwritten."
@@ -126,6 +140,47 @@ class ToolTips:
         )
         # endregion
 
+        # region EXPORT
+        ToolTip(
+            widget=layout.checkbox_export_docket,
+            text=(
+                "Generates a pdf docket for each item in the summary of the exported bill of "
+                "material. Only exports items which are of source 'made'.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_drawing,
+            text=(
+                "Saves the drawing as pdf and dxf file for each item in the summary of the "
+                "exported bill of material.\n\n"
+                "Only exports drawings that are linked to the document. The link will be set if "
+                "you used the PYTIA Title Block Editor App on the drawing file.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_stp,
+            text=(
+                "Saves the 3d data as step-file for each item in the summary of the exported bill "
+                "of material. Only exports items which are of source 'made'.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_stl,
+            text=(
+                "Saves the 3d data as stl-file for each item in the summary of the exported bill "
+                "of material. Only exports items which are of source 'made'.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        # endregion
+
         # region REPORT
         ToolTip(
             widget=layout.button_open_document,
@@ -138,7 +193,9 @@ class ToolTips:
         ToolTip(
             widget=layout.button_close_document,
             text=(
-                "Closes the current open document and removes it from the 'failed items' selection."
+                "Closes the currently open document and removes it from the 'failed items' "
+                "selection.\n\nYou can also just close the current document in CATIA and the "
+                "item will be removed from the 'failed items' list automatically."
             ),
         )
         # endregion

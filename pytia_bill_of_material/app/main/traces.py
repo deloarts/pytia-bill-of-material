@@ -54,6 +54,7 @@ class Traces:
         self.vars.project.trace_add("write", self.trace_project)
         self.vars.bom_export_path.trace_add("write", self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add("write", self.trace_docket_export_path)
+        self.vars.drawing_export_path.trace_add("write", self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add("write", self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
         self.vars.show_report.trace_add("write", self.trace_show_report)
@@ -118,6 +119,22 @@ class Traces:
         self.layout.input_docket_export_path.configure(
             foreground="black" if is_dir else "red"
         )
+
+    def trace_drawing_export_path(self, *_) -> None:
+        """
+        Trace callback for the `drawing_export_path` StringVar.
+        Validates the path and sets the state of the checkbox accordingly to the path variable.
+        """
+        if os.path.isdir(self.vars.drawing_export_path.get()) and os.path.isabs(
+            self.vars.drawing_export_path.get()
+        ):
+            self.layout.input_drawing_export_path.configure(foreground="black")
+            self.layout.checkbox_export_drawing.configure(state=NORMAL)
+            self.vars.export_drawing.set(True)
+        else:
+            self.layout.input_drawing_export_path.configure(foreground="red")
+            self.vars.export_drawing.set(False)
+            self.layout.checkbox_export_drawing.configure(state=DISABLED)
 
     def trace_stp_export_path(self, *_) -> None:
         """Trace callback for the `stp_export_path` StringVar. Validates the path and sets the state

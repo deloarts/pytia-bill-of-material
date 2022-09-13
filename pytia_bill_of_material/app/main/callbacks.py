@@ -97,6 +97,9 @@ class Callbacks:
         self.layout.button_docket_export_path.configure(
             command=self.on_btn_docket_export_path
         )
+        self.layout.button_drawing_export_path.configure(
+            command=self.on_btn_drawing_export_path
+        )
         self.layout.button_stp_export_path.configure(
             command=self.on_btn_stp_export_path
         )
@@ -108,6 +111,9 @@ class Callbacks:
         """Bind checkbox callbacks."""
         self.layout.checkbox_export_docket.configure(
             command=self.on_chkbox_export_docket
+        )
+        self.layout.checkbox_export_drawing.configure(
+            command=self.on_chkbox_export_drawing
         )
         self.layout.checkbox_export_stp.configure(command=self.on_chkbox_export_stp)
         self.layout.checkbox_export_stl.configure(command=self.on_chkbox_export_stl)
@@ -238,6 +244,29 @@ class Callbacks:
         ):
             self.vars.docket_export_path.set(str(path))
 
+    def on_btn_drawing_export_path(self) -> None:
+        """
+        Event handler for the browse drawing export path button. Asks the user to select a folder,
+        into which to export the pdf and dxf files.
+        """
+        log.info("Callback for button 'Browse Drawing export path'.")
+
+        initial_dir = Path(self.vars.drawing_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.drawing_export_path.set(str(path))
+
     def on_btn_stp_export_path(self) -> None:
         """
         Event handler for the browse stp export path button. Asks the user to select a folder,
@@ -290,6 +319,14 @@ class Callbacks:
         """
         log.info(
             f"Callback for checkbox 'Export docket': {self.vars.export_docket.get()}"
+        )
+
+    def on_chkbox_export_drawing(self) -> None:
+        """
+        Event handler for the checkbox 'export drawing'. Does nothing.
+        """
+        log.info(
+            f"Callback for checkbox 'Export Drawing': {self.vars.export_drawing.get()}"
         )
 
     def on_chkbox_export_stp(self) -> None:
