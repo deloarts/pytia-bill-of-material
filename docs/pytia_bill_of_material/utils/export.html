@@ -33,7 +33,7 @@
 from pathlib import Path
 from typing import Literal
 
-from const import LOGON, TEMP_EXPORT
+from const import LOGON, PROP_DRAWING_PATH, TEMP_EXPORT
 from pytia.exceptions import PytiaFileOperationError
 from pytia.log import log
 from pytia.utilities.docket import (
@@ -41,6 +41,7 @@ from pytia.utilities.docket import (
     create_docket_from_template,
     export_docket_as_pdf,
 )
+from pytia.wrapper.documents.drawing_documents import PyDrawingDocument
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
@@ -143,6 +144,64 @@ def export_docket(
         delete_existing=True,
         ask_retry=True,
     )
+
+
+def export_drawing(
+    filename: str,
+    folder: Path,
+    document: PyProductDocument | PyPartDocument,
+) -&gt; None:
+    &#34;&#34;&#34;
+    Exports the drawing into a pdf and dxf file. The files will be exported into the temp folder
+    and moved after the main task has finished.
+
+    This export only works if the &#39;pytia.drawing_path&#39; property is set and valid. This property
+    is created when using the https://github.com/deloarts/pytia-title-block app.
+
+    Args:
+        filename (str): The filename of the pdf and dxf files.
+        folder (Path): The folder into which the data will be exported.
+        document (PyProductDocument | PyPartDocument): The document from which to export the data.
+    &#34;&#34;&#34;
+    if document.properties.exists(PROP_DRAWING_PATH):
+        drawing_path = Path(document.properties.get_by_name(PROP_DRAWING_PATH).value)
+        if drawing_path.exists():
+            pdf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;pdf&#34;)
+            )
+            pdf_target_path = Path(folder, filename + &#34;.pdf&#34;)
+            dxf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;dxf&#34;)
+            )
+            dxf_target_path = Path(folder, filename + &#34;.dxf&#34;)
+
+            with PyDrawingDocument() as drawing_document:
+                drawing_document.open(drawing_path)
+                drawing_document.drawing_document.export_data(
+                    pdf_export_path, &#34;pdf&#34;, overwrite=True
+                )
+                drawing_document.drawing_document.export_data(
+                    dxf_export_path, &#34;dxf&#34;, overwrite=True
+                )
+
+            file_utility.add_move(
+                source=pdf_export_path,
+                target=pdf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+            file_utility.add_move(
+                source=dxf_export_path,
+                target=dxf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+        else:
+            log.warning(
+                f&#34;Skipped drawing export of {document.document.name!r}: Path not valid.&#34;
+            )
+    else:
+        log.info(f&#34;Skipped drawing export of {document.document.name!r}: Path not set.&#34;)
 
 
 def _export_stp_stl(
@@ -345,6 +404,84 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
     )</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.utils.export.export_drawing"><code class="name flex">
+<span>def <span class="ident">export_drawing</span></span>(<span>filename: str, folder: pathlib.Path, document: pytia.wrapper.documents.product_documents.PyProductDocument | pytia.wrapper.documents.part_documents.PyPartDocument) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exports the drawing into a pdf and dxf file. The files will be exported into the temp folder
+and moved after the main task has finished.</p>
+<p>This export only works if the 'pytia.drawing_path' property is set and valid. This property
+is created when using the <a href="https://github.com/deloarts/pytia-title-block">https://github.com/deloarts/pytia-title-block</a> app.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>The filename of the pdf and dxf files.</dd>
+<dt><strong><code>folder</code></strong> :&ensp;<code>Path</code></dt>
+<dd>The folder into which the data will be exported.</dd>
+</dl>
+<p>document (PyProductDocument | PyPartDocument): The document from which to export the data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def export_drawing(
+    filename: str,
+    folder: Path,
+    document: PyProductDocument | PyPartDocument,
+) -&gt; None:
+    &#34;&#34;&#34;
+    Exports the drawing into a pdf and dxf file. The files will be exported into the temp folder
+    and moved after the main task has finished.
+
+    This export only works if the &#39;pytia.drawing_path&#39; property is set and valid. This property
+    is created when using the https://github.com/deloarts/pytia-title-block app.
+
+    Args:
+        filename (str): The filename of the pdf and dxf files.
+        folder (Path): The folder into which the data will be exported.
+        document (PyProductDocument | PyPartDocument): The document from which to export the data.
+    &#34;&#34;&#34;
+    if document.properties.exists(PROP_DRAWING_PATH):
+        drawing_path = Path(document.properties.get_by_name(PROP_DRAWING_PATH).value)
+        if drawing_path.exists():
+            pdf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;pdf&#34;)
+            )
+            pdf_target_path = Path(folder, filename + &#34;.pdf&#34;)
+            dxf_export_path = Path(
+                TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;dxf&#34;)
+            )
+            dxf_target_path = Path(folder, filename + &#34;.dxf&#34;)
+
+            with PyDrawingDocument() as drawing_document:
+                drawing_document.open(drawing_path)
+                drawing_document.drawing_document.export_data(
+                    pdf_export_path, &#34;pdf&#34;, overwrite=True
+                )
+                drawing_document.drawing_document.export_data(
+                    dxf_export_path, &#34;dxf&#34;, overwrite=True
+                )
+
+            file_utility.add_move(
+                source=pdf_export_path,
+                target=pdf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+            file_utility.add_move(
+                source=dxf_export_path,
+                target=dxf_target_path,
+                delete_existing=True,
+                ask_retry=True,
+            )
+        else:
+            log.warning(
+                f&#34;Skipped drawing export of {document.document.name!r}: Path not valid.&#34;
+            )
+    else:
+        log.info(f&#34;Skipped drawing export of {document.document.name!r}: Path not set.&#34;)</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.utils.export.export_stl"><code class="name flex">
 <span>def <span class="ident">export_stl</span></span>(<span>filename: str, folder: pathlib.Path, document: pytia.wrapper.documents.part_documents.PyPartDocument) ‑> None</span>
 </code></dt>
@@ -434,6 +571,7 @@ after the main task has finished.</p>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.utils.export.export_docket" href="#pytia_bill_of_material.utils.export.export_docket">export_docket</a></code></li>
+<li><code><a title="pytia_bill_of_material.utils.export.export_drawing" href="#pytia_bill_of_material.utils.export.export_drawing">export_drawing</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.export.export_stl" href="#pytia_bill_of_material.utils.export.export_stl">export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.export.export_stp" href="#pytia_bill_of_material.utils.export.export_stp">export_stp</a></code></li>
 </ul>

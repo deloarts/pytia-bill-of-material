@@ -70,7 +70,7 @@ class MainUI(tk.Tk):
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
     WIDTH = 600
-    HEIGHT = 410
+    HEIGHT = 470
 
     def __init__(self) -&gt; None:
         tk.Tk.__init__(self)
@@ -189,7 +189,9 @@ class MainUI(tk.Tk):
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(f&#34;%(asctime)s  %(levelname)s  %(message)s&#34;)
+        log_format = logging.Formatter(
+            r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
+        )
         widget_handler = WidgetLogHandler(self, self.layout.text_log)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)
@@ -255,7 +257,7 @@ is the name of the widget class.</p></div>
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
     WIDTH = 600
-    HEIGHT = 410
+    HEIGHT = 470
 
     def __init__(self) -&gt; None:
         tk.Tk.__init__(self)
@@ -374,7 +376,9 @@ is the name of the widget class.</p></div>
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(f&#34;%(asctime)s  %(levelname)s  %(message)s&#34;)
+        log_format = logging.Formatter(
+            r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
+        )
         widget_handler = WidgetLogHandler(self, self.layout.text_log)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)

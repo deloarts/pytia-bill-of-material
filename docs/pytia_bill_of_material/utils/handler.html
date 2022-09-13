@@ -62,6 +62,8 @@ class WidgetLogHandler(logging.Handler):
         self._root = root
         self._widget = widget
 
+        self._widget.tag_config(&#34;DATE&#34;, foreground=&#34;grey&#34;)
+        self._widget.tag_config(&#34;TIME&#34;, foreground=&#34;grey&#34;)
         self._widget.tag_config(&#34;DEBUG&#34;, foreground=&#34;blue&#34;)
         self._widget.tag_config(&#34;INFO&#34;, foreground=&#34;green&#34;)
         self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
@@ -78,6 +80,7 @@ class WidgetLogHandler(logging.Handler):
         self._widget.configure(state=&#34;disabled&#34;)
         self._widget.yview(END)
 
+        self.search(keyword=r&#34;(\d{4}-\d{2}-\d{2})&#34;, tag=&#34;DATE&#34;, regex=True)
         self.search(&#34;DEBUG&#34;)
         self.search(&#34;INFO&#34;)
         self.search(&#34;WARNING&#34;)
@@ -86,7 +89,7 @@ class WidgetLogHandler(logging.Handler):
 
         self._root.update_idletasks()
 
-    def search(self, keyword: str, tag: str | None = None) -&gt; None:
+    def search(self, keyword: str, tag: str | None = None, regex: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Search for keywords and highlight them in the widget.
 
@@ -94,13 +97,15 @@ class WidgetLogHandler(logging.Handler):
             keyword (str): The keyword to search for.
             tag (str | None, optional): The widget tag to use. If None the keyword will be used \
                 as tag. Defaults to None.
+            regex (bool): Whether to match the keyword using regular expressions or not. Defaults \
+                to False.
         &#34;&#34;&#34;
         if tag is None:
             tag = keyword
 
         pos = &#34;1.0&#34;
         while True:
-            idx = self._widget.search(keyword, pos, END)
+            idx = self._widget.search(keyword, pos, END, regexp=regex)
             if not idx:
                 break
             pos = f&#34;{idx}+{len(keyword)}c&#34;
@@ -168,6 +173,8 @@ class WidgetLogHandler(logging.Handler):
         self._root = root
         self._widget = widget
 
+        self._widget.tag_config(&#34;DATE&#34;, foreground=&#34;grey&#34;)
+        self._widget.tag_config(&#34;TIME&#34;, foreground=&#34;grey&#34;)
         self._widget.tag_config(&#34;DEBUG&#34;, foreground=&#34;blue&#34;)
         self._widget.tag_config(&#34;INFO&#34;, foreground=&#34;green&#34;)
         self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
@@ -184,6 +191,7 @@ class WidgetLogHandler(logging.Handler):
         self._widget.configure(state=&#34;disabled&#34;)
         self._widget.yview(END)
 
+        self.search(keyword=r&#34;(\d{4}-\d{2}-\d{2})&#34;, tag=&#34;DATE&#34;, regex=True)
         self.search(&#34;DEBUG&#34;)
         self.search(&#34;INFO&#34;)
         self.search(&#34;WARNING&#34;)
@@ -192,7 +200,7 @@ class WidgetLogHandler(logging.Handler):
 
         self._root.update_idletasks()
 
-    def search(self, keyword: str, tag: str | None = None) -&gt; None:
+    def search(self, keyword: str, tag: str | None = None, regex: bool = False) -&gt; None:
         &#34;&#34;&#34;
         Search for keywords and highlight them in the widget.
 
@@ -200,13 +208,15 @@ class WidgetLogHandler(logging.Handler):
             keyword (str): The keyword to search for.
             tag (str | None, optional): The widget tag to use. If None the keyword will be used \
                 as tag. Defaults to None.
+            regex (bool): Whether to match the keyword using regular expressions or not. Defaults \
+                to False.
         &#34;&#34;&#34;
         if tag is None:
             tag = keyword
 
         pos = &#34;1.0&#34;
         while True:
-            idx = self._widget.search(keyword, pos, END)
+            idx = self._widget.search(keyword, pos, END, regexp=regex)
             if not idx:
                 break
             pos = f&#34;{idx}+{len(keyword)}c&#34;
@@ -238,6 +248,7 @@ class WidgetLogHandler(logging.Handler):
     self._widget.configure(state=&#34;disabled&#34;)
     self._widget.yview(END)
 
+    self.search(keyword=r&#34;(\d{4}-\d{2}-\d{2})&#34;, tag=&#34;DATE&#34;, regex=True)
     self.search(&#34;DEBUG&#34;)
     self.search(&#34;INFO&#34;)
     self.search(&#34;WARNING&#34;)
@@ -248,7 +259,7 @@ class WidgetLogHandler(logging.Handler):
 </details>
 </dd>
 <dt id="pytia_bill_of_material.utils.handler.WidgetLogHandler.search"><code class="name flex">
-<span>def <span class="ident">search</span></span>(<span>self, keyword: str, tag: str | None = None) ‑> None</span>
+<span>def <span class="ident">search</span></span>(<span>self, keyword: str, tag: str | None = None, regex: bool = False) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Search for keywords and highlight them in the widget.</p>
@@ -256,14 +267,17 @@ class WidgetLogHandler(logging.Handler):
 <dl>
 <dt><strong><code>keyword</code></strong> :&ensp;<code>str</code></dt>
 <dd>The keyword to search for.</dd>
-</dl>
-<p>tag (str | None, optional): The widget tag to use. If None the keyword will be used
-as tag. Defaults to None.</p></div>
+<dt>tag (str | None, optional): The widget tag to use. If None the keyword will be used
+as tag. Defaults to None.</dt>
+<dt><strong><code>regex</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to match the keyword using regular expressions or not. Defaults
+to False.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def search(self, keyword: str, tag: str | None = None) -&gt; None:
+<pre><code class="python">def search(self, keyword: str, tag: str | None = None, regex: bool = False) -&gt; None:
     &#34;&#34;&#34;
     Search for keywords and highlight them in the widget.
 
@@ -271,13 +285,15 @@ as tag. Defaults to None.</p></div>
         keyword (str): The keyword to search for.
         tag (str | None, optional): The widget tag to use. If None the keyword will be used \
             as tag. Defaults to None.
+        regex (bool): Whether to match the keyword using regular expressions or not. Defaults \
+            to False.
     &#34;&#34;&#34;
     if tag is None:
         tag = keyword
 
     pos = &#34;1.0&#34;
     while True:
-        idx = self._widget.search(keyword, pos, END)
+        idx = self._widget.search(keyword, pos, END, regexp=regex)
         if not idx:
             break
         pos = f&#34;{idx}+{len(keyword)}c&#34;

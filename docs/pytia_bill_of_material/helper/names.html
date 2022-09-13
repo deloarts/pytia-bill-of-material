@@ -72,27 +72,34 @@ def get_bom_export_name(workspace: Workspace, project: str, machine: str) -&gt; 
     return initial_file.lstrip()
 
 
-def get_data_export_name(bom_item: BOMAssemblyItem) -&gt; str:
+def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; str:
     &#34;&#34;&#34;
     Returns the name for generated data to export (docket, step, stl, ...).
     The export name will look like this:
-    `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
+    `MACHINE_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
 
     The revision will be prefixed with `Rev`.
 
     Args:
         bom_item (BOMAssemblyItem): The BOM object.
+        with_project (bool): Whether to include the project number in filename or not.
 
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
     # TODO: Make the export filename configurable in the settings.json
-    return (
-        f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
+
+    value = (
         f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
-    )</code></pre>
+    )
+    if with_project:
+        value = (
+            f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
+            + value
+        )
+    return value</code></pre>
 </details>
 </section>
 <section>
@@ -166,17 +173,19 @@ settings.json file.</p>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.helper.names.get_data_export_name"><code class="name flex">
-<span>def <span class="ident">get_data_export_name</span></span>(<span>bom_item: models.bom.BOMAssemblyItem) ‑> str</span>
+<span>def <span class="ident">get_data_export_name</span></span>(<span>bom_item: models.bom.BOMAssemblyItem, with_project: bool) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the name for generated data to export (docket, step, stl, &hellip;).
 The export name will look like this:
-<code>PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION</code></p>
+<code>MACHINE_NUMBER PARTNUMBER REVISION</code> or <code>PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION</code></p>
 <p>The revision will be prefixed with <code>Rev</code>.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>bom_item</code></strong> :&ensp;<code>BOMAssemblyItem</code></dt>
 <dd>The BOM object.</dd>
+<dt><strong><code>with_project</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Whether to include the project number in filename or not.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -187,27 +196,34 @@ The export name will look like this:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_data_export_name(bom_item: BOMAssemblyItem) -&gt; str:
+<pre><code class="python">def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; str:
     &#34;&#34;&#34;
     Returns the name for generated data to export (docket, step, stl, ...).
     The export name will look like this:
-    `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
+    `MACHINE_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
 
     The revision will be prefixed with `Rev`.
 
     Args:
         bom_item (BOMAssemblyItem): The BOM object.
+        with_project (bool): Whether to include the project number in filename or not.
 
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
     # TODO: Make the export filename configurable in the settings.json
-    return (
-        f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
+
+    value = (
         f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
-    )</code></pre>
+    )
+    if with_project:
+        value = (
+            f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
+            + value
+        )
+    return value</code></pre>
 </details>
 </dd>
 </dl>
