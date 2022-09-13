@@ -100,10 +100,52 @@ class Layout:
         )
         # endregion
 
+        # region drawing export path
+        lbl_drawing_export_path = ttk.Label(
+            frames.paths, text="Drawing Folder", width=18
+        )
+        lbl_drawing_export_path.grid(
+            row=1,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._entry_drawing_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.drawing_export_path,
+            state=DISABLED,
+        )
+        self._entry_drawing_export_path.grid(
+            row=1,
+            column=1,
+            padx=(5, 2),
+            pady=(2, 2),
+            ipadx=2,
+            ipady=2,
+            sticky="nsew",
+        )
+
+        self._btn_browse_drawing_export_path = ttk.Button(
+            frames.paths,
+            text="...",
+            width=4,
+            state=DISABLED,
+        )
+        self._btn_browse_drawing_export_path.grid(
+            row=1,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
         # region docket export path
         lbl_docket_export_path = ttk.Label(frames.paths, text="Docket Folder", width=18)
         lbl_docket_export_path.grid(
-            row=1,
+            row=2,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -116,7 +158,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_docket_export_path.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -132,7 +174,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_docket_export_path.grid(
-            row=1,
+            row=2,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, 2),
@@ -143,7 +185,7 @@ class Layout:
         # region stp export path
         lbl_stp_export_path = ttk.Label(frames.paths, text="STP Folder", width=18)
         lbl_stp_export_path.grid(
-            row=2,
+            row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -156,7 +198,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_stp_export_path.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -172,7 +214,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_stp_export_path.grid(
-            row=2,
+            row=3,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, 2),
@@ -183,7 +225,7 @@ class Layout:
         # region stl export path
         lbl_stl_export_path = ttk.Label(frames.paths, text="STL Folder", width=18)
         lbl_stl_export_path.grid(
-            row=3,
+            row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, Layout.MARGIN_Y),
@@ -196,7 +238,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_stl_export_path.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, 2),
             pady=(2, Layout.MARGIN_Y),
@@ -212,7 +254,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_stl_export_path.grid(
-            row=3,
+            row=4,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -243,10 +285,32 @@ class Layout:
         )
         # endregion
 
+        # region export drawing
+        lbl_export_drawing = ttk.Label(frames.export, text="Export Drawing", width=18)
+        lbl_export_drawing.grid(
+            row=1,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_export_drawing = ttk.Checkbutton(
+            frames.export, variable=variables.export_drawing, state=DISABLED
+        )
+        self._chkbtn_export_drawing.grid(
+            row=1,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
         # region export stp
         lbl_export_stp = ttk.Label(frames.export, text="Export STP", width=18)
         lbl_export_stp.grid(
-            row=1,
+            row=2,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -257,7 +321,7 @@ class Layout:
             frames.export, variable=variables.export_stp, state=DISABLED
         )
         self._chkbtn_export_stp.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, 5),
             pady=(2, 2),
@@ -268,7 +332,7 @@ class Layout:
         # region export stl
         lbl_export_stl = ttk.Label(frames.export, text="Export STL", width=18)
         lbl_export_stl.grid(
-            row=2,
+            row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, Layout.MARGIN_Y),
@@ -279,7 +343,7 @@ class Layout:
             frames.export, variable=variables.export_stl, state=DISABLED
         )
         self._chkbtn_export_stl.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -445,6 +509,14 @@ class Layout:
         return self._btn_browse_docket_export_path
 
     @property
+    def input_drawing_export_path(self) -> ttk.Entry:
+        return self._entry_drawing_export_path
+
+    @property
+    def button_drawing_export_path(self) -> ttk.Button:
+        return self._btn_browse_drawing_export_path
+
+    @property
     def input_stp_export_path(self) -> ttk.Entry:
         return self._entry_stp_export_path
 
@@ -463,6 +535,10 @@ class Layout:
     @property
     def checkbox_export_docket(self) -> ttk.Checkbutton:
         return self._chkbtn_export_docket
+
+    @property
+    def checkbox_export_drawing(self) -> ttk.Checkbutton:
+        return self._chkbtn_export_drawing
 
     @property
     def checkbox_export_stp(self) -> ttk.Checkbutton:
