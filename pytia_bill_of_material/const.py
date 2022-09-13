@@ -47,6 +47,8 @@ CONFIG_USERS = "users.json"
 CONFIG_DOCKET = "docket.json"
 CONFIG_PROPERTIES = "properties.json"
 
+PROP_DRAWING_PATH = "pytia.drawing_path"
+
 TEMPLATE_DOCKET = "docket.CATDrawing"
 
 WEB_PIP = "www.pypi.org"
