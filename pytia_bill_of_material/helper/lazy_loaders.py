@@ -5,6 +5,7 @@
 import functools
 import os
 import time
+from pathlib import Path
 from typing import Optional
 
 from pytia.exceptions import PytiaDifferentDocumentError, PytiaDocumentNotSavedError
@@ -56,9 +57,9 @@ class LazyDocumentHelper:
         log.debug(f"Loaded document in {(end_time-start_time):.4f}s")
 
     @property
-    def path(self) -> str:
+    def path(self) -> Path:
         """Returns the documents absolute path with filename and file extension."""
-        return self.document.document.full_name
+        return Path(self.document.document.full_name)
 
     @property
     def partnumber(self) -> str:
