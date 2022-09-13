@@ -50,6 +50,7 @@ class UISetter:
         self.workspace = workspace
 
         self._state_checkbox_export_docket = tk.NORMAL
+        self._state_checkbox_export_drawing = tk.NORMAL
         self._state_checkbox_export_stp = tk.NORMAL
         self._state_checkbox_export_stl = tk.NORMAL
 
@@ -83,6 +84,9 @@ class UISetter:
             state=tk.NORMAL if templates.docket_path is not None else tk.DISABLED
         )
 
+        self.layout.input_drawing_export_path.configure(state=tk.NORMAL)
+        self.layout.button_drawing_export_path.configure(state=tk.NORMAL)
+
         self.layout.input_stp_export_path.configure(state=tk.NORMAL)
         self.layout.button_stp_export_path.configure(state=tk.NORMAL)
 
@@ -93,6 +97,11 @@ class UISetter:
             state=self._state_checkbox_export_docket
             if os.path.isdir(self.vars.docket_export_path.get())
             and templates.docket_path is not None
+            else tk.DISABLED
+        )
+        self.layout.checkbox_export_drawing.configure(
+            state=self._state_checkbox_export_drawing
+            if os.path.isdir(self.vars.drawing_export_path.get())
             else tk.DISABLED
         )
         self.layout.checkbox_export_stp.configure(
@@ -124,6 +133,9 @@ class UISetter:
         self.layout.input_docket_export_path.configure(state=tk.DISABLED)
         self.layout.button_docket_export_path.configure(state=tk.DISABLED)
 
+        self.layout.input_drawing_export_path.configure(state=tk.DISABLED)
+        self.layout.button_drawing_export_path.configure(state=tk.DISABLED)
+
         self.layout.input_stp_export_path.configure(state=tk.DISABLED)
         self.layout.button_stp_export_path.configure(state=tk.DISABLED)
 
@@ -132,6 +144,11 @@ class UISetter:
 
         self._state_checkbox_export_docket = self.layout.checkbox_export_docket.state()
         self.layout.checkbox_export_docket.configure(state=tk.DISABLED)
+
+        self._state_checkbox_export_drawing = (
+            self.layout.checkbox_export_drawing.state()
+        )
+        self.layout.checkbox_export_drawing.configure(state=tk.DISABLED)
 
         self._state_checkbox_export_stp = self.layout.checkbox_export_stp.state()
         self.layout.checkbox_export_stp.configure(state=tk.DISABLED)

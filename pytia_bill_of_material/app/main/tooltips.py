@@ -97,6 +97,20 @@ class ToolTips:
             text=("Select the folder into which all docket files will be exported."),
         )
 
+        drawing_path_tooltip = (
+            "Defines the export folder of the drawing files (pdf and dxf). "
+            "Existing files are going to be overwritten."
+        )
+        if workspace.elements.drawing_folder is not None:
+            drawing_path_tooltip += (
+                "\n\nThe path has been pre-selected from the workspace file."
+            )
+        ToolTip(widget=layout.input_drawing_export_path, text=drawing_path_tooltip)
+        ToolTip(
+            widget=layout.button_drawing_export_path,
+            text=("Select the folder into which all drawing files will be exported."),
+        )
+
         stp_path_tooltip = (
             "Defines the export folder of the generated stp files. "
             "Existing files are going to be overwritten."
@@ -132,6 +146,17 @@ class ToolTips:
             text=(
                 "Generates a pdf docket for each item in the summary of the exported bill of "
                 "material. Only exports items which are of source 'made'.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_drawing,
+            text=(
+                "Saves the drawing as pdf and dxf file for each item in the summary of the "
+                "exported bill of material.\n\n"
+                "Only exports drawings that are linked to the document. The link will be set if "
+                "you used the PYTIA Title Block Editor App on the drawing file.\n\n"
                 "This requires a valid path. Existing files at the target location will be "
                 "overwritten."
             ),

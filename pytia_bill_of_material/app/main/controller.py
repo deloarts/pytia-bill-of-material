@@ -167,6 +167,14 @@ class Controller:
         # Write default stp export path
         set_default_folder_and_checkbox_from_workspace(
             workspace_folder=self.workspace.workspace_folder,
+            workspace_default_path=self.workspace.elements.drawing_folder,
+            export_path_variable=self.vars.drawing_export_path,
+            export_checkbox_variable=self.vars.export_drawing,
+        )
+
+        # Write default stp export path
+        set_default_folder_and_checkbox_from_workspace(
+            workspace_folder=self.workspace.workspace_folder,
             workspace_default_path=self.workspace.elements.stp_folder,
             export_path_variable=self.vars.stp_export_path,
             export_checkbox_variable=self.vars.export_stp,

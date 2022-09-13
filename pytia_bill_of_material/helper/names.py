@@ -43,24 +43,31 @@ def get_bom_export_name(workspace: Workspace, project: str, machine: str) -> str
     return initial_file.lstrip()
 
 
-def get_data_export_name(bom_item: BOMAssemblyItem) -> str:
+def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -> str:
     """
     Returns the name for generated data to export (docket, step, stl, ...).
     The export name will look like this:
-    `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
+    `MACHINE_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
 
     The revision will be prefixed with `Rev`.
 
     Args:
         bom_item (BOMAssemblyItem): The BOM object.
+        with_project (bool): Whether to include the project number in filename or not.
 
     Returns:
         str: The file name without extension.
     """
     # TODO: Make the export filename configurable in the settings.json
-    return (
-        f"{bom_item.properties[resource.bom.required_header_items.project]} "
+
+    value = (
         f"{bom_item.properties[resource.bom.required_header_items.machine]} "
         f"{bom_item.properties[resource.bom.required_header_items.partnumber]} "
         f"Rev{bom_item.properties[resource.bom.required_header_items.revision]}"
     )
+    if with_project:
+        value = (
+            f"{bom_item.properties[resource.bom.required_header_items.project]} "
+            + value
+        )
+    return value
