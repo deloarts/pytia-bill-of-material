@@ -36,6 +36,8 @@ Recommended python install options for the user:
 python-installer.exe /passive PrependPath=1 Include_doc=0 Include_test=0 SimpleInstall=1 SimpleInstallDescription="python for pytia"
 ```
 
+For convenience there is a powershell script that will install the required python version for you, see [assets/python_installer.ps1](assets/python_installer.ps1).
+
 ### 1.2 developer
 
 On the developers machine (this is you) install the following:
