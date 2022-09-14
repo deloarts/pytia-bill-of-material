@@ -20,6 +20,14 @@ from utils.excel import row_is_empty
 
 
 class ProcessBomTask(TaskProtocol):
+    """
+    This class processes the bill of material from the converted xlsx file.
+    It generates the BOM object from the xlsx file.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+    """
+
     __slots__ = ("_xlsx", "_project", "_paths", "_bom")
 
     def __init__(self, xlsx: Path, project_number: str, paths: Paths) -> None:
@@ -32,6 +40,7 @@ class ProcessBomTask(TaskProtocol):
         return self._bom
 
     def run(self) -> None:
+        """Runs the task."""
         log.info("Processing bill of material.")
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)

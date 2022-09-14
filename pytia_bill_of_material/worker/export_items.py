@@ -22,6 +22,24 @@ from .runner import Runner
 
 
 class ExportItemsTask(TaskProtocol):
+    """
+    Exports all items:
+    - Dockets
+    - Drawings
+    - STP
+    - STL
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+
+    Raises:
+        Exception: Raised when the keyword for 'source' is not in the BOM.
+        PytiaWrongDocumentTypeError: Raised when the document is neither a part nor a product.
+
+    Returns:
+        _type_: _description_
+    """
+
     __slots__ = (
         "_runner",
         "_bom",
@@ -29,6 +47,7 @@ class ExportItemsTask(TaskProtocol):
         "_export_stp",
         "_export_stl",
         "_docket_path",
+        "_drawing_path",
         "_stp_path",
         "_stl_path",
         "_docket_config",
@@ -49,6 +68,25 @@ class ExportItemsTask(TaskProtocol):
         stl_path: Path,
         docket_config: DocketConfig,
     ) -> None:
+        """
+        Inits the class.
+
+        Note for the export folders: All files will be exported to the user's temp directory.
+        After all exports have been finished, all files will be moved to the given export paths.
+
+        Args:
+            runner (Runner): The task runner instance.
+            bom (BOM): The BOM object.
+            export_docket (bool): Wether to export the docket or not.
+            export_drawing (bool): Wether to export the drawing or not.
+            export_stp (bool): Wether to export the stp or not.
+            export_stl (bool): Wether to export the stl or not.
+            docket_path (Path): The destination folder for the docket.
+            drawing_path (Path): The destination folder for the drawing.
+            stp_path (Path): The destination folder for the stp.
+            stl_path (Path): The destination folder for the stl.
+            docket_config (DocketConfig): The configuration for the docket.
+        """
         self._runner = runner
         self._bom = bom
         self._export_docket = export_docket
@@ -62,6 +100,12 @@ class ExportItemsTask(TaskProtocol):
         self._docket_config = docket_config
 
     def run(self) -> None:
+        """
+        Runs the task.
+
+        Raises:
+            Exception: Raised when the keyword for 'source' is not in the BOM.
+        """
         log.info("Exporting selected items.")
         if any([self._export_docket, self._export_stp, self._export_stl]):
             for item in self._bom.summary.items:
@@ -85,6 +129,17 @@ class ExportItemsTask(TaskProtocol):
             log.info("Skipping item export: None selected.")
 
     def _generate_qr(self, bom_item: BOMAssemblyItem) -> Path:
+        """
+        Generates a qr png file and saves it to the temp directory. Returns the path.
+        The QR ode contains a serialized json of: project, machine, partnumber and revision.
+
+        Args:
+            bom_item (BOMAssemblyItem): An item of the BOM object, from which data to generate the \
+                qr code.
+
+        Returns:
+            Path: The path to the generated png file.
+        """
         project = bom_item.properties[resource.bom.required_header_items.project]
         machine = bom_item.properties[resource.bom.required_header_items.machine]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
@@ -108,6 +163,17 @@ class ExportItemsTask(TaskProtocol):
         return qr_path
 
     def _export_item(self, bom_item: BOMAssemblyItem) -> None:
+        """
+        Exports the BOM item.
+
+        TODO: Refactor this into smaller bits.
+
+        Args:
+            bom_item (BOMAssemblyItem): An item of the BOM object.
+
+        Raises:
+            PytiaWrongDocumentTypeError: Raised when the BOM item is neither a part nor a product.
+        """
         if bom_item.path is None:
             log.warning(
                 f"Skipped export of item {bom_item.partnumber!r}: Path of item not found."

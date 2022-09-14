@@ -1,11 +1,5 @@
 """
     Submodule for the main task: Exporting data.
-    
-    TODO: Split up the main task. This class and its functions have too many responsibilities.
-
-    TODO: Create a class for handling the main tasks' files (temp excel files, png files, etc.).
-
-    TODO: Proper documentation.
 """
 
 from pathlib import Path
@@ -37,6 +31,11 @@ from .save_bom import SaveBomTask
 
 
 class MainTask:
+    """
+    This class runs all tasks to export and process the bill of material.
+    It uses the task runner to update the UI state.
+    """
+
     def __init__(
         self,
         main_ui: Tk,
@@ -46,6 +45,22 @@ class MainTask:
         variables: Variables,
         frames: Frames,
     ):
+        """
+        Inits the main task class.
+
+        This class hold 3 runners:
+        - Main runner for export handling and processing the bill of material.
+        - Export runner for handling all file exports.
+        - Move runner for releasing all exported files.
+
+        Args:
+            main_ui (Tk): The main window.
+            layout (Layout): The layout of the main window.
+            ui_setter (UISetter): The ui setter for the main window.
+            doc_helper (LazyDocumentHelper): The doc helper object.
+            variables (Variables): The main windows variables.
+            frames (Frames): The main windows frames.
+        """
         self.main_ui = main_ui
         self.layout = layout
         self.ui_setter = ui_setter
@@ -83,6 +98,7 @@ class MainTask:
         self.runner_main.add(func=self._create_report, name="Create Report")
 
     def run(self) -> None:
+        """Runs the task."""
         self.runner_main.run_tasks()
 
         if self._status == Status.OK:

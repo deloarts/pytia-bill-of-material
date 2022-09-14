@@ -2,11 +2,8 @@
     Preparation Task: Prepares the document for the export.
 """
 
-import json
-from dataclasses import asdict
 from pathlib import Path
 
-from const import TEMP_EXPORT
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -22,6 +19,17 @@ from resources import resource
 
 
 class PrepareTask(TaskProtocol):
+    """
+    This class is responsible for preparing the document for the export.
+    It sets up the catia bom format and retrieves all paths from all documents.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+
+    Raises:
+        PytiaDifferentDocumentError: Raised when the initial document has changed.
+    """
+
     __slots__ = ("_doc_helper", "_paths", "_docket_config")
 
     def __init__(self, doc_helper: LazyDocumentHelper) -> None:
@@ -42,6 +50,7 @@ class PrepareTask(TaskProtocol):
         return self._docket_config
 
     def run(self) -> None:
+        """Runs the task."""
         log.info("Preparing to export bill of material.")
 
         self._set_catia_bom_format()
@@ -60,8 +69,8 @@ class PrepareTask(TaskProtocol):
     @staticmethod
     def _retrieve_paths(product: PyProductDocument) -> Paths:
         """
-        Retrieves the paths of all items of the given CATIA product as Paths model. The content of the
-        returned Paths object looks like this: 
+        Retrieves the paths of all items of the given CATIA product as Paths model. The content of \
+            the returned Paths object looks like this: 
             `{ 'Part1': 'C:\\Users\\..\\Part1.CATPart', 'Part2': 'C:\\Users\\..\\Part2.CATPart' }`
 
         Args:
@@ -69,8 +78,8 @@ class PrepareTask(TaskProtocol):
                 the paths.
 
         Returns:
-            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of that \
-                partnumbers as values.
+            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of \
+                that partnumbers as values.
         """
         log.info(f"Reading all paths of {product.product.part_number!r}.")
         paths = Paths()

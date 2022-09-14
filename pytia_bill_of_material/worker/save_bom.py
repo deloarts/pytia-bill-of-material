@@ -7,14 +7,21 @@ from pathlib import Path
 from const import TEMP_EXPORT
 from models.bom import BOM
 from openpyxl.workbook import Workbook
+from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
 from utils.files import file_utility
-from protocols.task_protocol import TaskProtocol
 
 
 class SaveBomTask(TaskProtocol):
+    """
+    This class is used to format and save the finished bill of material file.
+
+    Args:
+        TaskProtocol (_type_): The task protocol.
+    """
+
     __slots__ = ("_bom", "_path")
 
     def __init__(self, bom: BOM, path: Path) -> None:
@@ -22,6 +29,7 @@ class SaveBomTask(TaskProtocol):
         self._path = path
 
     def run(self) -> None:
+        """Runs the task."""
         log.info("Saving finished bill of material.")
         source_path = self._save_bom(
             bom=self._bom,
