@@ -159,9 +159,9 @@ class ProcessBomTask(TaskProtocol):
 
                 if not resource.applied_keywords.partnumber in row_data:
                     raise KeyError(
-                        f"Cannot find keyword {resource.applied_keywords.partnumber!r} in exported Excel file. "
-                        "Are your language settings correct? Or is the $partnumber keyword not set "
-                        "in the bom.json's header_items?"
+                        f"Cannot find keyword {resource.applied_keywords.partnumber!r} in exported "
+                        "Excel file. Are your language settings correct? Or is the $partnumber "
+                        "keyword not set in the bom.json's header_items?"
                     )
 
                 if row_data[resource.applied_keywords.partnumber] is None:
