@@ -2,8 +2,11 @@
     Handler submodule.
 """
 
+import atexit
 import logging
 from tkinter import END, Text, Tk
+
+from pytia.log import log
 
 
 class WidgetLogHandler(logging.Handler):
@@ -40,6 +43,8 @@ class WidgetLogHandler(logging.Handler):
         self._widget.tag_config("WARNING", foreground="orange")
         self._widget.tag_config("ERROR", foreground="red")
         self._widget.tag_config("EXCEPTION", foreground="black", background="red")
+
+        atexit.register(lambda: log.logger.removeHandler(self))
 
     def emit(self, record) -> None:
         """
