@@ -17,6 +17,7 @@ Check out the pytia ecosystem:
 - [pytia-property-manager](https://github.com/deloarts/pytia-property-manager): An app to edit part and product properties.
 - [pytia-bounding-box](https://github.com/deloarts/pytia-bounding-box): An app to retrieve the bounding box of a part.
 - [pytia-bill-of-material](https://github.com/deloarts/pytia-bill-of-material): An app to retrieve the bill of material of a product.
+- [pytia-title-block](https://github.com/deloarts/pytia-title-block): An app to edit a drawing's title block.
 - [pytia-ui-tools](https://github.com/deloarts/pytia-ui-tools): A toolbox for all pytia apps.
 
 ## 1 installation
