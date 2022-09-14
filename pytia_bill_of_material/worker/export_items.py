@@ -44,6 +44,7 @@ class ExportItemsTask(TaskProtocol):
         export_stp: bool,
         export_stl: bool,
         docket_path: Path,
+        drawing_path: Path,
         stp_path: Path,
         stl_path: Path,
         docket_config: DocketConfig,
@@ -55,6 +56,7 @@ class ExportItemsTask(TaskProtocol):
         self._export_stp = export_stp
         self._export_stl = export_stl
         self._docket_path = docket_path
+        self._drawing_path = drawing_path
         self._stp_path = stp_path
         self._stl_path = stl_path
         self._docket_config = docket_config
@@ -147,7 +149,7 @@ class ExportItemsTask(TaskProtocol):
                 if self._export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=self._drawing_path,
                         document=part_document,
                     )
                 if self._export_stp:
@@ -184,7 +186,7 @@ class ExportItemsTask(TaskProtocol):
                 if self._export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=self._drawing_path,
                         document=product_document,
                     )
                 if self._export_stp:

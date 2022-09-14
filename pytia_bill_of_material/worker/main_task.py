@@ -168,6 +168,7 @@ class MainTask:
             export_stp=self.variables.export_stp.get(),
             export_stl=self.variables.export_stl.get(),
             docket_path=Path(self.variables.docket_export_path.get()),
+            drawing_path=Path(self.variables.drawing_export_path.get()),
             stp_path=Path(self.variables.stp_export_path.get()),
             stl_path=Path(self.variables.stl_export_path.get()),
             docket_config=self._docket_config,
