@@ -37,5 +37,10 @@ class MoveFilesTask(TaskProtocol):
                 name=f"Moving file {item.target.name!r}",
                 item=item,
             )
+        for item in file_utility.delete_items:
+            self._runner.add(
+                func=file_utility.delete_item,
+                name=f"Deleting file {str(item.path)!r}",
+                item=item,
+            )
         self._runner.run_tasks()
-        file_utility.delete_all()
