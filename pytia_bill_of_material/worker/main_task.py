@@ -106,6 +106,9 @@ class MainTask:
             self._export_items()
             self._move_files()
 
+            log.info("Re-opening main document...")
+            self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
+
             if file_utility.all_moved:
                 log.info("Export completed successfully.")
                 if tkmsg.askyesno(
@@ -177,6 +180,7 @@ class MainTask:
 
     def _export_items(self, *_) -> None:
         task = ExportItemsTask(
+            lazy_loader=self.doc_helper,
             runner=self.runner_item_export,
             bom=self._bom,
             export_docket=self.variables.export_docket.get(),

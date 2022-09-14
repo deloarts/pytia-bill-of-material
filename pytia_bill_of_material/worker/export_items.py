@@ -5,6 +5,7 @@
 from pathlib import Path
 
 from const import LOGON, TEMP_EXPORT
+from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_data_export_name
 from models.bom import BOM, BOMAssemblyItem
 from protocols.task_protocol import TaskProtocol
@@ -41,6 +42,7 @@ class ExportItemsTask(TaskProtocol):
     """
 
     __slots__ = (
+        "_lazy_loader",
         "_runner",
         "_bom",
         "_export_docket",
@@ -56,6 +58,7 @@ class ExportItemsTask(TaskProtocol):
 
     def __init__(
         self,
+        lazy_loader: LazyDocumentHelper,
         runner: Runner,
         bom: BOM,
         export_docket: bool,
@@ -75,6 +78,7 @@ class ExportItemsTask(TaskProtocol):
         After all exports have been finished, all files will be moved to the given export paths.
 
         Args:
+            lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
             bom (BOM): The BOM object.
             export_docket (bool): Wether to export the docket or not.
@@ -87,6 +91,7 @@ class ExportItemsTask(TaskProtocol):
             stl_path (Path): The destination folder for the stl.
             docket_config (DocketConfig): The configuration for the docket.
         """
+        self._lazy_loader = lazy_loader
         self._runner = runner
         self._bom = bom
         self._export_docket = export_docket
@@ -106,8 +111,17 @@ class ExportItemsTask(TaskProtocol):
         Raises:
             Exception: Raised when the keyword for 'source' is not in the BOM.
         """
+        self._lazy_loader.close_all_documents()
+
         log.info("Exporting selected items.")
-        if any([self._export_docket, self._export_stp, self._export_stl]):
+        if any(
+            [
+                self._export_docket,
+                self._export_stp,
+                self._export_stl,
+                self._export_drawing,
+            ]
+        ):
             for item in self._bom.summary.items:
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
