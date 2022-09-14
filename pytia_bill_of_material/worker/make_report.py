@@ -7,12 +7,25 @@ import re
 from const import Status
 from models.bom import BOM
 from models.report import Report, ReportItem
+from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
-from protocols.task_protocol import TaskProtocol
 
 
 class MakeReportTask(TaskProtocol):
+    """
+    Generates the report for the exported bill of material.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+
+    Raises:
+            KeyError: Raised when a condition key is not in the BOM header items.
+            TypeError: Raised when a condition value of the filters.json is neither `dict` nor `bool`.
+            ValueError: Raised when the property_name value of the filters.json is not in the BOM \
+                header items.
+    """
+
     __slots__ = ("_bom", "_report", "_status")
 
     def __init__(self, bom: BOM) -> None:
@@ -27,6 +40,7 @@ class MakeReportTask(TaskProtocol):
         return self._status
 
     def run(self) -> None:
+        """Runs the task."""
         log.info("Creating report.")
 
         self._report = self._generate_report(bom=self._bom)

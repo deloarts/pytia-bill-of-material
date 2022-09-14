@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-Alpha-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.3.0-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.3.1-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -17,6 +17,7 @@ Check out the pytia ecosystem:
 - [pytia-property-manager](https://github.com/deloarts/pytia-property-manager): An app to edit part and product properties.
 - [pytia-bounding-box](https://github.com/deloarts/pytia-bounding-box): An app to retrieve the bounding box of a part.
 - [pytia-bill-of-material](https://github.com/deloarts/pytia-bill-of-material): An app to retrieve the bill of material of a product.
+- [pytia-title-block](https://github.com/deloarts/pytia-title-block): An app to edit a drawing's title block.
 - [pytia-ui-tools](https://github.com/deloarts/pytia-ui-tools): A toolbox for all pytia apps.
 
 ## 1 installation
@@ -237,6 +238,7 @@ The filename of the workspace file can be changed in the **settings.json** file,
 
 ## 6 changelog
 
+**v0.3.1**: Fix drawing path bug.  
 **v0.3.0**: Add drawing export feature.  
 **v0.2.0**: Add report document handler and log console.  
 **v0.1.2**: Fix deleting template files too early.  

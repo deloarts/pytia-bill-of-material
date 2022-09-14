@@ -9,18 +9,40 @@ from pathlib import Path
 from const import EXCEL_EXE, TEMP_EXPORT
 from exceptions import PytiaConvertError
 from helper.lazy_loaders import LazyDocumentHelper
+from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
 from utils.excel import get_excel
 from utils.files import file_utility
 from utils.system import application_is_running
-from protocols.task_protocol import TaskProtocol
 
 
 class CatiaExportTask(TaskProtocol):
+    """
+    Exports the BOM data from CATIA. This is done via a xls file, which is the converted to
+    a xlsx file.
+
+    This class holds those files as properties.
+
+    All exported data will be deleted at application exit.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+
+    Raises:
+        FileNotFoundError: Raised when CATIA failed to export the xls file.
+        PytiaConvertError: Raised when the xls file cannot be converted to a xlsx file.
+    """
+
     __slots__ = ("_doc_helper", "_xls", "_xlsx", "_bom")
 
     def __init__(self, doc_helper: LazyDocumentHelper) -> None:
+        """
+        Inits the class.
+
+        Args:
+            doc_helper (LazyDocumentHelper): The document helper object.
+        """
         self._doc_helper = doc_helper
 
     @property
@@ -32,6 +54,7 @@ class CatiaExportTask(TaskProtocol):
         return self._xlsx
 
     def run(self) -> None:
+        """Runs the export."""
         log.info("Exporting bill of material from catia.")
 
         self._xls = Path(

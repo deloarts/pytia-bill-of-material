@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>pytia_bill_of_material.worker.main_task API documentation</title>
-<meta name="description" content="Submodule for the main task: Exporting data …" />
+<meta name="description" content="Submodule for the main task: Exporting data." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,21 +23,12 @@
 </header>
 <section id="section-intro">
 <p>Submodule for the main task: Exporting data.</p>
-<p>TODO: Split up the main task. This class and its functions have too many responsibilities.</p>
-<p>TODO: Create a class for handling the main tasks' files (temp excel files, png files, etc.).</p>
-<p>TODO: Proper documentation.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
     Submodule for the main task: Exporting data.
-    
-    TODO: Split up the main task. This class and its functions have too many responsibilities.
-
-    TODO: Create a class for handling the main tasks&#39; files (temp excel files, png files, etc.).
-
-    TODO: Proper documentation.
 &#34;&#34;&#34;
 
 from pathlib import Path
@@ -69,6 +60,11 @@ from .save_bom import SaveBomTask
 
 
 class MainTask:
+    &#34;&#34;&#34;
+    This class runs all tasks to export and process the bill of material.
+    It uses the task runner to update the UI state.
+    &#34;&#34;&#34;
+
     def __init__(
         self,
         main_ui: Tk,
@@ -78,6 +74,22 @@ class MainTask:
         variables: Variables,
         frames: Frames,
     ):
+        &#34;&#34;&#34;
+        Inits the main task class.
+
+        This class hold 3 runners:
+        - Main runner for export handling and processing the bill of material.
+        - Export runner for handling all file exports.
+        - Move runner for releasing all exported files.
+
+        Args:
+            main_ui (Tk): The main window.
+            layout (Layout): The layout of the main window.
+            ui_setter (UISetter): The ui setter for the main window.
+            doc_helper (LazyDocumentHelper): The doc helper object.
+            variables (Variables): The main windows variables.
+            frames (Frames): The main windows frames.
+        &#34;&#34;&#34;
         self.main_ui = main_ui
         self.layout = layout
         self.ui_setter = ui_setter
@@ -115,6 +127,7 @@ class MainTask:
         self.runner_main.add(func=self._create_report, name=&#34;Create Report&#34;)
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         self.runner_main.run_tasks()
 
         if self._status == Status.OK:
@@ -200,6 +213,7 @@ class MainTask:
             export_stp=self.variables.export_stp.get(),
             export_stl=self.variables.export_stl.get(),
             docket_path=Path(self.variables.docket_export_path.get()),
+            drawing_path=Path(self.variables.drawing_export_path.get()),
             stp_path=Path(self.variables.stp_export_path.get()),
             stl_path=Path(self.variables.stl_export_path.get()),
             docket_config=self._docket_config,
@@ -225,12 +239,38 @@ class MainTask:
 <span>(</span><span>main_ui: tkinter.Tk, layout: app.main.layout.Layout, ui_setter: app.main.ui_setter.UISetter, doc_helper: helper.lazy_loaders.LazyDocumentHelper, variables: app.main.vars.Variables, frames: app.main.frames.Frames)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>This class runs all tasks to export and process the bill of material.
+It uses the task runner to update the UI state.</p>
+<p>Inits the main task class.</p>
+<p>This class hold 3 runners:
+- Main runner for export handling and processing the bill of material.
+- Export runner for handling all file exports.
+- Move runner for releasing all exported files.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>main_ui</code></strong> :&ensp;<code>Tk</code></dt>
+<dd>The main window.</dd>
+<dt><strong><code>layout</code></strong> :&ensp;<code>Layout</code></dt>
+<dd>The layout of the main window.</dd>
+<dt><strong><code>ui_setter</code></strong> :&ensp;<code>UISetter</code></dt>
+<dd>The ui setter for the main window.</dd>
+<dt><strong><code>doc_helper</code></strong> :&ensp;<code>LazyDocumentHelper</code></dt>
+<dd>The doc helper object.</dd>
+<dt><strong><code>variables</code></strong> :&ensp;<code>Variables</code></dt>
+<dd>The main windows variables.</dd>
+<dt><strong><code>frames</code></strong> :&ensp;<code>Frames</code></dt>
+<dd>The main windows frames.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MainTask:
+    &#34;&#34;&#34;
+    This class runs all tasks to export and process the bill of material.
+    It uses the task runner to update the UI state.
+    &#34;&#34;&#34;
+
     def __init__(
         self,
         main_ui: Tk,
@@ -240,6 +280,22 @@ class MainTask:
         variables: Variables,
         frames: Frames,
     ):
+        &#34;&#34;&#34;
+        Inits the main task class.
+
+        This class hold 3 runners:
+        - Main runner for export handling and processing the bill of material.
+        - Export runner for handling all file exports.
+        - Move runner for releasing all exported files.
+
+        Args:
+            main_ui (Tk): The main window.
+            layout (Layout): The layout of the main window.
+            ui_setter (UISetter): The ui setter for the main window.
+            doc_helper (LazyDocumentHelper): The doc helper object.
+            variables (Variables): The main windows variables.
+            frames (Frames): The main windows frames.
+        &#34;&#34;&#34;
         self.main_ui = main_ui
         self.layout = layout
         self.ui_setter = ui_setter
@@ -277,6 +333,7 @@ class MainTask:
         self.runner_main.add(func=self._create_report, name=&#34;Create Report&#34;)
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         self.runner_main.run_tasks()
 
         if self._status == Status.OK:
@@ -362,6 +419,7 @@ class MainTask:
             export_stp=self.variables.export_stp.get(),
             export_stl=self.variables.export_stl.get(),
             docket_path=Path(self.variables.docket_export_path.get()),
+            drawing_path=Path(self.variables.drawing_export_path.get()),
             stp_path=Path(self.variables.stp_export_path.get()),
             stl_path=Path(self.variables.stl_export_path.get()),
             docket_config=self._docket_config,
@@ -378,12 +436,13 @@ class MainTask:
 <span>def <span class="ident">run</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs the task.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(self) -&gt; None:
+    &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     self.runner_main.run_tasks()
 
     if self._status == Status.OK:

@@ -49,6 +49,14 @@ from utils.excel import row_is_empty
 
 
 class ProcessBomTask(TaskProtocol):
+    &#34;&#34;&#34;
+    This class processes the bill of material from the converted xlsx file.
+    It generates the BOM object from the xlsx file.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_xlsx&#34;, &#34;_project&#34;, &#34;_paths&#34;, &#34;_bom&#34;)
 
     def __init__(self, xlsx: Path, project_number: str, paths: Paths) -&gt; None:
@@ -61,6 +69,7 @@ class ProcessBomTask(TaskProtocol):
         return self._bom
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Processing bill of material.&#34;)
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
@@ -371,36 +380,26 @@ class ProcessBomTask(TaskProtocol):
 <span>(</span><span>xlsx: pathlib.Path, project_number: str, paths: models.paths.Paths)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class for protocol classes.</p>
-<p>Protocol classes are defined as::</p>
-<pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-<p>Such classes are primarily used with static type checkers that recognize
-structural subtyping (static duck-typing), for example::</p>
-<pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-<p>See PEP 544 for details. Protocol classes decorated with
-@typing.runtime_checkable act as simple-minded runtime protocols that check
-only the presence of given attributes, ignoring their type signatures.
-Protocol classes can be generic, they are defined as::</p>
-<pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+<div class="desc"><p>This class processes the bill of material from the converted xlsx file.
+It generates the BOM object from the xlsx file.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>TaskProtocol</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>The protocol for the task runner.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ProcessBomTask(TaskProtocol):
+    &#34;&#34;&#34;
+    This class processes the bill of material from the converted xlsx file.
+    It generates the BOM object from the xlsx file.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_xlsx&#34;, &#34;_project&#34;, &#34;_paths&#34;, &#34;_bom&#34;)
 
     def __init__(self, xlsx: Path, project_number: str, paths: Paths) -&gt; None:
@@ -413,6 +412,7 @@ Protocol classes can be generic, they are defined as::</p>
         return self._bom
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Processing bill of material.&#34;)
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
@@ -735,12 +735,13 @@ def bom(self) -&gt; BOM:
 <span>def <span class="ident">run</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs the task.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(self) -&gt; None:
+    &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     log.info(&#34;Processing bill of material.&#34;)
 
     wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)

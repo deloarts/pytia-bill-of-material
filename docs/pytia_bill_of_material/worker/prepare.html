@@ -31,11 +31,8 @@
     Preparation Task: Prepares the document for the export.
 &#34;&#34;&#34;
 
-import json
-from dataclasses import asdict
 from pathlib import Path
 
-from const import TEMP_EXPORT
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -51,6 +48,17 @@ from resources import resource
 
 
 class PrepareTask(TaskProtocol):
+    &#34;&#34;&#34;
+    This class is responsible for preparing the document for the export.
+    It sets up the catia bom format and retrieves all paths from all documents.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+
+    Raises:
+        PytiaDifferentDocumentError: Raised when the initial document has changed.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
@@ -71,6 +79,7 @@ class PrepareTask(TaskProtocol):
         return self._docket_config
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         self._set_catia_bom_format()
@@ -89,8 +98,8 @@ class PrepareTask(TaskProtocol):
     @staticmethod
     def _retrieve_paths(product: PyProductDocument) -&gt; Paths:
         &#34;&#34;&#34;
-        Retrieves the paths of all items of the given CATIA product as Paths model. The content of the
-        returned Paths object looks like this: 
+        Retrieves the paths of all items of the given CATIA product as Paths model. The content of \
+            the returned Paths object looks like this: 
             `{ &#39;Part1&#39;: &#39;C:\\Users\\..\\Part1.CATPart&#39;, &#39;Part2&#39;: &#39;C:\\Users\\..\\Part2.CATPart&#39; }`
 
         Args:
@@ -98,8 +107,8 @@ class PrepareTask(TaskProtocol):
                 the paths.
 
         Returns:
-            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of that \
-                partnumbers as values.
+            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of \
+                that partnumbers as values.
         &#34;&#34;&#34;
         log.info(f&#34;Reading all paths of {product.product.part_number!r}.&#34;)
         paths = Paths()
@@ -151,36 +160,34 @@ class PrepareTask(TaskProtocol):
 <span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class for protocol classes.</p>
-<p>Protocol classes are defined as::</p>
-<pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-<p>Such classes are primarily used with static type checkers that recognize
-structural subtyping (static duck-typing), for example::</p>
-<pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-<p>See PEP 544 for details. Protocol classes decorated with
-@typing.runtime_checkable act as simple-minded runtime protocols that check
-only the presence of given attributes, ignoring their type signatures.
-Protocol classes can be generic, they are defined as::</p>
-<pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+<div class="desc"><p>This class is responsible for preparing the document for the export.
+It sets up the catia bom format and retrieves all paths from all documents.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>TaskProtocol</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>The protocol for the task runner.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>PytiaDifferentDocumentError</code></dt>
+<dd>Raised when the initial document has changed.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PrepareTask(TaskProtocol):
+    &#34;&#34;&#34;
+    This class is responsible for preparing the document for the export.
+    It sets up the catia bom format and retrieves all paths from all documents.
+
+    Args:
+        TaskProtocol (_type_): The protocol for the task runner.
+
+    Raises:
+        PytiaDifferentDocumentError: Raised when the initial document has changed.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
@@ -201,6 +208,7 @@ Protocol classes can be generic, they are defined as::</p>
         return self._docket_config
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         self._set_catia_bom_format()
@@ -219,8 +227,8 @@ Protocol classes can be generic, they are defined as::</p>
     @staticmethod
     def _retrieve_paths(product: PyProductDocument) -&gt; Paths:
         &#34;&#34;&#34;
-        Retrieves the paths of all items of the given CATIA product as Paths model. The content of the
-        returned Paths object looks like this: 
+        Retrieves the paths of all items of the given CATIA product as Paths model. The content of \
+            the returned Paths object looks like this: 
             `{ &#39;Part1&#39;: &#39;C:\\Users\\..\\Part1.CATPart&#39;, &#39;Part2&#39;: &#39;C:\\Users\\..\\Part2.CATPart&#39; }`
 
         Args:
@@ -228,8 +236,8 @@ Protocol classes can be generic, they are defined as::</p>
                 the paths.
 
         Returns:
-            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of that \
-                partnumbers as values.
+            Paths: The Paths model, that contains a dict of all partnumbers as keys and paths of \
+                that partnumbers as values.
         &#34;&#34;&#34;
         log.info(f&#34;Reading all paths of {product.product.part_number!r}.&#34;)
         paths = Paths()
@@ -305,12 +313,13 @@ def paths(self) -&gt; Paths:
 <span>def <span class="ident">run</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs the task.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(self) -&gt; None:
+    &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     log.info(&#34;Preparing to export bill of material.&#34;)
 
     self._set_catia_bom_format()

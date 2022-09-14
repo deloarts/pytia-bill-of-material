@@ -39,12 +39,26 @@ from .runner import Runner
 
 
 class MoveFilesTask(TaskProtocol):
+    &#34;&#34;&#34;
+    Moves all files to their destination after the export.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+    &#34;&#34;&#34;
+
     __slots__ = &#34;_runner&#34;
 
     def __init__(self, runner: Runner) -&gt; None:
+        &#34;&#34;&#34;
+        Inits the class.
+
+        Args:
+            runner (Runner): The runner instance for handling UI elements.
+        &#34;&#34;&#34;
         self._runner = runner
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Moving files.&#34;)
         for item in file_utility.move_items:
             self._runner.add(
@@ -70,42 +84,43 @@ class MoveFilesTask(TaskProtocol):
 <span>(</span><span>runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class for protocol classes.</p>
-<p>Protocol classes are defined as::</p>
-<pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-<p>Such classes are primarily used with static type checkers that recognize
-structural subtyping (static duck-typing), for example::</p>
-<pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-<p>See PEP 544 for details. Protocol classes decorated with
-@typing.runtime_checkable act as simple-minded runtime protocols that check
-only the presence of given attributes, ignoring their type signatures.
-Protocol classes can be generic, they are defined as::</p>
-<pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+<div class="desc"><p>Moves all files to their destination after the export.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>TaskProtocol</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>The task runner protocol.</dd>
+</dl>
+<p>Inits the class.</p>
+<h2 id="args_1">Args</h2>
+<dl>
+<dt><strong><code>runner</code></strong> :&ensp;<code>Runner</code></dt>
+<dd>The runner instance for handling UI elements.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MoveFilesTask(TaskProtocol):
+    &#34;&#34;&#34;
+    Moves all files to their destination after the export.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+    &#34;&#34;&#34;
+
     __slots__ = &#34;_runner&#34;
 
     def __init__(self, runner: Runner) -&gt; None:
+        &#34;&#34;&#34;
+        Inits the class.
+
+        Args:
+            runner (Runner): The runner instance for handling UI elements.
+        &#34;&#34;&#34;
         self._runner = runner
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Moving files.&#34;)
         for item in file_utility.move_items:
             self._runner.add(
@@ -128,12 +143,13 @@ Protocol classes can be generic, they are defined as::</p>
 <span>def <span class="ident">run</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs the task.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(self) -&gt; None:
+    &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     log.info(&#34;Moving files.&#34;)
     for item in file_utility.move_items:
         self._runner.add(

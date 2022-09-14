@@ -40,18 +40,40 @@ from pathlib import Path
 from const import EXCEL_EXE, TEMP_EXPORT
 from exceptions import PytiaConvertError
 from helper.lazy_loaders import LazyDocumentHelper
+from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
 from utils.excel import get_excel
 from utils.files import file_utility
 from utils.system import application_is_running
-from protocols.task_protocol import TaskProtocol
 
 
 class CatiaExportTask(TaskProtocol):
+    &#34;&#34;&#34;
+    Exports the BOM data from CATIA. This is done via a xls file, which is the converted to
+    a xlsx file.
+
+    This class holds those files as properties.
+
+    All exported data will be deleted at application exit.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+
+    Raises:
+        FileNotFoundError: Raised when CATIA failed to export the xls file.
+        PytiaConvertError: Raised when the xls file cannot be converted to a xlsx file.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_doc_helper&#34;, &#34;_xls&#34;, &#34;_xlsx&#34;, &#34;_bom&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
+        &#34;&#34;&#34;
+        Inits the class.
+
+        Args:
+            doc_helper (LazyDocumentHelper): The document helper object.
+        &#34;&#34;&#34;
         self._doc_helper = doc_helper
 
     @property
@@ -63,6 +85,7 @@ class CatiaExportTask(TaskProtocol):
         return self._xlsx
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
         log.info(&#34;Exporting bill of material from catia.&#34;)
 
         self._xls = Path(
@@ -134,39 +157,58 @@ class CatiaExportTask(TaskProtocol):
 <span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Base class for protocol classes.</p>
-<p>Protocol classes are defined as::</p>
-<pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-<p>Such classes are primarily used with static type checkers that recognize
-structural subtyping (static duck-typing), for example::</p>
-<pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-<p>See PEP 544 for details. Protocol classes decorated with
-@typing.runtime_checkable act as simple-minded runtime protocols that check
-only the presence of given attributes, ignoring their type signatures.
-Protocol classes can be generic, they are defined as::</p>
-<pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
+<div class="desc"><p>Exports the BOM data from CATIA. This is done via a xls file, which is the converted to
+a xlsx file.</p>
+<p>This class holds those files as properties.</p>
+<p>All exported data will be deleted at application exit.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>TaskProtocol</code></strong> :&ensp;<code>_type_</code></dt>
+<dd>The task runner protocol.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>FileNotFoundError</code></dt>
+<dd>Raised when CATIA failed to export the xls file.</dd>
+<dt><code>PytiaConvertError</code></dt>
+<dd>Raised when the xls file cannot be converted to a xlsx file.</dd>
+</dl>
+<p>Inits the class.</p>
+<h2 id="args_1">Args</h2>
+<dl>
+<dt><strong><code>doc_helper</code></strong> :&ensp;<code>LazyDocumentHelper</code></dt>
+<dd>The document helper object.</dd>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CatiaExportTask(TaskProtocol):
+    &#34;&#34;&#34;
+    Exports the BOM data from CATIA. This is done via a xls file, which is the converted to
+    a xlsx file.
+
+    This class holds those files as properties.
+
+    All exported data will be deleted at application exit.
+
+    Args:
+        TaskProtocol (_type_): The task runner protocol.
+
+    Raises:
+        FileNotFoundError: Raised when CATIA failed to export the xls file.
+        PytiaConvertError: Raised when the xls file cannot be converted to a xlsx file.
+    &#34;&#34;&#34;
+
     __slots__ = (&#34;_doc_helper&#34;, &#34;_xls&#34;, &#34;_xlsx&#34;, &#34;_bom&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
+        &#34;&#34;&#34;
+        Inits the class.
+
+        Args:
+            doc_helper (LazyDocumentHelper): The document helper object.
+        &#34;&#34;&#34;
         self._doc_helper = doc_helper
 
     @property
@@ -178,6 +220,7 @@ Protocol classes can be generic, they are defined as::</p>
         return self._xlsx
 
     def run(self) -&gt; None:
+        &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
         log.info(&#34;Exporting bill of material from catia.&#34;)
 
         self._xls = Path(
@@ -273,12 +316,13 @@ def xlsx(self) -&gt; Path:
 <span>def <span class="ident">run</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs the export.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(self) -&gt; None:
+    &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
     log.info(&#34;Exporting bill of material from catia.&#34;)
 
     self._xls = Path(
