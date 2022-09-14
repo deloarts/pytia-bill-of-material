@@ -39,6 +39,10 @@ from pytia.log import log
 
 
 class Runner:
+    &#34;&#34;&#34;
+    This class is responsible for running tasks and updating the UI.
+    &#34;&#34;&#34;
+
     def __init__(
         self,
         root: Tk,
@@ -52,9 +56,20 @@ class Runner:
         self.runners: List[RunnerModel] = []
 
     def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+        &#34;&#34;&#34;
+        Add a task function. Functions must be task-protocol-functions.
+
+        Args:
+            func (Callable): The task to be queued.
+            name (str): The name of the task.
+
+        Kwargs:
+            Will be passed to the task function.
+        &#34;&#34;&#34;
         self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))
 
     def run_tasks(self) -&gt; None:
+        &#34;&#34;&#34;Runs all queued tasks.&#34;&#34;&#34;
         self._update_progress(1)
         for fn in self.runners:
             log.info(f&#34;Running task {fn.name!r}.&#34;)
@@ -66,6 +81,7 @@ class Runner:
         self._update_progress(100)
 
     def _update_progress(self, value: int | float) -&gt; None:
+        &#34;&#34;&#34;Update the progress bar.&#34;&#34;&#34;
         self.progress_callback.set(value)
         self.root.update_idletasks()</code></pre>
 </details>
@@ -84,12 +100,16 @@ class Runner:
 <span>(</span><span>root: tkinter.Tk, callback_variable: tkinter.DoubleVar, progress_bar: tkinter.ttk.Progressbar)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>This class is responsible for running tasks and updating the UI.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Runner:
+    &#34;&#34;&#34;
+    This class is responsible for running tasks and updating the UI.
+    &#34;&#34;&#34;
+
     def __init__(
         self,
         root: Tk,
@@ -103,9 +123,20 @@ class Runner:
         self.runners: List[RunnerModel] = []
 
     def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+        &#34;&#34;&#34;
+        Add a task function. Functions must be task-protocol-functions.
+
+        Args:
+            func (Callable): The task to be queued.
+            name (str): The name of the task.
+
+        Kwargs:
+            Will be passed to the task function.
+        &#34;&#34;&#34;
         self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))
 
     def run_tasks(self) -&gt; None:
+        &#34;&#34;&#34;Runs all queued tasks.&#34;&#34;&#34;
         self._update_progress(1)
         for fn in self.runners:
             log.info(f&#34;Running task {fn.name!r}.&#34;)
@@ -117,6 +148,7 @@ class Runner:
         self._update_progress(100)
 
     def _update_progress(self, value: int | float) -&gt; None:
+        &#34;&#34;&#34;Update the progress bar.&#34;&#34;&#34;
         self.progress_callback.set(value)
         self.root.update_idletasks()</code></pre>
 </details>
@@ -126,12 +158,31 @@ class Runner:
 <span>def <span class="ident">add</span></span>(<span>self, func: Callable, name: str, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add a task function. Functions must be task-protocol-functions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>func</code></strong> :&ensp;<code>Callable</code></dt>
+<dd>The task to be queued.</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the task.</dd>
+</dl>
+<h2 id="kwargs">Kwargs</h2>
+<p>Will be passed to the task function.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def add(self, func: Callable, name: str, **kwargs) -&gt; None:
+    &#34;&#34;&#34;
+    Add a task function. Functions must be task-protocol-functions.
+
+    Args:
+        func (Callable): The task to be queued.
+        name (str): The name of the task.
+
+    Kwargs:
+        Will be passed to the task function.
+    &#34;&#34;&#34;
     self.runners.append(RunnerModel(func=func, name=name, kwargs=kwargs))</code></pre>
 </details>
 </dd>
@@ -139,12 +190,13 @@ class Runner:
 <span>def <span class="ident">run_tasks</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Runs all queued tasks.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run_tasks(self) -&gt; None:
+    &#34;&#34;&#34;Runs all queued tasks.&#34;&#34;&#34;
     self._update_progress(1)
     for fn in self.runners:
         log.info(f&#34;Running task {fn.name!r}.&#34;)

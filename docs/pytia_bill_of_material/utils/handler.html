@@ -31,8 +31,11 @@
     Handler submodule.
 &#34;&#34;&#34;
 
+import atexit
 import logging
 from tkinter import END, Text, Tk
+
+from pytia.log import log
 
 
 class WidgetLogHandler(logging.Handler):
@@ -69,6 +72,8 @@ class WidgetLogHandler(logging.Handler):
         self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
         self._widget.tag_config(&#34;ERROR&#34;, foreground=&#34;red&#34;)
         self._widget.tag_config(&#34;EXCEPTION&#34;, foreground=&#34;black&#34;, background=&#34;red&#34;)
+
+        atexit.register(lambda: log.logger.removeHandler(self))
 
     def emit(self, record) -&gt; None:
         &#34;&#34;&#34;
@@ -180,6 +185,8 @@ class WidgetLogHandler(logging.Handler):
         self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
         self._widget.tag_config(&#34;ERROR&#34;, foreground=&#34;red&#34;)
         self._widget.tag_config(&#34;EXCEPTION&#34;, foreground=&#34;black&#34;, background=&#34;red&#34;)
+
+        atexit.register(lambda: log.logger.removeHandler(self))
 
     def emit(self, record) -&gt; None:
         &#34;&#34;&#34;

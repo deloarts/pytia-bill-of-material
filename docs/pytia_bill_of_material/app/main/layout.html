@@ -129,52 +129,10 @@ class Layout:
         )
         # endregion
 
-        # region drawing export path
-        lbl_drawing_export_path = ttk.Label(
-            frames.paths, text=&#34;Drawing Folder&#34;, width=18
-        )
-        lbl_drawing_export_path.grid(
-            row=1,
-            column=0,
-            padx=(Layout.MARGIN_X, 15),
-            pady=(2, 2),
-            sticky=&#34;nsew&#34;,
-        )
-
-        self._entry_drawing_export_path = ttk.Entry(
-            frames.paths,
-            textvariable=variables.drawing_export_path,
-            state=DISABLED,
-        )
-        self._entry_drawing_export_path.grid(
-            row=1,
-            column=1,
-            padx=(5, 2),
-            pady=(2, 2),
-            ipadx=2,
-            ipady=2,
-            sticky=&#34;nsew&#34;,
-        )
-
-        self._btn_browse_drawing_export_path = ttk.Button(
-            frames.paths,
-            text=&#34;...&#34;,
-            width=4,
-            state=DISABLED,
-        )
-        self._btn_browse_drawing_export_path.grid(
-            row=1,
-            column=2,
-            padx=(2, Layout.MARGIN_X),
-            pady=(2, 2),
-            sticky=&#34;nsew&#34;,
-        )
-        # endregion
-
         # region docket export path
         lbl_docket_export_path = ttk.Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
         lbl_docket_export_path.grid(
-            row=2,
+            row=1,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -187,7 +145,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_docket_export_path.grid(
-            row=2,
+            row=1,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -203,6 +161,48 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_docket_export_path.grid(
+            row=1,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region drawing export path
+        lbl_drawing_export_path = ttk.Label(
+            frames.paths, text=&#34;Drawing Folder&#34;, width=18
+        )
+        lbl_drawing_export_path.grid(
+            row=2,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._entry_drawing_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.drawing_export_path,
+            state=DISABLED,
+        )
+        self._entry_drawing_export_path.grid(
+            row=2,
+            column=1,
+            padx=(5, 2),
+            pady=(2, 2),
+            ipadx=2,
+            ipady=2,
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._btn_browse_drawing_export_path = ttk.Button(
+            frames.paths,
+            text=&#34;...&#34;,
+            width=4,
+            state=DISABLED,
+        )
+        self._btn_browse_drawing_export_path.grid(
             row=2,
             column=2,
             padx=(2, Layout.MARGIN_X),
@@ -750,52 +750,10 @@ class Layout:
         )
         # endregion
 
-        # region drawing export path
-        lbl_drawing_export_path = ttk.Label(
-            frames.paths, text=&#34;Drawing Folder&#34;, width=18
-        )
-        lbl_drawing_export_path.grid(
-            row=1,
-            column=0,
-            padx=(Layout.MARGIN_X, 15),
-            pady=(2, 2),
-            sticky=&#34;nsew&#34;,
-        )
-
-        self._entry_drawing_export_path = ttk.Entry(
-            frames.paths,
-            textvariable=variables.drawing_export_path,
-            state=DISABLED,
-        )
-        self._entry_drawing_export_path.grid(
-            row=1,
-            column=1,
-            padx=(5, 2),
-            pady=(2, 2),
-            ipadx=2,
-            ipady=2,
-            sticky=&#34;nsew&#34;,
-        )
-
-        self._btn_browse_drawing_export_path = ttk.Button(
-            frames.paths,
-            text=&#34;...&#34;,
-            width=4,
-            state=DISABLED,
-        )
-        self._btn_browse_drawing_export_path.grid(
-            row=1,
-            column=2,
-            padx=(2, Layout.MARGIN_X),
-            pady=(2, 2),
-            sticky=&#34;nsew&#34;,
-        )
-        # endregion
-
         # region docket export path
         lbl_docket_export_path = ttk.Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
         lbl_docket_export_path.grid(
-            row=2,
+            row=1,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -808,7 +766,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_docket_export_path.grid(
-            row=2,
+            row=1,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -824,6 +782,48 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_docket_export_path.grid(
+            row=1,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region drawing export path
+        lbl_drawing_export_path = ttk.Label(
+            frames.paths, text=&#34;Drawing Folder&#34;, width=18
+        )
+        lbl_drawing_export_path.grid(
+            row=2,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._entry_drawing_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.drawing_export_path,
+            state=DISABLED,
+        )
+        self._entry_drawing_export_path.grid(
+            row=2,
+            column=1,
+            padx=(5, 2),
+            pady=(2, 2),
+            ipadx=2,
+            ipady=2,
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._btn_browse_drawing_export_path = ttk.Button(
+            frames.paths,
+            text=&#34;...&#34;,
+            width=4,
+            state=DISABLED,
+        )
+        self._btn_browse_drawing_export_path.grid(
             row=2,
             column=2,
             padx=(2, Layout.MARGIN_X),
