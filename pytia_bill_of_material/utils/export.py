@@ -168,7 +168,7 @@ def export_drawing(
                 ask_retry=True,
             )
         else:
-            log.warning(
+            log.error(
                 f"Skipped drawing export of {document.document.name!r}: Path not valid."
             )
     else:
