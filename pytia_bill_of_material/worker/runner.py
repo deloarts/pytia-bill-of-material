@@ -2,7 +2,7 @@
     Runner for the main task.
 """
 
-from tkinter import DoubleVar, Tk, ttk
+from tkinter import DoubleVar, Tk
 from typing import Callable, List
 
 from models.runner import RunnerModel
