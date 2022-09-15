@@ -79,17 +79,14 @@ class MainTask:
         self.runner_main = Runner(
             root=self.main_ui,
             callback_variable=self.variables.progress,
-            progress_bar=self.layout.progress_bar,
         )
         self.runner_item_export = Runner(
             root=self.main_ui,
             callback_variable=self.variables.progress,
-            progress_bar=self.layout.progress_bar,
         )
         self.runner_move_files = Runner(
             root=self.main_ui,
             callback_variable=self.variables.progress,
-            progress_bar=self.layout.progress_bar,
         )
 
         self.runner_main.add(func=self._prepare, name="Prepare Export")
