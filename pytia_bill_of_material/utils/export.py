@@ -154,6 +154,17 @@ def export_drawing(
                 drawing_document.drawing_document.export_data(
                     dxf_export_path, "dxf", overwrite=True
                 )
+                if resource.settings.export.lock_drawing_views:
+                    sheets = drawing_document.drawing_document.sheets
+                    for i_sheet in range(1, sheets.count + 1):
+                        sheet = sheets.item(i_sheet)
+                        for i_view in range(3, sheet.views.count + 1):
+                            view = sheet.views.item(i_view)
+                            view.lock_status = True
+                            log.info(
+                                f"Locked view {view.name!r} or sheet {sheet.name!r}."
+                            )
+                    drawing_document.save()
 
             file_utility.add_move(
                 source=pdf_export_path,

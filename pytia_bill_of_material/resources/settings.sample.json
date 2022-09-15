@@ -3,7 +3,8 @@
     "debug": false,
     "export": {
         "apply_username_in_bom": true,
-        "apply_username_in_docket": true
+        "apply_username_in_docket": true,
+        "lock_drawing_views": true
     },
     "restrictions": {
         "allow_all_users": false,

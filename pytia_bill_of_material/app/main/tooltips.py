@@ -150,16 +150,20 @@ class ToolTips:
                 "overwritten."
             ),
         )
+
+        export_drawing_tooltip = (
+            "Saves the drawing as pdf and dxf file for each item in the summary of the "
+            "exported bill of material.\n\n"
+            "Only exports drawings that are linked to the document. The link will be set if "
+            "you used the PYTIA Title Block Editor App on the drawing file.\n\n"
+            "This requires a valid path. Existing files at the target location will be "
+            "overwritten."
+        )
+        if resource.settings.export.lock_drawing_views:
+            export_drawing_tooltip += "\n\nLocks all drawing views after the export to lock the version of the file."
         ToolTip(
             widget=layout.checkbox_export_drawing,
-            text=(
-                "Saves the drawing as pdf and dxf file for each item in the summary of the "
-                "exported bill of material.\n\n"
-                "Only exports drawings that are linked to the document. The link will be set if "
-                "you used the PYTIA Title Block Editor App on the drawing file.\n\n"
-                "This requires a valid path. Existing files at the target location will be "
-                "overwritten."
-            ),
+            text=export_drawing_tooltip,
         )
         ToolTip(
             widget=layout.checkbox_export_stp,
