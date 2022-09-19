@@ -4,7 +4,7 @@
 
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
-from utils.files import file_utility
+from pytia_ui_tools.utils.files import file_utility
 
 from .runner import Runner
 

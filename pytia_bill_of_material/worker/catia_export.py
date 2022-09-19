@@ -13,7 +13,7 @@ from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
 from utils.excel import get_excel
-from utils.files import file_utility
+from pytia_ui_tools.utils.files import file_utility
 from utils.system import application_is_running
 
 

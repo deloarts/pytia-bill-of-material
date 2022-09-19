@@ -17,7 +17,7 @@ from models.paths import Paths
 from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from resources import resource
-from utils.files import file_utility
+from pytia_ui_tools.utils.files import file_utility
 from utils.system import explorer
 
 from .catia_export import CatiaExportTask

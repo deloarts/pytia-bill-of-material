@@ -500,7 +500,7 @@ resolved_reference = "9c735717517e7801b87c082dfaa507e7f64d2912"
 
 [[package]]
 name = "pytia-ui-tools"
-version = "0.5.3"
+version = "0.6.0"
 description = "Helper functions and widgets for all pytia ui apps."
 category = "main"
 optional = false
@@ -516,10 +516,8 @@ PyYAML = "6.0"
 qrcode = "7.3.1"
 
 [package.source]
-type = "git"
-url = "ssh://git@github.com/deloarts/pytia-ui-tools.git"
-reference = "v0.5.3"
-resolved_reference = "21c5321f386c56f59e373fbd3ef92c5b95de4721"
+type = "directory"
+url = "../pytia-ui-tools"
 
 [[package]]
 name = "pywin32"
@@ -613,7 +611,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "d61a6673b4ad9c22818c8d4504d5419eb8f189cb2035bc0ec08a69b4a31be4a7"
+content-hash = "3c56e7cdb1199b82b016a04536db2a6d81f618222d441235fb521afd35153557"
 
 [metadata.files]
 astroid = []

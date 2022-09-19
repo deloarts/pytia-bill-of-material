@@ -18,7 +18,7 @@ from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
 from templates import templates
 
-from utils.files import file_utility
+from pytia_ui_tools.utils.files import file_utility
 
 
 def export_docket(

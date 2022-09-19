@@ -9,9 +9,9 @@ from models.bom import BOM
 from openpyxl.workbook import Workbook
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
+from pytia_ui_tools.utils.files import file_utility
 from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
-from utils.files import file_utility
 
 
 class SaveBomTask(TaskProtocol):
