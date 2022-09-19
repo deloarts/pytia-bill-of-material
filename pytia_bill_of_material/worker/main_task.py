@@ -16,8 +16,8 @@ from models.bom import BOM
 from models.paths import Paths
 from pytia.log import log
 from pytia.utilities.docket import DocketConfig
-from resources import resource
 from pytia_ui_tools.utils.files import file_utility
+from resources import resource
 from utils.system import explorer
 
 from .catia_export import CatiaExportTask
@@ -139,6 +139,10 @@ class MainTask:
                 )
             )
 
+        # FIXME: There's a bug in the lazy loader: Du to the performance optimization (closing the
+        # main product while exporting) the document of the lazy loader isn't available anymore.
+        # So, if the user wants to run the export again, the process will fail.
+        # Maybe-solution: Re-instance the lazy loader?
         self.ui_setter.normal()
 
     def _prepare(self, *_) -> None:
