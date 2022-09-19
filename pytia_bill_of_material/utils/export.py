@@ -166,6 +166,10 @@ def export_drawing(
                             )
                     drawing_document.save()
 
+            # FIXME: There is a bug when trying to move the exported pdf or dxf. If there are more
+            # than one sheets in the drawing document, catia will append the sheet number to the
+            # filename. This causes the problem, that the actual filename doesn't match the source
+            # filename.
             file_utility.add_move(
                 source=pdf_export_path,
                 target=pdf_target_path,
