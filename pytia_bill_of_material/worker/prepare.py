@@ -2,8 +2,10 @@
     Preparation Task: Prepares the document for the export.
 """
 
+import os
 from pathlib import Path
 
+from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -32,11 +34,12 @@ class PrepareTask(TaskProtocol):
 
     __slots__ = ("_doc_helper", "_paths", "_docket_config")
 
-    def __init__(self, doc_helper: LazyDocumentHelper) -> None:
-        self._doc_helper = doc_helper
+    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -> None:
+        self.doc_helper = doc_helper
+        self.export_root_path = export_root_path
 
         document = Document(framework.catia.active_document.com_object)
-        if document.full_name != str(self._doc_helper.path):
+        if document.full_name != str(self.doc_helper.path):
             raise PytiaDifferentDocumentError(
                 "The document has changed. Please open the original document and try again."
             )
@@ -53,8 +56,14 @@ class PrepareTask(TaskProtocol):
         """Runs the task."""
         log.info("Preparing to export bill of material.")
 
+        os.makedirs(Path(self.export_root_path, BOM))
+        os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DRAWINGS))
+        os.makedirs(Path(self.export_root_path, STLS))
+        os.makedirs(Path(self.export_root_path, STPS))
+
         self._set_catia_bom_format()
-        self._paths: Paths = self._retrieve_paths(self._doc_helper.document)
+        self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
 
     @staticmethod
@@ -105,13 +114,4 @@ class PrepareTask(TaskProtocol):
                     )
 
         iterate_tree(product.product)
-
-        # if resource.settings.debug:
-        #     with open(
-        #         Path(TEMP_EXPORT, file_utility.get_random_filename(filetype="json")),
-        #         "w",
-        #     ) as json_file:
-        #         json.dump(asdict(paths), json_file, ensure_ascii=False, indent=2)
-        #     log.info(f"Exported paths-data to {TEMP_EXPORT!r}.")
-
         return paths

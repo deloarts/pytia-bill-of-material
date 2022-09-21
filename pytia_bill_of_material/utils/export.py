@@ -4,7 +4,7 @@
 from pathlib import Path
 from typing import Literal
 
-from const import LOGON, PROP_DRAWING_PATH, TEMP_EXPORT
+from const import LOGON, PROP_DRAWING_PATH
 from pytia.exceptions import PytiaFileOperationError
 from pytia.log import log
 from pytia.utilities.docket import (
@@ -17,8 +17,6 @@ from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
 from templates import templates
-
-from pytia_ui_tools.utils.files import file_utility
 
 
 def export_docket(
@@ -103,17 +101,10 @@ def export_docket(
         publisher=publisher,
         **kwargs,
     )
-    export_path = export_docket_as_pdf(
+    export_docket_as_pdf(
         docket=docket,
-        name=file_utility.get_random_filename(filetype="pdf"),
-        folder=TEMP_EXPORT,
-    )
-    target_path = Path(folder, filename)
-    file_utility.add_move(
-        source=Path(export_path),
-        target=target_path,
-        delete_existing=True,
-        ask_retry=True,
+        name=filename,
+        folder=folder,
     )
 
 
@@ -137,22 +128,16 @@ def export_drawing(
     if document.properties.exists(PROP_DRAWING_PATH):
         drawing_path = Path(document.properties.get_by_name(PROP_DRAWING_PATH).value)
         if drawing_path.exists():
-            pdf_export_path = Path(
-                TEMP_EXPORT, file_utility.get_random_filename(filetype="pdf")
-            )
             pdf_target_path = Path(folder, filename + ".pdf")
-            dxf_export_path = Path(
-                TEMP_EXPORT, file_utility.get_random_filename(filetype="dxf")
-            )
             dxf_target_path = Path(folder, filename + ".dxf")
 
             with PyDrawingDocument() as drawing_document:
                 drawing_document.open(drawing_path)
                 drawing_document.drawing_document.export_data(
-                    pdf_export_path, "pdf", overwrite=True
+                    pdf_target_path, "pdf", overwrite=True
                 )
                 drawing_document.drawing_document.export_data(
-                    dxf_export_path, "dxf", overwrite=True
+                    dxf_target_path, "dxf", overwrite=True
                 )
                 if resource.settings.export.lock_drawing_views:
                     sheets = drawing_document.drawing_document.sheets
@@ -165,23 +150,6 @@ def export_drawing(
                                 f"Locked view {view.name!r} or sheet {sheet.name!r}."
                             )
                     drawing_document.save()
-
-            # FIXME: There is a bug when trying to move the exported pdf or dxf. If there are more
-            # than one sheets in the drawing document, catia will append the sheet number to the
-            # filename. This causes the problem, that the actual filename doesn't match the source
-            # filename.
-            file_utility.add_move(
-                source=pdf_export_path,
-                target=pdf_target_path,
-                delete_existing=True,
-                ask_retry=True,
-            )
-            file_utility.add_move(
-                source=dxf_export_path,
-                target=dxf_target_path,
-                delete_existing=True,
-                ask_retry=True,
-            )
         else:
             log.error(
                 f"Skipped drawing export of {document.document.name!r}: Path not valid."
@@ -209,17 +177,8 @@ def _export_stp_stl(
     if filetype not in filename:
         filename += f".{filetype}"
 
-    export_path = Path(TEMP_EXPORT, file_utility.get_random_filename(filetype=filetype))
-    target_path = Path(folder, filename)
-
     document.document.export_data(
-        file_name=export_path, file_type=filetype, overwrite=True
-    )
-    file_utility.add_move(
-        source=export_path,
-        target=target_path,
-        delete_existing=True,
-        ask_retry=True,
+        file_name=Path(folder, filename), file_type=filetype, overwrite=True
     )
 
 

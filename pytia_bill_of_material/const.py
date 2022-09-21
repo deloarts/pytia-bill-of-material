@@ -53,6 +53,12 @@ TEMPLATE_DOCKET = "docket.CATDrawing"
 
 WEB_PIP = "www.pypi.org"
 
+BOM = "bom"
+DOCKETS = "dockets"
+DRAWINGS = "drawings"
+STPS = "steps"
+STLS = "stls"
+
 X000D = "_x000D_\n"
 KEEP = "Keep"
 
