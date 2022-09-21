@@ -111,8 +111,6 @@ class ExportItemsTask(TaskProtocol):
         Raises:
             Exception: Raised when the keyword for 'source' is not in the BOM.
         """
-        self._lazy_loader.close_all_documents()
-
         log.info("Exporting selected items.")
         if any(
             [
@@ -122,6 +120,7 @@ class ExportItemsTask(TaskProtocol):
                 self._export_drawing,
             ]
         ):
+            self._lazy_loader.close_all_documents()
             for item in self._bom.summary.items:
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
