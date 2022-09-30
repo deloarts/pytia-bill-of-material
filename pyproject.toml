@@ -9,7 +9,7 @@ version = "0.3.1"
 [tool.poetry.dependencies]
 openpyxl = "3.0.10"
 python = "^3.10"
-pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.2.2"}
+pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.2.3"}
 pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.0"}
 
 [tool.poetry.dev-dependencies]
