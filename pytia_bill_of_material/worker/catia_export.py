@@ -7,9 +7,9 @@ import os
 from pathlib import Path
 
 from const import EXCEL_EXE
-from exceptions import PytiaConvertError
 from helper.lazy_loaders import LazyDocumentHelper
 from protocols.task_protocol import TaskProtocol
+from pytia.exceptions import PytiaConvertError
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
 from pytia_ui_tools.utils.files import file_utility
