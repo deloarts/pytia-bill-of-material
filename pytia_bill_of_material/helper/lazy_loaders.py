@@ -189,9 +189,12 @@ class LazyDocumentHelper:
         open_documents: List[str] = []
         for i in range(1, self.framework.catia.documents.count + 1):
             open_documents.append(self.framework.catia.documents.item(i).name)
+
         for doc in open_documents:
             try:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f"Closed document {doc!r}.")
-            except:
-                pass
+            except Exception:
+                log.warning(
+                    f"Failed closing document {doc!r}: Maybe it has been already closed."
+                )
