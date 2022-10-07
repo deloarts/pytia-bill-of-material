@@ -31,7 +31,7 @@
     Runner for the main task.
 &#34;&#34;&#34;
 
-from tkinter import DoubleVar, Tk, ttk
+from tkinter import DoubleVar, Tk
 from typing import Callable, List
 
 from models.runner import RunnerModel
@@ -47,11 +47,9 @@ class Runner:
         self,
         root: Tk,
         callback_variable: DoubleVar,
-        progress_bar: ttk.Progressbar,
     ) -&gt; None:
         self.root = root
         self.progress_callback = callback_variable
-        self.progress_bar = progress_bar
 
         self.runners: List[RunnerModel] = []
 
@@ -97,7 +95,7 @@ class Runner:
 <dl>
 <dt id="pytia_bill_of_material.worker.runner.Runner"><code class="flex name class">
 <span>class <span class="ident">Runner</span></span>
-<span>(</span><span>root: tkinter.Tk, callback_variable: tkinter.DoubleVar, progress_bar: tkinter.ttk.Progressbar)</span>
+<span>(</span><span>root: tkinter.Tk, callback_variable: tkinter.DoubleVar)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class is responsible for running tasks and updating the UI.</p></div>
@@ -114,11 +112,9 @@ class Runner:
         self,
         root: Tk,
         callback_variable: DoubleVar,
-        progress_bar: ttk.Progressbar,
     ) -&gt; None:
         self.root = root
         self.progress_callback = callback_variable
-        self.progress_bar = progress_bar
 
         self.runners: List[RunnerModel] = []
 

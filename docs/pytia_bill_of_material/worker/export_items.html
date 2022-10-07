@@ -33,7 +33,8 @@
 
 from pathlib import Path
 
-from const import LOGON, TEMP_EXPORT
+from const import DOCKETS, DRAWINGS, LOGON, STLS, STPS, TEMP_EXPORT
+from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_data_export_name
 from models.bom import BOM, BOMAssemblyItem
 from protocols.task_protocol import TaskProtocol
@@ -42,10 +43,10 @@ from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
+from pytia_ui_tools.utils.files import file_utility
 from pytia_ui_tools.utils.qr import QR
 from resources import resource
 from utils import export
-from utils.files import file_utility
 
 from .runner import Runner
 
@@ -70,6 +71,7 @@ class ExportItemsTask(TaskProtocol):
     &#34;&#34;&#34;
 
     __slots__ = (
+        &#34;_lazy_loader&#34;,
         &#34;_runner&#34;,
         &#34;_bom&#34;,
         &#34;_export_docket&#34;,
@@ -85,48 +87,39 @@ class ExportItemsTask(TaskProtocol):
 
     def __init__(
         self,
+        lazy_loader: LazyDocumentHelper,
         runner: Runner,
         bom: BOM,
         export_docket: bool,
         export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
-        docket_path: Path,
-        drawing_path: Path,
-        stp_path: Path,
-        stl_path: Path,
+        export_root_path: Path,
         docket_config: DocketConfig,
     ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
 
-        Note for the export folders: All files will be exported to the user&#39;s temp directory.
-        After all exports have been finished, all files will be moved to the given export paths.
-
         Args:
+            lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
             bom (BOM): The BOM object.
             export_docket (bool): Wether to export the docket or not.
             export_drawing (bool): Wether to export the drawing or not.
             export_stp (bool): Wether to export the stp or not.
             export_stl (bool): Wether to export the stl or not.
-            docket_path (Path): The destination folder for the docket.
-            drawing_path (Path): The destination folder for the drawing.
-            stp_path (Path): The destination folder for the stp.
-            stl_path (Path): The destination folder for the stl.
+            export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
         &#34;&#34;&#34;
-        self._runner = runner
-        self._bom = bom
-        self._export_docket = export_docket
-        self._export_drawing = export_drawing
-        self._export_stp = export_stp
-        self._export_stl = export_stl
-        self._docket_path = docket_path
-        self._drawing_path = drawing_path
-        self._stp_path = stp_path
-        self._stl_path = stl_path
-        self._docket_config = docket_config
+        self.lazy_loader = lazy_loader
+        self.runner = runner
+        self.bom = bom
+        self.export_docket = export_docket
+        self.export_drawing = export_drawing
+        self.export_stp = export_stp
+        self.export_stl = export_stl
+        self.export_root_path = export_root_path
+        self.docket_config = docket_config
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;
@@ -136,8 +129,17 @@ class ExportItemsTask(TaskProtocol):
             Exception: Raised when the keyword for &#39;source&#39; is not in the BOM.
         &#34;&#34;&#34;
         log.info(&#34;Exporting selected items.&#34;)
-        if any([self._export_docket, self._export_stp, self._export_stl]):
-            for item in self._bom.summary.items:
+        if any(
+            [
+                self.export_docket,
+                self.export_stp,
+                self.export_stl,
+                self.export_drawing,
+            ]
+        ):
+            self.lazy_loader.close_all_documents()
+
+            for item in self.bom.summary.items:
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
                         f&#34;Keyword {resource.applied_keywords.source!r} not in bill of material.&#34;
@@ -146,13 +148,13 @@ class ExportItemsTask(TaskProtocol):
                     item.properties[resource.applied_keywords.source]
                     == resource.applied_keywords.made
                 ):
-                    self._runner.add(
+                    self.runner.add(
                         func=self._export_item,
                         name=f&#34;Export item {item.partnumber!r}&#34;,
                         bom_item=item,
                     )
 
-            self._runner.run_tasks()
+            self.runner.run_tasks()
             log.info(&#34;Finished item export.&#34;)
         else:
             log.info(&#34;Skipping item export: None selected.&#34;)
@@ -185,6 +187,7 @@ class ExportItemsTask(TaskProtocol):
         qr_path = qr.save(
             path=Path(
                 TEMP_EXPORT,
+                self.export_root_path,
                 file_utility.get_random_filename(filetype=&#34;png&#34;),
             )
         )
@@ -217,12 +220,12 @@ class ExportItemsTask(TaskProtocol):
         if &#34;.CATPart&#34; in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=part_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -241,34 +244,34 @@ class ExportItemsTask(TaskProtocol):
                         qr_path=qr_path,
                     )
 
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=part_document,
                     )
-                if self._export_stl:
+                if self.export_stl:
                     export.export_stl(
                         filename=export_filename,
-                        folder=self._stl_path,
+                        folder=Path(self.export_root_path, STLS),
                         document=part_document,
                     )
 
         elif &#34;.CATProduct&#34; in str(bom_item.path):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=product_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -278,16 +281,16 @@ class ExportItemsTask(TaskProtocol):
                         logon=LOGON,
                         qr_path=qr_path,
                     )
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=product_document,
                     )
 
@@ -309,7 +312,7 @@ class ExportItemsTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.export_items.ExportItemsTask"><code class="flex name class">
 <span>class <span class="ident">ExportItemsTask</span></span>
-<span>(</span><span>runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, bom: models.bom.BOM, export_docket: bool, export_drawing: bool, export_stp: bool, export_stl: bool, docket_path: pathlib.Path, drawing_path: pathlib.Path, stp_path: pathlib.Path, stl_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig)</span>
+<span>(</span><span>lazy_loader: helper.lazy_loaders.LazyDocumentHelper, runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, bom: models.bom.BOM, export_docket: bool, export_drawing: bool, export_stp: bool, export_stl: bool, export_root_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Exports all items:
@@ -335,10 +338,10 @@ class ExportItemsTask(TaskProtocol):
 <dd><em>description</em></dd>
 </dl>
 <p>Inits the class.</p>
-<p>Note for the export folders: All files will be exported to the user's temp directory.
-After all exports have been finished, all files will be moved to the given export paths.</p>
 <h2 id="args_1">Args</h2>
 <dl>
+<dt><strong><code>lazy_loader</code></strong> :&ensp;<code>LazyDocumentHelper</code></dt>
+<dd>The doc helper instance.</dd>
 <dt><strong><code>runner</code></strong> :&ensp;<code>Runner</code></dt>
 <dd>The task runner instance.</dd>
 <dt><strong><code>bom</code></strong> :&ensp;<code>BOM</code></dt>
@@ -351,14 +354,8 @@ After all exports have been finished, all files will be moved to the given expor
 <dd>Wether to export the stp or not.</dd>
 <dt><strong><code>export_stl</code></strong> :&ensp;<code>bool</code></dt>
 <dd>Wether to export the stl or not.</dd>
-<dt><strong><code>docket_path</code></strong> :&ensp;<code>Path</code></dt>
-<dd>The destination folder for the docket.</dd>
-<dt><strong><code>drawing_path</code></strong> :&ensp;<code>Path</code></dt>
-<dd>The destination folder for the drawing.</dd>
-<dt><strong><code>stp_path</code></strong> :&ensp;<code>Path</code></dt>
-<dd>The destination folder for the stp.</dd>
-<dt><strong><code>stl_path</code></strong> :&ensp;<code>Path</code></dt>
-<dd>The destination folder for the stl.</dd>
+<dt><strong><code>export_root_path</code></strong> :&ensp;<code>Path</code></dt>
+<dd>The root folder for all exports.</dd>
 <dt><strong><code>docket_config</code></strong> :&ensp;<code>DocketConfig</code></dt>
 <dd>The configuration for the docket.</dd>
 </dl></div>
@@ -386,6 +383,7 @@ After all exports have been finished, all files will be moved to the given expor
     &#34;&#34;&#34;
 
     __slots__ = (
+        &#34;_lazy_loader&#34;,
         &#34;_runner&#34;,
         &#34;_bom&#34;,
         &#34;_export_docket&#34;,
@@ -401,48 +399,39 @@ After all exports have been finished, all files will be moved to the given expor
 
     def __init__(
         self,
+        lazy_loader: LazyDocumentHelper,
         runner: Runner,
         bom: BOM,
         export_docket: bool,
         export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
-        docket_path: Path,
-        drawing_path: Path,
-        stp_path: Path,
-        stl_path: Path,
+        export_root_path: Path,
         docket_config: DocketConfig,
     ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
 
-        Note for the export folders: All files will be exported to the user&#39;s temp directory.
-        After all exports have been finished, all files will be moved to the given export paths.
-
         Args:
+            lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
             bom (BOM): The BOM object.
             export_docket (bool): Wether to export the docket or not.
             export_drawing (bool): Wether to export the drawing or not.
             export_stp (bool): Wether to export the stp or not.
             export_stl (bool): Wether to export the stl or not.
-            docket_path (Path): The destination folder for the docket.
-            drawing_path (Path): The destination folder for the drawing.
-            stp_path (Path): The destination folder for the stp.
-            stl_path (Path): The destination folder for the stl.
+            export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
         &#34;&#34;&#34;
-        self._runner = runner
-        self._bom = bom
-        self._export_docket = export_docket
-        self._export_drawing = export_drawing
-        self._export_stp = export_stp
-        self._export_stl = export_stl
-        self._docket_path = docket_path
-        self._drawing_path = drawing_path
-        self._stp_path = stp_path
-        self._stl_path = stl_path
-        self._docket_config = docket_config
+        self.lazy_loader = lazy_loader
+        self.runner = runner
+        self.bom = bom
+        self.export_docket = export_docket
+        self.export_drawing = export_drawing
+        self.export_stp = export_stp
+        self.export_stl = export_stl
+        self.export_root_path = export_root_path
+        self.docket_config = docket_config
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;
@@ -452,8 +441,17 @@ After all exports have been finished, all files will be moved to the given expor
             Exception: Raised when the keyword for &#39;source&#39; is not in the BOM.
         &#34;&#34;&#34;
         log.info(&#34;Exporting selected items.&#34;)
-        if any([self._export_docket, self._export_stp, self._export_stl]):
-            for item in self._bom.summary.items:
+        if any(
+            [
+                self.export_docket,
+                self.export_stp,
+                self.export_stl,
+                self.export_drawing,
+            ]
+        ):
+            self.lazy_loader.close_all_documents()
+
+            for item in self.bom.summary.items:
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
                         f&#34;Keyword {resource.applied_keywords.source!r} not in bill of material.&#34;
@@ -462,13 +460,13 @@ After all exports have been finished, all files will be moved to the given expor
                     item.properties[resource.applied_keywords.source]
                     == resource.applied_keywords.made
                 ):
-                    self._runner.add(
+                    self.runner.add(
                         func=self._export_item,
                         name=f&#34;Export item {item.partnumber!r}&#34;,
                         bom_item=item,
                     )
 
-            self._runner.run_tasks()
+            self.runner.run_tasks()
             log.info(&#34;Finished item export.&#34;)
         else:
             log.info(&#34;Skipping item export: None selected.&#34;)
@@ -501,6 +499,7 @@ After all exports have been finished, all files will be moved to the given expor
         qr_path = qr.save(
             path=Path(
                 TEMP_EXPORT,
+                self.export_root_path,
                 file_utility.get_random_filename(filetype=&#34;png&#34;),
             )
         )
@@ -533,12 +532,12 @@ After all exports have been finished, all files will be moved to the given expor
         if &#34;.CATPart&#34; in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=part_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -557,34 +556,34 @@ After all exports have been finished, all files will be moved to the given expor
                         qr_path=qr_path,
                     )
 
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=part_document,
                     )
-                if self._export_stl:
+                if self.export_stl:
                     export.export_stl(
                         filename=export_filename,
-                        folder=self._stl_path,
+                        folder=Path(self.export_root_path, STLS),
                         document=part_document,
                     )
 
         elif &#34;.CATProduct&#34; in str(bom_item.path):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=product_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -594,16 +593,16 @@ After all exports have been finished, all files will be moved to the given expor
                         logon=LOGON,
                         qr_path=qr_path,
                     )
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=product_document,
                     )
 
@@ -650,8 +649,17 @@ After all exports have been finished, all files will be moved to the given expor
         Exception: Raised when the keyword for &#39;source&#39; is not in the BOM.
     &#34;&#34;&#34;
     log.info(&#34;Exporting selected items.&#34;)
-    if any([self._export_docket, self._export_stp, self._export_stl]):
-        for item in self._bom.summary.items:
+    if any(
+        [
+            self.export_docket,
+            self.export_stp,
+            self.export_stl,
+            self.export_drawing,
+        ]
+    ):
+        self.lazy_loader.close_all_documents()
+
+        for item in self.bom.summary.items:
             if not resource.applied_keywords.source in item.properties:
                 raise Exception(
                     f&#34;Keyword {resource.applied_keywords.source!r} not in bill of material.&#34;
@@ -660,13 +668,13 @@ After all exports have been finished, all files will be moved to the given expor
                 item.properties[resource.applied_keywords.source]
                 == resource.applied_keywords.made
             ):
-                self._runner.add(
+                self.runner.add(
                     func=self._export_item,
                     name=f&#34;Export item {item.partnumber!r}&#34;,
                     bom_item=item,
                 )
 
-        self._runner.run_tasks()
+        self.runner.run_tasks()
         log.info(&#34;Finished item export.&#34;)
     else:
         log.info(&#34;Skipping item export: None selected.&#34;)</code></pre>

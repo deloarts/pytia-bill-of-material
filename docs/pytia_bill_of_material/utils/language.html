@@ -33,7 +33,7 @@
 
 from typing import Literal
 
-from exceptions import PytiaLanguageNotSupportedError
+from pytia.exceptions import PytiaLanguageError
 from pytia.framework import framework
 from pytia.framework.in_interfaces.documentation_setting_att import (
     DocumentationSettingAtt,
@@ -53,7 +53,7 @@ def get_ui_language(product: PyProductDocument) -&gt; Literal[&#34;en&#34;, &#34
     This is not a good solution, but currently the only one that works.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal[&#34;en&#34;, &#34;de&#34;]: The language of the CATIA UI.
@@ -73,7 +73,7 @@ def get_ui_language(product: PyProductDocument) -&gt; Literal[&#34;en&#34;, &#34
     except:
         pass
 
-    raise PytiaLanguageNotSupportedError(
+    raise PytiaLanguageError(
         f&#34;The selected language is not supported. &#34;
         &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
     )
@@ -84,7 +84,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
     Returns the language of the CATIA online documentation.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal[&#34;en&#34;, &#34;de&#34;]: The language of the CATIA doc.
@@ -97,7 +97,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
 
     match code:
         case 0:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 &#34;Cannot proceed with language setting &#39;default&#39;. &#34;
                 &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
             )
@@ -106,7 +106,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
         case 714:
             return &#34;en&#34;
         case _:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 f&#34;The selected language {code!r} is not supported. &#34;
                 &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
             )</code></pre>
@@ -126,7 +126,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
 <div class="desc"><p>Returns the language of the CATIA online documentation.</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><code>PytiaLanguageNotSupportedError</code></dt>
+<dt><code>PytiaLanguageError</code></dt>
 <dd>Raised when the UI language is not supported.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -140,7 +140,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
     Returns the language of the CATIA online documentation.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal[&#34;en&#34;, &#34;de&#34;]: The language of the CATIA doc.
@@ -153,7 +153,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
 
     match code:
         case 0:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 &#34;Cannot proceed with language setting &#39;default&#39;. &#34;
                 &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
             )
@@ -162,7 +162,7 @@ def get_doc_language() -&gt; Literal[&#34;en&#34;, &#34;de&#34;]:
         case 714:
             return &#34;en&#34;
         case _:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 f&#34;The selected language {code!r} is not supported. &#34;
                 &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
             )</code></pre>
@@ -178,7 +178,7 @@ changes depending on the language of the UI.</p>
 <p>This is not a good solution, but currently the only one that works.</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><code>PytiaLanguageNotSupportedError</code></dt>
+<dt><code>PytiaLanguageError</code></dt>
 <dd>Raised when the UI language is not supported.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -196,7 +196,7 @@ changes depending on the language of the UI.</p>
     This is not a good solution, but currently the only one that works.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal[&#34;en&#34;, &#34;de&#34;]: The language of the CATIA UI.
@@ -216,7 +216,7 @@ changes depending on the language of the UI.</p>
     except:
         pass
 
-    raise PytiaLanguageNotSupportedError(
+    raise PytiaLanguageError(
         f&#34;The selected language is not supported. &#34;
         &#34;Please select either &#39;English&#39; or &#39;German&#39;.&#34;
     )</code></pre>

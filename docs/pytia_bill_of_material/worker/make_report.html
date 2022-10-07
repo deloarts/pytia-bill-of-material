@@ -104,7 +104,7 @@ class MakeReportTask(TaskProtocol):
             log.info(f&#34;Verifying element {assembly.partnumber!r}:&#34;)
 
             for assembly_item in assembly.items:
-                log.info(f&#34;  {assembly_item.partnumber}:&#34;)
+                log.info(f&#34;  {assembly_item.partnumber}&#34;)
                 report_item = ReportItem(
                     partnumber=assembly_item.partnumber,
                     path=assembly_item.path,
@@ -151,19 +151,19 @@ class MakeReportTask(TaskProtocol):
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.OK
-                                log.info(f&#34;    - {filter_item.property_name}: OK.&#34;)
+                                log.debug(f&#34;    - {filter_item.property_name}: OK.&#34;)
                             else:
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.FAILED
                                 report_item.status = Status.FAILED
                                 report.status = Status.FAILED
-                                log.info(f&#34;    - {filter_item.property_name}: FAILED.&#34;)
+                                log.debug(f&#34;    - {filter_item.property_name}: FAILED.&#34;)
                         else:
                             report_item.details[
                                 filter_item.property_name
                             ] = Status.SKIPPED
-                            log.info(f&#34;    - {filter_item.property_name}: SKIPPED.&#34;)
+                            log.debug(f&#34;    - {filter_item.property_name}: SKIPPED.&#34;)
 
                     else:
                         raise ValueError(
@@ -271,7 +271,7 @@ header items.</dd>
             log.info(f&#34;Verifying element {assembly.partnumber!r}:&#34;)
 
             for assembly_item in assembly.items:
-                log.info(f&#34;  {assembly_item.partnumber}:&#34;)
+                log.info(f&#34;  {assembly_item.partnumber}&#34;)
                 report_item = ReportItem(
                     partnumber=assembly_item.partnumber,
                     path=assembly_item.path,
@@ -318,19 +318,19 @@ header items.</dd>
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.OK
-                                log.info(f&#34;    - {filter_item.property_name}: OK.&#34;)
+                                log.debug(f&#34;    - {filter_item.property_name}: OK.&#34;)
                             else:
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.FAILED
                                 report_item.status = Status.FAILED
                                 report.status = Status.FAILED
-                                log.info(f&#34;    - {filter_item.property_name}: FAILED.&#34;)
+                                log.debug(f&#34;    - {filter_item.property_name}: FAILED.&#34;)
                         else:
                             report_item.details[
                                 filter_item.property_name
                             ] = Status.SKIPPED
-                            log.info(f&#34;    - {filter_item.property_name}: SKIPPED.&#34;)
+                            log.debug(f&#34;    - {filter_item.property_name}: SKIPPED.&#34;)
 
                     else:
                         raise ValueError(

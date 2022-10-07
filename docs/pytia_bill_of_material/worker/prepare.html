@@ -31,8 +31,10 @@
     Preparation Task: Prepares the document for the export.
 &#34;&#34;&#34;
 
+import os
 from pathlib import Path
 
+from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -61,11 +63,12 @@ class PrepareTask(TaskProtocol):
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
-        self._doc_helper = doc_helper
+    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+        self.doc_helper = doc_helper
+        self.export_root_path = export_root_path
 
         document = Document(framework.catia.active_document.com_object)
-        if document.full_name != str(self._doc_helper.path):
+        if document.full_name != str(self.doc_helper.path):
             raise PytiaDifferentDocumentError(
                 &#34;The document has changed. Please open the original document and try again.&#34;
             )
@@ -82,8 +85,14 @@ class PrepareTask(TaskProtocol):
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
+        os.makedirs(Path(self.export_root_path, BOM))
+        os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DRAWINGS))
+        os.makedirs(Path(self.export_root_path, STLS))
+        os.makedirs(Path(self.export_root_path, STPS))
+
         self._set_catia_bom_format()
-        self._paths: Paths = self._retrieve_paths(self._doc_helper.document)
+        self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
 
     @staticmethod
@@ -134,15 +143,6 @@ class PrepareTask(TaskProtocol):
                     )
 
         iterate_tree(product.product)
-
-        # if resource.settings.debug:
-        #     with open(
-        #         Path(TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;json&#34;)),
-        #         &#34;w&#34;,
-        #     ) as json_file:
-        #         json.dump(asdict(paths), json_file, ensure_ascii=False, indent=2)
-        #     log.info(f&#34;Exported paths-data to {TEMP_EXPORT!r}.&#34;)
-
         return paths</code></pre>
 </details>
 </section>
@@ -157,7 +157,7 @@ class PrepareTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.prepare.PrepareTask"><code class="flex name class">
 <span>class <span class="ident">PrepareTask</span></span>
-<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper)</span>
+<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper, export_root_path: pathlib.Path)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class is responsible for preparing the document for the export.
@@ -190,11 +190,12 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper) -&gt; None:
-        self._doc_helper = doc_helper
+    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+        self.doc_helper = doc_helper
+        self.export_root_path = export_root_path
 
         document = Document(framework.catia.active_document.com_object)
-        if document.full_name != str(self._doc_helper.path):
+        if document.full_name != str(self.doc_helper.path):
             raise PytiaDifferentDocumentError(
                 &#34;The document has changed. Please open the original document and try again.&#34;
             )
@@ -211,8 +212,14 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
+        os.makedirs(Path(self.export_root_path, BOM))
+        os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DRAWINGS))
+        os.makedirs(Path(self.export_root_path, STLS))
+        os.makedirs(Path(self.export_root_path, STPS))
+
         self._set_catia_bom_format()
-        self._paths: Paths = self._retrieve_paths(self._doc_helper.document)
+        self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
 
     @staticmethod
@@ -263,15 +270,6 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
                     )
 
         iterate_tree(product.product)
-
-        # if resource.settings.debug:
-        #     with open(
-        #         Path(TEMP_EXPORT, file_utility.get_random_filename(filetype=&#34;json&#34;)),
-        #         &#34;w&#34;,
-        #     ) as json_file:
-        #         json.dump(asdict(paths), json_file, ensure_ascii=False, indent=2)
-        #     log.info(f&#34;Exported paths-data to {TEMP_EXPORT!r}.&#34;)
-
         return paths</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -322,8 +320,14 @@ def paths(self) -&gt; Paths:
     &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     log.info(&#34;Preparing to export bill of material.&#34;)
 
+    os.makedirs(Path(self.export_root_path, BOM))
+    os.makedirs(Path(self.export_root_path, DOCKETS))
+    os.makedirs(Path(self.export_root_path, DRAWINGS))
+    os.makedirs(Path(self.export_root_path, STLS))
+    os.makedirs(Path(self.export_root_path, STPS))
+
     self._set_catia_bom_format()
-    self._paths: Paths = self._retrieve_paths(self._doc_helper.document)
+    self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
     self._docket_config = DocketConfig.from_dict(resource.docket)</code></pre>
 </details>
 </dd>
