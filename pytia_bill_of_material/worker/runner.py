@@ -2,7 +2,7 @@
     Runner for the main task.
 """
 
-from tkinter import DoubleVar, Tk, ttk
+from tkinter import DoubleVar, Tk
 from typing import Callable, List
 
 from models.runner import RunnerModel
@@ -18,11 +18,9 @@ class Runner:
         self,
         root: Tk,
         callback_variable: DoubleVar,
-        progress_bar: ttk.Progressbar,
     ) -> None:
         self.root = root
         self.progress_callback = callback_variable
-        self.progress_bar = progress_bar
 
         self.runners: List[RunnerModel] = []
 

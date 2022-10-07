@@ -4,7 +4,8 @@
 
 from pathlib import Path
 
-from const import LOGON, TEMP_EXPORT
+from const import DOCKETS, DRAWINGS, LOGON, STLS, STPS, TEMP_EXPORT
+from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_data_export_name
 from models.bom import BOM, BOMAssemblyItem
 from protocols.task_protocol import TaskProtocol
@@ -13,10 +14,10 @@ from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
+from pytia_ui_tools.utils.files import file_utility
 from pytia_ui_tools.utils.qr import QR
 from resources import resource
 from utils import export
-from utils.files import file_utility
 
 from .runner import Runner
 
@@ -41,6 +42,7 @@ class ExportItemsTask(TaskProtocol):
     """
 
     __slots__ = (
+        "_lazy_loader",
         "_runner",
         "_bom",
         "_export_docket",
@@ -56,48 +58,39 @@ class ExportItemsTask(TaskProtocol):
 
     def __init__(
         self,
+        lazy_loader: LazyDocumentHelper,
         runner: Runner,
         bom: BOM,
         export_docket: bool,
         export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
-        docket_path: Path,
-        drawing_path: Path,
-        stp_path: Path,
-        stl_path: Path,
+        export_root_path: Path,
         docket_config: DocketConfig,
     ) -> None:
         """
         Inits the class.
 
-        Note for the export folders: All files will be exported to the user's temp directory.
-        After all exports have been finished, all files will be moved to the given export paths.
-
         Args:
+            lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
             bom (BOM): The BOM object.
             export_docket (bool): Wether to export the docket or not.
             export_drawing (bool): Wether to export the drawing or not.
             export_stp (bool): Wether to export the stp or not.
             export_stl (bool): Wether to export the stl or not.
-            docket_path (Path): The destination folder for the docket.
-            drawing_path (Path): The destination folder for the drawing.
-            stp_path (Path): The destination folder for the stp.
-            stl_path (Path): The destination folder for the stl.
+            export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
         """
-        self._runner = runner
-        self._bom = bom
-        self._export_docket = export_docket
-        self._export_drawing = export_drawing
-        self._export_stp = export_stp
-        self._export_stl = export_stl
-        self._docket_path = docket_path
-        self._drawing_path = drawing_path
-        self._stp_path = stp_path
-        self._stl_path = stl_path
-        self._docket_config = docket_config
+        self.lazy_loader = lazy_loader
+        self.runner = runner
+        self.bom = bom
+        self.export_docket = export_docket
+        self.export_drawing = export_drawing
+        self.export_stp = export_stp
+        self.export_stl = export_stl
+        self.export_root_path = export_root_path
+        self.docket_config = docket_config
 
     def run(self) -> None:
         """
@@ -107,8 +100,17 @@ class ExportItemsTask(TaskProtocol):
             Exception: Raised when the keyword for 'source' is not in the BOM.
         """
         log.info("Exporting selected items.")
-        if any([self._export_docket, self._export_stp, self._export_stl]):
-            for item in self._bom.summary.items:
+        if any(
+            [
+                self.export_docket,
+                self.export_stp,
+                self.export_stl,
+                self.export_drawing,
+            ]
+        ):
+            self.lazy_loader.close_all_documents()
+
+            for item in self.bom.summary.items:
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
                         f"Keyword {resource.applied_keywords.source!r} not in bill of material."
@@ -117,13 +119,13 @@ class ExportItemsTask(TaskProtocol):
                     item.properties[resource.applied_keywords.source]
                     == resource.applied_keywords.made
                 ):
-                    self._runner.add(
+                    self.runner.add(
                         func=self._export_item,
                         name=f"Export item {item.partnumber!r}",
                         bom_item=item,
                     )
 
-            self._runner.run_tasks()
+            self.runner.run_tasks()
             log.info("Finished item export.")
         else:
             log.info("Skipping item export: None selected.")
@@ -156,6 +158,7 @@ class ExportItemsTask(TaskProtocol):
         qr_path = qr.save(
             path=Path(
                 TEMP_EXPORT,
+                self.export_root_path,
                 file_utility.get_random_filename(filetype="png"),
             )
         )
@@ -188,12 +191,12 @@ class ExportItemsTask(TaskProtocol):
         if ".CATPart" in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=part_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -212,34 +215,34 @@ class ExportItemsTask(TaskProtocol):
                         qr_path=qr_path,
                     )
 
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=part_document,
                     )
-                if self._export_stl:
+                if self.export_stl:
                     export.export_stl(
                         filename=export_filename,
-                        folder=self._stl_path,
+                        folder=Path(self.export_root_path, STLS),
                         document=part_document,
                     )
 
         elif ".CATProduct" in str(bom_item.path):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
-                if self._export_docket:
+                if self.export_docket:
                     export.export_docket(
                         filename=export_filename_with_project,
-                        folder=self._docket_path,
+                        folder=Path(self.export_root_path, DOCKETS),
                         document=product_document,
-                        config=self._docket_config,
+                        config=self.docket_config,
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
@@ -249,16 +252,16 @@ class ExportItemsTask(TaskProtocol):
                         logon=LOGON,
                         qr_path=qr_path,
                     )
-                if self._export_drawing:
+                if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
-                        folder=self._drawing_path,
+                        folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
                     )
-                if self._export_stp:
+                if self.export_stp:
                     export.export_stp(
                         filename=export_filename,
-                        folder=self._stp_path,
+                        folder=Path(self.export_root_path, STPS),
                         document=product_document,
                     )
 

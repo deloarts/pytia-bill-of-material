@@ -4,14 +4,13 @@
 
 from pathlib import Path
 
-from const import TEMP_EXPORT
+from const import BOM as BOM_FOLDER
 from models.bom import BOM
 from openpyxl.workbook import Workbook
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
-from utils.files import file_utility
 
 
 class SaveBomTask(TaskProtocol):
@@ -24,20 +23,18 @@ class SaveBomTask(TaskProtocol):
 
     __slots__ = ("_bom", "_path")
 
-    def __init__(self, bom: BOM, path: Path) -> None:
-        self._bom = bom
-        self._path = path
+    def __init__(self, bom: BOM, export_root_path: Path, filename: str) -> None:
+        self.bom = bom
+        self.export_root_path = export_root_path
+        self.filename = filename
 
     def run(self) -> None:
         """Runs the task."""
         log.info("Saving finished bill of material.")
-        source_path = self._save_bom(
-            bom=self._bom,
-            folder=TEMP_EXPORT,
-            filename=file_utility.get_random_filename(),
-        )
-        file_utility.add_move(
-            source=source_path, target=self._path, delete_existing=True, ask_retry=True
+        self._save_bom(
+            bom=self.bom,
+            folder=Path(self.export_root_path, BOM_FOLDER),
+            filename=self.filename,
         )
 
     @staticmethod

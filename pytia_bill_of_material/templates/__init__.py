@@ -11,7 +11,7 @@ from typing import Optional
 
 from const import PYTIA_BILL_OF_MATERIAL, TEMP, TEMP_TEMPLATES, TEMPLATE_DOCKET
 from resources import resource
-from utils.files import file_utility
+from pytia_ui_tools.utils.files import file_utility
 
 
 class Templates:

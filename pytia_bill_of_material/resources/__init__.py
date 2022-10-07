@@ -41,6 +41,7 @@ class SettingsExport:
 
     apply_username_in_bom: bool
     apply_username_in_docket: bool
+    lock_drawing_views: bool
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)

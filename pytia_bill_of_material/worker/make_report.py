@@ -75,7 +75,7 @@ class MakeReportTask(TaskProtocol):
             log.info(f"Verifying element {assembly.partnumber!r}:")
 
             for assembly_item in assembly.items:
-                log.info(f"  {assembly_item.partnumber}:")
+                log.info(f"  {assembly_item.partnumber}")
                 report_item = ReportItem(
                     partnumber=assembly_item.partnumber,
                     path=assembly_item.path,
@@ -122,19 +122,19 @@ class MakeReportTask(TaskProtocol):
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.OK
-                                log.info(f"    - {filter_item.property_name}: OK.")
+                                log.debug(f"    - {filter_item.property_name}: OK.")
                             else:
                                 report_item.details[
                                     filter_item.property_name
                                 ] = Status.FAILED
                                 report_item.status = Status.FAILED
                                 report.status = Status.FAILED
-                                log.info(f"    - {filter_item.property_name}: FAILED.")
+                                log.debug(f"    - {filter_item.property_name}: FAILED.")
                         else:
                             report_item.details[
                                 filter_item.property_name
                             ] = Status.SKIPPED
-                            log.info(f"    - {filter_item.property_name}: SKIPPED.")
+                            log.debug(f"    - {filter_item.property_name}: SKIPPED.")
 
                     else:
                         raise ValueError(

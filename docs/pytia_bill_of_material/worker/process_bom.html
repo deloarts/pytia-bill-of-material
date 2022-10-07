@@ -188,9 +188,9 @@ class ProcessBomTask(TaskProtocol):
 
                 if not resource.applied_keywords.partnumber in row_data:
                     raise KeyError(
-                        f&#34;Cannot find keyword {resource.applied_keywords.partnumber!r} in exported Excel file. &#34;
-                        &#34;Are your language settings correct? Or is the $partnumber keyword not set &#34;
-                        &#34;in the bom.json&#39;s header_items?&#34;
+                        f&#34;Cannot find keyword {resource.applied_keywords.partnumber!r} in exported &#34;
+                        &#34;Excel file. Are your language settings correct? Or is the $partnumber &#34;
+                        &#34;keyword not set in the bom.json&#39;s header_items?&#34;
                     )
 
                 if row_data[resource.applied_keywords.partnumber] is None:
@@ -531,9 +531,9 @@ It generates the BOM object from the xlsx file.</p>
 
                 if not resource.applied_keywords.partnumber in row_data:
                     raise KeyError(
-                        f&#34;Cannot find keyword {resource.applied_keywords.partnumber!r} in exported Excel file. &#34;
-                        &#34;Are your language settings correct? Or is the $partnumber keyword not set &#34;
-                        &#34;in the bom.json&#39;s header_items?&#34;
+                        f&#34;Cannot find keyword {resource.applied_keywords.partnumber!r} in exported &#34;
+                        &#34;Excel file. Are your language settings correct? Or is the $partnumber &#34;
+                        &#34;keyword not set in the bom.json&#39;s header_items?&#34;
                     )
 
                 if row_data[resource.applied_keywords.partnumber] is None:

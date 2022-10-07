@@ -19,7 +19,8 @@ This file contains the basic settings for the app.
     "debug": false,
     "export": {
         "apply_username_in_bom": true,
-        "apply_username_in_docket": true
+        "apply_username_in_docket": true,
+        "lock_drawing_views": true
     },
     "restrictions": {
         "allow_all_users": false,
@@ -55,6 +56,9 @@ name | type | description
 --- | --- | ---
 title | `str` | The apps title. This will be visible in the title bar of the window.
 debug | `bool` | The flag to declare the debug-state of the app. The app cannot be built if this value is true.
+export.apply_username_in_bom | `bool` | Whether to translate the username for the bom or not.
+export.apply_username_in_docket | `bool` | Whether to translate the username for the docket or not.
+export.lock_drawing_views | `bool` | Whether to lock all drawing views after the export or not.
 restrictions.allow_all_users | `bool` | If set to `true` any user can make changes to the documents properties. If set to `false` only those users from the **users.json** file can modify the properties.
 restrictions.allow_all_editors | `bool` | If set to `true` any user can make changes to the documents properties. If set to `false` only those users which are declared in the **workspace** file can modify the properties. If no workspace file is found, or no **editors** list-item is inside the workspace file, then this is omitted, and everyone can make changes.
 restrictions.allow_unsaved | `bool` | If set to `false` an unsaved document (a document which doesn't have a path yet) cannot be modified.

@@ -6,7 +6,7 @@ import functools
 import os
 import time
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from pytia.exceptions import PytiaDifferentDocumentError, PytiaDocumentNotSavedError
 from pytia.log import log
@@ -184,3 +184,17 @@ class LazyDocumentHelper:
             return param
         log.info(f"Couldn't retrieve property {name} from part: Doesn't exists.")
         return None
+
+    def close_all_documents(self) -> None:
+        open_documents: List[str] = []
+        for i in range(1, self.framework.catia.documents.count + 1):
+            open_documents.append(self.framework.catia.documents.item(i).name)
+
+        for doc in open_documents:
+            try:
+                self.framework.catia.documents.item(doc).close()
+                log.info(f"Closed document {doc!r}.")
+            except Exception:
+                log.warning(
+                    f"Failed closing document {doc!r}: Maybe it has been already closed."
+                )

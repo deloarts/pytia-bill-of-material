@@ -4,7 +4,7 @@
 
 from typing import Literal
 
-from exceptions import PytiaLanguageNotSupportedError
+from pytia.exceptions import PytiaLanguageError
 from pytia.framework import framework
 from pytia.framework.in_interfaces.documentation_setting_att import (
     DocumentationSettingAtt,
@@ -24,7 +24,7 @@ def get_ui_language(product: PyProductDocument) -> Literal["en", "de"]:
     This is not a good solution, but currently the only one that works.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal["en", "de"]: The language of the CATIA UI.
@@ -44,7 +44,7 @@ def get_ui_language(product: PyProductDocument) -> Literal["en", "de"]:
     except:
         pass
 
-    raise PytiaLanguageNotSupportedError(
+    raise PytiaLanguageError(
         f"The selected language is not supported. "
         "Please select either 'English' or 'German'."
     )
@@ -55,7 +55,7 @@ def get_doc_language() -> Literal["en", "de"]:
     Returns the language of the CATIA online documentation.
 
     Raises:
-        PytiaLanguageNotSupportedError: Raised when the UI language is not supported.
+        PytiaLanguageError: Raised when the UI language is not supported.
 
     Returns:
         Literal["en", "de"]: The language of the CATIA doc.
@@ -68,7 +68,7 @@ def get_doc_language() -> Literal["en", "de"]:
 
     match code:
         case 0:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 "Cannot proceed with language setting 'default'. "
                 "Please select either 'English' or 'German'."
             )
@@ -77,7 +77,7 @@ def get_doc_language() -> Literal["en", "de"]:
         case 714:
             return "en"
         case _:
-            raise PytiaLanguageNotSupportedError(
+            raise PytiaLanguageError(
                 f"The selected language {code!r} is not supported. "
                 "Please select either 'English' or 'German'."
             )

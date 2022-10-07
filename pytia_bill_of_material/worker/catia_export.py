@@ -6,14 +6,14 @@
 import os
 from pathlib import Path
 
-from const import EXCEL_EXE, TEMP_EXPORT
-from exceptions import PytiaConvertError
+from const import EXCEL_EXE
 from helper.lazy_loaders import LazyDocumentHelper
 from protocols.task_protocol import TaskProtocol
+from pytia.exceptions import PytiaConvertError
 from pytia.log import log
 from pytia.utilities.bill_of_material import export_bom
+from pytia_ui_tools.utils.files import file_utility
 from utils.excel import get_excel
-from utils.files import file_utility
 from utils.system import application_is_running
 
 
@@ -36,14 +36,15 @@ class CatiaExportTask(TaskProtocol):
 
     __slots__ = ("_doc_helper", "_xls", "_xlsx", "_bom")
 
-    def __init__(self, doc_helper: LazyDocumentHelper) -> None:
+    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -> None:
         """
         Inits the class.
 
         Args:
             doc_helper (LazyDocumentHelper): The document helper object.
         """
-        self._doc_helper = doc_helper
+        self.doc_helper = doc_helper
+        self.export_root_path = export_root_path
 
     @property
     def xls(self) -> Path:
@@ -59,9 +60,9 @@ class CatiaExportTask(TaskProtocol):
 
         self._xls = Path(
             export_bom(
-                product=self._doc_helper.document.product,
+                product=self.doc_helper.document.product,
                 filename=file_utility.get_random_filename(filetype="xls"),
-                folder=TEMP_EXPORT,
+                folder=self.export_root_path,
             )
         )
         self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)

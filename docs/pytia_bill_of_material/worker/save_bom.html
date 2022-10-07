@@ -33,14 +33,13 @@
 
 from pathlib import Path
 
-from const import TEMP_EXPORT
+from const import BOM as BOM_FOLDER
 from models.bom import BOM
 from openpyxl.workbook import Workbook
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import create_header, style_worksheet, write_data
-from utils.files import file_utility
 
 
 class SaveBomTask(TaskProtocol):
@@ -53,20 +52,18 @@ class SaveBomTask(TaskProtocol):
 
     __slots__ = (&#34;_bom&#34;, &#34;_path&#34;)
 
-    def __init__(self, bom: BOM, path: Path) -&gt; None:
-        self._bom = bom
-        self._path = path
+    def __init__(self, bom: BOM, export_root_path: Path, filename: str) -&gt; None:
+        self.bom = bom
+        self.export_root_path = export_root_path
+        self.filename = filename
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Saving finished bill of material.&#34;)
-        source_path = self._save_bom(
-            bom=self._bom,
-            folder=TEMP_EXPORT,
-            filename=file_utility.get_random_filename(),
-        )
-        file_utility.add_move(
-            source=source_path, target=self._path, delete_existing=True, ask_retry=True
+        self._save_bom(
+            bom=self.bom,
+            folder=Path(self.export_root_path, BOM_FOLDER),
+            filename=self.filename,
         )
 
     @staticmethod
@@ -123,7 +120,7 @@ class SaveBomTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.save_bom.SaveBomTask"><code class="flex name class">
 <span>class <span class="ident">SaveBomTask</span></span>
-<span>(</span><span>bom: models.bom.BOM, path: pathlib.Path)</span>
+<span>(</span><span>bom: models.bom.BOM, export_root_path: pathlib.Path, filename: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class is used to format and save the finished bill of material file.</p>
@@ -146,20 +143,18 @@ class SaveBomTask(TaskProtocol):
 
     __slots__ = (&#34;_bom&#34;, &#34;_path&#34;)
 
-    def __init__(self, bom: BOM, path: Path) -&gt; None:
-        self._bom = bom
-        self._path = path
+    def __init__(self, bom: BOM, export_root_path: Path, filename: str) -&gt; None:
+        self.bom = bom
+        self.export_root_path = export_root_path
+        self.filename = filename
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Saving finished bill of material.&#34;)
-        source_path = self._save_bom(
-            bom=self._bom,
-            folder=TEMP_EXPORT,
-            filename=file_utility.get_random_filename(),
-        )
-        file_utility.add_move(
-            source=source_path, target=self._path, delete_existing=True, ask_retry=True
+        self._save_bom(
+            bom=self.bom,
+            folder=Path(self.export_root_path, BOM_FOLDER),
+            filename=self.filename,
         )
 
     @staticmethod
@@ -224,13 +219,10 @@ class SaveBomTask(TaskProtocol):
 <pre><code class="python">def run(self) -&gt; None:
     &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
     log.info(&#34;Saving finished bill of material.&#34;)
-    source_path = self._save_bom(
-        bom=self._bom,
-        folder=TEMP_EXPORT,
-        filename=file_utility.get_random_filename(),
-    )
-    file_utility.add_move(
-        source=source_path, target=self._path, delete_existing=True, ask_retry=True
+    self._save_bom(
+        bom=self.bom,
+        folder=Path(self.export_root_path, BOM_FOLDER),
+        filename=self.filename,
     )</code></pre>
 </details>
 </dd>
