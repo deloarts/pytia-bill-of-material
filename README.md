@@ -91,8 +91,8 @@ Some dependencies are not publicly available on PyPi or GitHub (because they are
 
 Name | Link | Version
 --- | --- | ---
-**pytia** | <https://github.com/deloarts/pytia> | [0.2.4](https://github.com/deloarts/pytia/releases/tag/v0.2.4)
-**pytia-ui-tools** | <https://github.com/deloarts/pytia-ui-tools> | [0.6.0](https://github.com/deloarts/pytia-ui-tools/releases/tag/v0.6.0)
+**pytia** | <https://github.com/deloarts/pytia> | [0.2.5](https://github.com/deloarts/pytia/releases/tag/v0.2.5)
+**pytia-ui-tools** | <https://github.com/deloarts/pytia-ui-tools> | [0.6.1](https://github.com/deloarts/pytia-ui-tools/releases/tag/v0.6.1)
 
 > ❗️ The folder where you provide the local dependencies must match the **paths.local_dependencies** entry of the **settings.json**. The user must have at least read access on this folder.
 >
