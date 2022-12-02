@@ -57,7 +57,6 @@ def test_users():
     from pytia_bill_of_material.resources import resource
 
     logon_list = []
-    id_list = []
 
     for user in resource.users:
         assert isinstance(user.logon, str)
@@ -65,10 +64,8 @@ def test_users():
         assert isinstance(user.name, str)
         assert isinstance(user.mail, str)
         assert user.logon not in logon_list
-        assert user.id not in id_list
 
         logon_list.append(user.logon)
-        id_list.append(user.id)
 
 
 def test_template_files():
