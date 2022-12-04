@@ -4,12 +4,10 @@
 
 from typing import Literal
 
+from pycatia.in_interfaces.documentation_setting_att import DocumentationSettingAtt
+from pycatia.product_structure_interfaces.product import Product
 from pytia.exceptions import PytiaLanguageError
 from pytia.framework import framework
-from pytia.framework.in_interfaces.documentation_setting_att import (
-    DocumentationSettingAtt,
-)
-from pytia.framework.product_structure_interfaces.product import Product
 from pytia.log import log
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource

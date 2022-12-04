@@ -397,6 +397,17 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 test = ["ipaddress", "mock", "unittest2", "enum34", "pywin32", "wmi"]
 
 [[package]]
+name = "pycatia"
+version = "0.5.7"
+description = "A python module to access the CATIA Measurable object."
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[package.dependencies]
+pywin32 = ">=224"
+
+[[package]]
 name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
@@ -482,7 +493,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.
 
 [[package]]
 name = "pytia"
-version = "0.2.5"
+version = "0.3.0"
 description = "A wrapper for the catia v5 api."
 category = "main"
 optional = false
@@ -493,13 +504,14 @@ develop = false
 click = "8.1.3"
 colorama = "0.4.4"
 psutil = "5.9.0"
+pycatia = "0.5.7"
 pywin32 = "304"
 
 [package.source]
 type = "git"
 url = "ssh://git@github.com/deloarts/pytia.git"
-reference = "v0.2.5"
-resolved_reference = "9ec75ebb5329a16e026c83039cb66a0a7a476c58"
+reference = "v0.3.0"
+resolved_reference = "45eda785d22050b88c859fb6e8678a5159a976a0"
 
 [[package]]
 name = "pytia-ui-tools"
@@ -616,7 +628,7 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5772c2578d60cdfc03466533ed93b0bffdc59916e53ffc0c38e471cd8b0b4b2a"
+content-hash = "f850d6a2de10715a9ca1a51f05429d068301e5a3f59621e0439285c4df8e1c51"
 
 [metadata.files]
 astroid = []
@@ -778,6 +790,7 @@ psutil = [
     {file = "psutil-5.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:7d190ee2eaef7831163f254dc58f6d2e2a22e27382b936aab51c835fc080c3d3"},
     {file = "psutil-5.9.0.tar.gz", hash = "sha256:869842dbd66bb80c3217158e629d6fceaecc3a3166d3d1faee515b05dd26ca25"},
 ]
+pycatia = []
 pycparser = []
 pygit2 = []
 pylint = [

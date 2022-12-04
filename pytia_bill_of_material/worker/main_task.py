@@ -107,7 +107,7 @@ class MainTask:
             self._move_files()
 
             log.info("Re-opening main document...")
-            self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
+            self.doc_helper.framework.catia.documents.open(str(self.doc_helper.path))
 
             if file_utility.all_moved:
                 log.info("Export completed successfully.")
