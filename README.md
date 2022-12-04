@@ -36,7 +36,6 @@ Table of contents:
     - [2.5 build](#25-build)
     - [2.6 release](#26-release)
     - [2.7 docs](#27-docs)
-    - [2.8 new revision checklist](#28-new-revision-checklist)
   - [3 usage](#3-usage)
     - [3.1 report](#31-report)
   - [4 workspace](#4-workspace)
@@ -51,6 +50,8 @@ Table of contents:
       - [5.2.2 install](#522-install)
       - [5.2.3 tests](#523-tests)
     - [5.3 pre-commit hooks](#53-pre-commit-hooks)
+    - [5.4 docs](#54-docs)
+    - [5.5 new revision checklist](#55-new-revision-checklist)
   - [6 license](#6-license)
   - [7 changelog](#7-changelog)
   - [8 to dos](#8-to-dos)
@@ -145,40 +146,7 @@ You can always change the path of the release folder by editing the value from t
 
 ### 2.7 docs
 
-Documentation is done with [pdoc3](https://pdoc3.github.io/pdoc/).
-
-To update the documentation run:
-
-```powershell
-python -m pdoc --html --output-dir docs pytia_bill_of_material
-```
-
-For preview run:
-
-```powershell
-python -m pdoc --http : pytia_bill_of_material
-```
-
 You can find the documentation in the [docs folder](/docs).
-
-### 2.8 new revision checklist
-
-On a new revision, do the following:
-
-1. Update **dependency versions** in
-   - [pyproject.toml](pyproject.toml)
-   - [dependencies.json](pytia_bill_of_material/resources/dependencies.json)
-   - [README.md](README.md)
-2. Update **dependencies**: `poetry update`
-3. Update the **version** in
-   - [pyproject.toml](pyproject.toml)
-   - [__ init __.py](pytia_bill_of_material/__init__.py)
-   - [README.md](README.md)
-4. Run all **tests**: `poetry run pytest`
-5. Check **pylint** output: `poetry run pylint pytia_bill_of_material/`
-6. Update the **documentation**: `poetry run pdoc --force --html --output-dir docs pytia_bill_of_material`
-7. Update the **lockfile**: `poetry lock`
-8. Update the **requirements.txt**: `poetry export --dev -f requirements.txt -o requirements.txt`
 
 ## 3 usage
 
@@ -332,6 +300,41 @@ Don't forget to install the pre-commit hooks:
 ```powershell
 pre-commit install
 ```
+
+### 5.4 docs
+
+Documentation is done with [pdoc3](https://pdoc3.github.io/pdoc/).
+
+To update the documentation run:
+
+```powershell
+python -m pdoc --html --output-dir docs pytia_bill_of_material
+```
+
+For preview run:
+
+```powershell
+python -m pdoc --http : pytia_bill_of_material
+```
+
+### 5.5 new revision checklist
+
+On a new revision, do the following:
+
+1. Update **dependency versions** in
+   - [pyproject.toml](pyproject.toml)
+   - [dependencies.json](pytia_bill_of_material/resources/dependencies.json)
+   - [README.md](README.md)
+2. Update **dependencies**: `poetry update`
+3. Update the **version** in
+   - [pyproject.toml](pyproject.toml)
+   - [__ init __.py](pytia_bill_of_material/__init__.py)
+   - [README.md](README.md)
+4. Run all **tests**: `poetry run pytest`
+5. Check **pylint** output: `poetry run pylint pytia_bill_of_material/`
+6. Update the **documentation**: `poetry run pdoc --force --html --output-dir docs pytia_bill_of_material`
+7. Update the **lockfile**: `poetry lock`
+8. Update the **requirements.txt**: `poetry export --dev -f requirements.txt -o requirements.txt`
 
 ## 6 license
 
