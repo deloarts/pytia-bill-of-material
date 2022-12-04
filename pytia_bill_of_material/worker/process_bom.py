@@ -152,7 +152,13 @@ class ProcessBomTask(TaskProtocol):
                         header_position=position, cell_value=cell_value
                     )
 
-                    row_data[position] = cell_value
+                    cell_value = cls._apply_fixed_text(
+                        header_position=position, cell_value=cell_value
+                    )
+
+                    cls._add_to_row_data(
+                        row_data, header_position=position, cell_value=cell_value
+                    )
 
                 if is_summary:
                     bom.summary = assembly
@@ -242,6 +248,24 @@ class ProcessBomTask(TaskProtocol):
         return header
 
     @staticmethod
+    def _add_to_row_data(
+        row_data: dict, header_position: str, cell_value: str | Any | None
+    ) -> None:
+        """
+        Adds the cell value to the correct header position of the row_data dict.
+
+        Args:
+            row_data (dict): The row_data dict.
+            header_position (str): The name of the header item (the key in the row_data)
+            cell_value (str | Any | None): The value to add (the value in the row_data)
+        """
+        # if header_position.startswith("%") and "=" in header_position:
+        #     row_data[header_position.split("%")[-1].split("=")[0]] = cell_value
+        # else:
+        #     row_data[header_position] = cell_value
+        row_data[header_position] = cell_value
+
+    @staticmethod
     def _overwrite_project_number(
         header_position: str, cell_value: str | Any | None, overwrite_number: str
     ) -> str | Any | None:
@@ -289,6 +313,24 @@ class ProcessBomTask(TaskProtocol):
             and resource.user_exists(str(cell_value))
         ):
             return resource.get_user_by_logon(str(cell_value)).name
+        return cell_value
+
+    @staticmethod
+    def _apply_fixed_text(
+        header_position: str, cell_value: str | Any | None
+    ) -> str | Any | None:
+        """
+        Returns the value of the fixed text accordingly to the header_items list.
+
+        Args:
+            header_position (str): The header position (the name of the header).
+            cell_value (str | Any | None): The cell value.
+
+        Returns:
+            str | Any | None: The fixed text, if set in the header_items.
+        """
+        if header_position.startswith("%") and "=" in header_position:
+            return header_position.split("=")[-1]
         return cell_value
 
     @staticmethod
