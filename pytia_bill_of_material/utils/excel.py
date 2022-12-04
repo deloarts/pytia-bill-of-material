@@ -4,11 +4,11 @@
 
 from typing import List
 
-from pytia.exceptions import PytiaDispatchError, PytiaNotInstalledError
 from models.bom import BOMAssemblyItem
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.worksheet import Worksheet
+from pytia.exceptions import PytiaDispatchError, PytiaNotInstalledError
 from pytia.log import log
 from resources import resource
 from win32com.client import CDispatch, Dispatch
@@ -49,7 +49,11 @@ def create_header(worksheet: Worksheet, items: tuple) -> None:
     """
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            worksheet.cell(resource.bom.header_row + 1, index + 1).value = item
+            if str(item).startswith("%") and "=" in str(item):
+                value = str(item).split("%")[-1].split("=")[0]
+            else:
+                value = item
+            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
         log.info(f"Created header for worksheet {worksheet.title!r}")
     else:
         log.info(f"Skipped creating header for worksheet {worksheet.title!r}.")
