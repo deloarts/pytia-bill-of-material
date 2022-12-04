@@ -33,6 +33,7 @@
         "pdoc",
         "Produktbeschreibung",
         "psutil",
+        "pycatia",
         "pygit",
         "pylint",
         "pylintrc",

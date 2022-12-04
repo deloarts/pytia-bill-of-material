@@ -9,10 +9,10 @@ from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
+from pycatia.in_interfaces.document import Document
+from pycatia.product_structure_interfaces.product import Product
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.framework import framework
-from pytia.framework.in_interfaces.document import Document
-from pytia.framework.product_structure_interfaces.product import Product
 from pytia.log import log
 from pytia.utilities.bill_of_material import set_current_format, set_secondary_format
 from pytia.utilities.docket import DocketConfig
