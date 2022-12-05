@@ -14,7 +14,7 @@ pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag 
 
 [tool.poetry.dev-dependencies]
 Jinja2 = "^3.1.2"
-black = "^22.3.0"
+black = "22.10.0"
 packaging = "^21.3"
 pdoc3 = "^0.10.0"
 pre-commit = "^2.19.0"
