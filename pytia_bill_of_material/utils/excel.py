@@ -51,6 +51,8 @@ def create_header(worksheet: Worksheet, items: tuple) -> None:
         for index, item in enumerate(items):
             if str(item).startswith("%") and "=" in str(item):
                 value = str(item).split("%")[-1].split("=")[0]
+            elif str(item).startswith("%"):
+                value = str(item).split("%")[-1]
             else:
                 value = item
             worksheet.cell(resource.bom.header_row + 1, index + 1, value)
