@@ -156,6 +156,10 @@ class ProcessBomTask(TaskProtocol):
                         header_position=position, cell_value=cell_value
                     )
 
+                    cell_value = cls._apply_placeholder_header(
+                        header_position=position, cell_value=cell_value
+                    )
+
                     cls._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
                     )
@@ -331,6 +335,24 @@ class ProcessBomTask(TaskProtocol):
         """
         if header_position.startswith("%") and "=" in header_position:
             return header_position.split("=")[-1]
+        return cell_value
+
+    @staticmethod
+    def _apply_placeholder_header(
+        header_position: str, cell_value: str | Any | None
+    ) -> str | Any | None:
+        """
+        Returns None as cell value, if the header is set to placeholder.
+
+        Args:
+            header_position (str): The header position (the name of the header).
+            cell_value (str | Any | None): The cell value.
+
+        Returns:
+            str | Any | None: The fixed text, if set in the header_items.
+        """
+        if header_position.startswith("%") and "=" not in header_position:
+            return None
         return cell_value
 
     @staticmethod
