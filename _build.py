@@ -5,6 +5,7 @@
 
 import json
 import os
+import re
 import sys
 import zipapp
 from datetime import datetime
@@ -16,37 +17,61 @@ import toml
 from jinja2 import Environment, FileSystemLoader
 from packaging.version import Version
 from pygit2 import Repository
+from pytia.console import Console
 
 from pytia_bill_of_material.const import APP_NAME, APP_VERSION
 
-settings_path = "./pytia_bill_of_material/resources/settings.json"
+console = Console()
+settings_path = Path("./pytia_bill_of_material/resources/settings.json").resolve()
 branch_name = Repository(".").head.shorthand
 
 
 class Build:
     def __init__(self) -> None:
         if not os.path.exists(settings_path):
-            raise Exception(
-                f"Config file 'settings.json' not found. "
-                f"Have you followed the setup instructions?"
+            console.error(
+                "Config file not found. Have you followed the setup instructions?"
             )
+            sys.exit()
+
         with open(settings_path, "r") as f:
             self.settings = json.load(f)
 
-        self.dev_build = bool(branch_name == "development" or self.settings["debug"])
+        self.dev_build = bool(
+            self.settings["debug"]
+            or (
+                not re.match(r"^v\d+(\.\d+){2,3}$", branch_name)
+                and not branch_name.lower() in ["head", "main"]
+            )
+        )
+        if self.dev_build:
+            console.warning(
+                f"App is built in development mode from branch {branch_name!r}"
+            )
+
+    def provide(self):
+        console.info("Providing folders ...")
+
         self.source_folder = Path("./pytia_bill_of_material").resolve()
+        console.info(f"Source folder is {str(self.source_folder)!r}")
+
         self.build_folder = Path("./build").resolve()
+        console.info(f"Build folder is {str(self.build_folder)!r}")
 
         self.build_app_path = (
             Path(self.build_folder, self.settings["files"]["app"])
             if not self.dev_build
             else Path(self.build_folder, "dev_app.pyz")
         )
+        console.info(f"App build path is {str(self.build_app_path)!r}")
+
         self.build_launcher_path = (
             Path(self.build_folder, self.settings["files"]["launcher"])
             if not self.dev_build
             else Path(self.build_folder, "dev_launcher.catvbs")
         )
+        console.info(f"Launcher build path is {str(self.build_launcher_path)!r}")
+
         self.release_app_path = (
             WindowsPath(
                 self.settings["paths"]["release"], self.settings["files"]["app"]
@@ -54,21 +79,23 @@ class Build:
             if not self.dev_build
             else WindowsPath(self.build_folder, "dev_app.pyz")
         )
+        console.info(f"Release folder is {str(self.release_app_path)!r}")
 
-    def provide(self):
         os.makedirs(self.build_folder, exist_ok=True)
         for item in os.listdir(self.build_folder):
             os.remove(Path(self.build_folder, item))
 
     @staticmethod
     def test():
+        console.info("Running tests ...")
         code = pytest.main()
         if code == pytest.ExitCode.TESTS_FAILED:
-            print("\n\nCannot build app: Tests are failing.\n\n")
-            sys.exit(2)
+            console.error("Failed building app: Tests are failing.")
+            sys.exit()
 
     @staticmethod
     def get_required_version() -> Tuple[int, int]:
+        console.info("Acquiring app version ...")
         with open("./pyproject.toml", "r") as f:
             pyproject = toml.load(f)
         ppv = pyproject["tool"]["poetry"]["dependencies"]["python"]
@@ -76,6 +103,7 @@ class Build:
         return v.major, v.minor
 
     def create_launcher(self):
+        console.info("Creating launcher file ...")
         major, minor = self.get_required_version()
 
         file_loader = FileSystemLoader("./vbs")
@@ -95,11 +123,15 @@ class Build:
         )
 
         if os.path.exists(self.build_launcher_path):
+            console.info(f"Removing existing file {str(self.build_launcher_path)!r}")
             os.remove(self.build_launcher_path)
+
         with open(self.build_launcher_path, "w") as f:
             f.write(catvbs)
+        console.info(f"Saved new launcher as {str(self.build_launcher_path)!r}")
 
     def build(self):
+        console.info(f"Building {APP_NAME} {APP_VERSION}")
         self.provide()
         self.test()
         self.create_launcher()
@@ -111,10 +143,9 @@ class Build:
             filter=None,
             compressed=False,
         )
-        print(f"\n\nBuilt app into {self.build_folder}\n\n")
+        console.ok(f"Built app into {str(self.build_folder)!r}")
 
 
 if __name__ == "__main__":
-    print(f"Building {APP_NAME} {APP_VERSION}\n")
     builder = Build()
     builder.build()
