@@ -71,7 +71,10 @@ class PrepareTask(TaskProtocol):
         """
         Sets the BOM format to the format specified in the `bom.json` (`header_items`) config file.
         """
-        header_items = tuple(item for item in resource.bom.header_items)
+        # The bill of material will be processed from the summary-header-items.
+        # At this point the made and bought header items aren't relevant, those come
+        # into play only at the final step of saving the bill of material later.
+        header_items = tuple(item for item in resource.bom.header_items.summary)
         set_current_format(header_items)
         set_secondary_format(header_items)
 
