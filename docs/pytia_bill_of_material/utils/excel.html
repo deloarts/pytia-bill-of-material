@@ -33,11 +33,11 @@
 
 from typing import List
 
-from pytia.exceptions import PytiaDispatchError, PytiaNotInstalledError
 from models.bom import BOMAssemblyItem
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
 from openpyxl.worksheet.worksheet import Worksheet
+from pytia.exceptions import PytiaDispatchError, PytiaNotInstalledError
 from pytia.log import log
 from resources import resource
 from win32com.client import CDispatch, Dispatch
@@ -78,14 +78,20 @@ def create_header(worksheet: Worksheet, items: tuple) -&gt; None:
     &#34;&#34;&#34;
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            worksheet.cell(resource.bom.header_row + 1, index + 1).value = item
+            if str(item).startswith(&#34;%&#34;) and &#34;=&#34; in str(item):
+                value = str(item).split(&#34;%&#34;)[-1].split(&#34;=&#34;)[0]
+            elif str(item).startswith(&#34;%&#34;):
+                value = str(item).split(&#34;%&#34;)[-1]
+            else:
+                value = item
+            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
         log.info(f&#34;Created header for worksheet {worksheet.title!r}&#34;)
     else:
         log.info(f&#34;Skipped creating header for worksheet {worksheet.title!r}.&#34;)
 
 
 def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem]
+    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
 ) -&gt; None:
     &#34;&#34;&#34;
     Writes the properties from the given data object to the given worksheet.
@@ -95,12 +101,24 @@ def write_data(
         worksheet (Worksheet): The worksheet to add the data to.
         header_items (tuple): The header items.
         data (List[BOMAssemblyItem]): The actual data.
+        strict (bool): If set to True, an error will be raised if the properties are \
+            not in the header items.
     &#34;&#34;&#34;
     for ri, rv in enumerate(data):
         for ci, cv in enumerate(header_items):
+            if cv in rv.properties:
+                cell_value = rv.properties[cv]
+            elif strict:
+                raise KeyError(f&#34;Did not find property {cv!r} in data.&#34;)
+            else:
+                cell_value = None
+                log.warning(
+                    f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
+                    &#34;the header_items.summary list of the bom.json config file?&#34;
+                )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
-            ).value = rv.properties[cv]
+            ).value = cell_value
     log.info(f&#34;Wrote all data to worksheet {worksheet.title!r}.&#34;)
 
 
@@ -201,7 +219,13 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
     &#34;&#34;&#34;
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            worksheet.cell(resource.bom.header_row + 1, index + 1).value = item
+            if str(item).startswith(&#34;%&#34;) and &#34;=&#34; in str(item):
+                value = str(item).split(&#34;%&#34;)[-1].split(&#34;=&#34;)[0]
+            elif str(item).startswith(&#34;%&#34;):
+                value = str(item).split(&#34;%&#34;)[-1]
+            else:
+                value = item
+            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
         log.info(f&#34;Created header for worksheet {worksheet.title!r}&#34;)
     else:
         log.info(f&#34;Skipped creating header for worksheet {worksheet.title!r}.&#34;)</code></pre>
@@ -334,7 +358,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 </details>
 </dd>
 <dt id="pytia_bill_of_material.utils.excel.write_data"><code class="name flex">
-<span>def <span class="ident">write_data</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, header_items: tuple, data: List[models.bom.BOMAssemblyItem]) ‑> None</span>
+<span>def <span class="ident">write_data</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, header_items: tuple, data: List[models.bom.BOMAssemblyItem], strict: bool) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Writes the properties from the given data object to the given worksheet.
@@ -347,13 +371,16 @@ Takes care that each datum will be written to the corresponding header.</p>
 <dd>The header items.</dd>
 <dt><strong><code>data</code></strong> :&ensp;<code>List[BOMAssemblyItem]</code></dt>
 <dd>The actual data.</dd>
+<dt><strong><code>strict</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If set to True, an error will be raised if the properties are
+not in the header items.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem]
+    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
 ) -&gt; None:
     &#34;&#34;&#34;
     Writes the properties from the given data object to the given worksheet.
@@ -363,12 +390,24 @@ Takes care that each datum will be written to the corresponding header.</p>
         worksheet (Worksheet): The worksheet to add the data to.
         header_items (tuple): The header items.
         data (List[BOMAssemblyItem]): The actual data.
+        strict (bool): If set to True, an error will be raised if the properties are \
+            not in the header items.
     &#34;&#34;&#34;
     for ri, rv in enumerate(data):
         for ci, cv in enumerate(header_items):
+            if cv in rv.properties:
+                cell_value = rv.properties[cv]
+            elif strict:
+                raise KeyError(f&#34;Did not find property {cv!r} in data.&#34;)
+            else:
+                cell_value = None
+                log.warning(
+                    f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
+                    &#34;the header_items.summary list of the bom.json config file?&#34;
+                )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
-            ).value = rv.properties[cv]
+            ).value = cell_value
     log.info(f&#34;Wrote all data to worksheet {worksheet.title!r}.&#34;)</code></pre>
 </details>
 </dd>

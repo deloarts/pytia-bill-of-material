@@ -136,7 +136,7 @@ class MainTask:
             self._move_files()
 
             log.info(&#34;Re-opening main document...&#34;)
-            self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
+            self.doc_helper.framework.catia.documents.open(str(self.doc_helper.path))
 
             if file_utility.all_moved:
                 log.info(&#34;Export completed successfully.&#34;)
@@ -360,7 +360,7 @@ It uses the task runner to update the UI state.</p>
             self._move_files()
 
             log.info(&#34;Re-opening main document...&#34;)
-            self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
+            self.doc_helper.framework.catia.documents.open(str(self.doc_helper.path))
 
             if file_utility.all_moved:
                 log.info(&#34;Export completed successfully.&#34;)
@@ -488,7 +488,7 @@ It uses the task runner to update the UI state.</p>
         self._move_files()
 
         log.info(&#34;Re-opening main document...&#34;)
-        self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
+        self.doc_helper.framework.catia.documents.open(str(self.doc_helper.path))
 
         if file_utility.all_moved:
             log.info(&#34;Export completed successfully.&#34;)

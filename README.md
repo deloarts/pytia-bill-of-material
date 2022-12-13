@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-Alpha-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.3.2-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.4.0-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -342,6 +342,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+**v0.4.0**: Add made and bought option to excel export.  
 **v0.3.2**: Performance improvement and minor fixes.  
 **v0.3.1**: Fix drawing path bug.  
 **v0.3.0**: Add drawing export feature.  
