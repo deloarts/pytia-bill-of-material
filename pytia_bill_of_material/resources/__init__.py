@@ -218,8 +218,8 @@ class BOMHeaderItems:
     """Header items dataclass."""
 
     summary: List[str]
-    made: List[str]
-    bought: List[str]
+    made: List[str] | None
+    bought: List[str] | None
 
 
 @dataclass(slots=True, kw_only=True)

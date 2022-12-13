@@ -3,9 +3,10 @@
 """
 
 from pathlib import Path
+from typing import List
 
 from const import BOM as BOM_FOLDER
-from models.bom import BOM
+from models.bom import BOM, BOMAssemblyItem
 from openpyxl.workbook import Workbook
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
@@ -56,20 +57,70 @@ class SaveBomTask(TaskProtocol):
             filename += ".xlsx"
 
         path = Path(folder, filename)
-        header_items = tuple(item for item in resource.bom.header_items)
 
         wb = Workbook()
         ws = wb.active
         ws.title = "Summary"
         ws.sheet_properties.tabColor = "ff0000"
-        create_header(worksheet=ws, items=header_items)
-        write_data(worksheet=ws, header_items=header_items, data=bom.summary.items)
+
+        # Summary
+        header_items_summary = tuple(item for item in resource.bom.header_items.summary)
+        create_header(worksheet=ws, items=header_items_summary)
+        write_data(
+            worksheet=ws,
+            header_items=header_items_summary,
+            data=bom.summary.items,
+            strict=True,
+        )
         style_worksheet(worksheet=ws)
+
+        # Made
+        if resource.bom.header_items.made:
+            header_items_made = tuple(item for item in resource.bom.header_items.made)
+            ws: Worksheet = wb.create_sheet(title="Made")  # type: ignore
+            ws.sheet_properties.tabColor = "ff0000"
+            create_header(worksheet=ws, items=header_items_made)
+            write_data(
+                worksheet=ws,
+                header_items=header_items_made,
+                data=[
+                    item
+                    for item in bom.summary.items
+                    if item.source == resource.applied_keywords.made
+                ],
+                strict=False,
+            )
+            style_worksheet(worksheet=ws)
+
+        # Bought
+        if resource.bom.header_items.bought:
+            header_items_bought = tuple(
+                item for item in resource.bom.header_items.bought
+            )
+            ws: Worksheet = wb.create_sheet(title="Bought")  # type: ignore
+            ws.sheet_properties.tabColor = "ff0000"
+            create_header(worksheet=ws, items=header_items_bought)
+            write_data(
+                worksheet=ws,
+                header_items=header_items_bought,
+                data=[
+                    item
+                    for item in bom.summary.items
+                    if item.source == resource.applied_keywords.bought
+                ],
+                strict=False,
+            )
+            style_worksheet(worksheet=ws)
 
         for assembly in bom.assemblies:
             ws: Worksheet = wb.create_sheet(title=assembly.partnumber)  # type: ignore
-            create_header(worksheet=ws, items=header_items)
-            write_data(worksheet=ws, header_items=header_items, data=assembly.items)
+            create_header(worksheet=ws, items=header_items_summary)
+            write_data(
+                worksheet=ws,
+                header_items=header_items_summary,
+                data=assembly.items,
+                strict=True,
+            )
             style_worksheet(worksheet=ws)
 
         wb.active = wb["Summary"]  # type: ignore

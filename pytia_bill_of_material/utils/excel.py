@@ -62,7 +62,7 @@ def create_header(worksheet: Worksheet, items: tuple) -> None:
 
 
 def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem]
+    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
 ) -> None:
     """
     Writes the properties from the given data object to the given worksheet.
@@ -72,12 +72,24 @@ def write_data(
         worksheet (Worksheet): The worksheet to add the data to.
         header_items (tuple): The header items.
         data (List[BOMAssemblyItem]): The actual data.
+        strict (bool): If set to True, an error will be raised if the properties are \
+            not in the header items.
     """
     for ri, rv in enumerate(data):
         for ci, cv in enumerate(header_items):
+            if cv in rv.properties:
+                cell_value = rv.properties[cv]
+            elif strict:
+                raise KeyError(f"Did not find property {cv!r} in data.")
+            else:
+                cell_value = None
+                log.warning(
+                    f"Did not find property {cv!r} in data (is this header missing in "
+                    "the header_items.summary list of the bom.json config file?"
+                )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
-            ).value = rv.properties[cv]
+            ).value = cell_value
     log.info(f"Wrote all data to worksheet {worksheet.title!r}.")
 
 
