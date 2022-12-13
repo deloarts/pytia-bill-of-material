@@ -13,7 +13,7 @@ import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Dict, List, Literal, Optional
+from typing import Callable, Dict, List, Literal, Optional, Protocol
 
 from const import (
     APP_VERSION,
@@ -33,6 +33,10 @@ from const import (
     CONFIG_USERS,
     LOGON,
 )
+
+
+class DataclassProtocol(Protocol):
+    __dataclass_fields__: Dict
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -196,6 +200,7 @@ class RequiredHeaderItems:
     partnumber: str
     revision: str
     quantity: str
+    source: str
 
     @property
     def keys(self) -> List[str]:
@@ -209,12 +214,21 @@ class RequiredHeaderItems:
 
 
 @dataclass(slots=True, kw_only=True)
+class BOMHeaderItems:
+    """Header items dataclass."""
+
+    summary: List[str]
+    made: List[str] | None
+    bought: List[str] | None
+
+
+@dataclass(slots=True, kw_only=True)
 class BOM:
     """Bill of material dataclass."""
 
     header_row: int | None
     data_row: int
-    header_items: List[str]
+    header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
     font: str
@@ -227,6 +241,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -> None:
+        self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
 
@@ -456,8 +471,9 @@ class Resources:  # pylint: disable=R0902
         Applies the keywords from the keywords.json to the bom.json's `header_items`.
 
         Detailed explanation:
-            The bom.json contains a key named `header_items`, which contains a list of
-            keywords. Those keywords are used to create the header of the bill of material.
+            The bom.json contains a key named `header_items`, which contains the sub-keys
+            `summary`, `made` and `bought`. Those sub-keys contain a list of keywords.
+            Those keywords are used to create the header of the bill of material.
             Some of those keywords may represent CATIA standard properties, like `partnumber`,
             `source`, etc. Those names change with the UI language settings of CATIA
             (English: partnumber = "part number", German: partnumber = "Teilenummer", ...).
@@ -480,62 +496,32 @@ class Resources:  # pylint: disable=R0902
                 keywords will be applied to the bom.json config file.
         """
 
-        # header items
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
-        for index, item in enumerate(self._bom.header_items):
-            if item.startswith("$") and (key := item.split("$")[1]) in keywords:
-                self._bom.header_items[index] = keywords[key]
 
-        # sort
-        # TODO: A better solution for applying the keywords to the `sort` items.
-        if (
-            self._bom.sort.made.startswith("$")
-            and (key := self._bom.sort.made.split("$")[1]) in keywords
-        ):
-            self._bom.sort.made = keywords[key]
+        def _apply_to_object(_item: DataclassProtocol):
+            for object_fields in fields(_item):
+                object_item = getattr(_item, object_fields.name)
+                assert isinstance(object_item, list) or isinstance(object_item, str)
 
-        if (
-            self._bom.sort.bought.startswith("$")
-            and (key := self._bom.sort.bought.split("$")[1]) in keywords
-        ):
-            self._bom.sort.bought = keywords[key]
+                if isinstance(object_item, list):
+                    for index, item in enumerate(object_item):
+                        assert isinstance(item, str)
+                        if (
+                            item.startswith("$")
+                            and (key := item.split("$")[1]) in keywords
+                        ):
+                            object_item[index] = keywords[key]
 
-        # docket args
-        # TODO: A better solution for applying the keywords to the `required_header_items` items.
-        if (
-            self._bom.required_header_items.project.startswith("$")
-            and (key := self._bom.required_header_items.project.split("$")[1])
-            in keywords
-        ):
-            self._bom.required_header_items.project = keywords[key]
+                elif isinstance(object_item, str):
+                    if (
+                        object_item.startswith("$")
+                        and (key := object_item.split("$")[1]) in keywords
+                    ):
+                        setattr(_item, object_fields.name, keywords[key])
 
-        if (
-            self._bom.required_header_items.machine.startswith("$")
-            and (key := self._bom.required_header_items.machine.split("$")[1])
-            in keywords
-        ):
-            self._bom.required_header_items.machine = keywords[key]
-
-        if (
-            self._bom.required_header_items.partnumber.startswith("$")
-            and (key := self._bom.required_header_items.partnumber.split("$")[1])
-            in keywords
-        ):
-            self._bom.required_header_items.partnumber = keywords[key]
-
-        if (
-            self._bom.required_header_items.revision.startswith("$")
-            and (key := self._bom.required_header_items.revision.split("$")[1])
-            in keywords
-        ):
-            self._bom.required_header_items.revision = keywords[key]
-
-        if (
-            self._bom.required_header_items.quantity.startswith("$")
-            and (key := self._bom.required_header_items.quantity.split("$")[1])
-            in keywords
-        ):
-            self._bom.required_header_items.quantity = keywords[key]
+        _apply_to_object(self._bom.header_items)
+        _apply_to_object(self._bom.sort)
+        _apply_to_object(self._bom.required_header_items)
 
     def _apply_keywords_to_filters(self, language: Literal["en", "de"]) -> None:
         """

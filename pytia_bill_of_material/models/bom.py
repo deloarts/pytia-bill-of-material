@@ -11,6 +11,7 @@ from typing import List
 @dataclass(kw_only=True, slots=True)
 class BOMAssemblyItem:
     partnumber: str
+    source: str
     properties: dict
     path: Path | None
 

@@ -40,6 +40,7 @@ from typing import List
 @dataclass(kw_only=True, slots=True)
 class BOMAssemblyItem:
     partnumber: str
+    source: str
     properties: dict
     path: Path | None
 
@@ -133,10 +134,10 @@ class BOMAssembly:
 </dd>
 <dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem"><code class="flex name class">
 <span>class <span class="ident">BOMAssemblyItem</span></span>
-<span>(</span><span>*, partnumber: str, properties: dict, path: pathlib.Path | None)</span>
+<span>(</span><span>*, partnumber: str, source: str, properties: dict, path: pathlib.Path | None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>BOMAssemblyItem(*, partnumber: str, properties: dict, path: pathlib.Path | None)</p></div>
+<div class="desc"><p>BOMAssemblyItem(*, partnumber: str, source: str, properties: dict, path: pathlib.Path | None)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -144,6 +145,7 @@ class BOMAssembly:
 <pre><code class="python">@dataclass(kw_only=True, slots=True)
 class BOMAssemblyItem:
     partnumber: str
+    source: str
     properties: dict
     path: Path | None</code></pre>
 </details>
@@ -158,6 +160,10 @@ class BOMAssemblyItem:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem.properties"><code class="name">var <span class="ident">properties</span> : dict</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.models.bom.BOMAssemblyItem.source"><code class="name">var <span class="ident">source</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -201,6 +207,7 @@ class BOMAssemblyItem:
 <li><code><a title="pytia_bill_of_material.models.bom.BOMAssemblyItem.partnumber" href="#pytia_bill_of_material.models.bom.BOMAssemblyItem.partnumber">partnumber</a></code></li>
 <li><code><a title="pytia_bill_of_material.models.bom.BOMAssemblyItem.path" href="#pytia_bill_of_material.models.bom.BOMAssemblyItem.path">path</a></code></li>
 <li><code><a title="pytia_bill_of_material.models.bom.BOMAssemblyItem.properties" href="#pytia_bill_of_material.models.bom.BOMAssemblyItem.properties">properties</a></code></li>
+<li><code><a title="pytia_bill_of_material.models.bom.BOMAssemblyItem.source" href="#pytia_bill_of_material.models.bom.BOMAssemblyItem.source">source</a></code></li>
 </ul>
 </li>
 </ul>

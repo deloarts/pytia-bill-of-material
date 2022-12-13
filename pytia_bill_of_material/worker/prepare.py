@@ -9,10 +9,10 @@ from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
+from pycatia.in_interfaces.document import Document
+from pycatia.product_structure_interfaces.product import Product
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.framework import framework
-from pytia.framework.in_interfaces.document import Document
-from pytia.framework.product_structure_interfaces.product import Product
 from pytia.log import log
 from pytia.utilities.bill_of_material import set_current_format, set_secondary_format
 from pytia.utilities.docket import DocketConfig
@@ -71,7 +71,10 @@ class PrepareTask(TaskProtocol):
         """
         Sets the BOM format to the format specified in the `bom.json` (`header_items`) config file.
         """
-        header_items = tuple(item for item in resource.bom.header_items)
+        # The bill of material will be processed from the summary-header-items.
+        # At this point the made and bought header items aren't relevant, those come
+        # into play only at the final step of saving the bill of material later.
+        header_items = tuple(item for item in resource.bom.header_items.summary)
         set_current_format(header_items)
         set_secondary_format(header_items)
 

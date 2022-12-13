@@ -56,8 +56,6 @@ class Layout:
 
         # endregion
 
-        # region FRAME Paths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
         # region bom export path
         lbl_bom_export_path = ttk.Label(
             frames.paths, text="Bill of Material File", width=18

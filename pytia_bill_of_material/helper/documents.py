@@ -8,11 +8,10 @@ from tkinter import DISABLED, NORMAL, Tk
 from tkinter import messagebox as tkmsg
 
 from app.main.layout import Layout
-from pytia.framework import framework
-from pytia.framework.in_interfaces.document import Document
-from resources import resource
-
 from helper.commons import CallbackCommons
+from pycatia.in_interfaces.document import Document
+from pytia.framework import framework
+from resources import resource
 
 
 class ReportDocument:
@@ -44,7 +43,7 @@ class ReportDocument:
         """Opens the document and waits unit it's closed by the user."""
         if path and os.path.isfile(path):
             self.path = path
-            framework.catia.documents.open(self.path)
+            framework.catia.documents.open(str(self.path))
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)
             self.layout.button_close_document.configure(state=NORMAL)

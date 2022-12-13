@@ -98,48 +98,118 @@ class ProcessBomTask(TaskProtocol):
         data_row = 0
         is_summary = False
 
-        log.info("Retrieving bill of material from exported Excel file.")
-        header_items = tuple(item for item in resource.bom.header_items)
+        # Do not use worksheet.max_row during the iteration over the worksheet.
+        # Worksheet.max_row will change during runtime, when accessing a row greater
+        # than the current max_row.
+        max_row = worksheet.max_row
 
-        for ri in range(1, worksheet.max_row + 1):
+        log.info("Retrieving bill of material from exported Excel file.")
+
+        # The bill of material will be processed from the summary-header-items.
+        # At this point the made and bought header items aren't relevant, those come
+        # into play only at the final step of saving the bill of material later.
+        header_items = tuple(item for item in resource.bom.header_items.summary)
+
+        for ri in range(1, max_row + 2):
+            log.debug(f"Working on row {ri} of {worksheet.max_row}.")
+
+            # Since ww iterate over the whole catia export excel file, and this export
+            # contains all bills of material (all boms from all sub-assemblies and the
+            # bom-summary from the whole thing), we need to identify where we are in the
+            # current row. This is done with the _bom_or_summary variable and the _name
+            # variable.
+            # The _bom_or_summary variable defines wether the current row is
+            # a bom from a sub-assembly or from the summary.
+            # The _name variable defines the name (partnumber) of the parent product.
             _bom_or_summary = str(worksheet.cell(ri, 1).value).split(": ")[0]
             _name = str(worksheet.cell(ri, 1).value).split(": ")[-1]
 
+            # An empty row means that the either the bom hasn't begun or it has ended.
+            # So we need to check if the assembly object isn't none (and if we are not
+            # at the summary section) to determine if we can add the current assembly
+            # data to the list of assemblies.
+            # The assembly object needs to be set to none after adding its content to
+            # the list, so this condition isn't reached by accident.
+            # In short: This if condition is for adding a sub-assembly to the list of
+            # assemblies.
             if row_is_empty(worksheet, ri) and assembly is not None and not is_summary:
                 bom.assemblies.append(assembly)
+                log.debug(
+                    f"Added assembly of {assembly.partnumber!r} to the list of assemblies."
+                )
                 assembly = None
 
+            # Same as above, but we check here if the assembly object is the summary.
+            # The summary data-block comes always last in the catia export excel file,
+            # at this we can just check if we're at the end of the excel file (in case
+            # you wondered why we iterate over worksheet.max_row + 2, this is why).
+            elif ri > max_row and assembly is not None and is_summary:
+                bom.summary = assembly
+                log.debug(f"Added assembly of {assembly.partnumber!r} to the summary.")
+
+            # To check if a new bom needs to be processed we need to check if the
+            # keyword "Bill of Material" is in the current row.
+            # If that is the case we create a new assembly object and check the header
+            # of said new assembly. Those headers should always be those from the
+            # bom.json file (but checking is better than hoping).
             elif resource.applied_keywords.bom in _bom_or_summary:
                 assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
                 header_positions = cls._get_header_positions(
                     worksheet=worksheet, row=ri + 1, header_items=header_items
                 )
+                # The data row for sub-assembly-boms is always two rows after the
+                # "Bill of Material" keyword.
                 data_row = ri + 2
                 log.info(f"Processing BOM of element {_name!r}.")
 
+            # To check if a new summary needs to be processed we need to check if the
+            # keyword "Recapitulation" is in the current row.
+            # If that is the case we create a new assembly object.
+            # Note: The summary is always the last data-block of the excel file, so we
+            # don't need to bother setting it back to false somewhere else.
             elif resource.applied_keywords.summary in _bom_or_summary:
                 is_summary = True
                 assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
                 header_positions = cls._get_header_positions(
                     worksheet=worksheet, row=ri + 4, header_items=header_items
                 )
+                # The data row for summary-boms is always five rows after the
+                # "Bill of Material" keyword.
                 data_row = ri + 5
                 log.info(f"Processing BOM summary.")
 
-            if assembly is not None and ri >= data_row:
+            # Only when the assembly object isn't none (valid keyword "Bill of
+            # Material" or "Recapitulation" and valid header positions) and the current
+            # row number matches the beginning of the data row from the excel file we
+            # can start treating the current row as data row.
+            # All if-conditions before were only for validating the beginning or the end
+            # of a bom-data-range.
+            if (
+                assembly is not None
+                and ri >= data_row
+                and not row_is_empty(worksheet, ri)
+            ):
+                # The row data dict will contain the data from the current row (wow).
+                # It's keys are the header items names (from the bom.json) and it's
+                # values are the actual data.
                 row_data: dict = {}
+
+                # To make sure we gather the right data from the right header we
+                # use the header position dict to access the column of the excel file.
+                # We don't iterate over all excel columns.
                 for position in header_positions:
                     cell_value = worksheet.cell(ri, header_positions[position]).value
 
+                    # This is a result of legacy catia macros. This isn't needed if all
+                    # parts and products are setup with the pytia-property-manager.
                     if isinstance(cell_value, str) and X000D in cell_value:
-                        # This is a result of legacy CATIA macros. This isn't needed if all
-                        # parts and products are setup with the pytia-property-manager.
                         cell_value = cell_value.replace("_x000D_\n", "\n")
 
+                    # catia exports empty cells as chr(13). This results in a space
+                    # string " " instead of a truly empty cell. This is fixed by
+                    # checking for only-whitespace characters and replacing them with
+                    # None.
                     if isinstance(cell_value, str) and re.match(r"^\s+$", cell_value):
-                        # CATIA exports empty cells as chr(13). This results in a space
-                        # string " " instead of a truly empty cell. This is fixed by checking
-                        # for only-whitespace characters and replacing them with None.
                         cell_value = None
 
                     cell_value = cls._overwrite_project_number(
@@ -152,11 +222,20 @@ class ProcessBomTask(TaskProtocol):
                         header_position=position, cell_value=cell_value
                     )
 
-                    row_data[position] = cell_value
+                    cell_value = cls._apply_fixed_text(
+                        header_position=position, cell_value=cell_value
+                    )
 
-                if is_summary:
-                    bom.summary = assembly
+                    cell_value = cls._apply_placeholder_header(
+                        header_position=position, cell_value=cell_value
+                    )
 
+                    cls._add_to_row_data(
+                        row_data, header_position=position, cell_value=cell_value
+                    )
+
+                # The partnumber must be available in the header. We use the partnumber
+                # to identify a part or product in the assembly.
                 if not resource.applied_keywords.partnumber in row_data:
                     raise KeyError(
                         f"Cannot find keyword {resource.applied_keywords.partnumber!r} in exported "
@@ -164,9 +243,13 @@ class ProcessBomTask(TaskProtocol):
                         "keyword not set in the bom.json's header_items?"
                     )
 
+                # The partnumber must not be empty (this should be impossible).
                 if row_data[resource.applied_keywords.partnumber] is None:
                     raise ValueError("The value for the partnumber is empty.")
 
+                # Warn the user when a part or product is missing. This happens mostly
+                # when there are items in the catia tree, that aren't stored in a file.
+                # (Cameras, Simulations, etc.)
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
                     item_path = None
                     log.warning(
@@ -177,14 +260,17 @@ class ProcessBomTask(TaskProtocol):
                         row_data[resource.applied_keywords.partnumber]
                     ]
 
+                # Now finally add the data to the dataclass.
                 assembly_item = BOMAssemblyItem(
                     partnumber=row_data[resource.applied_keywords.partnumber],
+                    source=row_data[resource.applied_keywords.source],
                     properties=row_data,
                     path=item_path,
                 )
                 assembly.items.append(assembly_item)
                 log.info(
-                    f" - Added item {row_data[resource.applied_keywords.partnumber]!r} to element."
+                    f" - Added item {row_data[resource.applied_keywords.partnumber]!r} to element "
+                    f"{assembly.partnumber!r}{' (summary).' if is_summary else '.'}"
                 )
         return bom
 
@@ -242,6 +328,24 @@ class ProcessBomTask(TaskProtocol):
         return header
 
     @staticmethod
+    def _add_to_row_data(
+        row_data: dict, header_position: str, cell_value: str | Any | None
+    ) -> None:
+        """
+        Adds the cell value to the correct header position of the row_data dict.
+
+        Args:
+            row_data (dict): The row_data dict.
+            header_position (str): The name of the header item (the key in the row_data)
+            cell_value (str | Any | None): The value to add (the value in the row_data)
+        """
+        # if header_position.startswith("%") and "=" in header_position:
+        #     row_data[header_position.split("%")[-1].split("=")[0]] = cell_value
+        # else:
+        #     row_data[header_position] = cell_value
+        row_data[header_position] = cell_value
+
+    @staticmethod
     def _overwrite_project_number(
         header_position: str, cell_value: str | Any | None, overwrite_number: str
     ) -> str | Any | None:
@@ -289,6 +393,42 @@ class ProcessBomTask(TaskProtocol):
             and resource.user_exists(str(cell_value))
         ):
             return resource.get_user_by_logon(str(cell_value)).name
+        return cell_value
+
+    @staticmethod
+    def _apply_fixed_text(
+        header_position: str, cell_value: str | Any | None
+    ) -> str | Any | None:
+        """
+        Returns the value of the fixed text accordingly to the header_items list.
+
+        Args:
+            header_position (str): The header position (the name of the header).
+            cell_value (str | Any | None): The cell value.
+
+        Returns:
+            str | Any | None: The fixed text, if set in the header_items.
+        """
+        if header_position.startswith("%") and "=" in header_position:
+            return header_position.split("=")[-1]
+        return cell_value
+
+    @staticmethod
+    def _apply_placeholder_header(
+        header_position: str, cell_value: str | Any | None
+    ) -> str | Any | None:
+        """
+        Returns None as cell value, if the header is set to placeholder.
+
+        Args:
+            header_position (str): The header position (the name of the header).
+            cell_value (str | Any | None): The cell value.
+
+        Returns:
+            str | Any | None: The fixed text, if set in the header_items.
+        """
+        if header_position.startswith("%") and "=" not in header_position:
+            return None
         return cell_value
 
     @staticmethod

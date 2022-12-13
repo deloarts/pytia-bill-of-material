@@ -44,7 +44,7 @@ import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Dict, List, Literal, Optional
+from typing import Callable, Dict, List, Literal, Optional, Protocol
 
 from const import (
     APP_VERSION,
@@ -64,6 +64,10 @@ from const import (
     CONFIG_USERS,
     LOGON,
 )
+
+
+class DataclassProtocol(Protocol):
+    __dataclass_fields__: Dict
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -227,6 +231,7 @@ class RequiredHeaderItems:
     partnumber: str
     revision: str
     quantity: str
+    source: str
 
     @property
     def keys(self) -&gt; List[str]:
@@ -240,12 +245,21 @@ class RequiredHeaderItems:
 
 
 @dataclass(slots=True, kw_only=True)
+class BOMHeaderItems:
+    &#34;&#34;&#34;Header items dataclass.&#34;&#34;&#34;
+
+    summary: List[str]
+    made: List[str] | None
+    bought: List[str] | None
+
+
+@dataclass(slots=True, kw_only=True)
 class BOM:
     &#34;&#34;&#34;Bill of material dataclass.&#34;&#34;&#34;
 
     header_row: int | None
     data_row: int
-    header_items: List[str]
+    header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
     font: str
@@ -258,6 +272,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -&gt; None:
+        self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
 
@@ -487,8 +502,9 @@ class Resources:  # pylint: disable=R0902
         Applies the keywords from the keywords.json to the bom.json&#39;s `header_items`.
 
         Detailed explanation:
-            The bom.json contains a key named `header_items`, which contains a list of
-            keywords. Those keywords are used to create the header of the bill of material.
+            The bom.json contains a key named `header_items`, which contains the sub-keys
+            `summary`, `made` and `bought`. Those sub-keys contain a list of keywords.
+            Those keywords are used to create the header of the bill of material.
             Some of those keywords may represent CATIA standard properties, like `partnumber`,
             `source`, etc. Those names change with the UI language settings of CATIA
             (English: partnumber = &#34;part number&#34;, German: partnumber = &#34;Teilenummer&#34;, ...).
@@ -511,62 +527,32 @@ class Resources:  # pylint: disable=R0902
                 keywords will be applied to the bom.json config file.
         &#34;&#34;&#34;
 
-        # header items
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
-        for index, item in enumerate(self._bom.header_items):
-            if item.startswith(&#34;$&#34;) and (key := item.split(&#34;$&#34;)[1]) in keywords:
-                self._bom.header_items[index] = keywords[key]
 
-        # sort
-        # TODO: A better solution for applying the keywords to the `sort` items.
-        if (
-            self._bom.sort.made.startswith(&#34;$&#34;)
-            and (key := self._bom.sort.made.split(&#34;$&#34;)[1]) in keywords
-        ):
-            self._bom.sort.made = keywords[key]
+        def _apply_to_object(_item: DataclassProtocol):
+            for object_fields in fields(_item):
+                object_item = getattr(_item, object_fields.name)
+                assert isinstance(object_item, list) or isinstance(object_item, str)
 
-        if (
-            self._bom.sort.bought.startswith(&#34;$&#34;)
-            and (key := self._bom.sort.bought.split(&#34;$&#34;)[1]) in keywords
-        ):
-            self._bom.sort.bought = keywords[key]
+                if isinstance(object_item, list):
+                    for index, item in enumerate(object_item):
+                        assert isinstance(item, str)
+                        if (
+                            item.startswith(&#34;$&#34;)
+                            and (key := item.split(&#34;$&#34;)[1]) in keywords
+                        ):
+                            object_item[index] = keywords[key]
 
-        # docket args
-        # TODO: A better solution for applying the keywords to the `required_header_items` items.
-        if (
-            self._bom.required_header_items.project.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.project.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.project = keywords[key]
+                elif isinstance(object_item, str):
+                    if (
+                        object_item.startswith(&#34;$&#34;)
+                        and (key := object_item.split(&#34;$&#34;)[1]) in keywords
+                    ):
+                        setattr(_item, object_fields.name, keywords[key])
 
-        if (
-            self._bom.required_header_items.machine.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.machine.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.machine = keywords[key]
-
-        if (
-            self._bom.required_header_items.partnumber.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.partnumber.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.partnumber = keywords[key]
-
-        if (
-            self._bom.required_header_items.revision.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.revision.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.revision = keywords[key]
-
-        if (
-            self._bom.required_header_items.quantity.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.quantity.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.quantity = keywords[key]
+        _apply_to_object(self._bom.header_items)
+        _apply_to_object(self._bom.sort)
+        _apply_to_object(self._bom.required_header_items)
 
     def _apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
@@ -713,7 +699,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.3.2', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.4.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -794,7 +780,7 @@ class AppliedKeywords(KeywordElements):
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM"><code class="flex name class">
 <span>class <span class="ident">BOM</span></span>
-<span>(</span><span>*, header_row: int | None, data_row: int, header_items: List[str], sort: <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a>, required_header_items: <a title="pytia_bill_of_material.resources.RequiredHeaderItems" href="#pytia_bill_of_material.resources.RequiredHeaderItems">RequiredHeaderItems</a>, font: str, size: int, header_color: str, header_bg_color: str, data_color_1: str, data_bg_color_1: str, data_color_2: str, data_bg_color_2: str)</span>
+<span>(</span><span>*, header_row: int | None, data_row: int, header_items: <a title="pytia_bill_of_material.resources.BOMHeaderItems" href="#pytia_bill_of_material.resources.BOMHeaderItems">BOMHeaderItems</a>, sort: <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a>, required_header_items: <a title="pytia_bill_of_material.resources.RequiredHeaderItems" href="#pytia_bill_of_material.resources.RequiredHeaderItems">RequiredHeaderItems</a>, font: str, size: int, header_color: str, header_bg_color: str, data_color_1: str, data_bg_color_1: str, data_color_2: str, data_bg_color_2: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Bill of material dataclass.</p></div>
@@ -808,7 +794,7 @@ class BOM:
 
     header_row: int | None
     data_row: int
-    header_items: List[str]
+    header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
     font: str
@@ -821,6 +807,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -&gt; None:
+        self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore</code></pre>
 </details>
@@ -858,7 +845,7 @@ class BOM:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.resources.BOM.header_items"><code class="name">var <span class="ident">header_items</span> : List[str]</code></dt>
+<dt id="pytia_bill_of_material.resources.BOM.header_items"><code class="name">var <span class="ident">header_items</span> : <a title="pytia_bill_of_material.resources.BOMHeaderItems" href="#pytia_bill_of_material.resources.BOMHeaderItems">BOMHeaderItems</a></code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -875,6 +862,40 @@ class BOM:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM.sort"><code class="name">var <span class="ident">sort</span> : <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMHeaderItems"><code class="flex name class">
+<span>class <span class="ident">BOMHeaderItems</span></span>
+<span>(</span><span>*, summary: List[str], made: Optional[List[str]], bought: Optional[List[str]])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Header items dataclass.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass(slots=True, kw_only=True)
+class BOMHeaderItems:
+    &#34;&#34;&#34;Header items dataclass.&#34;&#34;&#34;
+
+    summary: List[str]
+    made: List[str] | None
+    bought: List[str] | None</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pytia_bill_of_material.resources.BOMHeaderItems.bought"><code class="name">var <span class="ident">bought</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMHeaderItems.made"><code class="name">var <span class="ident">made</span> : Optional[List[str]]</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMHeaderItems.summary"><code class="name">var <span class="ident">summary</span> : List[str]</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -908,6 +929,49 @@ class BOMSort:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 </dl>
+</dd>
+<dt id="pytia_bill_of_material.resources.DataclassProtocol"><code class="flex name class">
+<span>class <span class="ident">DataclassProtocol</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Base class for protocol classes.</p>
+<p>Protocol classes are defined as::</p>
+<pre><code>class Proto(Protocol):
+    def meth(self) -&gt; int:
+        ...
+</code></pre>
+<p>Such classes are primarily used with static type checkers that recognize
+structural subtyping (static duck-typing), for example::</p>
+<pre><code>class C:
+    def meth(self) -&gt; int:
+        return 0
+
+def func(x: Proto) -&gt; int:
+    return x.meth()
+
+func(C())  # Passes static type check
+</code></pre>
+<p>See PEP 544 for details. Protocol classes decorated with
+@typing.runtime_checkable act as simple-minded runtime protocols that check
+only the presence of given attributes, ignoring their type signatures.
+Protocol classes can be generic, they are defined as::</p>
+<pre><code>class GenProto(Protocol[T]):
+    def meth(self) -&gt; T:
+        ...
+</code></pre></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataclassProtocol(Protocol):
+    __dataclass_fields__: Dict</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>typing.Protocol</li>
+<li>typing.Generic</li>
+</ul>
 </dd>
 <dt id="pytia_bill_of_material.resources.FilterElement"><code class="flex name class">
 <span>class <span class="ident">FilterElement</span></span>
@@ -1185,7 +1249,7 @@ def values(self) -&gt; List[str]:
 </dd>
 <dt id="pytia_bill_of_material.resources.RequiredHeaderItems"><code class="flex name class">
 <span>class <span class="ident">RequiredHeaderItems</span></span>
-<span>(</span><span>*, project: str, machine: str, partnumber: str, revision: str, quantity: str)</span>
+<span>(</span><span>*, project: str, machine: str, partnumber: str, revision: str, quantity: str, source: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Required headers dataclass.</p></div>
@@ -1202,6 +1266,7 @@ class RequiredHeaderItems:
     partnumber: str
     revision: str
     quantity: str
+    source: str
 
     @property
     def keys(self) -&gt; List[str]:
@@ -1245,6 +1310,10 @@ def keys(self) -&gt; List[str]:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.RequiredHeaderItems.revision"><code class="name">var <span class="ident">revision</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.RequiredHeaderItems.source"><code class="name">var <span class="ident">source</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1454,8 +1523,9 @@ def values(self) -&gt; List[str]:
         Applies the keywords from the keywords.json to the bom.json&#39;s `header_items`.
 
         Detailed explanation:
-            The bom.json contains a key named `header_items`, which contains a list of
-            keywords. Those keywords are used to create the header of the bill of material.
+            The bom.json contains a key named `header_items`, which contains the sub-keys
+            `summary`, `made` and `bought`. Those sub-keys contain a list of keywords.
+            Those keywords are used to create the header of the bill of material.
             Some of those keywords may represent CATIA standard properties, like `partnumber`,
             `source`, etc. Those names change with the UI language settings of CATIA
             (English: partnumber = &#34;part number&#34;, German: partnumber = &#34;Teilenummer&#34;, ...).
@@ -1478,62 +1548,32 @@ def values(self) -&gt; List[str]:
                 keywords will be applied to the bom.json config file.
         &#34;&#34;&#34;
 
-        # header items
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
-        for index, item in enumerate(self._bom.header_items):
-            if item.startswith(&#34;$&#34;) and (key := item.split(&#34;$&#34;)[1]) in keywords:
-                self._bom.header_items[index] = keywords[key]
 
-        # sort
-        # TODO: A better solution for applying the keywords to the `sort` items.
-        if (
-            self._bom.sort.made.startswith(&#34;$&#34;)
-            and (key := self._bom.sort.made.split(&#34;$&#34;)[1]) in keywords
-        ):
-            self._bom.sort.made = keywords[key]
+        def _apply_to_object(_item: DataclassProtocol):
+            for object_fields in fields(_item):
+                object_item = getattr(_item, object_fields.name)
+                assert isinstance(object_item, list) or isinstance(object_item, str)
 
-        if (
-            self._bom.sort.bought.startswith(&#34;$&#34;)
-            and (key := self._bom.sort.bought.split(&#34;$&#34;)[1]) in keywords
-        ):
-            self._bom.sort.bought = keywords[key]
+                if isinstance(object_item, list):
+                    for index, item in enumerate(object_item):
+                        assert isinstance(item, str)
+                        if (
+                            item.startswith(&#34;$&#34;)
+                            and (key := item.split(&#34;$&#34;)[1]) in keywords
+                        ):
+                            object_item[index] = keywords[key]
 
-        # docket args
-        # TODO: A better solution for applying the keywords to the `required_header_items` items.
-        if (
-            self._bom.required_header_items.project.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.project.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.project = keywords[key]
+                elif isinstance(object_item, str):
+                    if (
+                        object_item.startswith(&#34;$&#34;)
+                        and (key := object_item.split(&#34;$&#34;)[1]) in keywords
+                    ):
+                        setattr(_item, object_fields.name, keywords[key])
 
-        if (
-            self._bom.required_header_items.machine.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.machine.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.machine = keywords[key]
-
-        if (
-            self._bom.required_header_items.partnumber.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.partnumber.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.partnumber = keywords[key]
-
-        if (
-            self._bom.required_header_items.revision.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.revision.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.revision = keywords[key]
-
-        if (
-            self._bom.required_header_items.quantity.startswith(&#34;$&#34;)
-            and (key := self._bom.required_header_items.quantity.split(&#34;$&#34;)[1])
-            in keywords
-        ):
-            self._bom.required_header_items.quantity = keywords[key]
+        _apply_to_object(self._bom.header_items)
+        _apply_to_object(self._bom.sort)
+        _apply_to_object(self._bom.required_header_items)
 
     def _apply_keywords_to_filters(self, language: Literal[&#34;en&#34;, &#34;de&#34;]) -&gt; None:
         &#34;&#34;&#34;
@@ -2401,11 +2441,22 @@ def values(self) -&gt; List[str]:
 </ul>
 </li>
 <li>
+<h4><code><a title="pytia_bill_of_material.resources.BOMHeaderItems" href="#pytia_bill_of_material.resources.BOMHeaderItems">BOMHeaderItems</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.bought" href="#pytia_bill_of_material.resources.BOMHeaderItems.bought">bought</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.made" href="#pytia_bill_of_material.resources.BOMHeaderItems.made">made</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.summary" href="#pytia_bill_of_material.resources.BOMHeaderItems.summary">summary</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.resources.BOMSort.bought" href="#pytia_bill_of_material.resources.BOMSort.bought">bought</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOMSort.made" href="#pytia_bill_of_material.resources.BOMSort.made">made</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="pytia_bill_of_material.resources.DataclassProtocol" href="#pytia_bill_of_material.resources.DataclassProtocol">DataclassProtocol</a></code></h4>
 </li>
 <li>
 <h4><code><a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a></code></h4>
@@ -2470,6 +2521,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.project" href="#pytia_bill_of_material.resources.RequiredHeaderItems.project">project</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.quantity" href="#pytia_bill_of_material.resources.RequiredHeaderItems.quantity">quantity</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.revision" href="#pytia_bill_of_material.resources.RequiredHeaderItems.revision">revision</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.source" href="#pytia_bill_of_material.resources.RequiredHeaderItems.source">source</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.values" href="#pytia_bill_of_material.resources.RequiredHeaderItems.values">values</a></code></li>
 </ul>
 </li>
