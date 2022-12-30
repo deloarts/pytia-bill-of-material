@@ -16,7 +16,6 @@
     },
     "paths": {
         "catia": "C:\\CATIA\\V5-6R2017\\B27",
-        "local_dependencies": "C:\\pytia\\local_deps",
         "release": "C:\\pytia\\release"
     },
     "files": {

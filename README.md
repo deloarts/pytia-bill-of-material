@@ -31,11 +31,10 @@ Table of contents:
       - [2.1.2 sample files](#212-sample-files)
       - [2.1.3 static files](#213-static-files)
     - [2.2 template files](#22-template-files)
-    - [2.3 provide local dependencies](#23-provide-local-dependencies)
-    - [2.4 provide a release folder](#24-provide-a-release-folder)
-    - [2.5 build](#25-build)
-    - [2.6 release](#26-release)
-    - [2.7 docs](#27-docs)
+    - [2.3 provide a release folder](#23-provide-a-release-folder)
+    - [2.4 build](#24-build)
+    - [2.5 release](#25-release)
+    - [2.6 docs](#26-docs)
   - [3 usage](#3-usage)
     - [3.1 report](#31-report)
   - [4 workspace](#4-workspace)
@@ -108,26 +107,13 @@ The app uses optional template files, see [templates folder](/pytia_bill_of_mate
 
 If you want to use the docket-generation-feature you have to add a `docket.CATDrawing` CATIA file in this folder. There is already a sample file in this folder, which is ready-to-use with the [docket.sample.json](/pytia_bill_of_material/resources/docket.sample.json) config file -> rename both files to `docket.CATDrawing` and `docket.json` and the docket generation will work, tweak both files to fit your needs.
 
-### 2.3 provide local dependencies
-
-Some dependencies are not publicly available on PyPi or GitHub (because they are private). Therefore it's necessary to provide the wheel-file locally for the app to auto-install it. The list below shows said local deps:
-
-Name | Link | Version
---- | --- | ---
-**pytia** | <https://github.com/deloarts/pytia> | [0.3.1](https://github.com/deloarts/pytia/releases/tag/v0.3.1)
-**pytia-ui-tools** | <https://github.com/deloarts/pytia-ui-tools> | [0.6.3](https://github.com/deloarts/pytia-ui-tools/releases/tag/v0.6.3)
-
-> ❗️ The folder where you provide the local dependencies must match the **paths.local_dependencies** entry of the **settings.json**. The user must have at least read access on this folder.
->
-> ✏️ Put the wheel file on a shared network drive if you have multiple users.
-
-### 2.4 provide a release folder
+### 2.3 provide a release folder
 
 To be able to launch the app from within CATIA you need to provide a release folder, where the app and a launcher file are stored. Both files (the app and the launcher) will be created with the [_build.py](_build.py) script, and released to the release-folder with the [_release.py](_release.py) script.
 
 > ❗️ Add this release folder to the **settings.json** file as value of the **paths.release** key.
 
-### 2.5 build
+### 2.4 build
 
 > ❗️ Do not build the app with poetry! This package is not not meant to be used as an import, it should be used as an app.
 
@@ -137,7 +123,7 @@ To build the app and make it executable for the user run the [_build.py](_build.
 >
 > ✏️ The reason this app isn't compiled to an exe is performance. It takes way too long to load the UI if the app isn't launched as python zipfile.
 
-### 2.6 release
+### 2.5 release
 
 To release the app into the provided release folder run the [_release.py](_release.py) script.
 
@@ -147,7 +133,7 @@ You can always change the path of the release folder by editing the value from t
 
 > ⚠️ Once you built and released the app you cannot move the python app nor the catvbs script to another location, because absolute paths will be written to those files. If you have to move the location of the files you have to change the paths in the **settings.json** config file, build the app again and release it to the new destination.
 
-### 2.7 docs
+### 2.6 docs
 
 You can find the documentation in the [docs folder](/docs).
 

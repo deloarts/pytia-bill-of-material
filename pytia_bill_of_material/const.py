@@ -51,7 +51,7 @@ PROP_DRAWING_PATH = "pytia.drawing_path"
 
 TEMPLATE_DOCKET = "docket.CATDrawing"
 
-WEB_PIP = "www.pypi.org"
+WEB_PIP = "https://www.pypi.org"
 
 BOM = "bom"
 DOCKETS = "dockets"
