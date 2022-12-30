@@ -31,7 +31,6 @@ def test_settings():
     assert isinstance(resource.settings.restrictions.enable_information, bool)
 
     assert isinstance(resource.settings.paths.catia, str)
-    assert isinstance(resource.settings.paths.local_dependencies, str)
     assert isinstance(resource.settings.paths.release, str)
 
     assert isinstance(resource.settings.files.bom_export, str)
@@ -72,12 +71,6 @@ def test_template_files():
     from pytia_bill_of_material.const import TEMPLATE_DOCKET
 
     # assert os.path.exists(Path("./pytia_bill_of_material/templates", TEMPLATE_DOCKET))
-
-
-def test_local_dependencies_folder():
-    from pytia_bill_of_material.resources import resource
-
-    assert os.path.isdir(resource.settings.paths.local_dependencies)
 
 
 def test_release_folder():

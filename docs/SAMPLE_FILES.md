@@ -32,7 +32,6 @@ This file contains the basic settings for the app.
     },
     "paths": {
         "catia": "C:\\CATIA\\V5-6R2017\\B27",
-        "local_dependencies": "C:\\pytia\\local_deps",
         "release": "C:\\pytia\\release"
     },
     "files": {
@@ -66,7 +65,6 @@ restrictions.allow_outside_workspace | `bool` | If set to `false` a **workspace*
 restrictions.strict_project | `bool` | If set to `true` the project number must be present in the **workspace** file, otherwise the changes to the properties cannot be saved. If no workspace file is found, or no **projects** list-item is inside the workspace file, then this is omitted, and any project number can be written to the documents properties.
 restrictions.enable_information | `bool` | If set to `true` the user will see the notifications from the **information.json** file.
 paths.catia | `str` | The absolute path to the CATIA executables.
-paths.local_dependencies | `str` | The folder where local local_dependencies (python wheel files) for the installer are stored.
 paths.release | `str` | The folder where the launcher and the app are released into.
 file.bom_export | `str` | The standard name for the final bill of material. If a bom_name is set in the **workspace** file, the workspace-bom-name will be used.
 files.app | `str` | The name of the released python app file.
