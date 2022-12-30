@@ -7,7 +7,7 @@
 <title>pytia_bill_of_material.dependencies API documentation</title>
 <meta name="description" content="Installs/updates required dependencies.
 Some deps may not be available on PyPi or GitHub (or are private),
-therefor it&#39;s necessary to provide them …" />
+therefor it&#39;s necessary to provide the …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -26,7 +26,7 @@ therefor it&#39;s necessary to provide them …" />
 <section id="section-intro">
 <p>Installs/updates required dependencies.
 Some deps may not be available on PyPi or GitHub (or are private),
-therefor it's necessary to provide them locally.</p>
+therefor it's necessary to provide the web-link to the wheel file.</p>
 <p>All required dependencies are specified in the dependencies.json
 resource file.</p>
 <div class="admonition warning">
@@ -41,7 +41,7 @@ This module must work on its own without any other dependencies!</p>
 <pre><code class="python">&#34;&#34;&#34;
     Installs/updates required dependencies.
     Some deps may not be available on PyPi or GitHub (or are private),
-    therefor it&#39;s necessary to provide them locally.
+    therefor it&#39;s necessary to provide the web-link to the wheel file.
 
     All required dependencies are specified in the dependencies.json
     resource file.
@@ -53,8 +53,6 @@ This module must work on its own without any other dependencies!</p>
 
 import importlib.resources
 import json
-import os
-import pathlib
 import subprocess
 import sys
 import tkinter as tk
@@ -62,12 +60,13 @@ import tkinter.messagebox as tkmsg
 from dataclasses import dataclass
 from distutils.version import (
     LooseVersion,
-)  # WARNING: Module will be removed in Python 3.12
+)  # FIXME: Module will be removed in Python 3.12
 from http.client import HTTPSConnection
 from importlib import metadata
 from socket import gaierror
 from tkinter import ttk
 from typing import Dict, List
+from urllib.parse import urlparse
 
 from const import CNEXT, CONFIG_DEPS, VENV_PYTHON, VENV_PYTHONW, WEB_PIP
 from resources import resource
@@ -85,23 +84,42 @@ class PackageInfo:
 
     name: str
     version: str
-    local: bool
+    wheel: str | None
+
+
+class Environment:
+    def __init__(self) -&gt; None:
+        ...
+
+    @staticmethod
+    def is_virtual() -&gt; bool:
+        return str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable
+
+    @classmethod
+    def warn_if_not_virtual(cls) -&gt; None:
+        if not cls.is_virtual():
+            result = tkmsg.askyesno(
+                title=resource.settings.title,
+                message=(
+                    &#34;The app is not running in its virtualenv environment. &#34;
+                    &#34;This will install all dependencies global, which can lead to unexpected &#34;
+                    &#34;behaviour.\n\nProceed with installing dependencies global?\n\n&#34;
+                    &#34;Hint: To run the app in its environment use the launcher.&#34;
+                ),
+                icon=&#34;warning&#34;,
+            )
+            if not result:
+                sys.exit()
 
 
 class Dependencies:
     &#34;&#34;&#34;Class for managing dependencies.&#34;&#34;&#34;
 
-    __slots__ = (&#34;_required_packages&#34;, &#34;_missing_packages&#34;, &#34;_runs_in_venv&#34;)
-
     def __init__(self) -&gt; None:
-        self._required_packages = self._read_dependencies_file()
-        self._missing_packages = self.get_missing_packages()
-        self._runs_in_venv = (
-            str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable
-        )
+        ...
 
     @staticmethod
-    def _read_dependencies_file() -&gt; List[PackageInfo]:
+    def read_dependencies_file() -&gt; List[PackageInfo]:
         &#34;&#34;&#34;
         Reads the deps json from the resources folder.
 
@@ -111,70 +129,31 @@ class Dependencies:
         with importlib.resources.open_binary(&#34;resources&#34;, CONFIG_DEPS) as f:
             return [PackageInfo(**i) for i in json.load(f)]
 
+    def _remove_venv(self) -&gt; None:
+        pass
+
     @staticmethod
-    def _pip_available() -&gt; bool:
-        &#34;&#34;&#34;Returns wether pypi is available or not.&#34;&#34;&#34;
-        conn = HTTPSConnection(WEB_PIP, timeout=5)
+    def web_resource_available(address: str) -&gt; bool:
+        &#34;&#34;&#34;Returns wether a web resource is available or not.&#34;&#34;&#34;
+        domain = urlparse(address).netloc
+        path = urlparse(address).path or &#34;/&#34;
+        conn = HTTPSConnection(domain, timeout=5)
+
         try:
-            conn.request(&#34;HEAD&#34;, &#34;/&#34;)
-            return True
+            conn.request(&#34;HEAD&#34;, path)
+            response = conn.getresponse()
+            return True if response.status in [200, 301, 302, 307, 308] else False
         except gaierror:
+            print(&#34;not available&#34;)
             return False
         finally:
             conn.close()
 
-    def _remove_venv(self) -&gt; None:
-        pass
-
-    def _get_pip_commands(self) -&gt; Dict[str, str]:
-        &#34;&#34;&#34;Returns a dict of all package-names and install commands for installing with pip.&#34;&#34;&#34;
-        pip = {}
-        err = []
-
-        for package in self._missing_packages:
-            if package.local:
-                if os.path.isdir(resource.settings.paths.local_dependencies):
-                    package_not_found = True
-                    for wheel in pathlib.Path(
-                        resource.settings.paths.local_dependencies
-                    ).glob(&#34;*.whl&#34;):
-                        wheel_name = str(wheel)
-                        if f&#34;{package.name}-{package.version}&#34; in wheel_name:
-                            pip[package.name] = wheel_name
-                            package_not_found = False
-                    if package_not_found:
-                        err.append(f&#34;\n - {package.name} {package.version}&#34;)
-                else:
-                    tkmsg.showerror(
-                        title=resource.settings.title,
-                        message=(
-                            f&#34;The local dependencies folder &#34;
-                            f&#34;({resource.settings.paths.local_dependencies}) &#34;
-                            f&#34;cannot be accessed or doesn&#39;t exist.&#34;
-                        ),
-                    )
-                    sys.exit()
-            else:
-                pip[package.name] = f&#39;&#34;{package.name}=={package.version}&#34;&#39;
-
-        if err:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(
-                    f&#34;Cannot install local dependencies: {&#39;&#39;.join(err)}\n\n&#34;
-                    f&#34;Python wheel not found in folder &#34;
-                    f&#34;{resource.settings.paths.local_dependencies}\n\n&#34;
-                    f&#34;Please notify your system administrator immediately.&#34;
-                ),
-            )
-            sys.exit()
-
-        return pip
-
-    def get_missing_packages(self) -&gt; List[PackageInfo]:
+    @classmethod
+    def get_missing_packages(cls) -&gt; List[PackageInfo]:
         &#34;&#34;&#34;Returns a list of missing packages.&#34;&#34;&#34;
         missing_packages = []
-        for package in self._required_packages:
+        for package in cls.read_dependencies_file():
             try:
                 dist_version = metadata.version(package.name)
                 if LooseVersion(dist_version) &lt; LooseVersion(package.version):
@@ -183,63 +162,70 @@ class Dependencies:
                 missing_packages.append(package)
         return missing_packages
 
-    def install_dependencies(self) -&gt; None:
-        &#34;&#34;&#34;Installs missing dependencies.&#34;&#34;&#34;
-        if pip := self._get_pip_commands():
-            if not self._runs_in_venv:
-                result = tkmsg.askyesno(
-                    title=resource.settings.title,
-                    message=(
-                        &#34;The app is not running in its virtualenv environment. &#34;
-                        &#34;This will install all dependencies global, which can lead to unexpected &#34;
-                        &#34;behaviour.\n\nProceed with installing dependencies global?\n\n&#34;
-                        &#34;Hint: To run the app in its environment use the launcher.&#34;
-                    ),
-                    icon=&#34;warning&#34;,
-                )
-                if not result:
-                    sys.exit()
-
-            if self._pip_available():
-                # subprocess.call(
-                #     f&#34;start /wait python -m pip install {&#39; &#39;.join(pip)} --no-cache-dir&#34;,
-                #     shell=True,
-                # )
-                installer = VisualInstaller()
-                installer.install(pip)
-                if missing_packages := self.get_missing_packages():
+    @classmethod
+    def get_pip_commands(cls) -&gt; dict:
+        pip_commands = {}
+        for missing_package in cls.get_missing_packages():
+            if missing_package.wheel is not None:
+                if cls.web_resource_available(missing_package.wheel):
+                    pip_commands[missing_package.name] = missing_package.wheel
+                else:
                     tkmsg.showerror(
                         title=resource.settings.title,
                         message=(
-                            f&#34;Installation of &#34;
-                            f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
-                            f&#34;Please notify your system administrator immediately.&#34;
+                            f&#34;Cannot install dependency {missing_package.name!r}.\n\n&#34;
+                            &#34;Python wheel is not available under the specified link. &#34;
+                            &#34;Please notify your system administrator immediately.&#34;
                         ),
                     )
-                else:
-                    tkmsg.showinfo(
-                        title=resource.settings.title,
-                        message=(
-                            &#34;Successfully updated the app.\n\n&#34;
-                            &#34;The app will start automatically, once all changes have been applied. &#34;
-                            &#34;This may take a while.\n\nClick OK to continue.&#34;
-                        ),
-                    )
-                    subprocess.Popen(  # pylint: disable=R1732
-                        [
-                            f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                            &#34;-batch&#34;,
-                            &#34;-macro&#34;,
-                            f&#34;{resource.settings.paths.release}\\&#34;
-                            f&#34;{resource.settings.files.launcher}&#34;,
-                        ]
-                    )
+                    sys.exit()
             else:
-                tkmsg.showerror(
-                    title=resource.settings.title,
-                    message=&#34;Cannot install required dependencies: No internet connection.&#34;,
-                )
-            sys.exit()
+                pip_commands[
+                    missing_package.name
+                ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+        return pip_commands
+
+    def install_dependencies(self) -&gt; None:
+        &#34;&#34;&#34;Installs missing dependencies.&#34;&#34;&#34;
+
+        # If nothing&#39;s missing, return and start the app.
+        if self.get_missing_packages() == []:
+            return
+
+        Environment.warn_if_not_virtual()
+
+        installer = VisualInstaller()
+        installer.install()
+
+        # Check if all missing packages have been installed.
+        if missing_packages := self.get_missing_packages():
+            tkmsg.showerror(
+                title=resource.settings.title,
+                message=(
+                    f&#34;Installation of &#34;
+                    f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
+                    f&#34;Please notify your system administrator immediately.&#34;
+                ),
+            )
+        else:
+            tkmsg.showinfo(
+                title=resource.settings.title,
+                message=(
+                    &#34;Successfully updated the app.\n\n&#34;
+                    &#34;The app will start automatically, once all changes have been applied. &#34;
+                    &#34;This may take a while.\n\nClick OK to continue.&#34;
+                ),
+            )
+            subprocess.Popen(  # pylint: disable=R1732
+                [
+                    f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
+                    &#34;-batch&#34;,
+                    &#34;-macro&#34;,
+                    f&#34;{resource.settings.paths.release}\\&#34;
+                    f&#34;{resource.settings.files.launcher}&#34;,
+                ]
+            )
+        sys.exit()
 
 
 class VisualInstaller(tk.Tk):
@@ -248,9 +234,8 @@ class VisualInstaller(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.packages: dict
-        self.message = tk.StringVar(name=&#34;message&#34;)
-        self.progress = tk.IntVar(value=1)
+        self.message = tk.StringVar(name=&#34;message&#34;, value=&#34;Connecting to remote ...&#34;)
+        self.progress = tk.IntVar(value=0, name=&#34;progress&#34;)
 
         self.title = f&#34;{resource.settings.title} | Installer&#34;
         self.overrideredirect(True)
@@ -268,23 +253,34 @@ class VisualInstaller(tk.Tk):
             self,
             orient=tk.HORIZONTAL,
             length=270,
-            mode=&#34;indeterminate&#34;,
             variable=self.progress,
         )
         self.lbl.grid(row=0, column=0, padx=(15, 3), pady=(15, 3), sticky=&#34;w&#34;)
         self.progress_bar.grid(row=1, column=0, padx=(15, 3), pady=(15, 3))
-        self.progress_bar.start()
         self.progress_bar.focus()
 
     def _install_pip(self) -&gt; None:
         &#34;&#34;&#34;Installs python packages using pip.&#34;&#34;&#34;
-        for index, key in enumerate(self.packages.keys()):
+        if not Dependencies.web_resource_available(WEB_PIP):
+            tkmsg.showerror(
+                title=resource.settings.title,
+                message=&#34;Cannot install required dependencies: No internet connection.&#34;,
+            )
+            sys.exit()
+
+        pip_commands = Dependencies.get_pip_commands()
+
+        self.progress.set(1)
+        self.progress_bar.configure(mode=&#34;indeterminate&#34;)
+        self.progress_bar.start()
+
+        for index, key in enumerate(pip_commands.keys()):
             python_exe = sys.executable
             if str(VENV_PYTHONW) in python_exe:
                 python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
-            command = f&#34;start /wait {python_exe} -m pip install {self.packages[key]} --no-cache-dir&#34;
+            command = f&#34;start /wait {python_exe} -m pip install {pip_commands[key]} --no-cache-dir&#34;
             self.message.set(
-                f&#34;Installing package {index+1} of {len(self.packages)}: {key}&#34;
+                f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;
             )
             self.update_idletasks()
             with subprocess.Popen(command, shell=True) as process:
@@ -293,14 +289,8 @@ class VisualInstaller(tk.Tk):
         self.progress_bar.stop()
         self.destroy()
 
-    def install(self, packages: dict) -&gt; None:
-        &#34;&#34;&#34;
-        Installs all dependencies.python_exe
-
-        Args:
-            packages (dict): The packages to install. Requires a dict of &#34;package name&#34;:&#34;command&#34;.
-        &#34;&#34;&#34;
-        self.packages = packages
+    def install(self) -&gt; None:
+        &#34;&#34;&#34;Installs all dependencies&#34;&#34;&#34;
         self.after(100, self._install_pip)
         self.after(250, self.focus_force)
         self.mainloop()
@@ -330,17 +320,11 @@ deps = Dependencies()</code></pre>
 <pre><code class="python">class Dependencies:
     &#34;&#34;&#34;Class for managing dependencies.&#34;&#34;&#34;
 
-    __slots__ = (&#34;_required_packages&#34;, &#34;_missing_packages&#34;, &#34;_runs_in_venv&#34;)
-
     def __init__(self) -&gt; None:
-        self._required_packages = self._read_dependencies_file()
-        self._missing_packages = self.get_missing_packages()
-        self._runs_in_venv = (
-            str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable
-        )
+        ...
 
     @staticmethod
-    def _read_dependencies_file() -&gt; List[PackageInfo]:
+    def read_dependencies_file() -&gt; List[PackageInfo]:
         &#34;&#34;&#34;
         Reads the deps json from the resources folder.
 
@@ -350,70 +334,31 @@ deps = Dependencies()</code></pre>
         with importlib.resources.open_binary(&#34;resources&#34;, CONFIG_DEPS) as f:
             return [PackageInfo(**i) for i in json.load(f)]
 
+    def _remove_venv(self) -&gt; None:
+        pass
+
     @staticmethod
-    def _pip_available() -&gt; bool:
-        &#34;&#34;&#34;Returns wether pypi is available or not.&#34;&#34;&#34;
-        conn = HTTPSConnection(WEB_PIP, timeout=5)
+    def web_resource_available(address: str) -&gt; bool:
+        &#34;&#34;&#34;Returns wether a web resource is available or not.&#34;&#34;&#34;
+        domain = urlparse(address).netloc
+        path = urlparse(address).path or &#34;/&#34;
+        conn = HTTPSConnection(domain, timeout=5)
+
         try:
-            conn.request(&#34;HEAD&#34;, &#34;/&#34;)
-            return True
+            conn.request(&#34;HEAD&#34;, path)
+            response = conn.getresponse()
+            return True if response.status in [200, 301, 302, 307, 308] else False
         except gaierror:
+            print(&#34;not available&#34;)
             return False
         finally:
             conn.close()
 
-    def _remove_venv(self) -&gt; None:
-        pass
-
-    def _get_pip_commands(self) -&gt; Dict[str, str]:
-        &#34;&#34;&#34;Returns a dict of all package-names and install commands for installing with pip.&#34;&#34;&#34;
-        pip = {}
-        err = []
-
-        for package in self._missing_packages:
-            if package.local:
-                if os.path.isdir(resource.settings.paths.local_dependencies):
-                    package_not_found = True
-                    for wheel in pathlib.Path(
-                        resource.settings.paths.local_dependencies
-                    ).glob(&#34;*.whl&#34;):
-                        wheel_name = str(wheel)
-                        if f&#34;{package.name}-{package.version}&#34; in wheel_name:
-                            pip[package.name] = wheel_name
-                            package_not_found = False
-                    if package_not_found:
-                        err.append(f&#34;\n - {package.name} {package.version}&#34;)
-                else:
-                    tkmsg.showerror(
-                        title=resource.settings.title,
-                        message=(
-                            f&#34;The local dependencies folder &#34;
-                            f&#34;({resource.settings.paths.local_dependencies}) &#34;
-                            f&#34;cannot be accessed or doesn&#39;t exist.&#34;
-                        ),
-                    )
-                    sys.exit()
-            else:
-                pip[package.name] = f&#39;&#34;{package.name}=={package.version}&#34;&#39;
-
-        if err:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=(
-                    f&#34;Cannot install local dependencies: {&#39;&#39;.join(err)}\n\n&#34;
-                    f&#34;Python wheel not found in folder &#34;
-                    f&#34;{resource.settings.paths.local_dependencies}\n\n&#34;
-                    f&#34;Please notify your system administrator immediately.&#34;
-                ),
-            )
-            sys.exit()
-
-        return pip
-
-    def get_missing_packages(self) -&gt; List[PackageInfo]:
+    @classmethod
+    def get_missing_packages(cls) -&gt; List[PackageInfo]:
         &#34;&#34;&#34;Returns a list of missing packages.&#34;&#34;&#34;
         missing_packages = []
-        for package in self._required_packages:
+        for package in cls.read_dependencies_file():
             try:
                 dist_version = metadata.version(package.name)
                 if LooseVersion(dist_version) &lt; LooseVersion(package.version):
@@ -422,68 +367,75 @@ deps = Dependencies()</code></pre>
                 missing_packages.append(package)
         return missing_packages
 
-    def install_dependencies(self) -&gt; None:
-        &#34;&#34;&#34;Installs missing dependencies.&#34;&#34;&#34;
-        if pip := self._get_pip_commands():
-            if not self._runs_in_venv:
-                result = tkmsg.askyesno(
-                    title=resource.settings.title,
-                    message=(
-                        &#34;The app is not running in its virtualenv environment. &#34;
-                        &#34;This will install all dependencies global, which can lead to unexpected &#34;
-                        &#34;behaviour.\n\nProceed with installing dependencies global?\n\n&#34;
-                        &#34;Hint: To run the app in its environment use the launcher.&#34;
-                    ),
-                    icon=&#34;warning&#34;,
-                )
-                if not result:
-                    sys.exit()
-
-            if self._pip_available():
-                # subprocess.call(
-                #     f&#34;start /wait python -m pip install {&#39; &#39;.join(pip)} --no-cache-dir&#34;,
-                #     shell=True,
-                # )
-                installer = VisualInstaller()
-                installer.install(pip)
-                if missing_packages := self.get_missing_packages():
+    @classmethod
+    def get_pip_commands(cls) -&gt; dict:
+        pip_commands = {}
+        for missing_package in cls.get_missing_packages():
+            if missing_package.wheel is not None:
+                if cls.web_resource_available(missing_package.wheel):
+                    pip_commands[missing_package.name] = missing_package.wheel
+                else:
                     tkmsg.showerror(
                         title=resource.settings.title,
                         message=(
-                            f&#34;Installation of &#34;
-                            f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
-                            f&#34;Please notify your system administrator immediately.&#34;
+                            f&#34;Cannot install dependency {missing_package.name!r}.\n\n&#34;
+                            &#34;Python wheel is not available under the specified link. &#34;
+                            &#34;Please notify your system administrator immediately.&#34;
                         ),
                     )
-                else:
-                    tkmsg.showinfo(
-                        title=resource.settings.title,
-                        message=(
-                            &#34;Successfully updated the app.\n\n&#34;
-                            &#34;The app will start automatically, once all changes have been applied. &#34;
-                            &#34;This may take a while.\n\nClick OK to continue.&#34;
-                        ),
-                    )
-                    subprocess.Popen(  # pylint: disable=R1732
-                        [
-                            f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                            &#34;-batch&#34;,
-                            &#34;-macro&#34;,
-                            f&#34;{resource.settings.paths.release}\\&#34;
-                            f&#34;{resource.settings.files.launcher}&#34;,
-                        ]
-                    )
+                    sys.exit()
             else:
-                tkmsg.showerror(
-                    title=resource.settings.title,
-                    message=&#34;Cannot install required dependencies: No internet connection.&#34;,
-                )
-            sys.exit()</code></pre>
+                pip_commands[
+                    missing_package.name
+                ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+        return pip_commands
+
+    def install_dependencies(self) -&gt; None:
+        &#34;&#34;&#34;Installs missing dependencies.&#34;&#34;&#34;
+
+        # If nothing&#39;s missing, return and start the app.
+        if self.get_missing_packages() == []:
+            return
+
+        Environment.warn_if_not_virtual()
+
+        installer = VisualInstaller()
+        installer.install()
+
+        # Check if all missing packages have been installed.
+        if missing_packages := self.get_missing_packages():
+            tkmsg.showerror(
+                title=resource.settings.title,
+                message=(
+                    f&#34;Installation of &#34;
+                    f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
+                    f&#34;Please notify your system administrator immediately.&#34;
+                ),
+            )
+        else:
+            tkmsg.showinfo(
+                title=resource.settings.title,
+                message=(
+                    &#34;Successfully updated the app.\n\n&#34;
+                    &#34;The app will start automatically, once all changes have been applied. &#34;
+                    &#34;This may take a while.\n\nClick OK to continue.&#34;
+                ),
+            )
+            subprocess.Popen(  # pylint: disable=R1732
+                [
+                    f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
+                    &#34;-batch&#34;,
+                    &#34;-macro&#34;,
+                    f&#34;{resource.settings.paths.release}\\&#34;
+                    f&#34;{resource.settings.files.launcher}&#34;,
+                ]
+            )
+        sys.exit()</code></pre>
 </details>
-<h3>Methods</h3>
+<h3>Static methods</h3>
 <dl>
 <dt id="pytia_bill_of_material.dependencies.Dependencies.get_missing_packages"><code class="name flex">
-<span>def <span class="ident">get_missing_packages</span></span>(<span>self) ‑> List[<a title="pytia_bill_of_material.dependencies.PackageInfo" href="#pytia_bill_of_material.dependencies.PackageInfo">PackageInfo</a>]</span>
+<span>def <span class="ident">get_missing_packages</span></span>(<span>) ‑> List[<a title="pytia_bill_of_material.dependencies.PackageInfo" href="#pytia_bill_of_material.dependencies.PackageInfo">PackageInfo</a>]</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns a list of missing packages.</p></div>
@@ -491,10 +443,11 @@ deps = Dependencies()</code></pre>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_missing_packages(self) -&gt; List[PackageInfo]:
+<pre><code class="python">@classmethod
+def get_missing_packages(cls) -&gt; List[PackageInfo]:
     &#34;&#34;&#34;Returns a list of missing packages.&#34;&#34;&#34;
     missing_packages = []
-    for package in self._required_packages:
+    for package in cls.read_dependencies_file():
         try:
             dist_version = metadata.version(package.name)
             if LooseVersion(dist_version) &lt; LooseVersion(package.version):
@@ -504,6 +457,95 @@ deps = Dependencies()</code></pre>
     return missing_packages</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.dependencies.Dependencies.get_pip_commands"><code class="name flex">
+<span>def <span class="ident">get_pip_commands</span></span>(<span>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def get_pip_commands(cls) -&gt; dict:
+    pip_commands = {}
+    for missing_package in cls.get_missing_packages():
+        if missing_package.wheel is not None:
+            if cls.web_resource_available(missing_package.wheel):
+                pip_commands[missing_package.name] = missing_package.wheel
+            else:
+                tkmsg.showerror(
+                    title=resource.settings.title,
+                    message=(
+                        f&#34;Cannot install dependency {missing_package.name!r}.\n\n&#34;
+                        &#34;Python wheel is not available under the specified link. &#34;
+                        &#34;Please notify your system administrator immediately.&#34;
+                    ),
+                )
+                sys.exit()
+        else:
+            pip_commands[
+                missing_package.name
+            ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+    return pip_commands</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.Dependencies.read_dependencies_file"><code class="name flex">
+<span>def <span class="ident">read_dependencies_file</span></span>(<span>) ‑> List[<a title="pytia_bill_of_material.dependencies.PackageInfo" href="#pytia_bill_of_material.dependencies.PackageInfo">PackageInfo</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reads the deps json from the resources folder.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List[<a title="pytia_bill_of_material.dependencies.PackageInfo" href="#pytia_bill_of_material.dependencies.PackageInfo">PackageInfo</a>]</code></dt>
+<dd>The dependencies as a list.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def read_dependencies_file() -&gt; List[PackageInfo]:
+    &#34;&#34;&#34;
+    Reads the deps json from the resources folder.
+
+    Returns:
+        List[PackageInfo]: The dependencies as a list.
+    &#34;&#34;&#34;
+    with importlib.resources.open_binary(&#34;resources&#34;, CONFIG_DEPS) as f:
+        return [PackageInfo(**i) for i in json.load(f)]</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.Dependencies.web_resource_available"><code class="name flex">
+<span>def <span class="ident">web_resource_available</span></span>(<span>address: str) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns wether a web resource is available or not.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def web_resource_available(address: str) -&gt; bool:
+    &#34;&#34;&#34;Returns wether a web resource is available or not.&#34;&#34;&#34;
+    domain = urlparse(address).netloc
+    path = urlparse(address).path or &#34;/&#34;
+    conn = HTTPSConnection(domain, timeout=5)
+
+    try:
+        conn.request(&#34;HEAD&#34;, path)
+        response = conn.getresponse()
+        return True if response.status in [200, 301, 302, 307, 308] else False
+    except gaierror:
+        print(&#34;not available&#34;)
+        return False
+    finally:
+        conn.close()</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
 <dt id="pytia_bill_of_material.dependencies.Dependencies.install_dependencies"><code class="name flex">
 <span>def <span class="ident">install_dependencies</span></span>(<span>self) ‑> None</span>
 </code></dt>
@@ -515,8 +557,69 @@ deps = Dependencies()</code></pre>
 </summary>
 <pre><code class="python">def install_dependencies(self) -&gt; None:
     &#34;&#34;&#34;Installs missing dependencies.&#34;&#34;&#34;
-    if pip := self._get_pip_commands():
-        if not self._runs_in_venv:
+
+    # If nothing&#39;s missing, return and start the app.
+    if self.get_missing_packages() == []:
+        return
+
+    Environment.warn_if_not_virtual()
+
+    installer = VisualInstaller()
+    installer.install()
+
+    # Check if all missing packages have been installed.
+    if missing_packages := self.get_missing_packages():
+        tkmsg.showerror(
+            title=resource.settings.title,
+            message=(
+                f&#34;Installation of &#34;
+                f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
+                f&#34;Please notify your system administrator immediately.&#34;
+            ),
+        )
+    else:
+        tkmsg.showinfo(
+            title=resource.settings.title,
+            message=(
+                &#34;Successfully updated the app.\n\n&#34;
+                &#34;The app will start automatically, once all changes have been applied. &#34;
+                &#34;This may take a while.\n\nClick OK to continue.&#34;
+            ),
+        )
+        subprocess.Popen(  # pylint: disable=R1732
+            [
+                f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
+                &#34;-batch&#34;,
+                &#34;-macro&#34;,
+                f&#34;{resource.settings.paths.release}\\&#34;
+                f&#34;{resource.settings.files.launcher}&#34;,
+            ]
+        )
+    sys.exit()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.Environment"><code class="flex name class">
+<span>class <span class="ident">Environment</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Environment:
+    def __init__(self) -&gt; None:
+        ...
+
+    @staticmethod
+    def is_virtual() -&gt; bool:
+        return str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable
+
+    @classmethod
+    def warn_if_not_virtual(cls) -&gt; None:
+        if not cls.is_virtual():
             result = tkmsg.askyesno(
                 title=resource.settings.title,
                 message=(
@@ -528,55 +631,55 @@ deps = Dependencies()</code></pre>
                 icon=&#34;warning&#34;,
             )
             if not result:
-                sys.exit()
-
-        if self._pip_available():
-            # subprocess.call(
-            #     f&#34;start /wait python -m pip install {&#39; &#39;.join(pip)} --no-cache-dir&#34;,
-            #     shell=True,
-            # )
-            installer = VisualInstaller()
-            installer.install(pip)
-            if missing_packages := self.get_missing_packages():
-                tkmsg.showerror(
-                    title=resource.settings.title,
-                    message=(
-                        f&#34;Installation of &#34;
-                        f&#34;{&#39;, &#39;.join(package.name for package in missing_packages)} failed.\n\n&#34;
-                        f&#34;Please notify your system administrator immediately.&#34;
-                    ),
-                )
-            else:
-                tkmsg.showinfo(
-                    title=resource.settings.title,
-                    message=(
-                        &#34;Successfully updated the app.\n\n&#34;
-                        &#34;The app will start automatically, once all changes have been applied. &#34;
-                        &#34;This may take a while.\n\nClick OK to continue.&#34;
-                    ),
-                )
-                subprocess.Popen(  # pylint: disable=R1732
-                    [
-                        f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                        &#34;-batch&#34;,
-                        &#34;-macro&#34;,
-                        f&#34;{resource.settings.paths.release}\\&#34;
-                        f&#34;{resource.settings.files.launcher}&#34;,
-                    ]
-                )
-        else:
-            tkmsg.showerror(
-                title=resource.settings.title,
-                message=&#34;Cannot install required dependencies: No internet connection.&#34;,
-            )
-        sys.exit()</code></pre>
+                sys.exit()</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="pytia_bill_of_material.dependencies.Environment.is_virtual"><code class="name flex">
+<span>def <span class="ident">is_virtual</span></span>(<span>) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def is_virtual() -&gt; bool:
+    return str(VENV_PYTHON) in sys.executable or str(VENV_PYTHONW) in sys.executable</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.Environment.warn_if_not_virtual"><code class="name flex">
+<span>def <span class="ident">warn_if_not_virtual</span></span>(<span>) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def warn_if_not_virtual(cls) -&gt; None:
+    if not cls.is_virtual():
+        result = tkmsg.askyesno(
+            title=resource.settings.title,
+            message=(
+                &#34;The app is not running in its virtualenv environment. &#34;
+                &#34;This will install all dependencies global, which can lead to unexpected &#34;
+                &#34;behaviour.\n\nProceed with installing dependencies global?\n\n&#34;
+                &#34;Hint: To run the app in its environment use the launcher.&#34;
+            ),
+            icon=&#34;warning&#34;,
+        )
+        if not result:
+            sys.exit()</code></pre>
 </details>
 </dd>
 </dl>
 </dd>
 <dt id="pytia_bill_of_material.dependencies.PackageInfo"><code class="flex name class">
 <span>class <span class="ident">PackageInfo</span></span>
-<span>(</span><span>*, name: str, version: str, local: bool)</span>
+<span>(</span><span>*, name: str, version: str, wheel: str | None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for package infos from the dependencies.json.</p>
@@ -601,19 +704,19 @@ class PackageInfo:
 
     name: str
     version: str
-    local: bool</code></pre>
+    wheel: str | None</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pytia_bill_of_material.dependencies.PackageInfo.local"><code class="name">var <span class="ident">local</span> : bool</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
 <dt id="pytia_bill_of_material.dependencies.PackageInfo.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.dependencies.PackageInfo.version"><code class="name">var <span class="ident">version</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.PackageInfo.wheel"><code class="name">var <span class="ident">wheel</span> : str | None</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -639,9 +742,8 @@ is the name of the widget class.</p></div>
     def __init__(self):
         super().__init__()
 
-        self.packages: dict
-        self.message = tk.StringVar(name=&#34;message&#34;)
-        self.progress = tk.IntVar(value=1)
+        self.message = tk.StringVar(name=&#34;message&#34;, value=&#34;Connecting to remote ...&#34;)
+        self.progress = tk.IntVar(value=0, name=&#34;progress&#34;)
 
         self.title = f&#34;{resource.settings.title} | Installer&#34;
         self.overrideredirect(True)
@@ -659,23 +761,34 @@ is the name of the widget class.</p></div>
             self,
             orient=tk.HORIZONTAL,
             length=270,
-            mode=&#34;indeterminate&#34;,
             variable=self.progress,
         )
         self.lbl.grid(row=0, column=0, padx=(15, 3), pady=(15, 3), sticky=&#34;w&#34;)
         self.progress_bar.grid(row=1, column=0, padx=(15, 3), pady=(15, 3))
-        self.progress_bar.start()
         self.progress_bar.focus()
 
     def _install_pip(self) -&gt; None:
         &#34;&#34;&#34;Installs python packages using pip.&#34;&#34;&#34;
-        for index, key in enumerate(self.packages.keys()):
+        if not Dependencies.web_resource_available(WEB_PIP):
+            tkmsg.showerror(
+                title=resource.settings.title,
+                message=&#34;Cannot install required dependencies: No internet connection.&#34;,
+            )
+            sys.exit()
+
+        pip_commands = Dependencies.get_pip_commands()
+
+        self.progress.set(1)
+        self.progress_bar.configure(mode=&#34;indeterminate&#34;)
+        self.progress_bar.start()
+
+        for index, key in enumerate(pip_commands.keys()):
             python_exe = sys.executable
             if str(VENV_PYTHONW) in python_exe:
                 python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
-            command = f&#34;start /wait {python_exe} -m pip install {self.packages[key]} --no-cache-dir&#34;
+            command = f&#34;start /wait {python_exe} -m pip install {pip_commands[key]} --no-cache-dir&#34;
             self.message.set(
-                f&#34;Installing package {index+1} of {len(self.packages)}: {key}&#34;
+                f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;
             )
             self.update_idletasks()
             with subprocess.Popen(command, shell=True) as process:
@@ -684,14 +797,8 @@ is the name of the widget class.</p></div>
         self.progress_bar.stop()
         self.destroy()
 
-    def install(self, packages: dict) -&gt; None:
-        &#34;&#34;&#34;
-        Installs all dependencies.python_exe
-
-        Args:
-            packages (dict): The packages to install. Requires a dict of &#34;package name&#34;:&#34;command&#34;.
-        &#34;&#34;&#34;
-        self.packages = packages
+    def install(self) -&gt; None:
+        &#34;&#34;&#34;Installs all dependencies&#34;&#34;&#34;
         self.after(100, self._install_pip)
         self.after(250, self.focus_force)
         self.mainloop()</code></pre>
@@ -705,27 +812,16 @@ is the name of the widget class.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="pytia_bill_of_material.dependencies.VisualInstaller.install"><code class="name flex">
-<span>def <span class="ident">install</span></span>(<span>self, packages: dict) ‑> None</span>
+<span>def <span class="ident">install</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Installs all dependencies.python_exe</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>packages</code></strong> :&ensp;<code>dict</code></dt>
-<dd>The packages to install. Requires a dict of "package name":"command".</dd>
-</dl></div>
+<div class="desc"><p>Installs all dependencies</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def install(self, packages: dict) -&gt; None:
-    &#34;&#34;&#34;
-    Installs all dependencies.python_exe
-
-    Args:
-        packages (dict): The packages to install. Requires a dict of &#34;package name&#34;:&#34;command&#34;.
-    &#34;&#34;&#34;
-    self.packages = packages
+<pre><code class="python">def install(self) -&gt; None:
+    &#34;&#34;&#34;Installs all dependencies&#34;&#34;&#34;
     self.after(100, self._install_pip)
     self.after(250, self.focus_force)
     self.mainloop()</code></pre>
@@ -753,15 +849,25 @@ is the name of the widget class.</p></div>
 <h4><code><a title="pytia_bill_of_material.dependencies.Dependencies" href="#pytia_bill_of_material.dependencies.Dependencies">Dependencies</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.dependencies.Dependencies.get_missing_packages" href="#pytia_bill_of_material.dependencies.Dependencies.get_missing_packages">get_missing_packages</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.Dependencies.get_pip_commands" href="#pytia_bill_of_material.dependencies.Dependencies.get_pip_commands">get_pip_commands</a></code></li>
 <li><code><a title="pytia_bill_of_material.dependencies.Dependencies.install_dependencies" href="#pytia_bill_of_material.dependencies.Dependencies.install_dependencies">install_dependencies</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.Dependencies.read_dependencies_file" href="#pytia_bill_of_material.dependencies.Dependencies.read_dependencies_file">read_dependencies_file</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.Dependencies.web_resource_available" href="#pytia_bill_of_material.dependencies.Dependencies.web_resource_available">web_resource_available</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytia_bill_of_material.dependencies.Environment" href="#pytia_bill_of_material.dependencies.Environment">Environment</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.dependencies.Environment.is_virtual" href="#pytia_bill_of_material.dependencies.Environment.is_virtual">is_virtual</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.Environment.warn_if_not_virtual" href="#pytia_bill_of_material.dependencies.Environment.warn_if_not_virtual">warn_if_not_virtual</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="pytia_bill_of_material.dependencies.PackageInfo" href="#pytia_bill_of_material.dependencies.PackageInfo">PackageInfo</a></code></h4>
 <ul class="">
-<li><code><a title="pytia_bill_of_material.dependencies.PackageInfo.local" href="#pytia_bill_of_material.dependencies.PackageInfo.local">local</a></code></li>
 <li><code><a title="pytia_bill_of_material.dependencies.PackageInfo.name" href="#pytia_bill_of_material.dependencies.PackageInfo.name">name</a></code></li>
 <li><code><a title="pytia_bill_of_material.dependencies.PackageInfo.version" href="#pytia_bill_of_material.dependencies.PackageInfo.version">version</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.PackageInfo.wheel" href="#pytia_bill_of_material.dependencies.PackageInfo.wheel">wheel</a></code></li>
 </ul>
 </li>
 <li>
