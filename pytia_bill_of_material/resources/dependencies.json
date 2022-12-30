@@ -2,16 +2,16 @@
     {
         "name": "pytia",
         "version": "0.3.1",
-        "local": true
+        "wheel": "https://github.com/deloarts/pytia/releases/download/v0.3.1/pytia-0.3.1-py3-none-any.whl"
     },
     {
         "name": "pytia_ui_tools",
         "version": "0.6.3",
-        "local": true
+        "wheel": "https://github.com/deloarts/pytia-ui-tools/releases/download/v0.6.3/pytia_ui_tools-0.6.3-py3-none-any.whl"
     },
     {
         "name": "openpyxl",
         "version": "3.0.10",
-        "local": false
+        "wheel": null
     }
 ]

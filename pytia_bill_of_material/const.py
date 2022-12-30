@@ -6,7 +6,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
 PYTIA = "pytia"
 PYTIA_BILL_OF_MATERIAL = "pytia_bill_of_material"
@@ -51,7 +51,7 @@ PROP_DRAWING_PATH = "pytia.drawing_path"
 
 TEMPLATE_DOCKET = "docket.CATDrawing"
 
-WEB_PIP = "www.pypi.org"
+WEB_PIP = "https://www.pypi.org"
 
 BOM = "bom"
 DOCKETS = "dockets"

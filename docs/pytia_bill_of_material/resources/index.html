@@ -96,7 +96,6 @@ class SettingsPaths:
     &#34;&#34;&#34;Dataclass for paths (settings.json).&#34;&#34;&#34;
 
     catia: Path
-    local_dependencies: Path
     release: Path
 
 
@@ -699,7 +698,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.4.0', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.5.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -2215,7 +2214,7 @@ class SettingsMails:
 </dd>
 <dt id="pytia_bill_of_material.resources.SettingsPaths"><code class="flex name class">
 <span>class <span class="ident">SettingsPaths</span></span>
-<span>(</span><span>*, catia: pathlib.Path, local_dependencies: pathlib.Path, release: pathlib.Path)</span>
+<span>(</span><span>*, catia: pathlib.Path, release: pathlib.Path)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for paths (settings.json).</p></div>
@@ -2228,16 +2227,11 @@ class SettingsPaths:
     &#34;&#34;&#34;Dataclass for paths (settings.json).&#34;&#34;&#34;
 
     catia: Path
-    local_dependencies: Path
     release: Path</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
 <dt id="pytia_bill_of_material.resources.SettingsPaths.catia"><code class="name">var <span class="ident">catia</span> : pathlib.Path</code></dt>
-<dd>
-<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
-</dd>
-<dt id="pytia_bill_of_material.resources.SettingsPaths.local_dependencies"><code class="name">var <span class="ident">local_dependencies</span> : pathlib.Path</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -2586,7 +2580,6 @@ def values(self) -&gt; List[str]:
 <h4><code><a title="pytia_bill_of_material.resources.SettingsPaths" href="#pytia_bill_of_material.resources.SettingsPaths">SettingsPaths</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.resources.SettingsPaths.catia" href="#pytia_bill_of_material.resources.SettingsPaths.catia">catia</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.SettingsPaths.local_dependencies" href="#pytia_bill_of_material.resources.SettingsPaths.local_dependencies">local_dependencies</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.SettingsPaths.release" href="#pytia_bill_of_material.resources.SettingsPaths.release">release</a></code></li>
 </ul>
 </li>
