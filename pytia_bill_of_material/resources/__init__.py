@@ -498,7 +498,7 @@ class Resources:  # pylint: disable=R0902
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):
+            for object_fields in fields(_item):  # type: ignore
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
