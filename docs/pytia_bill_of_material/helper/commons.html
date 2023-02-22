@@ -31,9 +31,11 @@
     Submodule for common classes and functions.
 &#34;&#34;&#34;
 
+import re
 from tkinter import DISABLED, NORMAL
 
 from app.main.layout import Layout
+from resources import resource
 
 
 class CallbackCommons:
@@ -65,7 +67,32 @@ class CallbackCommons:
             self.layout.button_close_document.configure(state=DISABLED)
             self.layout.tree_report_failed_items.state((&#34;!disabled&#34;,))
         except IndexError:
-            pass</code></pre>
+            pass
+
+
+class ResourceCommons:
+    @staticmethod
+    def get_property_names_from_config(header: list) -&gt; tuple:
+        &#34;&#34;&#34;
+        Returns a tuple containing the property names of the bom.json header items.
+        Returns the header name if an item is not a property.
+        &#34;&#34;&#34;
+        prop_names = ()
+        for item in header:
+            if &#34;:&#34; in item:
+                prop_names += (item.split(&#34;:&#34;)[-1],)
+            elif &#34;=&#34; in item:
+                prop_names += (item.split(&#34;=&#34;)[0],)
+            else:
+                prop_names += (item,)
+        return prop_names
+
+    @staticmethod
+    def get_header_names_from_config(header: list) -&gt; tuple:
+        &#34;&#34;&#34;
+        Returns a tuple containing the header names of the bom.json header items.
+        &#34;&#34;&#34;
+        return tuple([s for s in re.split(&#34;[:|=]+&#34;, i)][0] for i in header)</code></pre>
 </details>
 </section>
 <section>
@@ -157,6 +184,87 @@ class CallbackCommons:
 </dd>
 </dl>
 </dd>
+<dt id="pytia_bill_of_material.helper.commons.ResourceCommons"><code class="flex name class">
+<span>class <span class="ident">ResourceCommons</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResourceCommons:
+    @staticmethod
+    def get_property_names_from_config(header: list) -&gt; tuple:
+        &#34;&#34;&#34;
+        Returns a tuple containing the property names of the bom.json header items.
+        Returns the header name if an item is not a property.
+        &#34;&#34;&#34;
+        prop_names = ()
+        for item in header:
+            if &#34;:&#34; in item:
+                prop_names += (item.split(&#34;:&#34;)[-1],)
+            elif &#34;=&#34; in item:
+                prop_names += (item.split(&#34;=&#34;)[0],)
+            else:
+                prop_names += (item,)
+        return prop_names
+
+    @staticmethod
+    def get_header_names_from_config(header: list) -&gt; tuple:
+        &#34;&#34;&#34;
+        Returns a tuple containing the header names of the bom.json header items.
+        &#34;&#34;&#34;
+        return tuple([s for s in re.split(&#34;[:|=]+&#34;, i)][0] for i in header)</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="pytia_bill_of_material.helper.commons.ResourceCommons.get_header_names_from_config"><code class="name flex">
+<span>def <span class="ident">get_header_names_from_config</span></span>(<span>header: list) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a tuple containing the header names of the bom.json header items.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_header_names_from_config(header: list) -&gt; tuple:
+    &#34;&#34;&#34;
+    Returns a tuple containing the header names of the bom.json header items.
+    &#34;&#34;&#34;
+    return tuple([s for s in re.split(&#34;[:|=]+&#34;, i)][0] for i in header)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.helper.commons.ResourceCommons.get_property_names_from_config"><code class="name flex">
+<span>def <span class="ident">get_property_names_from_config</span></span>(<span>header: list) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a tuple containing the property names of the bom.json header items.
+Returns the header name if an item is not a property.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_property_names_from_config(header: list) -&gt; tuple:
+    &#34;&#34;&#34;
+    Returns a tuple containing the property names of the bom.json header items.
+    Returns the header name if an item is not a property.
+    &#34;&#34;&#34;
+    prop_names = ()
+    for item in header:
+        if &#34;:&#34; in item:
+            prop_names += (item.split(&#34;:&#34;)[-1],)
+        elif &#34;=&#34; in item:
+            prop_names += (item.split(&#34;=&#34;)[0],)
+        else:
+            prop_names += (item,)
+    return prop_names</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -177,6 +285,13 @@ class CallbackCommons:
 <h4><code><a title="pytia_bill_of_material.helper.commons.CallbackCommons" href="#pytia_bill_of_material.helper.commons.CallbackCommons">CallbackCommons</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.helper.commons.CallbackCommons.remove_selection_from_failed_items" href="#pytia_bill_of_material.helper.commons.CallbackCommons.remove_selection_from_failed_items">remove_selection_from_failed_items</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytia_bill_of_material.helper.commons.ResourceCommons" href="#pytia_bill_of_material.helper.commons.ResourceCommons">ResourceCommons</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.helper.commons.ResourceCommons.get_header_names_from_config" href="#pytia_bill_of_material.helper.commons.ResourceCommons.get_header_names_from_config">get_header_names_from_config</a></code></li>
+<li><code><a title="pytia_bill_of_material.helper.commons.ResourceCommons.get_property_names_from_config" href="#pytia_bill_of_material.helper.commons.ResourceCommons.get_property_names_from_config">get_property_names_from_config</a></code></li>
 </ul>
 </li>
 </ul>

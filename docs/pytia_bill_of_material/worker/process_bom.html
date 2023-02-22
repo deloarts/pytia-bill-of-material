@@ -36,6 +36,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from const import KEEP, X000D
+from helper.commons import ResourceCommons
 from models.bom import BOM, BOMAssembly, BOMAssemblyItem
 from models.paths import Paths
 from openpyxl import load_workbook
@@ -137,12 +138,18 @@ class ProcessBomTask(TaskProtocol):
         # The bill of material will be processed from the summary-header-items.
         # At this point the made and bought header items aren&#39;t relevant, those come
         # into play only at the final step of saving the bill of material later.
-        header_items = tuple(item for item in resource.bom.header_items.summary)
+        # Also: The header items are defined as HEADER_NAME:PROPERTY_NAME (see bom.json).
+        # At this it&#39;s necessary to extract the PROPERTY_NAME first, to create the
+        # correct output, because CATIA needs the property names to create the bill of
+        # material.
+        header_items = ResourceCommons.get_property_names_from_config(
+            resource.bom.header_items.summary
+        )
 
         for ri in range(1, max_row + 2):
             log.debug(f&#34;Working on row {ri} of {worksheet.max_row}.&#34;)
 
-            # Since ww iterate over the whole catia export excel file, and this export
+            # Since we iterate over the whole catia export excel file, and this export
             # contains all bills of material (all boms from all sub-assemblies and the
             # bom-summary from the whole thing), we need to identify where we are in the
             # current row. This is done with the _bom_or_summary variable and the _name
@@ -255,9 +262,9 @@ class ProcessBomTask(TaskProtocol):
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_placeholder_header(
-                        header_position=position, cell_value=cell_value
-                    )
+                    # cell_value = cls._apply_placeholder_header(
+                    #     header_position=position, cell_value=cell_value
+                    # )
 
                     cls._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
@@ -282,7 +289,8 @@ class ProcessBomTask(TaskProtocol):
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
                     item_path = None
                     log.warning(
-                        f&#34;No path found for item {row_data[resource.applied_keywords.partnumber]!r}.&#34;
+                        &#34;No path found for item &#34;
+                        f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
                     )
                 else:
                     item_path = paths.items[
@@ -353,7 +361,7 @@ class ProcessBomTask(TaskProtocol):
                     &#34;bill of material. Please add this header to the bom.json.&#34;
                 )
 
-        log.debug(&#34;Retrieved header items from excel worksheet.&#34;)
+        log.debug(f&#34;Retrieved header items from excel worksheet from row {row}.&#34;)
         return header
 
     @staticmethod
@@ -438,27 +446,29 @@ class ProcessBomTask(TaskProtocol):
         Returns:
             str | Any | None: The fixed text, if set in the header_items.
         &#34;&#34;&#34;
-        if header_position.startswith(&#34;%&#34;) and &#34;=&#34; in header_position:
-            return header_position.split(&#34;=&#34;)[-1]
+
+        for item in resource.bom.header_items.summary:
+            if header_position in item and &#34;=&#34; in item:
+                return item.split(&#34;=&#34;)[-1]
         return cell_value
 
-    @staticmethod
-    def _apply_placeholder_header(
-        header_position: str, cell_value: str | Any | None
-    ) -&gt; str | Any | None:
-        &#34;&#34;&#34;
-        Returns None as cell value, if the header is set to placeholder.
+    # @staticmethod
+    # def _apply_placeholder_header(
+    #     header_position: str, cell_value: str | Any | None
+    # ) -&gt; str | Any | None:
+    #     &#34;&#34;&#34;
+    #     Returns None as cell value, if the header is set to placeholder.
 
-        Args:
-            header_position (str): The header position (the name of the header).
-            cell_value (str | Any | None): The cell value.
+    #     Args:
+    #         header_position (str): The header position (the name of the header).
+    #         cell_value (str | Any | None): The cell value.
 
-        Returns:
-            str | Any | None: The fixed text, if set in the header_items.
-        &#34;&#34;&#34;
-        if header_position.startswith(&#34;%&#34;) and &#34;=&#34; not in header_position:
-            return None
-        return cell_value
+    #     Returns:
+    #         str | Any | None: The fixed text, if set in the header_items.
+    #     &#34;&#34;&#34;
+    #     if not any(delimiter in header_position for delimiter in [&#34;:&#34;, &#34;=&#34;]):
+    #         return None
+    #     return cell_value
 
     @staticmethod
     def _sort_bom(bom: BOM) -&gt; None:
@@ -620,12 +630,18 @@ It generates the BOM object from the xlsx file.</p>
         # The bill of material will be processed from the summary-header-items.
         # At this point the made and bought header items aren&#39;t relevant, those come
         # into play only at the final step of saving the bill of material later.
-        header_items = tuple(item for item in resource.bom.header_items.summary)
+        # Also: The header items are defined as HEADER_NAME:PROPERTY_NAME (see bom.json).
+        # At this it&#39;s necessary to extract the PROPERTY_NAME first, to create the
+        # correct output, because CATIA needs the property names to create the bill of
+        # material.
+        header_items = ResourceCommons.get_property_names_from_config(
+            resource.bom.header_items.summary
+        )
 
         for ri in range(1, max_row + 2):
             log.debug(f&#34;Working on row {ri} of {worksheet.max_row}.&#34;)
 
-            # Since ww iterate over the whole catia export excel file, and this export
+            # Since we iterate over the whole catia export excel file, and this export
             # contains all bills of material (all boms from all sub-assemblies and the
             # bom-summary from the whole thing), we need to identify where we are in the
             # current row. This is done with the _bom_or_summary variable and the _name
@@ -738,9 +754,9 @@ It generates the BOM object from the xlsx file.</p>
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_placeholder_header(
-                        header_position=position, cell_value=cell_value
-                    )
+                    # cell_value = cls._apply_placeholder_header(
+                    #     header_position=position, cell_value=cell_value
+                    # )
 
                     cls._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
@@ -765,7 +781,8 @@ It generates the BOM object from the xlsx file.</p>
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
                     item_path = None
                     log.warning(
-                        f&#34;No path found for item {row_data[resource.applied_keywords.partnumber]!r}.&#34;
+                        &#34;No path found for item &#34;
+                        f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
                     )
                 else:
                     item_path = paths.items[
@@ -836,7 +853,7 @@ It generates the BOM object from the xlsx file.</p>
                     &#34;bill of material. Please add this header to the bom.json.&#34;
                 )
 
-        log.debug(&#34;Retrieved header items from excel worksheet.&#34;)
+        log.debug(f&#34;Retrieved header items from excel worksheet from row {row}.&#34;)
         return header
 
     @staticmethod
@@ -921,27 +938,29 @@ It generates the BOM object from the xlsx file.</p>
         Returns:
             str | Any | None: The fixed text, if set in the header_items.
         &#34;&#34;&#34;
-        if header_position.startswith(&#34;%&#34;) and &#34;=&#34; in header_position:
-            return header_position.split(&#34;=&#34;)[-1]
+
+        for item in resource.bom.header_items.summary:
+            if header_position in item and &#34;=&#34; in item:
+                return item.split(&#34;=&#34;)[-1]
         return cell_value
 
-    @staticmethod
-    def _apply_placeholder_header(
-        header_position: str, cell_value: str | Any | None
-    ) -&gt; str | Any | None:
-        &#34;&#34;&#34;
-        Returns None as cell value, if the header is set to placeholder.
+    # @staticmethod
+    # def _apply_placeholder_header(
+    #     header_position: str, cell_value: str | Any | None
+    # ) -&gt; str | Any | None:
+    #     &#34;&#34;&#34;
+    #     Returns None as cell value, if the header is set to placeholder.
 
-        Args:
-            header_position (str): The header position (the name of the header).
-            cell_value (str | Any | None): The cell value.
+    #     Args:
+    #         header_position (str): The header position (the name of the header).
+    #         cell_value (str | Any | None): The cell value.
 
-        Returns:
-            str | Any | None: The fixed text, if set in the header_items.
-        &#34;&#34;&#34;
-        if header_position.startswith(&#34;%&#34;) and &#34;=&#34; not in header_position:
-            return None
-        return cell_value
+    #     Returns:
+    #         str | Any | None: The fixed text, if set in the header_items.
+    #     &#34;&#34;&#34;
+    #     if not any(delimiter in header_position for delimiter in [&#34;:&#34;, &#34;=&#34;]):
+    #         return None
+    #     return cell_value
 
     @staticmethod
     def _sort_bom(bom: BOM) -&gt; None:

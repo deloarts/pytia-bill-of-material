@@ -44,7 +44,7 @@ import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, Optional, Protocol
+from typing import Dict, List, Literal, Optional, Protocol
 
 from const import (
     APP_VERSION,
@@ -253,11 +253,22 @@ class BOMHeaderItems:
 
 
 @dataclass(slots=True, kw_only=True)
+class BOMFiles:
+    &#34;&#34;&#34;Files dataclass.&#34;&#34;&#34;
+
+    separate: bool
+    summary: str
+    made: str
+    bought: str
+
+
+@dataclass(slots=True, kw_only=True)
 class BOM:
     &#34;&#34;&#34;Bill of material dataclass.&#34;&#34;&#34;
 
     header_row: int | None
     data_row: int
+    files: BOMFiles
     header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
@@ -271,6 +282,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -&gt; None:
+        self.files = BOMFiles(**dict(self.files))  # type: ignore
         self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
@@ -529,22 +541,19 @@ class Resources:  # pylint: disable=R0902
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):
+            for object_fields in fields(_item):  # type: ignore
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
-                        if (
-                            item.startswith(&#34;$&#34;)
-                            and (key := item.split(&#34;$&#34;)[1]) in keywords
-                        ):
+                        if &#34;$&#34; in item and (key := item.split(&#34;$&#34;)[1]) in keywords:
                             object_item[index] = keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
-                        object_item.startswith(&#34;$&#34;)
+                        &#34;$&#34; in object_item
                         and (key := object_item.split(&#34;$&#34;)[1]) in keywords
                     ):
                         setattr(_item, object_fields.name, keywords[key])
@@ -698,7 +707,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.5.0', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.6.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -779,7 +788,7 @@ class AppliedKeywords(KeywordElements):
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM"><code class="flex name class">
 <span>class <span class="ident">BOM</span></span>
-<span>(</span><span>*, header_row: int | None, data_row: int, header_items: <a title="pytia_bill_of_material.resources.BOMHeaderItems" href="#pytia_bill_of_material.resources.BOMHeaderItems">BOMHeaderItems</a>, sort: <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a>, required_header_items: <a title="pytia_bill_of_material.resources.RequiredHeaderItems" href="#pytia_bill_of_material.resources.RequiredHeaderItems">RequiredHeaderItems</a>, font: str, size: int, header_color: str, header_bg_color: str, data_color_1: str, data_bg_color_1: str, data_color_2: str, data_bg_color_2: str)</span>
+<span>(</span><span>*, header_row: int | None, data_row: int, files: <a title="pytia_bill_of_material.resources.BOMFiles" href="#pytia_bill_of_material.resources.BOMFiles">BOMFiles</a>, header_items: <a title="pytia_bill_of_material.resources.BOMHeaderItems" href="#pytia_bill_of_material.resources.BOMHeaderItems">BOMHeaderItems</a>, sort: <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a>, required_header_items: <a title="pytia_bill_of_material.resources.RequiredHeaderItems" href="#pytia_bill_of_material.resources.RequiredHeaderItems">RequiredHeaderItems</a>, font: str, size: int, header_color: str, header_bg_color: str, data_color_1: str, data_bg_color_1: str, data_color_2: str, data_bg_color_2: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Bill of material dataclass.</p></div>
@@ -793,6 +802,7 @@ class BOM:
 
     header_row: int | None
     data_row: int
+    files: BOMFiles
     header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
@@ -806,6 +816,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -&gt; None:
+        self.files = BOMFiles(**dict(self.files))  # type: ignore
         self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore</code></pre>
@@ -829,6 +840,10 @@ class BOM:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM.data_row"><code class="name">var <span class="ident">data_row</span> : int</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOM.files"><code class="name">var <span class="ident">files</span> : <a title="pytia_bill_of_material.resources.BOMFiles" href="#pytia_bill_of_material.resources.BOMFiles">BOMFiles</a></code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -861,6 +876,45 @@ class BOM:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.BOM.sort"><code class="name">var <span class="ident">sort</span> : <a title="pytia_bill_of_material.resources.BOMSort" href="#pytia_bill_of_material.resources.BOMSort">BOMSort</a></code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMFiles"><code class="flex name class">
+<span>class <span class="ident">BOMFiles</span></span>
+<span>(</span><span>*, separate: bool, summary: str, made: str, bought: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Files dataclass.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass(slots=True, kw_only=True)
+class BOMFiles:
+    &#34;&#34;&#34;Files dataclass.&#34;&#34;&#34;
+
+    separate: bool
+    summary: str
+    made: str
+    bought: str</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="pytia_bill_of_material.resources.BOMFiles.bought"><code class="name">var <span class="ident">bought</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMFiles.made"><code class="name">var <span class="ident">made</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMFiles.separate"><code class="name">var <span class="ident">separate</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.BOMFiles.summary"><code class="name">var <span class="ident">summary</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1550,22 +1604,19 @@ def values(self) -&gt; List[str]:
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):
+            for object_fields in fields(_item):  # type: ignore
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
-                        if (
-                            item.startswith(&#34;$&#34;)
-                            and (key := item.split(&#34;$&#34;)[1]) in keywords
-                        ):
+                        if &#34;$&#34; in item and (key := item.split(&#34;$&#34;)[1]) in keywords:
                             object_item[index] = keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
-                        object_item.startswith(&#34;$&#34;)
+                        &#34;$&#34; in object_item
                         and (key := object_item.split(&#34;$&#34;)[1]) in keywords
                     ):
                         setattr(_item, object_fields.name, keywords[key])
@@ -2424,6 +2475,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.BOM.data_color_1" href="#pytia_bill_of_material.resources.BOM.data_color_1">data_color_1</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.data_color_2" href="#pytia_bill_of_material.resources.BOM.data_color_2">data_color_2</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.data_row" href="#pytia_bill_of_material.resources.BOM.data_row">data_row</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOM.files" href="#pytia_bill_of_material.resources.BOM.files">files</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.font" href="#pytia_bill_of_material.resources.BOM.font">font</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.header_bg_color" href="#pytia_bill_of_material.resources.BOM.header_bg_color">header_bg_color</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.header_color" href="#pytia_bill_of_material.resources.BOM.header_color">header_color</a></code></li>
@@ -2432,6 +2484,15 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.BOM.required_header_items" href="#pytia_bill_of_material.resources.BOM.required_header_items">required_header_items</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.size" href="#pytia_bill_of_material.resources.BOM.size">size</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOM.sort" href="#pytia_bill_of_material.resources.BOM.sort">sort</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytia_bill_of_material.resources.BOMFiles" href="#pytia_bill_of_material.resources.BOMFiles">BOMFiles</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.resources.BOMFiles.bought" href="#pytia_bill_of_material.resources.BOMFiles.bought">bought</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMFiles.made" href="#pytia_bill_of_material.resources.BOMFiles.made">made</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMFiles.separate" href="#pytia_bill_of_material.resources.BOMFiles.separate">separate</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMFiles.summary" href="#pytia_bill_of_material.resources.BOMFiles.summary">summary</a></code></li>
 </ul>
 </li>
 <li>
