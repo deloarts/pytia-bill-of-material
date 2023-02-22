@@ -13,7 +13,7 @@ import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, Optional, Protocol
+from typing import Dict, List, Literal, Optional, Protocol
 
 from const import (
     APP_VERSION,
@@ -222,11 +222,22 @@ class BOMHeaderItems:
 
 
 @dataclass(slots=True, kw_only=True)
+class BOMFiles:
+    """Files dataclass."""
+
+    separate: bool
+    summary: str
+    made: str
+    bought: str
+
+
+@dataclass(slots=True, kw_only=True)
 class BOM:
     """Bill of material dataclass."""
 
     header_row: int | None
     data_row: int
+    files: BOMFiles
     header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
@@ -240,6 +251,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -> None:
+        self.files = BOMFiles(**dict(self.files))  # type: ignore
         self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
@@ -498,22 +510,19 @@ class Resources:  # pylint: disable=R0902
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):
+            for object_fields in fields(_item):  # type: ignore
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
-                        if (
-                            item.startswith("$")
-                            and (key := item.split("$")[1]) in keywords
-                        ):
+                        if "$" in item and (key := item.split("$")[1]) in keywords:
                             object_item[index] = keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
-                        object_item.startswith("$")
+                        "$" in object_item
                         and (key := object_item.split("$")[1]) in keywords
                     ):
                         setattr(_item, object_fields.name, keywords[key])

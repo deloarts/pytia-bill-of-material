@@ -1,6 +1,9 @@
 """
     The layout of the app.
 """
+
+# pylint: disable=C0116
+
 from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk, ttk
 
 from app.main.frames import Frames

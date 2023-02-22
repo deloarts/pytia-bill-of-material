@@ -48,6 +48,8 @@ class PackageInfo:
 
 
 class Environment:
+    """Class for dependency environments."""
+
     def __init__(self) -> None:
         ...
 

@@ -4,6 +4,7 @@
 
 from typing import List
 
+from helper.commons import ResourceCommons
 from models.bom import BOMAssemblyItem
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
@@ -39,30 +40,26 @@ def get_excel() -> CDispatch:
         raise PytiaDispatchError(f"Failed connecting to Excel: {e}") from e
 
 
-def create_header(worksheet: Worksheet, items: tuple) -> None:
+def create_header(worksheet: Worksheet, header_items: list) -> None:
     """
     Creates a header row in the given worksheet.
 
     Args:
         worksheet (Worksheet): The worksheet into which to create the header row.
-        items (tuple): The header items to create.
+        header_items (tuple): The header items to create (the bom.json list).
     """
+    items = ResourceCommons.get_header_names_from_config(header_items)
+
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            if str(item).startswith("%") and "=" in str(item):
-                value = str(item).split("%")[-1].split("=")[0]
-            elif str(item).startswith("%"):
-                value = str(item).split("%")[-1]
-            else:
-                value = item
-            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
+            worksheet.cell(resource.bom.header_row + 1, index + 1, str(item))
         log.info(f"Created header for worksheet {worksheet.title!r}")
     else:
         log.info(f"Skipped creating header for worksheet {worksheet.title!r}.")
 
 
 def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
+    worksheet: Worksheet, header_items: list, data: List[BOMAssemblyItem], strict: bool
 ) -> None:
     """
     Writes the properties from the given data object to the given worksheet.
@@ -70,23 +67,25 @@ def write_data(
 
     Args:
         worksheet (Worksheet): The worksheet to add the data to.
-        header_items (tuple): The header items.
+        header_items (tuple): The header items (the bom.json list).
         data (List[BOMAssemblyItem]): The actual data.
         strict (bool): If set to True, an error will be raised if the properties are \
             not in the header items.
     """
+    items = ResourceCommons.get_property_names_from_config(header_items)
+
     for ri, rv in enumerate(data):
-        for ci, cv in enumerate(header_items):
+        for ci, cv in enumerate(items):
             if cv in rv.properties:
                 cell_value = rv.properties[cv]
             elif strict:
                 raise KeyError(f"Did not find property {cv!r} in data.")
             else:
                 cell_value = None
-                log.warning(
-                    f"Did not find property {cv!r} in data (is this header missing in "
-                    "the header_items.summary list of the bom.json config file?"
-                )
+                # log.warning(
+                #     f"Did not find property {cv!r} in data (is this header missing in "
+                #     "the header_items.summary list of the bom.json config file?"
+                # )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
             ).value = cell_value
@@ -132,7 +131,7 @@ def style_worksheet(worksheet: Worksheet) -> None:
 
         # Set font and height for the header row
         if isinstance(resource.bom.header_row, int):
-            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20
+            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20  # type: ignore
             column_cells[resource.bom.header_row].font = Font(
                 name=resource.bom.font,
                 size=resource.bom.size,
@@ -150,7 +149,7 @@ def style_worksheet(worksheet: Worksheet) -> None:
 
         # Set cell width
         length = max(len(str(cell.value)) * 1.1 for cell in column_cells)
-        worksheet.column_dimensions[column_cells[0].column_letter].width = (
+        worksheet.column_dimensions[column_cells[0].column_letter].width = (  # type: ignore
             length if length > 2 else 2
         )
 

@@ -2,6 +2,8 @@
     REPORT data models.
 """
 
+# pylint: disable=C0116
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List

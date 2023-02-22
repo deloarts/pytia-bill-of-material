@@ -33,6 +33,7 @@
 
 from typing import List
 
+from helper.commons import ResourceCommons
 from models.bom import BOMAssemblyItem
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.worksheet._read_only import ReadOnlyWorksheet
@@ -68,30 +69,26 @@ def get_excel() -&gt; CDispatch:
         raise PytiaDispatchError(f&#34;Failed connecting to Excel: {e}&#34;) from e
 
 
-def create_header(worksheet: Worksheet, items: tuple) -&gt; None:
+def create_header(worksheet: Worksheet, header_items: list) -&gt; None:
     &#34;&#34;&#34;
     Creates a header row in the given worksheet.
 
     Args:
         worksheet (Worksheet): The worksheet into which to create the header row.
-        items (tuple): The header items to create.
+        header_items (tuple): The header items to create (the bom.json list).
     &#34;&#34;&#34;
+    items = ResourceCommons.get_header_names_from_config(header_items)
+
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            if str(item).startswith(&#34;%&#34;) and &#34;=&#34; in str(item):
-                value = str(item).split(&#34;%&#34;)[-1].split(&#34;=&#34;)[0]
-            elif str(item).startswith(&#34;%&#34;):
-                value = str(item).split(&#34;%&#34;)[-1]
-            else:
-                value = item
-            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
+            worksheet.cell(resource.bom.header_row + 1, index + 1, str(item))
         log.info(f&#34;Created header for worksheet {worksheet.title!r}&#34;)
     else:
         log.info(f&#34;Skipped creating header for worksheet {worksheet.title!r}.&#34;)
 
 
 def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
+    worksheet: Worksheet, header_items: list, data: List[BOMAssemblyItem], strict: bool
 ) -&gt; None:
     &#34;&#34;&#34;
     Writes the properties from the given data object to the given worksheet.
@@ -99,23 +96,25 @@ def write_data(
 
     Args:
         worksheet (Worksheet): The worksheet to add the data to.
-        header_items (tuple): The header items.
+        header_items (tuple): The header items (the bom.json list).
         data (List[BOMAssemblyItem]): The actual data.
         strict (bool): If set to True, an error will be raised if the properties are \
             not in the header items.
     &#34;&#34;&#34;
+    items = ResourceCommons.get_property_names_from_config(header_items)
+
     for ri, rv in enumerate(data):
-        for ci, cv in enumerate(header_items):
+        for ci, cv in enumerate(items):
             if cv in rv.properties:
                 cell_value = rv.properties[cv]
             elif strict:
                 raise KeyError(f&#34;Did not find property {cv!r} in data.&#34;)
             else:
                 cell_value = None
-                log.warning(
-                    f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
-                    &#34;the header_items.summary list of the bom.json config file?&#34;
-                )
+                # log.warning(
+                #     f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
+                #     &#34;the header_items.summary list of the bom.json config file?&#34;
+                # )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
             ).value = cell_value
@@ -161,7 +160,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 
         # Set font and height for the header row
         if isinstance(resource.bom.header_row, int):
-            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20
+            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20  # type: ignore
             column_cells[resource.bom.header_row].font = Font(
                 name=resource.bom.font,
                 size=resource.bom.size,
@@ -179,7 +178,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 
         # Set cell width
         length = max(len(str(cell.value)) * 1.1 for cell in column_cells)
-        worksheet.column_dimensions[column_cells[0].column_letter].width = (
+        worksheet.column_dimensions[column_cells[0].column_letter].width = (  # type: ignore
             length if length &gt; 2 else 2
         )
 
@@ -194,7 +193,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pytia_bill_of_material.utils.excel.create_header"><code class="name flex">
-<span>def <span class="ident">create_header</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, items: tuple) ‑> None</span>
+<span>def <span class="ident">create_header</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, header_items: list) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Creates a header row in the given worksheet.</p>
@@ -202,30 +201,26 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 <dl>
 <dt><strong><code>worksheet</code></strong> :&ensp;<code>Worksheet</code></dt>
 <dd>The worksheet into which to create the header row.</dd>
-<dt><strong><code>items</code></strong> :&ensp;<code>tuple</code></dt>
-<dd>The header items to create.</dd>
+<dt><strong><code>header_items</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>The header items to create (the bom.json list).</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def create_header(worksheet: Worksheet, items: tuple) -&gt; None:
+<pre><code class="python">def create_header(worksheet: Worksheet, header_items: list) -&gt; None:
     &#34;&#34;&#34;
     Creates a header row in the given worksheet.
 
     Args:
         worksheet (Worksheet): The worksheet into which to create the header row.
-        items (tuple): The header items to create.
+        header_items (tuple): The header items to create (the bom.json list).
     &#34;&#34;&#34;
+    items = ResourceCommons.get_header_names_from_config(header_items)
+
     if isinstance(resource.bom.header_row, int):
         for index, item in enumerate(items):
-            if str(item).startswith(&#34;%&#34;) and &#34;=&#34; in str(item):
-                value = str(item).split(&#34;%&#34;)[-1].split(&#34;=&#34;)[0]
-            elif str(item).startswith(&#34;%&#34;):
-                value = str(item).split(&#34;%&#34;)[-1]
-            else:
-                value = item
-            worksheet.cell(resource.bom.header_row + 1, index + 1, value)
+            worksheet.cell(resource.bom.header_row + 1, index + 1, str(item))
         log.info(f&#34;Created header for worksheet {worksheet.title!r}&#34;)
     else:
         log.info(f&#34;Skipped creating header for worksheet {worksheet.title!r}.&#34;)</code></pre>
@@ -332,7 +327,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 
         # Set font and height for the header row
         if isinstance(resource.bom.header_row, int):
-            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20
+            worksheet.row_dimensions[resource.bom.header_row + 1].height = 20  # type: ignore
             column_cells[resource.bom.header_row].font = Font(
                 name=resource.bom.font,
                 size=resource.bom.size,
@@ -350,7 +345,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 
         # Set cell width
         length = max(len(str(cell.value)) * 1.1 for cell in column_cells)
-        worksheet.column_dimensions[column_cells[0].column_letter].width = (
+        worksheet.column_dimensions[column_cells[0].column_letter].width = (  # type: ignore
             length if length &gt; 2 else 2
         )
 
@@ -358,7 +353,7 @@ def style_worksheet(worksheet: Worksheet) -&gt; None:
 </details>
 </dd>
 <dt id="pytia_bill_of_material.utils.excel.write_data"><code class="name flex">
-<span>def <span class="ident">write_data</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, header_items: tuple, data: List[models.bom.BOMAssemblyItem], strict: bool) ‑> None</span>
+<span>def <span class="ident">write_data</span></span>(<span>worksheet: openpyxl.worksheet.worksheet.Worksheet, header_items: list, data: List[models.bom.BOMAssemblyItem], strict: bool) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Writes the properties from the given data object to the given worksheet.
@@ -368,7 +363,7 @@ Takes care that each datum will be written to the corresponding header.</p>
 <dt><strong><code>worksheet</code></strong> :&ensp;<code>Worksheet</code></dt>
 <dd>The worksheet to add the data to.</dd>
 <dt><strong><code>header_items</code></strong> :&ensp;<code>tuple</code></dt>
-<dd>The header items.</dd>
+<dd>The header items (the bom.json list).</dd>
 <dt><strong><code>data</code></strong> :&ensp;<code>List[BOMAssemblyItem]</code></dt>
 <dd>The actual data.</dd>
 <dt><strong><code>strict</code></strong> :&ensp;<code>bool</code></dt>
@@ -380,7 +375,7 @@ not in the header items.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def write_data(
-    worksheet: Worksheet, header_items: tuple, data: List[BOMAssemblyItem], strict: bool
+    worksheet: Worksheet, header_items: list, data: List[BOMAssemblyItem], strict: bool
 ) -&gt; None:
     &#34;&#34;&#34;
     Writes the properties from the given data object to the given worksheet.
@@ -388,23 +383,25 @@ not in the header items.</dd>
 
     Args:
         worksheet (Worksheet): The worksheet to add the data to.
-        header_items (tuple): The header items.
+        header_items (tuple): The header items (the bom.json list).
         data (List[BOMAssemblyItem]): The actual data.
         strict (bool): If set to True, an error will be raised if the properties are \
             not in the header items.
     &#34;&#34;&#34;
+    items = ResourceCommons.get_property_names_from_config(header_items)
+
     for ri, rv in enumerate(data):
-        for ci, cv in enumerate(header_items):
+        for ci, cv in enumerate(items):
             if cv in rv.properties:
                 cell_value = rv.properties[cv]
             elif strict:
                 raise KeyError(f&#34;Did not find property {cv!r} in data.&#34;)
             else:
                 cell_value = None
-                log.warning(
-                    f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
-                    &#34;the header_items.summary list of the bom.json config file?&#34;
-                )
+                # log.warning(
+                #     f&#34;Did not find property {cv!r} in data (is this header missing in &#34;
+                #     &#34;the header_items.summary list of the bom.json config file?&#34;
+                # )
             worksheet.cell(
                 row=ri + resource.bom.data_row + 1, column=ci + 1
             ).value = cell_value
