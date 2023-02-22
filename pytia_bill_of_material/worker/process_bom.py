@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from const import KEEP, X000D
+from helper.commons import ResourceCommons
 from models.bom import BOM, BOMAssembly, BOMAssemblyItem
 from models.paths import Paths
 from openpyxl import load_workbook
@@ -108,12 +109,18 @@ class ProcessBomTask(TaskProtocol):
         # The bill of material will be processed from the summary-header-items.
         # At this point the made and bought header items aren't relevant, those come
         # into play only at the final step of saving the bill of material later.
-        header_items = tuple(item for item in resource.bom.header_items.summary)
+        # Also: The header items are defined as HEADER_NAME:PROPERTY_NAME (see bom.json).
+        # At this it's necessary to extract the PROPERTY_NAME first, to create the
+        # correct output, because CATIA needs the property names to create the bill of
+        # material.
+        header_items = ResourceCommons.get_property_names_from_config(
+            resource.bom.header_items.summary
+        )
 
         for ri in range(1, max_row + 2):
             log.debug(f"Working on row {ri} of {worksheet.max_row}.")
 
-            # Since ww iterate over the whole catia export excel file, and this export
+            # Since we iterate over the whole catia export excel file, and this export
             # contains all bills of material (all boms from all sub-assemblies and the
             # bom-summary from the whole thing), we need to identify where we are in the
             # current row. This is done with the _bom_or_summary variable and the _name
@@ -226,9 +233,9 @@ class ProcessBomTask(TaskProtocol):
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_placeholder_header(
-                        header_position=position, cell_value=cell_value
-                    )
+                    # cell_value = cls._apply_placeholder_header(
+                    #     header_position=position, cell_value=cell_value
+                    # )
 
                     cls._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
@@ -324,7 +331,7 @@ class ProcessBomTask(TaskProtocol):
                     "bill of material. Please add this header to the bom.json."
                 )
 
-        log.debug("Retrieved header items from excel worksheet.")
+        log.debug(f"Retrieved header items from excel worksheet from row {row}.")
         return header
 
     @staticmethod
@@ -409,27 +416,29 @@ class ProcessBomTask(TaskProtocol):
         Returns:
             str | Any | None: The fixed text, if set in the header_items.
         """
-        if header_position.startswith("%") and "=" in header_position:
-            return header_position.split("=")[-1]
+
+        for item in resource.bom.header_items.summary:
+            if header_position in item and "=" in item:
+                return item.split("=")[-1]
         return cell_value
 
-    @staticmethod
-    def _apply_placeholder_header(
-        header_position: str, cell_value: str | Any | None
-    ) -> str | Any | None:
-        """
-        Returns None as cell value, if the header is set to placeholder.
+    # @staticmethod
+    # def _apply_placeholder_header(
+    #     header_position: str, cell_value: str | Any | None
+    # ) -> str | Any | None:
+    #     """
+    #     Returns None as cell value, if the header is set to placeholder.
 
-        Args:
-            header_position (str): The header position (the name of the header).
-            cell_value (str | Any | None): The cell value.
+    #     Args:
+    #         header_position (str): The header position (the name of the header).
+    #         cell_value (str | Any | None): The cell value.
 
-        Returns:
-            str | Any | None: The fixed text, if set in the header_items.
-        """
-        if header_position.startswith("%") and "=" not in header_position:
-            return None
-        return cell_value
+    #     Returns:
+    #         str | Any | None: The fixed text, if set in the header_items.
+    #     """
+    #     if not any(delimiter in header_position for delimiter in [":", "="]):
+    #         return None
+    #     return cell_value
 
     @staticmethod
     def _sort_bom(bom: BOM) -> None:

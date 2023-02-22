@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import List
 
 from const import BOM as BOM_FOLDER
+from helper.commons import ResourceCommons
 from models.bom import BOM, BOMAssemblyItem
 from openpyxl.workbook import Workbook
 from protocols.task_protocol import TaskProtocol
@@ -64,11 +65,10 @@ class SaveBomTask(TaskProtocol):
         ws.sheet_properties.tabColor = "ff0000"
 
         # Summary
-        header_items_summary = tuple(item for item in resource.bom.header_items.summary)
-        create_header(worksheet=ws, items=header_items_summary)
+        create_header(worksheet=ws, header_items=resource.bom.header_items.summary)
         write_data(
             worksheet=ws,
-            header_items=header_items_summary,
+            header_items=resource.bom.header_items.summary,
             data=bom.summary.items,
             strict=True,
         )
@@ -76,13 +76,12 @@ class SaveBomTask(TaskProtocol):
 
         # Made
         if resource.bom.header_items.made:
-            header_items_made = tuple(item for item in resource.bom.header_items.made)
             ws: Worksheet = wb.create_sheet(title="Made")  # type: ignore
             ws.sheet_properties.tabColor = "ff0000"
-            create_header(worksheet=ws, items=header_items_made)
+            create_header(worksheet=ws, header_items=resource.bom.header_items.made)
             write_data(
                 worksheet=ws,
-                header_items=header_items_made,
+                header_items=resource.bom.header_items.made,
                 data=[
                     item
                     for item in bom.summary.items
@@ -94,15 +93,12 @@ class SaveBomTask(TaskProtocol):
 
         # Bought
         if resource.bom.header_items.bought:
-            header_items_bought = tuple(
-                item for item in resource.bom.header_items.bought
-            )
             ws: Worksheet = wb.create_sheet(title="Bought")  # type: ignore
             ws.sheet_properties.tabColor = "ff0000"
-            create_header(worksheet=ws, items=header_items_bought)
+            create_header(worksheet=ws, header_items=resource.bom.header_items.bought)
             write_data(
                 worksheet=ws,
-                header_items=header_items_bought,
+                header_items=resource.bom.header_items.bought,
                 data=[
                     item
                     for item in bom.summary.items
@@ -114,10 +110,10 @@ class SaveBomTask(TaskProtocol):
 
         for assembly in bom.assemblies:
             ws: Worksheet = wb.create_sheet(title=assembly.partnumber)  # type: ignore
-            create_header(worksheet=ws, items=header_items_summary)
+            create_header(worksheet=ws, header_items=resource.bom.header_items.summary)
             write_data(
                 worksheet=ws,
-                header_items=header_items_summary,
+                header_items=resource.bom.header_items.summary,
                 data=assembly.items,
                 strict=True,
             )
