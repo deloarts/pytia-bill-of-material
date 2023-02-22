@@ -3,9 +3,11 @@
 """
 
 import os
+import re
 from pathlib import Path
 
 from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
+from helper.commons import ResourceCommons
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
@@ -74,9 +76,17 @@ class PrepareTask(TaskProtocol):
         # The bill of material will be processed from the summary-header-items.
         # At this point the made and bought header items aren't relevant, those come
         # into play only at the final step of saving the bill of material later.
-        header_items = tuple(item for item in resource.bom.header_items.summary)
-        set_current_format(header_items)
-        set_secondary_format(header_items)
+
+        # Also: The header items are defined as HEADER_NAME:PROPERTY_NAME (see bom.json).
+        # At this it's necessary to extract the PROPERTY_NAME first, to create the
+        # correct output, because CATIA needs the property names to create the bill of
+        # material.
+
+        prop_names = ResourceCommons.get_property_names_from_config(
+            resource.bom.header_items.summary
+        )
+        set_current_format(prop_names)
+        set_secondary_format(prop_names)
 
     @staticmethod
     def _retrieve_paths(product: PyProductDocument) -> Paths:

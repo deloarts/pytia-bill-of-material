@@ -505,15 +505,12 @@ class Resources:  # pylint: disable=R0902
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
-                        if (
-                            item.startswith("$")
-                            and (key := item.split("$")[1]) in keywords
-                        ):
+                        if "$" in item and (key := item.split("$")[1]) in keywords:
                             object_item[index] = keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
-                        object_item.startswith("$")
+                        "$" in object_item
                         and (key := object_item.split("$")[1]) in keywords
                     ):
                         setattr(_item, object_fields.name, keywords[key])
