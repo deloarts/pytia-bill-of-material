@@ -1,7 +1,12 @@
 {
     "header_row": 0,
     "data_row": 1,
-    "separate_files": true,
+    "files": {
+        "separate": true,
+        "summary": "Summary",
+        "made": "Made",
+        "bought": "Bought"
+    },
     "header_items": {
         "summary": [
             "Project:pytia.project",

@@ -61,7 +61,7 @@ class SaveBomTask(TaskProtocol):
         wb_made: Workbook | None = None
         wb_bought: Workbook | None = None
 
-        if resource.bom.separate_files:
+        if resource.bom.files.separate:
             wb_made = Workbook()
             ws_made = wb_made.active
             ws_made.title = "Made"
@@ -122,12 +122,10 @@ class SaveBomTask(TaskProtocol):
         if ".xlsx" in filename:
             filename = filename.split(".xlsx")[0]
 
-        if resource.bom.separate_files:
-            path_summary = Path(folder, filename + " (Summary).xlsx")
-            path_made = Path(folder, filename + " (Made).xlsx")
-            path_bought = Path(folder, filename + " (Bought).xlsx")
-
-            wb_summary.save(str(path_summary))
+        if resource.bom.files.separate:
+            path_sum = Path(folder, f"{filename} ({resource.bom.files.summary}).xlsx")
+            path_made = Path(folder, f"{filename} ({resource.bom.files.made}).xlsx")
+            path_bought = Path(folder, f"{filename} ({resource.bom.files.bought}).xlsx")
 
             if wb_made and resource.bom.header_items.made:
                 wb_made.save(str(path_made))
@@ -135,8 +133,9 @@ class SaveBomTask(TaskProtocol):
             if wb_bought and resource.bom.header_items.bought:
                 wb_bought.save(str(path_bought))
         else:
-            path_summary = Path(folder, filename + ".xlsx")
-            wb_summary.save(str(path_summary))
+            path_sum = Path(folder, filename + ".xlsx")
+
+        wb_summary.save(str(path_sum))
         log.info(f"Saved processed BOM to {str(folder)!r}.")
 
     @staticmethod

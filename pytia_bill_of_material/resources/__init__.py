@@ -222,12 +222,22 @@ class BOMHeaderItems:
 
 
 @dataclass(slots=True, kw_only=True)
+class BOMFiles:
+    """Files dataclass."""
+
+    separate: bool
+    summary: str
+    made: str
+    bought: str
+
+
+@dataclass(slots=True, kw_only=True)
 class BOM:
     """Bill of material dataclass."""
 
     header_row: int | None
     data_row: int
-    separate_files: bool
+    files: BOMFiles
     header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems
@@ -241,6 +251,7 @@ class BOM:
     data_bg_color_2: str
 
     def __post_init__(self) -> None:
+        self.files = BOMFiles(**dict(self.files))  # type: ignore
         self.header_items = BOMHeaderItems(**dict(self.header_items))  # type: ignore
         self.sort = BOMSort(**dict(self.sort))  # type: ignore
         self.required_header_items = RequiredHeaderItems(**dict(self.required_header_items))  # type: ignore
