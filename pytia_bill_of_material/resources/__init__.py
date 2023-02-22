@@ -13,7 +13,7 @@ import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, Optional, Protocol
+from typing import Dict, List, Literal, Optional, Protocol
 
 from const import (
     APP_VERSION,

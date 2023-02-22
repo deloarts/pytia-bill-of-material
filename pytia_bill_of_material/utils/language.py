@@ -43,7 +43,7 @@ def get_ui_language(product: PyProductDocument) -> Literal["en", "de"]:
         pass
 
     raise PytiaLanguageError(
-        f"The selected language is not supported. "
+        "The selected language is not supported. "
         "Please select either 'English' or 'German'."
     )
 

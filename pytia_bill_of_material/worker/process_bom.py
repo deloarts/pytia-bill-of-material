@@ -260,7 +260,8 @@ class ProcessBomTask(TaskProtocol):
                 if row_data[resource.applied_keywords.partnumber] not in paths.items:
                     item_path = None
                     log.warning(
-                        f"No path found for item {row_data[resource.applied_keywords.partnumber]!r}."
+                        "No path found for item "
+                        f"{row_data[resource.applied_keywords.partnumber]!r}."
                     )
                 else:
                     item_path = paths.items[

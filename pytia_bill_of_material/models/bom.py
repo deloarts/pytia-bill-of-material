@@ -2,6 +2,8 @@
     BOM object data model.
 """
 
+# pylint: disable=C0116
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
