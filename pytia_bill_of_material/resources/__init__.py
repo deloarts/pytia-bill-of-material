@@ -227,6 +227,7 @@ class BOM:
 
     header_row: int | None
     data_row: int
+    separate_files: bool
     header_items: BOMHeaderItems
     sort: BOMSort
     required_header_items: RequiredHeaderItems

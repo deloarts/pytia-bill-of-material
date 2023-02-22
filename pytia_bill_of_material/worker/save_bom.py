@@ -9,6 +9,7 @@ from const import BOM as BOM_FOLDER
 from helper.commons import ResourceCommons
 from models.bom import BOM, BOMAssemblyItem
 from openpyxl.workbook import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
@@ -39,49 +40,52 @@ class SaveBomTask(TaskProtocol):
             filename=self.filename,
         )
 
-    @staticmethod
-    def _save_bom(bom: BOM, folder: Path, filename: str) -> Path:
+    @classmethod
+    def _save_bom(cls, bom: BOM, folder: Path, filename: str) -> None:
         """
-        Saves the bill of material from the BOM object as xlsx file. This saves only the content
-        of the BOM object, regardless of wether the Report is OK or FAILED.
+        Saves the bill of material from the BOM object as xlsx file. 
+        This saves only the content of the BOM object, regardless of wether the Report 
+        is OK or FAILED.
 
         Args:
             bom (BOM): The BOM object to save.
             folder (Path): The path into which to save the bill of material.
-            filename (str): The name of the file to save. '.xlsx' will be added if not in name.
-
-        Returns:
-            Path: The path to the newly created xlsx file.
+            filename (str): The name of the file to save. '.xlsx' will be added if not \
+                in name. Separate files will be created if set in bom.json.
         """
 
-        if ".xlsx" not in filename:
-            filename += ".xlsx"
+        wb_summary = Workbook()
+        ws_summary = wb_summary.active
+        ws_summary.title = "Summary"
 
-        path = Path(folder, filename)
+        wb_made: Workbook | None = None
+        wb_bought: Workbook | None = None
 
-        wb = Workbook()
-        ws = wb.active
-        ws.title = "Summary"
-        ws.sheet_properties.tabColor = "ff0000"
+        if resource.bom.separate_files:
+            wb_made = Workbook()
+            ws_made = wb_made.active
+            ws_made.title = "Made"
+
+            wb_bought = Workbook()
+            ws_bought = wb_bought.active
+            ws_bought.title = "Bought"
+        else:
+            ws_made = wb_summary.create_sheet(title="Made")
+            ws_bought = wb_summary.create_sheet(title="Bought")
 
         # Summary
-        create_header(worksheet=ws, header_items=resource.bom.header_items.summary)
-        write_data(
-            worksheet=ws,
-            header_items=resource.bom.header_items.summary,
+        cls._write_worksheet(
+            worksheet=ws_summary,
+            header=resource.bom.header_items.summary,
             data=bom.summary.items,
             strict=True,
         )
-        style_worksheet(worksheet=ws)
 
         # Made
         if resource.bom.header_items.made:
-            ws: Worksheet = wb.create_sheet(title="Made")  # type: ignore
-            ws.sheet_properties.tabColor = "ff0000"
-            create_header(worksheet=ws, header_items=resource.bom.header_items.made)
-            write_data(
-                worksheet=ws,
-                header_items=resource.bom.header_items.made,
+            cls._write_worksheet(
+                worksheet=ws_made,
+                header=resource.bom.header_items.made,
                 data=[
                     item
                     for item in bom.summary.items
@@ -89,16 +93,12 @@ class SaveBomTask(TaskProtocol):
                 ],
                 strict=False,
             )
-            style_worksheet(worksheet=ws)
 
         # Bought
         if resource.bom.header_items.bought:
-            ws: Worksheet = wb.create_sheet(title="Bought")  # type: ignore
-            ws.sheet_properties.tabColor = "ff0000"
-            create_header(worksheet=ws, header_items=resource.bom.header_items.bought)
-            write_data(
-                worksheet=ws,
-                header_items=resource.bom.header_items.bought,
+            cls._write_worksheet(
+                worksheet=ws_bought,
+                header=resource.bom.header_items.bought,
                 data=[
                     item
                     for item in bom.summary.items
@@ -106,22 +106,51 @@ class SaveBomTask(TaskProtocol):
                 ],
                 strict=False,
             )
-            style_worksheet(worksheet=ws)
 
         for assembly in bom.assemblies:
-            ws: Worksheet = wb.create_sheet(title=assembly.partnumber)  # type: ignore
-            create_header(worksheet=ws, header_items=resource.bom.header_items.summary)
-            write_data(
-                worksheet=ws,
-                header_items=resource.bom.header_items.summary,
+            ws_assembly: Worksheet = wb_summary.create_sheet(title=assembly.partnumber)
+            cls._write_worksheet(
+                worksheet=ws_assembly,
+                header=resource.bom.header_items.summary,
                 data=assembly.items,
                 strict=True,
             )
-            style_worksheet(worksheet=ws)
 
-        wb.active = wb["Summary"]  # type: ignore
+        wb_summary.active = wb_summary["Summary"]
 
-        wb.save(str(path))
-        log.info(f"Saved processed BOM to {str(path)!r}.")
+        # File operations
+        if ".xlsx" in filename:
+            filename = filename.split(".xlsx")[0]
 
-        return path
+        if resource.bom.separate_files:
+            path_summary = Path(folder, filename + " (Summary).xlsx")
+            path_made = Path(folder, filename + " (Made).xlsx")
+            path_bought = Path(folder, filename + " (Bought).xlsx")
+
+            wb_summary.save(str(path_summary))
+
+            if wb_made and resource.bom.header_items.made:
+                wb_made.save(str(path_made))
+
+            if wb_bought and resource.bom.header_items.bought:
+                wb_bought.save(str(path_bought))
+        else:
+            path_summary = Path(folder, filename + ".xlsx")
+            wb_summary.save(str(path_summary))
+        log.info(f"Saved processed BOM to {str(folder)!r}.")
+
+    @staticmethod
+    def _write_worksheet(
+        worksheet: Worksheet,
+        header: list,
+        data: List[BOMAssemblyItem],
+        strict: bool,
+    ) -> None:
+        create_header(worksheet=worksheet, header_items=header)
+        write_data(
+            worksheet=worksheet,
+            header_items=header,
+            data=data,
+            strict=strict,
+        )
+        style_worksheet(worksheet=worksheet)

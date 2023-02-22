@@ -1,6 +1,7 @@
 {
     "header_row": 0,
     "data_row": 1,
+    "separate_files": true,
     "header_items": {
         "summary": [
             "Project:pytia.project",
