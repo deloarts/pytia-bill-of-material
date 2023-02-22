@@ -17,6 +17,7 @@ This file contains the configuration for the final bill of material excel file.
 {
     "header_row": 0,
     "data_row": 1,
+    "separate_files": true,
     "header_items": {
         "summary": [
             "Project:pytia.project",
@@ -145,6 +146,7 @@ name | type | description
 --- | --- | ---
 header_row | `int` | The row number which shows the header. This value is zero-indexed, add `1` to match the row in Excel.
 data_row | `int` | The row number from which the data will be written. This value is zero-indexed, add `1` to match the row in Excel.
+separate_files | `bool`| If `True` this will create separate excel files for the three categories `summary`, `made` and `bought`.
 header_items.summary | `list` | A list of the header items for the summary that will be shown in the final export as worksheet in the order of this list. These header items must be defined with the following syntax: `HEADER NAME:PROPERTY NAME` or `HEADER NAME=FIXED TEXT`<br><ul><li>User-properties can be added by their name. E.g.: If you want the project number to have the header name "Project", you have to write the value as `Project:pytia.project` (assuming that the project number is stores as 'pytia.project' in the document's properties).</li><li>CATIA properties and special properties must be added with a dollar sign `$` prefix (see keywords.json). E.g.: To add the partnumber you have to write it like this: `Part Number:$partnumber`. This creates the column **Part Number**.</li><li>Further it is possible to apply *fixed text*. This is done with header name followed by the equal sign `=` and then followed by the value of that fixed text. E.g: If you want a column **Unit** with the text **Pcs** in every item of the bom, you have to add `"Unit=Pcs"` to the header_items list.</li><li>An item that has neither a double point `:`, not an equal sign `=` in it will represent an empty row, with the value as header name.</li></ul>
 header_items.made | `list` or null | A list of the header items for all made items in the final export. Important note: All items that are in this list must be present in the *header_items.summary* list, otherwise the values for this columns will be empty. If set to `null` no made worksheet will be exported.
 header_items.bought | `list` or null | A list of the header items for all bought items in the final export. Important note: All items that are in this list must be present in the *header_items.summary* list, otherwise the values for this columns will be empty. If set to `null` no bought worksheet will be exported.

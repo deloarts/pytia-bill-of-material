@@ -41,7 +41,7 @@ class MoveFilesTask(TaskProtocol):
         """
         self.runner = runner
         self.export_root_path = export_root_path
-        self.bom_export_path = bom_export_path
+        self.bom_export_path = bom_export_path.parent
         self.drawing_export_path = drawing_export_path
         self.docket_export_path = docket_export_path
         self.stp_export_path = stp_export_path
