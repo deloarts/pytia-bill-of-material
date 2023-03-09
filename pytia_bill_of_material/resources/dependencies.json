@@ -11,7 +11,7 @@
     },
     {
         "name": "openpyxl",
-        "version": "3.0.10",
+        "version": "3.1.1",
         "wheel": null
     }
 ]

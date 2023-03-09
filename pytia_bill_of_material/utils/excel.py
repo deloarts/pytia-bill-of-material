@@ -13,7 +13,6 @@ from pytia.exceptions import PytiaDispatchError, PytiaNotInstalledError
 from pytia.log import log
 from resources import resource
 from win32com.client import CDispatch, Dispatch
-from win32com.client.gencache import EnsureDispatch
 from win32com.server.exception import COMException
 
 
@@ -106,7 +105,7 @@ def style_worksheet(worksheet: Worksheet) -> None:
     """Styles the worksheet as stated in the bom.json config file."""
     for column_cells in worksheet.columns:
         # Set format, font and size
-        for index, cell in enumerate(column_cells):
+        for index, cell in enumerate(column_cells):  # type: ignore
             if index > resource.bom.data_row - 1:
                 color = (
                     resource.bom.data_color_1
@@ -132,23 +131,23 @@ def style_worksheet(worksheet: Worksheet) -> None:
         # Set font and height for the header row
         if isinstance(resource.bom.header_row, int):
             worksheet.row_dimensions[resource.bom.header_row + 1].height = 20  # type: ignore
-            column_cells[resource.bom.header_row].font = Font(
+            column_cells[resource.bom.header_row].font = Font(  # type: ignore
                 name=resource.bom.font,
                 size=resource.bom.size,
                 bold=True,
                 color=resource.bom.header_color,
             )
-            column_cells[resource.bom.header_row].fill = PatternFill(
+            column_cells[resource.bom.header_row].fill = PatternFill(  # type: ignore
                 start_color=resource.bom.header_bg_color,
                 end_color=resource.bom.header_bg_color,
                 fill_type="solid",
             )
-            column_cells[resource.bom.header_row].alignment = Alignment(
+            column_cells[resource.bom.header_row].alignment = Alignment(  # type: ignore
                 horizontal="center", vertical="center"
             )
 
         # Set cell width
-        length = max(len(str(cell.value)) * 1.1 for cell in column_cells)
+        length = max(len(str(cell.value)) * 1.1 for cell in column_cells)  # type: ignore
         worksheet.column_dimensions[column_cells[0].column_letter].width = (  # type: ignore
             length if length > 2 else 2
         )

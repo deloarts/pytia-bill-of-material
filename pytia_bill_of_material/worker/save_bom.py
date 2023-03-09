@@ -55,7 +55,7 @@ class SaveBomTask(TaskProtocol):
         """
 
         wb_summary = Workbook()
-        ws_summary = wb_summary.active
+        ws_summary: Worksheet = wb_summary.active  # type: ignore
         ws_summary.title = "Summary"
 
         wb_made: Workbook | None = None
@@ -63,11 +63,11 @@ class SaveBomTask(TaskProtocol):
 
         if resource.bom.files.separate:
             wb_made = Workbook()
-            ws_made = wb_made.active
+            ws_made: Worksheet = wb_made.active  # type: ignore
             ws_made.title = "Made"
 
             wb_bought = Workbook()
-            ws_bought = wb_bought.active
+            ws_bought: Worksheet = wb_bought.active  # type: ignore
             ws_bought.title = "Bought"
         else:
             ws_made = wb_summary.create_sheet(title="Made")
