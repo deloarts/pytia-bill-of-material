@@ -40,6 +40,7 @@ import atexit
 import importlib.resources
 import json
 import os
+import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
@@ -537,7 +538,6 @@ class Resources:  # pylint: disable=R0902
             language (Literal[&amp;quot;en&amp;quot;, &amp;quot;de&amp;quot;]): The language from which the \
                 keywords will be applied to the bom.json config file.
         &#34;&#34;&#34;
-
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
@@ -548,15 +548,21 @@ class Resources:  # pylint: disable=R0902
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
+                        header_name = item.split(&#34;:&#34;)[0] + &#34;:&#34; if &#34;:&#34; in item else &#34;&#34;
                         if &#34;$&#34; in item and (key := item.split(&#34;$&#34;)[1]) in keywords:
-                            object_item[index] = keywords[key]
+                            object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
                         &#34;$&#34; in object_item
                         and (key := object_item.split(&#34;$&#34;)[1]) in keywords
                     ):
-                        setattr(_item, object_fields.name, keywords[key])
+                        header_name = (
+                            object_item.split(&#34;:&#34;)[0] + &#34;:&#34;
+                            if &#34;:&#34; in object_item
+                            else &#34;&#34;
+                        )
+                        setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
         _apply_to_object(self._bom.sort)
@@ -707,7 +713,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.6.0', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.6.1', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -1600,7 +1606,6 @@ def values(self) -&gt; List[str]:
             language (Literal[&amp;quot;en&amp;quot;, &amp;quot;de&amp;quot;]): The language from which the \
                 keywords will be applied to the bom.json config file.
         &#34;&#34;&#34;
-
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
@@ -1611,15 +1616,21 @@ def values(self) -&gt; List[str]:
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
+                        header_name = item.split(&#34;:&#34;)[0] + &#34;:&#34; if &#34;:&#34; in item else &#34;&#34;
                         if &#34;$&#34; in item and (key := item.split(&#34;$&#34;)[1]) in keywords:
-                            object_item[index] = keywords[key]
+                            object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
                         &#34;$&#34; in object_item
                         and (key := object_item.split(&#34;$&#34;)[1]) in keywords
                     ):
-                        setattr(_item, object_fields.name, keywords[key])
+                        header_name = (
+                            object_item.split(&#34;:&#34;)[0] + &#34;:&#34;
+                            if &#34;:&#34; in object_item
+                            else &#34;&#34;
+                        )
+                        setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
         _apply_to_object(self._bom.sort)
