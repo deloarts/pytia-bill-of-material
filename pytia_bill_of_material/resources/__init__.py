@@ -9,6 +9,7 @@ import atexit
 import importlib.resources
 import json
 import os
+import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
 from json.decoder import JSONDecodeError
@@ -506,7 +507,6 @@ class Resources:  # pylint: disable=R0902
             language (Literal[&quot;en&quot;, &quot;de&quot;]): The language from which the \
                 keywords will be applied to the bom.json config file.
         """
-
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
         def _apply_to_object(_item: DataclassProtocol):
@@ -517,15 +517,21 @@ class Resources:  # pylint: disable=R0902
                 if isinstance(object_item, list):
                     for index, item in enumerate(object_item):
                         assert isinstance(item, str)
+                        header_name = item.split(":")[0] + ":" if ":" in item else ""
                         if "$" in item and (key := item.split("$")[1]) in keywords:
-                            object_item[index] = keywords[key]
+                            object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
                     if (
                         "$" in object_item
                         and (key := object_item.split("$")[1]) in keywords
                     ):
-                        setattr(_item, object_fields.name, keywords[key])
+                        header_name = (
+                            object_item.split(":")[0] + ":"
+                            if ":" in object_item
+                            else ""
+                        )
+                        setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
         _apply_to_object(self._bom.sort)
