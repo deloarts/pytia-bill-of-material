@@ -87,8 +87,6 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; st
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
-    # TODO: Make the export filename configurable in the settings.json
-
     value = (
         f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;
@@ -211,8 +209,6 @@ The export name will look like this:
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
-    # TODO: Make the export filename configurable in the settings.json
-
     value = (
         f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;

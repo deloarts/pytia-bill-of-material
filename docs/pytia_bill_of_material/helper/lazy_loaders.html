@@ -214,12 +214,15 @@ class LazyDocumentHelper:
         log.info(f&#34;Couldn&#39;t retrieve property {name} from part: Doesn&#39;t exists.&#34;)
         return None
 
-    def close_all_documents(self) -&gt; None:
+    def get_all_open_documents(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns a list of all open documents (document.name)&#34;&#34;&#34;
         open_documents: List[str] = []
         for i in range(1, self.framework.catia.documents.count + 1):
             open_documents.append(self.framework.catia.documents.item(i).name)
+        return open_documents
 
-        for doc in open_documents:
+    def close_all_documents(self) -&gt; None:
+        for doc in self.get_all_open_documents():
             try:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f&#34;Closed document {doc!r}.&#34;)
@@ -421,12 +424,15 @@ document changes all operations will be made on the original document.</p>
         log.info(f&#34;Couldn&#39;t retrieve property {name} from part: Doesn&#39;t exists.&#34;)
         return None
 
-    def close_all_documents(self) -&gt; None:
+    def get_all_open_documents(self) -&gt; List[str]:
+        &#34;&#34;&#34;Returns a list of all open documents (document.name)&#34;&#34;&#34;
         open_documents: List[str] = []
         for i in range(1, self.framework.catia.documents.count + 1):
             open_documents.append(self.framework.catia.documents.item(i).name)
+        return open_documents
 
-        for doc in open_documents:
+    def close_all_documents(self) -&gt; None:
+        for doc in self.get_all_open_documents():
             try:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f&#34;Closed document {doc!r}.&#34;)
@@ -541,11 +547,7 @@ def source(self) -&gt; int:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def close_all_documents(self) -&gt; None:
-    open_documents: List[str] = []
-    for i in range(1, self.framework.catia.documents.count + 1):
-        open_documents.append(self.framework.catia.documents.item(i).name)
-
-    for doc in open_documents:
+    for doc in self.get_all_open_documents():
         try:
             self.framework.catia.documents.item(doc).close()
             log.info(f&#34;Closed document {doc!r}.&#34;)
@@ -553,6 +555,23 @@ def source(self) -&gt; int:
             log.warning(
                 f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;
             )</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_all_open_documents"><code class="name flex">
+<span>def <span class="ident">get_all_open_documents</span></span>(<span>self) ‑> List[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all open documents (document.name)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_open_documents(self) -&gt; List[str]:
+    &#34;&#34;&#34;Returns a list of all open documents (document.name)&#34;&#34;&#34;
+    open_documents: List[str] = []
+    for i in range(1, self.framework.catia.documents.count + 1):
+        open_documents.append(self.framework.catia.documents.item(i).name)
+    return open_documents</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_property"><code class="name flex">
@@ -614,10 +633,11 @@ doesn't exists.</dd>
 <ul>
 <li>
 <h4><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper">LazyDocumentHelper</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.close_all_documents" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.close_all_documents">close_all_documents</a></code></li>
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.definition" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.definition">definition</a></code></li>
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.description" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.description">description</a></code></li>
+<li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_all_open_documents" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_all_open_documents">get_all_open_documents</a></code></li>
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_property" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_property">get_property</a></code></li>
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.nomenclature" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.nomenclature">nomenclature</a></code></li>
 <li><code><a title="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.partnumber" href="#pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.partnumber">partnumber</a></code></li>
