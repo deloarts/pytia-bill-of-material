@@ -185,12 +185,15 @@ class LazyDocumentHelper:
         log.info(f"Couldn't retrieve property {name} from part: Doesn't exists.")
         return None
 
-    def close_all_documents(self) -> None:
+    def get_all_open_documents(self) -> List[str]:
+        """Returns a list of all open documents (document.name)"""
         open_documents: List[str] = []
         for i in range(1, self.framework.catia.documents.count + 1):
             open_documents.append(self.framework.catia.documents.item(i).name)
+        return open_documents
 
-        for doc in open_documents:
+    def close_all_documents(self) -> None:
+        for doc in self.get_all_open_documents():
             try:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f"Closed document {doc!r}.")
