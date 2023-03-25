@@ -34,6 +34,7 @@ from const import (
     CONFIG_USERS,
     LOGON,
 )
+from resources.utils import expand_env_vars
 
 
 class DataclassProtocol(Protocol):
@@ -61,12 +62,16 @@ class SettingsRestrictions:
     enable_information: bool
 
 
-@dataclass(slots=True, kw_only=True, frozen=True)
+@dataclass(slots=True, kw_only=True)
 class SettingsPaths:
     """Dataclass for paths (settings.json)."""
 
     catia: Path
     release: Path
+
+    def __post_init__(self) -> None:
+        self.catia = Path(expand_env_vars(str(self.catia)))
+        self.release = Path(expand_env_vars(str(self.release)))
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
