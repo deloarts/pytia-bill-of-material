@@ -149,7 +149,7 @@ test = ["pytest (>=6)"]
 
 [[package]]
 name = "filelock"
-version = "3.10.0"
+version = "3.10.4"
 description = "A platform independent file lock."
 category = "dev"
 optional = false
@@ -157,11 +157,11 @@ python-versions = ">=3.7"
 
 [package.extras]
 docs = ["furo (>=2022.12.7)", "sphinx-autodoc-typehints (>=1.22,!=1.23.4)", "sphinx (>=6.1.3)"]
-testing = ["covdefaults (>=2.3)", "coverage (>=7.2.1)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)", "pytest (>=7.2.2)"]
+testing = ["covdefaults (>=2.3)", "coverage (>=7.2.2)", "pytest-cov (>=4)", "pytest-timeout (>=2.1)", "pytest (>=7.2.2)"]
 
 [[package]]
 name = "identify"
-version = "2.5.20"
+version = "2.5.22"
 description = "File identification library for Python"
 category = "dev"
 optional = false
@@ -244,8 +244,8 @@ testing = ["pytest"]
 
 [[package]]
 name = "markdown"
-version = "3.4.1"
-description = "Python implementation of Markdown."
+version = "3.4.3"
+description = "Python implementation of John Gruber's Markdown."
 category = "dev"
 optional = false
 python-versions = ">=3.7"
