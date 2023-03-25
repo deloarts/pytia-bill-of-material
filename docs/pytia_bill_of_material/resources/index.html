@@ -65,6 +65,7 @@ from const import (
     CONFIG_USERS,
     LOGON,
 )
+from resources.utils import expand_env_vars
 
 
 class DataclassProtocol(Protocol):
@@ -92,12 +93,16 @@ class SettingsRestrictions:
     enable_information: bool
 
 
-@dataclass(slots=True, kw_only=True, frozen=True)
+@dataclass(slots=True, kw_only=True)
 class SettingsPaths:
     &#34;&#34;&#34;Dataclass for paths (settings.json).&#34;&#34;&#34;
 
     catia: Path
     release: Path
+
+    def __post_init__(self) -&gt; None:
+        self.catia = Path(expand_env_vars(str(self.catia)))
+        self.release = Path(expand_env_vars(str(self.release)))
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -703,6 +708,13 @@ resource = Resources()</code></pre>
 </details>
 </section>
 <section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="pytia_bill_of_material.resources.utils" href="utils.html">pytia_bill_of_material.resources.utils</a></code></dt>
+<dd>
+<div class="desc"><p>Resource utilities …</p></div>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -713,7 +725,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.6.2', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.6.3', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -2284,12 +2296,16 @@ class SettingsMails:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@dataclass(slots=True, kw_only=True, frozen=True)
+<pre><code class="python">@dataclass(slots=True, kw_only=True)
 class SettingsPaths:
     &#34;&#34;&#34;Dataclass for paths (settings.json).&#34;&#34;&#34;
 
     catia: Path
-    release: Path</code></pre>
+    release: Path
+
+    def __post_init__(self) -&gt; None:
+        self.catia = Path(expand_env_vars(str(self.catia)))
+        self.release = Path(expand_env_vars(str(self.release)))</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -2463,6 +2479,11 @@ def values(self) -&gt; List[str]:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="pytia_bill_of_material" href="../index.html">pytia_bill_of_material</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="pytia_bill_of_material.resources.utils" href="utils.html">pytia_bill_of_material.resources.utils</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>pytia_bill_of_material.const API documentation</title>
-<meta name="description" content="Constants for the pytia bill of material app." />
+<title>pytia_bill_of_material.resources.utils API documentation</title>
+<meta name="description" content="Resource utilities …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,87 +19,56 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>pytia_bill_of_material.const</code></h1>
+<h1 class="title">Module <code>pytia_bill_of_material.resources.utils</code></h1>
 </header>
 <section id="section-intro">
-<p>Constants for the pytia bill of material app.</p>
+<p>Resource utilities.</p>
+<p>Important: Do not import third party modules here. This module
+must work on its own without any other dependencies!</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-    Constants for the pytia bill of material app.
+    Resource utilities.
+
+    Important: Do not import third party modules here. This module
+    must work on its own without any other dependencies!
 &#34;&#34;&#34;
 
 import os
-from enum import Enum
-from pathlib import Path
-
-__version__ = &#34;0.6.3&#34;
-
-PYTIA = &#34;pytia&#34;
-PYTIA_BILL_OF_MATERIAL = &#34;pytia_bill_of_material&#34;
-
-APP_NAME = &#34;PYTIA Bill Of Material&#34;
-APP_VERSION = __version__
-
-LOGON = str(os.environ.get(&#34;USERNAME&#34;))
-CNEXT = &#34;win_b64\\code\\bin\\CNEXT.exe&#34;
-TEMP = str(os.environ.get(&#34;TEMP&#34;))
-TEMP_EXPORT = Path(TEMP, PYTIA_BILL_OF_MATERIAL, &#34;export&#34;)
-TEMP_TEMPLATES = Path(TEMP, PYTIA_BILL_OF_MATERIAL, &#34;templates&#34;)
-APPDATA = Path(str(os.environ.get(&#34;APPDATA&#34;)), PYTIA, PYTIA_BILL_OF_MATERIAL)
-LOGS = f&#34;{APPDATA}\\logs&#34;
-LOG = &#34;app.log&#34;
-PID = os.getpid()
-PID_FILE = f&#34;{TEMP}\\{PYTIA_BILL_OF_MATERIAL}.pid&#34;
-VENV = f&#34;\\.env\\{APP_VERSION}&#34;
-VENV_PYTHON = Path(VENV, &#34;Scripts\\python.exe&#34;)
-VENV_PYTHONW = Path(VENV, &#34;Scripts\\pythonw.exe&#34;)
-PY_VERSION = Path(APPDATA, &#34;pyversion.txt&#34;)
-EXCEL_EXE = &#34;EXCEL.EXE&#34;
-EXPLORER = os.path.join(str(os.getenv(&#34;WINDIR&#34;)), &#34;explorer.exe&#34;)
-
-CONFIG_APPDATA = &#34;config.json&#34;
-CONFIG_SETTINGS = &#34;settings.json&#34;
-CONFIG_DEPS = &#34;dependencies.json&#34;
-CONFIG_KEYWORDS = &#34;keywords.json&#34;
-CONFIG_PROPS = &#34;properties.json&#34;
-CONFIG_PROPS_DEFAULT = &#34;properties.default.json&#34;
-CONFIG_BOM = &#34;bom.json&#34;
-CONFIG_BOM_DEFAULT = &#34;bom.default.json&#34;
-CONFIG_FILTERS = &#34;filters.json&#34;
-CONFIG_FILTERS_DEFAULT = &#34;filters.default.json&#34;
-CONFIG_INFOS = &#34;information.json&#34;
-CONFIG_INFOS_DEFAULT = &#34;information.default.json&#34;
-CONFIG_USERS = &#34;users.json&#34;
-CONFIG_DOCKET = &#34;docket.json&#34;
-CONFIG_PROPERTIES = &#34;properties.json&#34;
-
-PROP_DRAWING_PATH = &#34;pytia.drawing_path&#34;
-
-TEMPLATE_DOCKET = &#34;docket.CATDrawing&#34;
-
-WEB_PIP = &#34;https://www.pypi.org&#34;
-
-BOM = &#34;bom&#34;
-DOCKETS = &#34;dockets&#34;
-DRAWINGS = &#34;drawings&#34;
-STPS = &#34;steps&#34;
-STLS = &#34;stls&#34;
-
-X000D = &#34;_x000D_\n&#34;
-KEEP = &#34;Keep&#34;
+import re
+import sys
+from tkinter import messagebox as tkmsg
 
 
-class Status(Enum):
-    OK = &#34;ok&#34;
-    FAILED = &#34;failed&#34;
-    SKIPPED = &#34;skipped&#34;
+def expand_env_vars(value: str) -&gt; str:
+    &#34;&#34;&#34;
+    Expands windows environment variables.
+    E.g.: Expands %ONEDRIVE%/foo/bar to &#34;C:/Users/.../OneDrive/foo/bar
 
+    The variable to replace must be between two percentage symbols.
 
-os.makedirs(TEMP_EXPORT, exist_ok=True)
-os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
+    Terminates the app if the given value has a variable, that
+    cannot be found in the system variables.
+    &#34;&#34;&#34;
+    output = value
+    filter_result = re.findall(r&#34;\%(.*?)\%&#34;, value)
+    for key in filter_result:
+        if key in os.environ:
+            output = value.replace(f&#34;%{key}%&#34;, os.environ[key])  # type: ignore
+        else:
+            tkmsg.showerror(
+                title=&#34;Environment Variables&#34;,
+                message=(
+                    f&#34;The environment variable {key!r} is not set on your machine. &#34;
+                    &#34;Depending on your system it may be required to setup the &#34;
+                    &#34;environment variable in capitals only.\n\n&#34;
+                    &#34;Please contact your system administrator.&#34;
+                ),
+            )
+            sys.exit()
+    return output</code></pre>
 </details>
 </section>
 <section>
@@ -107,46 +76,53 @@ os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="pytia_bill_of_material.const.Status"><code class="flex name class">
-<span>class <span class="ident">Status</span></span>
-<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+<dt id="pytia_bill_of_material.resources.utils.expand_env_vars"><code class="name flex">
+<span>def <span class="ident">expand_env_vars</span></span>(<span>value: str) ‑> str</span>
 </code></dt>
 <dd>
-<div class="desc"><p>An enumeration.</p></div>
+<div class="desc"><p>Expands windows environment variables.
+E.g.: Expands %ONEDRIVE%/foo/bar to "C:/Users/&hellip;/OneDrive/foo/bar</p>
+<p>The variable to replace must be between two percentage symbols.</p>
+<p>Terminates the app if the given value has a variable, that
+cannot be found in the system variables.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Status(Enum):
-    OK = &#34;ok&#34;
-    FAILED = &#34;failed&#34;
-    SKIPPED = &#34;skipped&#34;</code></pre>
+<pre><code class="python">def expand_env_vars(value: str) -&gt; str:
+    &#34;&#34;&#34;
+    Expands windows environment variables.
+    E.g.: Expands %ONEDRIVE%/foo/bar to &#34;C:/Users/.../OneDrive/foo/bar
+
+    The variable to replace must be between two percentage symbols.
+
+    Terminates the app if the given value has a variable, that
+    cannot be found in the system variables.
+    &#34;&#34;&#34;
+    output = value
+    filter_result = re.findall(r&#34;\%(.*?)\%&#34;, value)
+    for key in filter_result:
+        if key in os.environ:
+            output = value.replace(f&#34;%{key}%&#34;, os.environ[key])  # type: ignore
+        else:
+            tkmsg.showerror(
+                title=&#34;Environment Variables&#34;,
+                message=(
+                    f&#34;The environment variable {key!r} is not set on your machine. &#34;
+                    &#34;Depending on your system it may be required to setup the &#34;
+                    &#34;environment variable in capitals only.\n\n&#34;
+                    &#34;Please contact your system administrator.&#34;
+                ),
+            )
+            sys.exit()
+    return output</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>enum.Enum</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="pytia_bill_of_material.const.Status.FAILED"><code class="name">var <span class="ident">FAILED</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pytia_bill_of_material.const.Status.OK"><code class="name">var <span class="ident">OK</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="pytia_bill_of_material.const.Status.SKIPPED"><code class="name">var <span class="ident">SKIPPED</span></code></dt>
-<dd>
-<div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -157,19 +133,12 @@ os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="pytia_bill_of_material" href="index.html">pytia_bill_of_material</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources" href="index.html">pytia_bill_of_material.resources</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="pytia_bill_of_material.const.Status" href="#pytia_bill_of_material.const.Status">Status</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="pytia_bill_of_material.const.Status.FAILED" href="#pytia_bill_of_material.const.Status.FAILED">FAILED</a></code></li>
-<li><code><a title="pytia_bill_of_material.const.Status.OK" href="#pytia_bill_of_material.const.Status.OK">OK</a></code></li>
-<li><code><a title="pytia_bill_of_material.const.Status.SKIPPED" href="#pytia_bill_of_material.const.Status.SKIPPED">SKIPPED</a></code></li>
-</ul>
-</li>
+<li><code><a title="pytia_bill_of_material.resources.utils.expand_env_vars" href="#pytia_bill_of_material.resources.utils.expand_env_vars">expand_env_vars</a></code></li>
 </ul>
 </li>
 </ul>
