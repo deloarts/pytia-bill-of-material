@@ -18,7 +18,7 @@ Sub CATMain()
 
     Dim Shell, Fso
     Dim Prefix, Postfix
-    Dim AppData, VenvFolder, VenvVersionFolder, PythonwExe, PythonVersionFile
+    Dim AppData, AppPath, VenvFolder, VenvVersionFolder, PythonwExe, PythonVersionFile
     Dim Folders, Folder, Output, Version, Major, Minor
     Dim GetVersionCmd, CreateVenvCmd, LaunchAppCmd
     Dim Title, Options
@@ -27,7 +27,8 @@ Sub CATMain()
     Set Fso = CreateObject("Scripting.FileSystemObject")
 
     ' Environment
-    AppData = Shell.ExpandEnvironmentStrings("%APPDATA%") & "\pytia\pytia_bill_of_material"
+    AppData = Shell.ExpandEnvironmentStrings("%APPDATA%\pytia\pytia_bill_of_material")
+    AppPath = Shell.ExpandEnvironmentStrings("{{ path }}")
     VenvFolder = AppData & "\.env"
     VenvVersionFolder = VenvFolder & "\{{ version }}"
     PythonVersionFile = AppData & "\pyversion.txt"
@@ -37,7 +38,7 @@ Sub CATMain()
     Title = "{{ title }} Launcher"
     Options = 0 + 16 + 4096 + 65536
     Prefix = "Cannot launch {{ title }}. " & vbCrLf & vbCrLf
-    Postfix = vbCrLf & "Please contact your administrator immediately."
+    Postfix = vbCrLf & vbCrLf & "Please contact your administrator immediately."
 
     ' Commands
     GetVersionCmd = "cmd.exe /C python -V > """ & PythonVersionFile & """"
@@ -45,14 +46,14 @@ Sub CATMain()
     LaunchAppCmd = PythonwExe & " ""{{ path }}"""
     
     ' Check main script
-    If Fso.FileExists("{{ path }}") = 0 Then
-        MsgBox Prefix & "App not found at: ""{{ path }}""" & Postfix, Options, Title
+    If Fso.FileExists(AppPath) = 0 Then
+        MsgBox Prefix & "App not found at " & AppPath & Postfix, Options, Title
         Exit Sub
     End If
     
     ' Check environment folder for the current app version
     If Not Fso.FolderExists(VenvVersionFolder) Then
-        MsgBox "The app requires an update. Click OK to continue.", 0 + 64 + 65536 + 4096, "PYTIA Bill Of Material"
+        MsgBox "The app requires an update. Click OK to continue.", 0 + 64 + 65536 + 4096, "{{ title }}"
 
         If Fso.FolderExists(VenvFolder) Then
             ' Delete old version folder

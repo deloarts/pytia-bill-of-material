@@ -3,6 +3,7 @@
 """
 
 import os
+from pathlib import Path
 
 import validators
 
@@ -30,8 +31,8 @@ def test_settings():
     assert isinstance(resource.settings.restrictions.strict_project, bool)
     assert isinstance(resource.settings.restrictions.enable_information, bool)
 
-    assert isinstance(resource.settings.paths.catia, str)
-    assert isinstance(resource.settings.paths.release, str)
+    assert isinstance(resource.settings.paths.catia, Path)
+    assert isinstance(resource.settings.paths.release, Path)
 
     assert isinstance(resource.settings.files.bom_export, str)
     assert isinstance(resource.settings.files.app, str)

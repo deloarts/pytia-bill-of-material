@@ -64,8 +64,8 @@ restrictions.allow_unsaved | `bool` | If set to `false` an unsaved document (a d
 restrictions.allow_outside_workspace | `bool` | If set to `false` a **workspace** file must be provided somewhere in the folder structure where the document is saved. This also means, that an unsaved document (a document which doesn't have a path yet) cannot be modified.
 restrictions.strict_project | `bool` | If set to `true` the project number must be present in the **workspace** file, otherwise the changes to the properties cannot be saved. If no workspace file is found, or no **projects** list-item is inside the workspace file, then this is omitted, and any project number can be written to the documents properties.
 restrictions.enable_information | `bool` | If set to `true` the user will see the notifications from the **information.json** file.
-paths.catia | `str` | The absolute path to the CATIA executables.
-paths.release | `str` | The folder where the launcher and the app are released into.
+paths.catia | `str` | The absolute path to the CATIA executables. Environment variables will be expanded to their respective values. E.g: `%ONEDRIVE%\\CATIA\\Apps` will be resolved to `C:\\Users\\...\\OneDrive\\CATIA\\Apps`.
+paths.release | `str` | The folder where the launcher and the app are released into. Environment variables will be expanded to their respective values. E.g: `%ONEDRIVE%\\CATIA\\Apps` will be resolved to `C:\\Users\\...\\OneDrive\\CATIA\\Apps`.
 file.bom_export | `str` | The standard name for the final bill of material. If a bom_name is set in the **workspace** file, the workspace-bom-name will be used.
 files.app | `str` | The name of the released python app file.
 files.launcher | `str` | The name of the release catvbs launcher file.

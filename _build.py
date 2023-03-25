@@ -79,7 +79,7 @@ class Build:
             if not self.dev_build
             else WindowsPath(self.build_folder, "dev_app.pyz")
         )
-        console.info(f"Release folder is {str(self.release_app_path)!r}")
+        console.info(f"VBA embedded release is {str(self.release_app_path)!r}")
 
         os.makedirs(self.build_folder, exist_ok=True)
         for item in os.listdir(self.build_folder):
