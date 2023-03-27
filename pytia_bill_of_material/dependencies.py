@@ -25,10 +25,10 @@ from http.client import HTTPSConnection
 from importlib import metadata
 from socket import gaierror
 from tkinter import ttk
-from typing import Dict, List
+from typing import List
 from urllib.parse import urlparse
 
-from const import CNEXT, CONFIG_DEPS, VENV_PYTHON, VENV_PYTHONW, WEB_PIP
+from const import CONFIG_DEPS, VENV_PYTHON, VENV_PYTHONW, WEB_PIP
 from resources import resource
 
 
@@ -174,18 +174,10 @@ class Dependencies:
                 title=resource.settings.title,
                 message=(
                     "Successfully updated the app.\n\n"
-                    "The app will start automatically, once all changes have been applied. "
-                    "This may take a while.\n\nClick OK to continue."
+                    "The next time you start the app using the launcher all changes "
+                    "will be applied. This may take a while.\n\n"
+                    "Click OK to exit."
                 ),
-            )
-            subprocess.Popen(  # pylint: disable=R1732
-                [
-                    f"{resource.settings.paths.catia}\\{CNEXT}",
-                    "-batch",
-                    "-macro",
-                    f"{resource.settings.paths.release}\\"
-                    f"{resource.settings.files.launcher}",
-                ]
             )
         sys.exit()
 
