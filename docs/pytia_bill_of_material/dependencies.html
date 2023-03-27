@@ -65,10 +65,10 @@ from http.client import HTTPSConnection
 from importlib import metadata
 from socket import gaierror
 from tkinter import ttk
-from typing import Dict, List
+from typing import List
 from urllib.parse import urlparse
 
-from const import CNEXT, CONFIG_DEPS, VENV_PYTHON, VENV_PYTHONW, WEB_PIP
+from const import CONFIG_DEPS, VENV_PYTHON, VENV_PYTHONW, WEB_PIP
 from resources import resource
 
 
@@ -214,18 +214,10 @@ class Dependencies:
                 title=resource.settings.title,
                 message=(
                     &#34;Successfully updated the app.\n\n&#34;
-                    &#34;The app will start automatically, once all changes have been applied. &#34;
-                    &#34;This may take a while.\n\nClick OK to continue.&#34;
+                    &#34;The next time you start the app using the launcher all changes &#34;
+                    &#34;will be applied. This may take a while.\n\n&#34;
+                    &#34;Click OK to exit.&#34;
                 ),
-            )
-            subprocess.Popen(  # pylint: disable=R1732
-                [
-                    f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                    &#34;-batch&#34;,
-                    &#34;-macro&#34;,
-                    f&#34;{resource.settings.paths.release}\\&#34;
-                    f&#34;{resource.settings.files.launcher}&#34;,
-                ]
             )
         sys.exit()
 
@@ -419,18 +411,10 @@ deps = Dependencies()</code></pre>
                 title=resource.settings.title,
                 message=(
                     &#34;Successfully updated the app.\n\n&#34;
-                    &#34;The app will start automatically, once all changes have been applied. &#34;
-                    &#34;This may take a while.\n\nClick OK to continue.&#34;
+                    &#34;The next time you start the app using the launcher all changes &#34;
+                    &#34;will be applied. This may take a while.\n\n&#34;
+                    &#34;Click OK to exit.&#34;
                 ),
-            )
-            subprocess.Popen(  # pylint: disable=R1732
-                [
-                    f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                    &#34;-batch&#34;,
-                    &#34;-macro&#34;,
-                    f&#34;{resource.settings.paths.release}\\&#34;
-                    f&#34;{resource.settings.files.launcher}&#34;,
-                ]
             )
         sys.exit()</code></pre>
 </details>
@@ -584,18 +568,10 @@ def web_resource_available(address: str) -&gt; bool:
             title=resource.settings.title,
             message=(
                 &#34;Successfully updated the app.\n\n&#34;
-                &#34;The app will start automatically, once all changes have been applied. &#34;
-                &#34;This may take a while.\n\nClick OK to continue.&#34;
+                &#34;The next time you start the app using the launcher all changes &#34;
+                &#34;will be applied. This may take a while.\n\n&#34;
+                &#34;Click OK to exit.&#34;
             ),
-        )
-        subprocess.Popen(  # pylint: disable=R1732
-            [
-                f&#34;{resource.settings.paths.catia}\\{CNEXT}&#34;,
-                &#34;-batch&#34;,
-                &#34;-macro&#34;,
-                f&#34;{resource.settings.paths.release}\\&#34;
-                f&#34;{resource.settings.files.launcher}&#34;,
-            ]
         )
     sys.exit()</code></pre>
 </details>
