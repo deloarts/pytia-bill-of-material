@@ -43,7 +43,7 @@ Sub CATMain()
     ' Commands
     GetVersionCmd = "cmd.exe /C python -V > """ & PythonVersionFile & """"
     CreateVenvCmd = "python -m venv """ & VenvVersionFolder & """"
-    LaunchAppCmd = PythonwExe & " ""{{ path }}"""
+    LaunchAppCmd = PythonwExe & " """ & AppPath & """"
     
     ' Check main script
     If Fso.FileExists(AppPath) = 0 Then
