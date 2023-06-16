@@ -86,6 +86,7 @@ class Traces:
         self.vars.drawing_export_path.trace_add(&#34;write&#34;, self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
+        self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
     def _validate_button_export(self) -&gt; None:
@@ -194,6 +195,21 @@ class Traces:
             self.layout.input_stl_export_path.configure(foreground=&#34;red&#34;)
             self.vars.export_stl.set(False)
             self.layout.checkbox_export_stl.configure(state=DISABLED)
+
+    def trace_jpg_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `jpg_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(
+            self.vars.jpg_export_path.get()
+        ):
+            self.layout.input_jpg_export_path.configure(foreground=&#34;black&#34;)
+            self.layout.checkbox_export_jpg.configure(state=NORMAL)
+            self.vars.export_jpg.set(True)
+        else:
+            self.layout.input_jpg_export_path.configure(foreground=&#34;red&#34;)
+            self.vars.export_jpg.set(False)
+            self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
     def trace_show_report(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -304,6 +320,7 @@ class Traces:
         self.vars.drawing_export_path.trace_add(&#34;write&#34;, self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
+        self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
     def _validate_button_export(self) -&gt; None:
@@ -412,6 +429,21 @@ class Traces:
             self.layout.input_stl_export_path.configure(foreground=&#34;red&#34;)
             self.vars.export_stl.set(False)
             self.layout.checkbox_export_stl.configure(state=DISABLED)
+
+    def trace_jpg_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `jpg_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(
+            self.vars.jpg_export_path.get()
+        ):
+            self.layout.input_jpg_export_path.configure(foreground=&#34;black&#34;)
+            self.layout.checkbox_export_jpg.configure(state=NORMAL)
+            self.vars.export_jpg.set(True)
+        else:
+            self.layout.input_jpg_export_path.configure(foreground=&#34;red&#34;)
+            self.vars.export_jpg.set(False)
+            self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
     def trace_show_report(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -535,6 +567,32 @@ Validates the path and sets the state of the checkbox accordingly to the path va
         self.layout.input_drawing_export_path.configure(foreground=&#34;red&#34;)
         self.vars.export_drawing.set(False)
         self.layout.checkbox_export_drawing.configure(state=DISABLED)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path"><code class="name flex">
+<span>def <span class="ident">trace_jpg_export_path</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>jpg_export_path</code> StringVar. Validates the path and sets the state
+of the checkbox accordingly to the path variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_jpg_export_path(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `jpg_export_path` StringVar. Validates the path and sets the state
+    of the checkbox accordingly to the path variable.
+    &#34;&#34;&#34;
+    if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(
+        self.vars.jpg_export_path.get()
+    ):
+        self.layout.input_jpg_export_path.configure(foreground=&#34;black&#34;)
+        self.layout.checkbox_export_jpg.configure(state=NORMAL)
+        self.vars.export_jpg.set(True)
+    else:
+        self.layout.input_jpg_export_path.configure(foreground=&#34;red&#34;)
+        self.vars.export_jpg.set(False)
+        self.layout.checkbox_export_jpg.configure(state=DISABLED)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.traces.Traces.trace_project"><code class="name flex">
@@ -688,6 +746,7 @@ of the checkbox accordingly to the path variable.</p></div>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path">trace_bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path">trace_docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path">trace_drawing_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path">trace_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_project" href="#pytia_bill_of_material.app.main.traces.Traces.trace_project">trace_project</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_show_report" href="#pytia_bill_of_material.app.main.traces.Traces.trace_show_report">trace_show_report</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_stl_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_stl_export_path">trace_stl_export_path</a></code></li>

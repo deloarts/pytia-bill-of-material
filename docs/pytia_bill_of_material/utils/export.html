@@ -31,9 +31,15 @@
     Export submodule. Holds utility functions for handling data exports.
 &#34;&#34;&#34;
 from pathlib import Path
-from typing import Literal
+from typing import List, Literal, Tuple
 
 from const import LOGON, PROP_DRAWING_PATH
+from pycatia import catia
+from pycatia.enumeration.enumeration_types import (
+    cat_capture_format,
+    cat_specs_and_geom_window_layout,
+)
+from pycatia.in_interfaces.specs_and_geom_window import SpecsAndGeomWindow
 from pytia.exceptions import PytiaFileOperationError
 from pytia.log import log
 from pytia.utilities.docket import (
@@ -242,7 +248,65 @@ def export_stl(
         folder (Path): The folder into which the data will be exported.
         document (PyProductDocument | PyPartDocument): The document from which to export the stl.
     &#34;&#34;&#34;
-    _export_stp_stl(filetype=&#34;stl&#34;, filename=filename, folder=folder, document=document)</code></pre>
+    _export_stp_stl(filetype=&#34;stl&#34;, filename=filename, folder=folder, document=document)
+
+
+def export_jpg(
+    filename: str,
+    folder: Path,
+    views: List[Tuple[float, float, float]],
+    bg: Tuple[float, float, float] | None = None,
+) -&gt; None:
+    &#34;&#34;&#34;
+    Exports the open document as JPG.
+
+    Args:
+        filename (str): The filename of the jpg file.
+        folder (Path): The folder into which the data will be exported.
+        views (tuple): The views from which to export the jpg. Value range is from 0-1.
+        bg (tuple): Changes the background to the given RGB-color. \
+            Value range is from 0-1, Resets the background after export. \
+            Doesn&#39;t change the background if value is None. Defaults to None.
+    &#34;&#34;&#34;
+    active_window = catia().active_window
+    active_viewer = active_window.active_viewer
+
+    # Save the current screen state
+    current_fs = active_viewer.full_screen
+    active_viewer.full_screen = True
+
+    # Save current background color
+    current_bg_color = active_viewer.get_background_color()
+    if bg is not None:
+        active_viewer.put_background_color(bg)
+
+    # Hide the tree
+    specs_and_geom = SpecsAndGeomWindow(active_window.com_object)
+    specs_and_geom.layout = cat_specs_and_geom_window_layout.index(&#34;catWindowGeomOnly&#34;)
+
+    view_point_3D = active_viewer.create_viewer_3d().viewpoint_3d
+    for index, view in enumerate(views):
+        export_path = Path(
+            folder,
+            filename
+            + f&#34;{&#39; (View &#39; + str(index+1) + &#39;)&#39; if len(views) &gt; 1 else &#39;&#39;}.jpg&#34;,
+        )
+        log.debug(f&#34;Exporting view {index} of {filename} to {export_path}...&#34;)
+
+        view_point_3D.put_sight_direction(view)  # type: ignore
+        active_viewer.update()
+        active_viewer.reframe()  # Equivalent to &#34;fit all in&#34;
+        # active_viewer.zoom_in()
+        active_viewer.capture_to_file(
+            cat_capture_format.index(&#34;catCaptureFormatJPEG&#34;), str(export_path)
+        )
+
+    # Reset background and show tree
+    active_viewer.full_screen = current_fs
+    active_viewer.put_background_color(current_bg_color)  # type: ignore
+    specs_and_geom.layout = cat_specs_and_geom_window_layout.index(
+        &#34;catWindowSpecsAndGeom&#34;
+    )</code></pre>
 </details>
 </section>
 <section>
@@ -441,6 +505,86 @@ is created when using the <a href="https://github.com/deloarts/pytia-title-block
         log.info(f&#34;Skipped drawing export of {document.document.name!r}: Path not set.&#34;)</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.utils.export.export_jpg"><code class="name flex">
+<span>def <span class="ident">export_jpg</span></span>(<span>filename: str, folder: pathlib.Path, views: List[Tuple[float, float, float]], bg: Optional[Tuple[float, float, float]] = None) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exports the open document as JPG.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>The filename of the jpg file.</dd>
+<dt><strong><code>folder</code></strong> :&ensp;<code>Path</code></dt>
+<dd>The folder into which the data will be exported.</dd>
+<dt><strong><code>views</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>The views from which to export the jpg. Value range is from 0-1.</dd>
+<dt><strong><code>bg</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>Changes the background to the given RGB-color.
+Value range is from 0-1, Resets the background after export.
+Doesn't change the background if value is None. Defaults to None.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def export_jpg(
+    filename: str,
+    folder: Path,
+    views: List[Tuple[float, float, float]],
+    bg: Tuple[float, float, float] | None = None,
+) -&gt; None:
+    &#34;&#34;&#34;
+    Exports the open document as JPG.
+
+    Args:
+        filename (str): The filename of the jpg file.
+        folder (Path): The folder into which the data will be exported.
+        views (tuple): The views from which to export the jpg. Value range is from 0-1.
+        bg (tuple): Changes the background to the given RGB-color. \
+            Value range is from 0-1, Resets the background after export. \
+            Doesn&#39;t change the background if value is None. Defaults to None.
+    &#34;&#34;&#34;
+    active_window = catia().active_window
+    active_viewer = active_window.active_viewer
+
+    # Save the current screen state
+    current_fs = active_viewer.full_screen
+    active_viewer.full_screen = True
+
+    # Save current background color
+    current_bg_color = active_viewer.get_background_color()
+    if bg is not None:
+        active_viewer.put_background_color(bg)
+
+    # Hide the tree
+    specs_and_geom = SpecsAndGeomWindow(active_window.com_object)
+    specs_and_geom.layout = cat_specs_and_geom_window_layout.index(&#34;catWindowGeomOnly&#34;)
+
+    view_point_3D = active_viewer.create_viewer_3d().viewpoint_3d
+    for index, view in enumerate(views):
+        export_path = Path(
+            folder,
+            filename
+            + f&#34;{&#39; (View &#39; + str(index+1) + &#39;)&#39; if len(views) &gt; 1 else &#39;&#39;}.jpg&#34;,
+        )
+        log.debug(f&#34;Exporting view {index} of {filename} to {export_path}...&#34;)
+
+        view_point_3D.put_sight_direction(view)  # type: ignore
+        active_viewer.update()
+        active_viewer.reframe()  # Equivalent to &#34;fit all in&#34;
+        # active_viewer.zoom_in()
+        active_viewer.capture_to_file(
+            cat_capture_format.index(&#34;catCaptureFormatJPEG&#34;), str(export_path)
+        )
+
+    # Reset background and show tree
+    active_viewer.full_screen = current_fs
+    active_viewer.put_background_color(current_bg_color)  # type: ignore
+    specs_and_geom.layout = cat_specs_and_geom_window_layout.index(
+        &#34;catWindowSpecsAndGeom&#34;
+    )</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.utils.export.export_stl"><code class="name flex">
 <span>def <span class="ident">export_stl</span></span>(<span>filename: str, folder: pathlib.Path, document: pytia.wrapper.documents.part_documents.PyPartDocument) ‑> None</span>
 </code></dt>
@@ -531,6 +675,7 @@ after the main task has finished.</p>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.utils.export.export_docket" href="#pytia_bill_of_material.utils.export.export_docket">export_docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.export.export_drawing" href="#pytia_bill_of_material.utils.export.export_drawing">export_drawing</a></code></li>
+<li><code><a title="pytia_bill_of_material.utils.export.export_jpg" href="#pytia_bill_of_material.utils.export.export_jpg">export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.export.export_stl" href="#pytia_bill_of_material.utils.export.export_stl">export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.utils.export.export_stp" href="#pytia_bill_of_material.utils.export.export_stp">export_stp</a></code></li>
 </ul>

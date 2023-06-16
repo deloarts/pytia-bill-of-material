@@ -258,7 +258,7 @@ class Layout:
             row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky=&#34;nsew&#34;,
         )
 
@@ -271,7 +271,7 @@ class Layout:
             row=4,
             column=1,
             padx=(5, 2),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             ipadx=2,
             ipady=2,
             sticky=&#34;nsew&#34;,
@@ -285,6 +285,46 @@ class Layout:
         )
         self._btn_browse_stl_export_path.grid(
             row=4,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region jpg export path
+        lbl_jpg_export_path = ttk.Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
+        lbl_jpg_export_path.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._entry_jpg_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.jpg_export_path,
+            state=DISABLED,
+        )
+        self._entry_jpg_export_path.grid(
+            row=5,
+            column=1,
+            padx=(5, 2),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._btn_browse_jpg_export_path = ttk.Button(
+            frames.paths,
+            text=&#34;...&#34;,
+            width=5,
+            state=DISABLED,
+        )
+        self._btn_browse_jpg_export_path.grid(
+            row=5,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -365,7 +405,7 @@ class Layout:
             row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky=&#34;nsew&#34;,
         )
 
@@ -374,6 +414,28 @@ class Layout:
         )
         self._chkbtn_export_stl.grid(
             row=3,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region export jpg
+        lbl_export_jpg = ttk.Label(frames.export, text=&#34;Export JPG&#34;, width=18)
+        lbl_export_jpg.grid(
+            row=4,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_export_jpg = ttk.Checkbutton(
+            frames.export, variable=variables.export_jpg, state=DISABLED
+        )
+        self._chkbtn_export_jpg.grid(
+            row=4,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -563,6 +625,14 @@ class Layout:
         return self._btn_browse_stl_export_path
 
     @property
+    def input_jpg_export_path(self) -&gt; ttk.Entry:
+        return self._entry_jpg_export_path
+
+    @property
+    def button_jpg_export_path(self) -&gt; ttk.Button:
+        return self._btn_browse_jpg_export_path
+
+    @property
     def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_docket
 
@@ -577,6 +647,10 @@ class Layout:
     @property
     def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_stl
+
+    @property
+    def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_export_jpg
 
     @property
     def progress_bar(self) -&gt; ttk.Progressbar:
@@ -877,7 +951,7 @@ class Layout:
             row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky=&#34;nsew&#34;,
         )
 
@@ -890,7 +964,7 @@ class Layout:
             row=4,
             column=1,
             padx=(5, 2),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             ipadx=2,
             ipady=2,
             sticky=&#34;nsew&#34;,
@@ -904,6 +978,46 @@ class Layout:
         )
         self._btn_browse_stl_export_path.grid(
             row=4,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region jpg export path
+        lbl_jpg_export_path = ttk.Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
+        lbl_jpg_export_path.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._entry_jpg_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.jpg_export_path,
+            state=DISABLED,
+        )
+        self._entry_jpg_export_path.grid(
+            row=5,
+            column=1,
+            padx=(5, 2),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._btn_browse_jpg_export_path = ttk.Button(
+            frames.paths,
+            text=&#34;...&#34;,
+            width=5,
+            state=DISABLED,
+        )
+        self._btn_browse_jpg_export_path.grid(
+            row=5,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -984,7 +1098,7 @@ class Layout:
             row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky=&#34;nsew&#34;,
         )
 
@@ -993,6 +1107,28 @@ class Layout:
         )
         self._chkbtn_export_stl.grid(
             row=3,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+        # endregion
+
+        # region export jpg
+        lbl_export_jpg = ttk.Label(frames.export, text=&#34;Export JPG&#34;, width=18)
+        lbl_export_jpg.grid(
+            row=4,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_export_jpg = ttk.Checkbutton(
+            frames.export, variable=variables.export_jpg, state=DISABLED
+        )
+        self._chkbtn_export_jpg.grid(
+            row=4,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -1182,6 +1318,14 @@ class Layout:
         return self._btn_browse_stl_export_path
 
     @property
+    def input_jpg_export_path(self) -&gt; ttk.Entry:
+        return self._entry_jpg_export_path
+
+    @property
+    def button_jpg_export_path(self) -&gt; ttk.Button:
+        return self._btn_browse_jpg_export_path
+
+    @property
     def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_docket
 
@@ -1196,6 +1340,10 @@ class Layout:
     @property
     def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_stl
+
+    @property
+    def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_export_jpg
 
     @property
     def progress_bar(self) -&gt; ttk.Progressbar:
@@ -1348,6 +1496,18 @@ def button_export(self) -&gt; ttk.Button:
     return self._btn_export</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.button_jpg_export_path"><code class="name">var <span class="ident">button_jpg_export_path</span> : tkinter.ttk.Button</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def button_jpg_export_path(self) -&gt; ttk.Button:
+    return self._btn_browse_jpg_export_path</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.button_open_document"><code class="name">var <span class="ident">button_open_document</span> : tkinter.ttk.Button</code></dt>
 <dd>
 <div class="desc"><p>Returns the open document button.</p></div>
@@ -1422,6 +1582,18 @@ def checkbox_export_drawing(self) -&gt; ttk.Checkbutton:
     return self._chkbtn_export_drawing</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_jpg"><code class="name">var <span class="ident">checkbox_export_jpg</span> : tkinter.ttk.Checkbutton</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+    return self._chkbtn_export_jpg</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stl"><code class="name">var <span class="ident">checkbox_export_stl</span> : tkinter.ttk.Checkbutton</code></dt>
 <dd>
 <div class="desc"></div>
@@ -1480,6 +1652,18 @@ def input_docket_export_path(self) -&gt; ttk.Entry:
 <pre><code class="python">@property
 def input_drawing_export_path(self) -&gt; ttk.Entry:
     return self._entry_drawing_export_path</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path"><code class="name">var <span class="ident">input_jpg_export_path</span> : tkinter.ttk.Entry</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def input_jpg_export_path(self) -&gt; ttk.Entry:
+    return self._entry_jpg_export_path</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.input_project"><code class="name">var <span class="ident">input_project</span> : tkinter.ttk.Combobox</code></dt>
@@ -1609,17 +1793,20 @@ def tree_report_failed_props(self) -&gt; ttk.Treeview:
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_drawing_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.button_drawing_export_path">button_drawing_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_exit" href="#pytia_bill_of_material.app.main.layout.Layout.button_exit">button_exit</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_export" href="#pytia_bill_of_material.app.main.layout.Layout.button_export">button_export</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_jpg_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.button_jpg_export_path">button_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_open_document" href="#pytia_bill_of_material.app.main.layout.Layout.button_open_document">button_open_document</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_open_parent" href="#pytia_bill_of_material.app.main.layout.Layout.button_open_parent">button_open_parent</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_stl_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.button_stl_export_path">button_stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.button_stp_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.button_stp_export_path">button_stp_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_docket" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_docket">checkbox_export_docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_drawing" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_drawing">checkbox_export_drawing</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_jpg" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_jpg">checkbox_export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stl" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stl">checkbox_export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stp" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stp">checkbox_export_stp</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_bom_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_bom_export_path">input_bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_docket_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_docket_export_path">input_docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_drawing_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_drawing_export_path">input_drawing_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path">input_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_project" href="#pytia_bill_of_material.app.main.layout.Layout.input_project">input_project</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path">input_stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stp_export_path">input_stp_export_path</a></code></li>

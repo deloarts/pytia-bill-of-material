@@ -135,6 +135,9 @@ class Callbacks:
         self.layout.button_stl_export_path.configure(
             command=self.on_btn_stl_export_path
         )
+        self.layout.button_jpg_export_path.configure(
+            command=self.on_btn_jpg_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
@@ -342,6 +345,29 @@ class Callbacks:
         ):
             self.vars.stl_export_path.set(str(path))
 
+    def on_btn_jpg_export_path(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the browse jpg export path button. Asks the user to select a folder,
+        into which to export the jpg files.
+        &#34;&#34;&#34;
+        log.info(&#34;Callback for button &#39;Browse JPG export path&#39;.&#34;)
+
+        initial_dir = Path(self.vars.jpg_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.jpg_export_path.set(str(path))
+
     def on_chkbox_export_docket(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export docket&#39;. Does nothing.
@@ -369,6 +395,12 @@ class Callbacks:
         Event handler for the checkbox &#39;export stl&#39;. Does nothing.
         &#34;&#34;&#34;
         log.info(f&#34;Callback for checkbox &#39;Export STL&#39;: {self.vars.export_stl.get()}&#34;)
+
+    def on_chkbox_export_jpg(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the checkbox &#39;export jpg&#39;. Does nothing.
+        &#34;&#34;&#34;
+        log.info(f&#34;Callback for checkbox &#39;Export JPG&#39;: {self.vars.export_jpg.get()}&#34;)
 
     def on_tree_failed_items_button_1(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -561,6 +593,9 @@ class Callbacks:
         self.layout.button_stl_export_path.configure(
             command=self.on_btn_stl_export_path
         )
+        self.layout.button_jpg_export_path.configure(
+            command=self.on_btn_jpg_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
@@ -768,6 +803,29 @@ class Callbacks:
         ):
             self.vars.stl_export_path.set(str(path))
 
+    def on_btn_jpg_export_path(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the browse jpg export path button. Asks the user to select a folder,
+        into which to export the jpg files.
+        &#34;&#34;&#34;
+        log.info(&#34;Callback for button &#39;Browse JPG export path&#39;.&#34;)
+
+        initial_dir = Path(self.vars.jpg_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.jpg_export_path.set(str(path))
+
     def on_chkbox_export_docket(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export docket&#39;. Does nothing.
@@ -795,6 +853,12 @@ class Callbacks:
         Event handler for the checkbox &#39;export stl&#39;. Does nothing.
         &#34;&#34;&#34;
         log.info(f&#34;Callback for checkbox &#39;Export STL&#39;: {self.vars.export_stl.get()}&#34;)
+
+    def on_chkbox_export_jpg(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the checkbox &#39;export jpg&#39;. Does nothing.
+        &#34;&#34;&#34;
+        log.info(f&#34;Callback for checkbox &#39;Export JPG&#39;: {self.vars.export_jpg.get()}&#34;)
 
     def on_tree_failed_items_button_1(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -1064,6 +1128,40 @@ into which to export the pdf and dxf files.</p></div>
     self.root.after(100, main_task.run)</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_jpg_export_path"><code class="name flex">
+<span>def <span class="ident">on_btn_jpg_export_path</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler for the browse jpg export path button. Asks the user to select a folder,
+into which to export the jpg files.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_btn_jpg_export_path(self) -&gt; None:
+    &#34;&#34;&#34;
+    Event handler for the browse jpg export path button. Asks the user to select a folder,
+    into which to export the jpg files.
+    &#34;&#34;&#34;
+    log.info(&#34;Callback for button &#39;Browse JPG export path&#39;.&#34;)
+
+    initial_dir = Path(self.vars.jpg_export_path.get())
+    if (
+        not initial_dir.is_absolute()
+        and self.workspace.workspace_folder
+        and self.workspace.workspace_folder.exists()
+    ):
+        initial_dir = self.workspace.workspace_folder
+
+    if path := WindowsPath(
+        filedialog.askdirectory(
+            initialdir=initial_dir,
+            title=resource.settings.title,
+        )
+    ):
+        self.vars.jpg_export_path.set(str(path))</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_document"><code class="name flex">
 <span>def <span class="ident">on_btn_open_document</span></span>(<span>self) ‑> None</span>
 </code></dt>
@@ -1205,6 +1303,22 @@ into which to export the stp files.</p></div>
     log.info(
         f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;
     )</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_jpg"><code class="name flex">
+<span>def <span class="ident">on_chkbox_export_jpg</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler for the checkbox 'export jpg'. Does nothing.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_chkbox_export_jpg(self) -&gt; None:
+    &#34;&#34;&#34;
+    Event handler for the checkbox &#39;export jpg&#39;. Does nothing.
+    &#34;&#34;&#34;
+    log.info(f&#34;Callback for checkbox &#39;Export JPG&#39;: {self.vars.export_jpg.get()}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_stl"><code class="name flex">
@@ -1372,12 +1486,14 @@ the failed property.</p></div>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_drawing_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_drawing_export_path">on_btn_drawing_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_exit" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_exit">on_btn_exit</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_export" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_export">on_btn_export</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_jpg_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_jpg_export_path">on_btn_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_document" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_document">on_btn_open_document</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_parent" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_open_parent">on_btn_open_parent</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_stl_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_stl_export_path">on_btn_stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_stp_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_stp_export_path">on_btn_stp_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_docket" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_docket">on_chkbox_export_docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_drawing" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_drawing">on_chkbox_export_drawing</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_jpg" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_jpg">on_chkbox_export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_stl" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_stl">on_chkbox_export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_stp" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_stp">on_chkbox_export_stp</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_1" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_tree_failed_items_button_1">on_tree_failed_items_button_1</a></code></li>

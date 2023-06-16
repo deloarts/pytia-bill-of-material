@@ -167,6 +167,20 @@ class ToolTips:
             widget=layout.button_stl_export_path,
             text=(&#34;Select the folder into which all stl files will be exported.&#34;),
         )
+
+        jpg_path_tooltip = (
+            &#34;Defines the export folder of the generated jpg files. &#34;
+            &#34;Existing files are going to be overwritten.&#34;
+        )
+        if workspace.elements.png_folder is not None:
+            jpg_path_tooltip += (
+                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
+            )
+        ToolTip(widget=layout.input_jpg_export_path, text=jpg_path_tooltip)
+        ToolTip(
+            widget=layout.button_jpg_export_path,
+            text=(&#34;Select the folder into which all jpg files will be exported.&#34;),
+        )
         # endregion
 
         # region EXPORT
@@ -207,6 +221,15 @@ class ToolTips:
             widget=layout.checkbox_export_stl,
             text=(
                 &#34;Saves the 3d data as stl-file for each item in the summary of the exported bill &#34;
+                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location will be &#34;
+                &#34;overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_jpg,
+            text=(
+                &#34;Saves jpg images for each item in the summary of the exported bill &#34;
                 &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
                 &#34;This requires a valid path. Existing files at the target location will be &#34;
                 &#34;overwritten.&#34;
@@ -391,6 +414,20 @@ class ToolTips:
             widget=layout.button_stl_export_path,
             text=(&#34;Select the folder into which all stl files will be exported.&#34;),
         )
+
+        jpg_path_tooltip = (
+            &#34;Defines the export folder of the generated jpg files. &#34;
+            &#34;Existing files are going to be overwritten.&#34;
+        )
+        if workspace.elements.png_folder is not None:
+            jpg_path_tooltip += (
+                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
+            )
+        ToolTip(widget=layout.input_jpg_export_path, text=jpg_path_tooltip)
+        ToolTip(
+            widget=layout.button_jpg_export_path,
+            text=(&#34;Select the folder into which all jpg files will be exported.&#34;),
+        )
         # endregion
 
         # region EXPORT
@@ -431,6 +468,15 @@ class ToolTips:
             widget=layout.checkbox_export_stl,
             text=(
                 &#34;Saves the 3d data as stl-file for each item in the summary of the exported bill &#34;
+                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location will be &#34;
+                &#34;overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_jpg,
+            text=(
+                &#34;Saves jpg images for each item in the summary of the exported bill &#34;
                 &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
                 &#34;This requires a valid path. Existing files at the target location will be &#34;
                 &#34;overwritten.&#34;
