@@ -6,7 +6,7 @@ import os
 import re
 from pathlib import Path
 
-from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
+from const import BOM, DOCKETS, DRAWINGS, JPGS, STLS, STPS
 from helper.commons import ResourceCommons
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
@@ -63,6 +63,7 @@ class PrepareTask(TaskProtocol):
         os.makedirs(Path(self.export_root_path, DRAWINGS))
         os.makedirs(Path(self.export_root_path, STLS))
         os.makedirs(Path(self.export_root_path, STPS))
+        os.makedirs(Path(self.export_root_path, JPGS))
 
         self._set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)

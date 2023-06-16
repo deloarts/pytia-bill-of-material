@@ -7,6 +7,14 @@ import tkinter as tk
 from pathlib import Path
 from tkinter import font, ttk
 
+from app.main.callbacks import Callbacks
+from app.main.controller import Controller
+from app.main.frames import Frames
+from app.main.layout import Layout
+from app.main.tooltips import ToolTips
+from app.main.traces import Traces
+from app.main.ui_setter import UISetter
+from app.main.vars import Variables
 from const import APP_VERSION, LOG, LOGS
 from helper.lazy_loaders import LazyDocumentHelper
 from helper.messages import show_help
@@ -27,21 +35,12 @@ from pytia_ui_tools.window_manager import WindowManager
 from resources import resource
 from utils.handler import WidgetLogHandler
 
-from app.main.callbacks import Callbacks
-from app.main.controller import Controller
-from app.main.frames import Frames
-from app.main.layout import Layout
-from app.main.tooltips import ToolTips
-from app.main.traces import Traces
-from app.main.ui_setter import UISetter
-from app.main.vars import Variables
-
 
 class MainUI(tk.Tk):
     """The user interface of the app."""
 
-    WIDTH = 600
-    HEIGHT = 470
+    WIDTH = 800
+    HEIGHT = 520
 
     def __init__(self) -> None:
         tk.Tk.__init__(self)

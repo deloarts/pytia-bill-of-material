@@ -200,6 +200,7 @@ class MainTask:
             export_drawing=self.variables.export_drawing.get(),
             export_stp=self.variables.export_stp.get(),
             export_stl=self.variables.export_stl.get(),
+            export_jpg=self.variables.export_jpg.get(),
             export_root_path=self.export_folder,
             docket_config=self.docket_cfg,
         )
@@ -214,5 +215,6 @@ class MainTask:
             docket_export_path=Path(self.variables.docket_export_path.get()),
             stp_export_path=Path(self.variables.stp_export_path.get()),
             stl_export_path=Path(self.variables.stl_export_path.get()),
+            jpg_export_path=Path(self.variables.jpg_export_path.get()),
         )
         task.run()

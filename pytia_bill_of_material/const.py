@@ -58,6 +58,7 @@ DOCKETS = "dockets"
 DRAWINGS = "drawings"
 STPS = "steps"
 STLS = "stls"
+JPGS = "jpgs"
 
 X000D = "_x000D_\n"
 KEEP = "Keep"

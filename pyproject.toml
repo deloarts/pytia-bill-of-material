@@ -10,7 +10,7 @@ version = "0.6.4"
 openpyxl = "3.1.1"
 python = "^3.10"
 pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.1"}
-pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.3"}
+pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.4"}
 
 [tool.poetry.dev-dependencies]
 Jinja2 = "^3.1.2"

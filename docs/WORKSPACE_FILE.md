@@ -25,6 +25,7 @@ docket_folder: ./export/dockets
 drawing_folder: ./export/drawings
 stp_folder: ./export/stp
 stl_folder: ./export/stl
+png_folder: ./export/png
 ```
 
 ## 2 description
@@ -48,6 +49,7 @@ docket_folder | `str` | The standard path for dockets. Used with [pytia bill of 
 drawing_folder | `str` | The standard path for drawing files (pdf and dxf). Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 stp_folder | `str` | The standard path for step files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 stl_folder | `str` | The standard path for stl files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
+png_folder | `str` | The standard path for png files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 
 ## 3 example file
 
@@ -120,4 +122,7 @@ stp_folder: ./export/stp
 
 # The stp folder is the pre-defined location of the stl files. It will be used if the set folder exists. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the folder in which the workspace file is stored.
 stl_folder: ./export/stl
+
+# The png folder is the pre-defined location of the png files. It will be used if the set folder exists. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the folder in which the workspace file is stored.
+png_folder: ./export/png
 ```
