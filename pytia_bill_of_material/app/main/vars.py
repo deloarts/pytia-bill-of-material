@@ -25,12 +25,14 @@ class Variables:
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
+    jpg_export_path: StringVar
 
     # Export variables
     export_docket: BooleanVar
     export_drawing: BooleanVar
     export_stp: BooleanVar
     export_stl: BooleanVar
+    export_jpg: BooleanVar
 
     # Progress variables
     progress: DoubleVar
@@ -54,11 +56,13 @@ class Variables:
         self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
+        self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
 
         self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")
         self.export_stp = BooleanVar(master=root, name="export_stp")
         self.export_stl = BooleanVar(master=root, name="export_stl")
+        self.export_jpg = BooleanVar(master=root, name="export_jpg")
 
         self.progress = DoubleVar(master=root, name="progress", value=0)
 

@@ -4,7 +4,7 @@
 
 from pathlib import Path
 
-from const import DOCKETS, DRAWINGS, LOGON, STLS, STPS, TEMP_EXPORT
+from const import DOCKETS, DRAWINGS, JPGS, LOGON, STLS, STPS, TEMP_EXPORT
 from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_data_export_name
 from models.bom import BOM, BOMAssemblyItem
@@ -41,21 +41,6 @@ class ExportItemsTask(TaskProtocol):
         _type_: _description_
     """
 
-    __slots__ = (
-        "_lazy_loader",
-        "_runner",
-        "_bom",
-        "_export_docket",
-        "_export_stp",
-        "_export_stl",
-        "_docket_path",
-        "_drawing_path",
-        "_stp_path",
-        "_stl_path",
-        "_docket_config",
-        "items_to_export",
-    )
-
     def __init__(
         self,
         lazy_loader: LazyDocumentHelper,
@@ -65,6 +50,7 @@ class ExportItemsTask(TaskProtocol):
         export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
+        export_jpg: bool,
         export_root_path: Path,
         docket_config: DocketConfig,
     ) -> None:
@@ -79,6 +65,7 @@ class ExportItemsTask(TaskProtocol):
             export_drawing (bool): Wether to export the drawing or not.
             export_stp (bool): Wether to export the stp or not.
             export_stl (bool): Wether to export the stl or not.
+            export_jpg (bool): Wether to export the jpg or not.
             export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
         """
@@ -89,6 +76,7 @@ class ExportItemsTask(TaskProtocol):
         self.export_drawing = export_drawing
         self.export_stp = export_stp
         self.export_stl = export_stl
+        self.export_jpg = export_jpg
         self.export_root_path = export_root_path
         self.docket_config = docket_config
 
@@ -106,6 +94,7 @@ class ExportItemsTask(TaskProtocol):
                 self.export_stp,
                 self.export_stl,
                 self.export_drawing,
+                self.export_jpg,
             ]
         ):
             self.lazy_loader.close_all_documents()
@@ -132,7 +121,7 @@ class ExportItemsTask(TaskProtocol):
 
     def _generate_qr(self, bom_item: BOMAssemblyItem) -> Path:
         """
-        Generates a qr png file and saves it to the temp directory. Returns the path.
+        Generates a qr jpg file and saves it to the temp directory. Returns the path.
         The QR ode contains a serialized json of: project, machine, partnumber and revision.
 
         Args:
@@ -140,7 +129,7 @@ class ExportItemsTask(TaskProtocol):
                 qr code.
 
         Returns:
-            Path: The path to the generated png file.
+            Path: The path to the generated jpg file.
         """
         project = bom_item.properties[resource.bom.required_header_items.project]
         machine = bom_item.properties[resource.bom.required_header_items.machine]
@@ -233,6 +222,17 @@ class ExportItemsTask(TaskProtocol):
                         folder=Path(self.export_root_path, STLS),
                         document=part_document,
                     )
+                if self.export_jpg:
+                    views = [
+                        (view[0], view[1], view[2])
+                        for view in resource.settings.export.jpg_views
+                    ]
+                    export.export_jpg(
+                        filename=export_filename,
+                        folder=Path(self.export_root_path, JPGS),
+                        views=views,
+                        bg=(1, 1, 1),
+                    )
 
         elif ".CATProduct" in str(bom_item.path):
             with PyProductDocument() as product_document:
@@ -263,6 +263,17 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, STPS),
                         document=product_document,
+                    )
+                if self.export_jpg:
+                    views = [
+                        (view[0], view[1], view[2])
+                        for view in resource.settings.export.jpg_views
+                    ]
+                    export.export_jpg(
+                        filename=export_filename,
+                        folder=Path(self.export_root_path, JPGS),
+                        views=views,
+                        bg=(1, 1, 1),
                     )
 
         else:
