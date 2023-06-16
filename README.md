@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-beta-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.6.4-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.7.0-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -159,6 +159,7 @@ Docket Folder | The folder into which all generated docket files will be stored.
 Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled.
 STP Folder | The folder into which all generated step files will be stored. The folder must exist, otherwise the `Export STP` checkbox will be disabled.
 STL Folder | The folder into which all generated stl files will be stored. The folder must exist, otherwise the `Export STL` checkbox will be disabled.
+JPG Folder | The folder into which all generated jpg files will be stored. The folder must exist, otherwise the `Export JPG` checkbox will be disabled.
 
 ### 3.1 report
 
@@ -331,6 +332,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+**v0.7.0**: Add image export feature.  
 **v0.6.4**: Fix launcher path.  
 **v0.6.3**: Expand environment variables in settings paths.  
 **v0.6.2**: Fix hidden user prompt.  

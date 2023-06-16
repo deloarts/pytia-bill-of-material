@@ -4,7 +4,14 @@
     "export": {
         "apply_username_in_bom": true,
         "apply_username_in_docket": true,
-        "lock_drawing_views": true
+        "lock_drawing_views": true,
+        "jpg_views": [
+            [
+                0.577,
+                0.577,
+                0.577
+            ]
+        ]
     },
     "restrictions": {
         "allow_all_users": false,

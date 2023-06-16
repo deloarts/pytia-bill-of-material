@@ -187,3 +187,11 @@ class Controller:
             export_path_variable=self.vars.stl_export_path,
             export_checkbox_variable=self.vars.export_stl,
         )
+
+        # Write default jpg export path
+        set_default_folder_and_checkbox_from_workspace(
+            workspace_folder=self.workspace.workspace_folder,
+            workspace_default_path=self.workspace.elements.png_folder,
+            export_path_variable=self.vars.jpg_export_path,
+            export_checkbox_variable=self.vars.export_jpg,
+        )

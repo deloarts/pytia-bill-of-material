@@ -53,6 +53,7 @@ class UISetter:
         self._state_checkbox_export_drawing = tk.NORMAL
         self._state_checkbox_export_stp = tk.NORMAL
         self._state_checkbox_export_stl = tk.NORMAL
+        self._state_checkbox_export_jpg = tk.NORMAL
 
     def normal(self) -> None:
         """
@@ -93,6 +94,9 @@ class UISetter:
         self.layout.input_stl_export_path.configure(state=tk.NORMAL)
         self.layout.button_stl_export_path.configure(state=tk.NORMAL)
 
+        self.layout.input_jpg_export_path.configure(state=tk.NORMAL)
+        self.layout.button_jpg_export_path.configure(state=tk.NORMAL)
+
         self.layout.checkbox_export_docket.configure(
             state=self._state_checkbox_export_docket
             if os.path.isdir(self.vars.docket_export_path.get())
@@ -112,6 +116,11 @@ class UISetter:
         self.layout.checkbox_export_stl.configure(
             state=self._state_checkbox_export_stl
             if os.path.isdir(self.vars.stl_export_path.get())
+            else tk.DISABLED
+        )
+        self.layout.checkbox_export_jpg.configure(
+            state=self._state_checkbox_export_jpg
+            if os.path.isdir(self.vars.jpg_export_path.get())
             else tk.DISABLED
         )
 
@@ -142,6 +151,9 @@ class UISetter:
         self.layout.input_stl_export_path.configure(state=tk.DISABLED)
         self.layout.button_stl_export_path.configure(state=tk.DISABLED)
 
+        self.layout.input_jpg_export_path.configure(state=tk.DISABLED)
+        self.layout.button_jpg_export_path.configure(state=tk.DISABLED)
+
         self._state_checkbox_export_docket = self.layout.checkbox_export_docket.state()
         self.layout.checkbox_export_docket.configure(state=tk.DISABLED)
 
@@ -155,6 +167,9 @@ class UISetter:
 
         self._state_checkbox_export_stl = self.layout.checkbox_export_stl.state()
         self.layout.checkbox_export_stl.configure(state=tk.DISABLED)
+
+        self._state_checkbox_export_jpg = self.layout.checkbox_export_jpg.state()
+        self.layout.checkbox_export_jpg.configure(state=tk.DISABLED)
 
         self.layout.button_export.configure(state=tk.DISABLED)
 

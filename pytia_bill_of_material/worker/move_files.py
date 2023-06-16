@@ -5,7 +5,7 @@
 import os
 from pathlib import Path
 
-from const import BOM, DOCKETS, DRAWINGS, STLS, STPS
+from const import BOM, DOCKETS, DRAWINGS, JPGS, STLS, STPS
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from pytia_ui_tools.utils.files import file_utility
@@ -32,6 +32,7 @@ class MoveFilesTask(TaskProtocol):
         docket_export_path: Path,
         stp_export_path: Path,
         stl_export_path: Path,
+        jpg_export_path: Path,
     ) -> None:
         """
         Inits the class.
@@ -46,6 +47,7 @@ class MoveFilesTask(TaskProtocol):
         self.docket_export_path = docket_export_path
         self.stp_export_path = stp_export_path
         self.stl_export_path = stl_export_path
+        self.jpg_export_path = jpg_export_path
 
     def run(self) -> None:
         """Runs the task."""
@@ -56,6 +58,7 @@ class MoveFilesTask(TaskProtocol):
         self._add_move(category=DRAWINGS, target=self.drawing_export_path)
         self._add_move(category=STLS, target=self.stl_export_path)
         self._add_move(category=STPS, target=self.stp_export_path)
+        self._add_move(category=JPGS, target=self.jpg_export_path)
 
         for item in file_utility.move_items:
             self.runner.add(

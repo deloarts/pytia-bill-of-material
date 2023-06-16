@@ -229,7 +229,7 @@ class Layout:
             row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky="nsew",
         )
 
@@ -242,7 +242,7 @@ class Layout:
             row=4,
             column=1,
             padx=(5, 2),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             ipadx=2,
             ipady=2,
             sticky="nsew",
@@ -256,6 +256,46 @@ class Layout:
         )
         self._btn_browse_stl_export_path.grid(
             row=4,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
+        # region jpg export path
+        lbl_jpg_export_path = ttk.Label(frames.paths, text="JPG Folder", width=18)
+        lbl_jpg_export_path.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+
+        self._entry_jpg_export_path = ttk.Entry(
+            frames.paths,
+            textvariable=variables.jpg_export_path,
+            state=DISABLED,
+        )
+        self._entry_jpg_export_path.grid(
+            row=5,
+            column=1,
+            padx=(5, 2),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
+            sticky="nsew",
+        )
+
+        self._btn_browse_jpg_export_path = ttk.Button(
+            frames.paths,
+            text="...",
+            width=5,
+            state=DISABLED,
+        )
+        self._btn_browse_jpg_export_path.grid(
+            row=5,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -336,7 +376,7 @@ class Layout:
             row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, Layout.MARGIN_Y),
+            pady=(2, 2),
             sticky="nsew",
         )
 
@@ -345,6 +385,28 @@ class Layout:
         )
         self._chkbtn_export_stl.grid(
             row=3,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
+        # region export jpg
+        lbl_export_jpg = ttk.Label(frames.export, text="Export JPG", width=18)
+        lbl_export_jpg.grid(
+            row=4,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+
+        self._chkbtn_export_jpg = ttk.Checkbutton(
+            frames.export, variable=variables.export_jpg, state=DISABLED
+        )
+        self._chkbtn_export_jpg.grid(
+            row=4,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -534,6 +596,14 @@ class Layout:
         return self._btn_browse_stl_export_path
 
     @property
+    def input_jpg_export_path(self) -> ttk.Entry:
+        return self._entry_jpg_export_path
+
+    @property
+    def button_jpg_export_path(self) -> ttk.Button:
+        return self._btn_browse_jpg_export_path
+
+    @property
     def checkbox_export_docket(self) -> ttk.Checkbutton:
         return self._chkbtn_export_docket
 
@@ -548,6 +618,10 @@ class Layout:
     @property
     def checkbox_export_stl(self) -> ttk.Checkbutton:
         return self._chkbtn_export_stl
+
+    @property
+    def checkbox_export_jpg(self) -> ttk.Checkbutton:
+        return self._chkbtn_export_jpg
 
     @property
     def progress_bar(self) -> ttk.Progressbar:

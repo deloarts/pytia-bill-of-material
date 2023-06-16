@@ -79,6 +79,7 @@ class SettingsExport:
     apply_username_in_bom: bool
     apply_username_in_docket: bool
     lock_drawing_views: bool
+    jpg_views: List[List[float]]
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -725,7 +726,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.6.4', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.7.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -2191,7 +2192,7 @@ class Settings:  # pylint: disable=R0902
 </dd>
 <dt id="pytia_bill_of_material.resources.SettingsExport"><code class="flex name class">
 <span>class <span class="ident">SettingsExport</span></span>
-<span>(</span><span>*, apply_username_in_bom: bool, apply_username_in_docket: bool, lock_drawing_views: bool)</span>
+<span>(</span><span>*, apply_username_in_bom: bool, apply_username_in_docket: bool, lock_drawing_views: bool, jpg_views: List[List[float]])</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for export settings.</p></div>
@@ -2205,7 +2206,8 @@ class SettingsExport:
 
     apply_username_in_bom: bool
     apply_username_in_docket: bool
-    lock_drawing_views: bool</code></pre>
+    lock_drawing_views: bool
+    jpg_views: List[List[float]]</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -2214,6 +2216,10 @@ class SettingsExport:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.SettingsExport.apply_username_in_docket"><code class="name">var <span class="ident">apply_username_in_docket</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.SettingsExport.jpg_views"><code class="name">var <span class="ident">jpg_views</span> : List[List[float]]</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -2651,6 +2657,7 @@ def values(self) -&gt; List[str]:
 <ul class="">
 <li><code><a title="pytia_bill_of_material.resources.SettingsExport.apply_username_in_bom" href="#pytia_bill_of_material.resources.SettingsExport.apply_username_in_bom">apply_username_in_bom</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.SettingsExport.apply_username_in_docket" href="#pytia_bill_of_material.resources.SettingsExport.apply_username_in_docket">apply_username_in_docket</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.SettingsExport.jpg_views" href="#pytia_bill_of_material.resources.SettingsExport.jpg_views">jpg_views</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.SettingsExport.lock_drawing_views" href="#pytia_bill_of_material.resources.SettingsExport.lock_drawing_views">lock_drawing_views</a></code></li>
 </ul>
 </li>

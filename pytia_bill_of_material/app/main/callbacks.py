@@ -106,6 +106,9 @@ class Callbacks:
         self.layout.button_stl_export_path.configure(
             command=self.on_btn_stl_export_path
         )
+        self.layout.button_jpg_export_path.configure(
+            command=self.on_btn_jpg_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -> None:
         """Bind checkbox callbacks."""
@@ -313,6 +316,29 @@ class Callbacks:
         ):
             self.vars.stl_export_path.set(str(path))
 
+    def on_btn_jpg_export_path(self) -> None:
+        """
+        Event handler for the browse jpg export path button. Asks the user to select a folder,
+        into which to export the jpg files.
+        """
+        log.info("Callback for button 'Browse JPG export path'.")
+
+        initial_dir = Path(self.vars.jpg_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.jpg_export_path.set(str(path))
+
     def on_chkbox_export_docket(self) -> None:
         """
         Event handler for the checkbox 'export docket'. Does nothing.
@@ -340,6 +366,12 @@ class Callbacks:
         Event handler for the checkbox 'export stl'. Does nothing.
         """
         log.info(f"Callback for checkbox 'Export STL': {self.vars.export_stl.get()}")
+
+    def on_chkbox_export_jpg(self) -> None:
+        """
+        Event handler for the checkbox 'export jpg'. Does nothing.
+        """
+        log.info(f"Callback for checkbox 'Export JPG': {self.vars.export_jpg.get()}")
 
     def on_tree_failed_items_button_1(self, *_) -> None:
         """

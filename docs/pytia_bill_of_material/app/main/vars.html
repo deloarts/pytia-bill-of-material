@@ -54,12 +54,14 @@ class Variables:
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
+    jpg_export_path: StringVar
 
     # Export variables
     export_docket: BooleanVar
     export_drawing: BooleanVar
     export_stp: BooleanVar
     export_stl: BooleanVar
+    export_jpg: BooleanVar
 
     # Progress variables
     progress: DoubleVar
@@ -83,11 +85,13 @@ class Variables:
         self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
+        self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
 
         self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
+        self.export_jpg = BooleanVar(master=root, name=&#34;export_jpg&#34;)
 
         self.progress = DoubleVar(master=root, name=&#34;progress&#34;, value=0)
 
@@ -136,12 +140,14 @@ class Variables:
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
+    jpg_export_path: StringVar
 
     # Export variables
     export_docket: BooleanVar
     export_drawing: BooleanVar
     export_stp: BooleanVar
     export_stl: BooleanVar
+    export_jpg: BooleanVar
 
     # Progress variables
     progress: DoubleVar
@@ -165,11 +171,13 @@ class Variables:
         self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
+        self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
 
         self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
+        self.export_jpg = BooleanVar(master=root, name=&#34;export_jpg&#34;)
 
         self.progress = DoubleVar(master=root, name=&#34;progress&#34;, value=0)
 
@@ -197,11 +205,19 @@ class Variables:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.export_jpg"><code class="name">var <span class="ident">export_jpg</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
 <dt id="pytia_bill_of_material.app.main.vars.Variables.export_stl"><code class="name">var <span class="ident">export_stl</span> : tkinter.BooleanVar</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.app.main.vars.Variables.export_stp"><code class="name">var <span class="ident">export_stp</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.jpg_export_path"><code class="name">var <span class="ident">jpg_export_path</span> : tkinter.StringVar</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -259,8 +275,10 @@ class Variables:
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.drawing_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.drawing_export_path">drawing_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_docket" href="#pytia_bill_of_material.app.main.vars.Variables.export_docket">export_docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_drawing" href="#pytia_bill_of_material.app.main.vars.Variables.export_drawing">export_drawing</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_jpg" href="#pytia_bill_of_material.app.main.vars.Variables.export_jpg">export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stl" href="#pytia_bill_of_material.app.main.vars.Variables.export_stl">export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stp" href="#pytia_bill_of_material.app.main.vars.Variables.export_stp">export_stp</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.jpg_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.jpg_export_path">jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.machine" href="#pytia_bill_of_material.app.main.vars.Variables.machine">machine</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.progress" href="#pytia_bill_of_material.app.main.vars.Variables.progress">progress</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.project" href="#pytia_bill_of_material.app.main.vars.Variables.project">project</a></code></li>
