@@ -143,7 +143,7 @@ class ToolTips:
             "Defines the export folder of the generated jpg files. "
             "Existing files are going to be overwritten."
         )
-        if workspace.elements.png_folder is not None:
+        if workspace.elements.image_folder is not None:
             jpg_path_tooltip += (
                 "\n\nThe path has been pre-selected from the workspace file."
             )
