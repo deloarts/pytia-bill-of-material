@@ -51,9 +51,8 @@ def main() -&gt; None:
     # Afterwards import those modules which depend on third party modules.
     deps.install_dependencies()
 
-    from pytia.log import log  # pylint: disable=C0415
-
     from app.main_ui import MainUI  # pylint: disable=C0415
+    from pytia.log import log  # pylint: disable=C0415
 
     with open(PID_FILE, &#34;w&#34;) as f:
         f.write(str(PID))
@@ -64,7 +63,7 @@ def main() -&gt; None:
         log.set_level_debug()
     log.add_stream_handler()
     log.add_file_handler(folder=LOGS, filename=LOG)
-    log.info(f&#34;Running PYTIA Bounding Box {APP_VERSION}, PID={PID}&#34;)
+    log.info(f&#34;Running PYTIA Bill of Material {APP_VERSION}, PID={PID}&#34;)
 
     gui = MainUI()
     gui.run()
@@ -99,9 +98,8 @@ if __name__ == &#34;__main__&#34;:
     # Afterwards import those modules which depend on third party modules.
     deps.install_dependencies()
 
-    from pytia.log import log  # pylint: disable=C0415
-
     from app.main_ui import MainUI  # pylint: disable=C0415
+    from pytia.log import log  # pylint: disable=C0415
 
     with open(PID_FILE, &#34;w&#34;) as f:
         f.write(str(PID))
@@ -112,7 +110,7 @@ if __name__ == &#34;__main__&#34;:
         log.set_level_debug()
     log.add_stream_handler()
     log.add_file_handler(folder=LOGS, filename=LOG)
-    log.info(f&#34;Running PYTIA Bounding Box {APP_VERSION}, PID={PID}&#34;)
+    log.info(f&#34;Running PYTIA Bill of Material {APP_VERSION}, PID={PID}&#34;)
 
     gui = MainUI()
     gui.run()</code></pre>
