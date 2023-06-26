@@ -1,27 +1,27 @@
 [tool.poetry]
 authors = ["Philip Delorenzo <git@deloarts.com>"]
-classifiers = ["Operating System :: Windows"]
+classifiers = ["Operating System :: Microsoft :: Windows"]
 description = "A gui for exporting the bill of material from a catia v5 product"
 name = "pytia-bill-of-material"
 readme = "README.md"
-version = "0.7.0"
+version = "0.7.1"
 
 [tool.poetry.dependencies]
 openpyxl = "3.1.1"
 python = "^3.10"
-pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.1"}
-pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.4"}
+pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.2"}
+pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.6"}
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 Jinja2 = "^3.1.2"
 black = "22.10.0"
 packaging = "^21.3"
 pdoc3 = "^0.10.0"
 pre-commit = "^2.19.0"
-pygit2 = "^1.10.1"
+pygit2 = "1.12.0"
 pylint = "2.13.9"
 pytest = "^7.1.1"
-setuptools = "^62.3.1"
+setuptools = "^68.0.0"
 toml = "^0.10.2"
 validators = "^0.19.0"
 

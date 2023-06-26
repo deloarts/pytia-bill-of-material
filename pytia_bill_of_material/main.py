@@ -22,9 +22,8 @@ def main() -> None:
     # Afterwards import those modules which depend on third party modules.
     deps.install_dependencies()
 
-    from pytia.log import log  # pylint: disable=C0415
-
     from app.main_ui import MainUI  # pylint: disable=C0415
+    from pytia.log import log  # pylint: disable=C0415
 
     with open(PID_FILE, "w") as f:
         f.write(str(PID))
@@ -35,7 +34,7 @@ def main() -> None:
         log.set_level_debug()
     log.add_stream_handler()
     log.add_file_handler(folder=LOGS, filename=LOG)
-    log.info(f"Running PYTIA Bounding Box {APP_VERSION}, PID={PID}")
+    log.info(f"Running PYTIA Bill of Material {APP_VERSION}, PID={PID}")
 
     gui = MainUI()
     gui.run()
