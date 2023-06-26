@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-beta-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.7.0-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.7.1-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -324,7 +324,7 @@ On a new revision, do the following:
 5. Check **pylint** output: `poetry run pylint pytia_bill_of_material/`
 6. Update the **documentation**: `poetry run pdoc --force --html --output-dir docs pytia_bill_of_material`
 7. Update the **lockfile**: `poetry lock`
-8. Update the **requirements.txt**: `poetry export --dev -f requirements.txt -o requirements.txt`
+8. Update the **requirements.txt**: `poetry export --with dev -f requirements.txt -o requirements.txt`
 
 ## 6 license
 
@@ -332,6 +332,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+**v0.7.1**: Add group to default setting. Resolve paths.  
 **v0.7.0**: Add image export feature.  
 **v0.6.4**: Fix launcher path.  
 **v0.6.3**: Expand environment variables in settings paths.  
