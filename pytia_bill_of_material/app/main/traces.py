@@ -58,6 +58,7 @@ class Traces:
         self.vars.stp_export_path.trace_add("write", self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add("write", self.trace_jpg_export_path)
+        self.vars.ignore_prefix_txt.trace_add("write", self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add("write", self.trace_show_report)
 
     def _validate_button_export(self) -> None:
@@ -181,6 +182,16 @@ class Traces:
             self.layout.input_jpg_export_path.configure(foreground="red")
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
+    def trace_ignore_prefix_txt(self, *_) -> None:
+        """Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
+        and sets the state of the checkbox accordingly to the variable."""
+        if len(self.vars.ignore_prefix_txt.get()) > 0:
+            self.vars.ignore_prefix.set(True)
+            self.layout.checkbox_ignore_prefixed.configure(state=NORMAL)
+        else:
+            self.vars.ignore_prefix.set(False)
+            self.layout.checkbox_ignore_prefixed.configure(state=DISABLED)
 
     def trace_show_report(self, *_) -> None:
         """

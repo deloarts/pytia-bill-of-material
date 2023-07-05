@@ -34,6 +34,10 @@ class Variables:
     export_stl: BooleanVar
     export_jpg: BooleanVar
 
+    ignore_prefix_txt: StringVar
+    ignore_prefix: BooleanVar
+    ignore_source_unknown: BooleanVar
+
     # Progress variables
     progress: DoubleVar
 
@@ -63,6 +67,12 @@ class Variables:
         self.export_stp = BooleanVar(master=root, name="export_stp")
         self.export_stl = BooleanVar(master=root, name="export_stl")
         self.export_jpg = BooleanVar(master=root, name="export_jpg")
+
+        self.ignore_prefix_txt = StringVar(master=root, name="ignore_prefix_txt")
+        self.ignore_prefix = BooleanVar(master=root, name="ignore_prefix")
+        self.ignore_source_unknown = BooleanVar(
+            master=root, name="ignore_source_unknown"
+        )
 
         self.progress = DoubleVar(master=root, name="progress", value=0)
 

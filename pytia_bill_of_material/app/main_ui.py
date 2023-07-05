@@ -40,7 +40,7 @@ class MainUI(tk.Tk):
     """The user interface of the app."""
 
     WIDTH = 800
-    HEIGHT = 520
+    HEIGHT = 580
 
     def __init__(self) -> None:
         tk.Tk.__init__(self)

@@ -55,6 +55,9 @@ class UISetter:
         self._state_checkbox_export_stl = tk.NORMAL
         self._state_checkbox_export_jpg = tk.NORMAL
 
+        self._state_checkbox_ignore_prefixed = tk.NORMAL
+        self._state_checkbox_ignore_unknown = tk.NORMAL
+
     def normal(self) -> None:
         """
         Sets the UI to state 'Normal'. Sets the cursor to 'arrow'.
@@ -123,6 +126,15 @@ class UISetter:
             if os.path.isdir(self.vars.jpg_export_path.get())
             else tk.DISABLED
         )
+        self.layout.checkbox_ignore_source_unknown.configure(
+            state=self._state_checkbox_ignore_unknown
+        )
+        self.layout.checkbox_ignore_prefixed.configure(
+            state=self._state_checkbox_ignore_prefixed
+            if len(self.vars.ignore_prefix_txt.get()) > 0
+            else tk.DISABLED
+        )
+        self.layout.input_ignore_prefixed_txt.configure(state=tk.NORMAL)
 
         self.set_button_export()
         self.layout.button_exit.configure(state=tk.NORMAL)
@@ -170,6 +182,17 @@ class UISetter:
 
         self._state_checkbox_export_jpg = self.layout.checkbox_export_jpg.state()
         self.layout.checkbox_export_jpg.configure(state=tk.DISABLED)
+
+        self._state_checkbox_ignore_unknown = (
+            self.layout.checkbox_ignore_source_unknown.state()
+        )
+        self.layout.checkbox_ignore_source_unknown.configure(state=tk.DISABLED)
+
+        self._state_checkbox_ignore_prefixed = (
+            self.layout.checkbox_ignore_prefixed.state()
+        )
+        self.layout.checkbox_ignore_prefixed.configure(state=tk.DISABLED)
+        self.layout.input_ignore_prefixed_txt.configure(state=tk.DISABLED)
 
         self.layout.button_export.configure(state=tk.DISABLED)
 
