@@ -222,7 +222,15 @@ class ToolTips:
                 "for errors and won't show up in the report.\n\n"
                 "Example:\nThe item with the partnumber 'My Part' will be excluded if "
                 "you add the text 'My' to the entry.\n\n"
-                "Note: Entries are case sensitive."
+                "Note: You can add multiple prefixes by separating them with a "
+                "semicolon. Entries are case sensitive."
+            ),
+        )
+        ToolTip(
+            widget=layout.input_ignore_prefixed_txt,
+            text=(
+                "You can add multiple prefixes by separating them with a semicolon. "
+                "Entries are case sensitive."
             ),
         )
         # endregion

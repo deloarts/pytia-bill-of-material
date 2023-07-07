@@ -293,8 +293,13 @@ class ProcessBomTask(TaskProtocol):
                     == resource.applied_keywords.unknown
                 ) or (
                     self._ignore_prefix_txt is not None
-                    and str(row_data[resource.applied_keywords.partnumber]).startswith(
-                        self._ignore_prefix_txt
+                    and any(
+                        [
+                            str(
+                                row_data[resource.applied_keywords.partnumber]
+                            ).startswith(s)
+                            for s in self._ignore_prefix_txt.split(";")
+                        ]
                     )
                 ):
                     log.info(
