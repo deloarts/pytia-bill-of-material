@@ -206,6 +206,25 @@ class ToolTips:
                 "overwritten."
             ),
         )
+        ToolTip(
+            widget=layout.checkbox_ignore_source_unknown,
+            text=(
+                "Items that have no specific source (unknown) will be excluded from "
+                "the bill of material. Those items won't be checked for errors and "
+                "won't show up in the report."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_ignore_prefixed,
+            text=(
+                "Items with partnumbers, that start with the following characters will "
+                "be excluded from the bill of material. Those items won't be checked "
+                "for errors and won't show up in the report.\n\n"
+                "Example:\nThe item with the partnumber 'My Part' will be excluded if "
+                "you add the text 'My' to the entry.\n\n"
+                "Note: Entries are case sensitive."
+            ),
+        )
         # endregion
 
         # region REPORT
