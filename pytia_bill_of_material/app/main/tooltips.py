@@ -211,7 +211,10 @@ class ToolTips:
             text=(
                 "Items that have no specific source (unknown) will be excluded from "
                 "the bill of material. Those items won't be checked for errors and "
-                "won't show up in the report."
+                "won't show up in the report.\n\n"
+                "Warning: This only ignores children of a product, but not nodes "
+                "within those children. For this you have to uncheck the CATIA "
+                "option 'Visualize in the Bill of Material'."
             ),
         )
         ToolTip(
@@ -223,7 +226,10 @@ class ToolTips:
                 "Example:\nThe item with the partnumber 'My Part' will be excluded if "
                 "you add the text 'My' to the entry.\n\n"
                 "Note: You can add multiple prefixes by separating them with a "
-                "semicolon. Entries are case sensitive."
+                "semicolon. Entries are case sensitive.\n\n"
+                "Warning: This only ignores children of a product, but not nodes "
+                "within those children. For this you have to uncheck the CATIA "
+                "option 'Visualize in the Bill of Material'."
             ),
         )
         ToolTip(
