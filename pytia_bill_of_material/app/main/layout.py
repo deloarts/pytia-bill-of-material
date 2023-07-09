@@ -323,6 +323,7 @@ class Layout:
             padx=(5, 5),
             pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
+            columnspan=2,
         )
         # endregion
 
@@ -345,6 +346,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky="nsew",
+            columnspan=2,
         )
         # endregion
 
@@ -367,6 +369,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky="nsew",
+            columnspan=2,
         )
         # endregion
 
@@ -389,6 +392,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky="nsew",
+            columnspan=2,
         )
         # endregion
 
@@ -410,6 +414,66 @@ class Layout:
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore source "unknown"
+        lbl_ignore_unknown = ttk.Label(frames.export, text="Ignore Unknown", width=18)
+        lbl_ignore_unknown.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_ignore_unknown = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_source_unknown, state=DISABLED
+        )
+        self._chkbtn_ignore_unknown.grid(
+            row=5,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore prefix
+        lbl_ignore_prefixed = ttk.Label(frames.export, text="Ignore Prefixed", width=18)
+        lbl_ignore_prefixed.grid(
+            row=6,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+
+        self._chkbtn_ignore_prefixed = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_prefix, state=DISABLED
+        )
+        self._chkbtn_ignore_prefixed.grid(
+            row=6,
+            column=1,
+            padx=(5, 5),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+        self._entry_ignore_prefix_txt = ttk.Entry(
+            frames.export,
+            textvariable=variables.ignore_prefix_txt,
+            state=DISABLED,
+        )
+        self._entry_ignore_prefix_txt.grid(
+            row=6,
+            column=2,
+            padx=(5, Layout.MARGIN_X),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
             sticky="nsew",
         )
         # endregion
@@ -622,6 +686,18 @@ class Layout:
     @property
     def checkbox_export_jpg(self) -> ttk.Checkbutton:
         return self._chkbtn_export_jpg
+
+    @property
+    def checkbox_ignore_prefixed(self) -> ttk.Checkbutton:
+        return self._chkbtn_ignore_prefixed
+
+    @property
+    def checkbox_ignore_source_unknown(self) -> ttk.Checkbutton:
+        return self._chkbtn_ignore_unknown
+
+    @property
+    def input_ignore_prefixed_txt(self) -> ttk.Entry:
+        return self._entry_ignore_prefix_txt
 
     @property
     def progress_bar(self) -> ttk.Progressbar:

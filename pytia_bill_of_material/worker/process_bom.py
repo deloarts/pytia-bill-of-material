@@ -29,12 +29,29 @@ class ProcessBomTask(TaskProtocol):
         TaskProtocol (_type_): The protocol for the task runner.
     """
 
-    __slots__ = ("_xlsx", "_project", "_paths", "_bom")
+    __slots__ = (
+        "_xlsx",
+        "_project",
+        "_paths",
+        "_bom",
+        "_ignore_prefix",
+        "_ignore_prefix_txt",
+        "_ignore_bought",
+    )
 
-    def __init__(self, xlsx: Path, project_number: str, paths: Paths) -> None:
+    def __init__(
+        self,
+        xlsx: Path,
+        project_number: str,
+        paths: Paths,
+        ignore_prefix_txt: str | None,
+        ignore_source_unknown: bool,
+    ) -> None:
         self._xlsx = xlsx
         self._project = project_number
         self._paths = paths
+        self._ignore_prefix_txt = ignore_prefix_txt
+        self._ignore_source_unknown = ignore_source_unknown
 
     @property
     def bom(self) -> BOM:
@@ -47,7 +64,6 @@ class ProcessBomTask(TaskProtocol):
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
         self._bom = self._retrieve_bom_from_catia_export(
             worksheet=wb.worksheets[0],
-            paths=self._paths,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
@@ -67,11 +83,9 @@ class ProcessBomTask(TaskProtocol):
         workbook.close()
         return workbook
 
-    @classmethod
     def _retrieve_bom_from_catia_export(
-        cls,
+        self,
         worksheet: Worksheet | ReadOnlyWorksheet,
-        paths: Paths,
         overwrite_project: str = KEEP,
     ) -> BOM:
         """
@@ -160,8 +174,8 @@ class ProcessBomTask(TaskProtocol):
             # of said new assembly. Those headers should always be those from the
             # bom.json file (but checking is better than hoping).
             elif resource.applied_keywords.bom in _bom_or_summary:
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 1, header_items=header_items
                 )
                 # The data row for sub-assembly-boms is always two rows after the
@@ -176,8 +190,8 @@ class ProcessBomTask(TaskProtocol):
             # don't need to bother setting it back to false somewhere else.
             elif resource.applied_keywords.summary in _bom_or_summary:
                 is_summary = True
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 4, header_items=header_items
                 )
                 # The data row for summary-boms is always five rows after the
@@ -219,25 +233,25 @@ class ProcessBomTask(TaskProtocol):
                     if isinstance(cell_value, str) and re.match(r"^\s+$", cell_value):
                         cell_value = None
 
-                    cell_value = cls._overwrite_project_number(
+                    cell_value = self._overwrite_project_number(
                         header_position=position,
                         cell_value=cell_value,
                         overwrite_number=overwrite_project,
                     )
 
-                    cell_value = cls._translate_username(
+                    cell_value = self._translate_username(
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_fixed_text(
+                    cell_value = self._apply_fixed_text(
                         header_position=position, cell_value=cell_value
                     )
 
-                    # cell_value = cls._apply_placeholder_header(
+                    # cell_value = self._apply_placeholder_header(
                     #     header_position=position, cell_value=cell_value
                     # )
 
-                    cls._add_to_row_data(
+                    self._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
                     )
 
@@ -257,29 +271,53 @@ class ProcessBomTask(TaskProtocol):
                 # Warn the user when a part or product is missing. This happens mostly
                 # when there are items in the catia tree, that aren't stored in a file.
                 # (Cameras, Simulations, etc.)
-                if row_data[resource.applied_keywords.partnumber] not in paths.items:
+                if (
+                    row_data[resource.applied_keywords.partnumber]
+                    not in self._paths.items
+                ):
                     item_path = None
                     log.warning(
                         "No path found for item "
                         f"{row_data[resource.applied_keywords.partnumber]!r}."
                     )
                 else:
-                    item_path = paths.items[
+                    item_path = self._paths.items[
                         row_data[resource.applied_keywords.partnumber]
                     ]
 
-                # Now finally add the data to the dataclass.
-                assembly_item = BOMAssemblyItem(
-                    partnumber=row_data[resource.applied_keywords.partnumber],
-                    source=row_data[resource.applied_keywords.source],
-                    properties=row_data,
-                    path=item_path,
-                )
-                assembly.items.append(assembly_item)
-                log.info(
-                    f" - Added item {row_data[resource.applied_keywords.partnumber]!r} to element "
-                    f"{assembly.partnumber!r}{' (summary).' if is_summary else '.'}"
-                )
+                # Finally we check if the assembly item isn't tagged to be ignored.
+                # If not, it's added to the dataclass.
+                if (
+                    self._ignore_source_unknown
+                    and row_data[resource.applied_keywords.source]
+                    == resource.applied_keywords.unknown
+                ) or (
+                    self._ignore_prefix_txt is not None
+                    and any(
+                        [
+                            str(
+                                row_data[resource.applied_keywords.partnumber]
+                            ).startswith(s)
+                            for s in self._ignore_prefix_txt.split(";")
+                        ]
+                    )
+                ):
+                    log.info(
+                        " - Ignoring item "
+                        f"{row_data[resource.applied_keywords.partnumber]!r}."
+                    )
+                else:
+                    assembly_item = BOMAssemblyItem(
+                        partnumber=row_data[resource.applied_keywords.partnumber],
+                        source=row_data[resource.applied_keywords.source],
+                        properties=row_data,
+                        path=item_path,
+                    )
+                    assembly.items.append(assembly_item)
+                    log.info(
+                        f" - Added item {row_data[resource.applied_keywords.partnumber]!r} to element "
+                        f"{assembly.partnumber!r}{' (summary).' if is_summary else '.'}"
+                    )
         return bom
 
     @staticmethod

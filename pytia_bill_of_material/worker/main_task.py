@@ -170,7 +170,14 @@ class MainTask:
 
     def _process_bom(self, *_) -> None:
         task = ProcessBomTask(
-            xlsx=self.xlsx_path, project_number=self.project, paths=self.doc_paths
+            xlsx=self.xlsx_path,
+            project_number=self.project,
+            paths=self.doc_paths,
+            ignore_prefix_txt=self.variables.ignore_prefix_txt.get()
+            if len(self.variables.ignore_prefix_txt.get()) > 0
+            and self.variables.ignore_prefix.get()
+            else None,
+            ignore_source_unknown=self.variables.ignore_source_unknown.get(),
         )
         task.run()
 
