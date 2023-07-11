@@ -352,6 +352,7 @@ class Layout:
             padx=(5, 5),
             pady=(Layout.MARGIN_Y, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -374,6 +375,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -396,6 +398,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -418,6 +421,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -439,6 +443,66 @@ class Layout:
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore source &#34;unknown&#34;
+        lbl_ignore_unknown = ttk.Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
+        lbl_ignore_unknown.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_ignore_unknown = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_source_unknown, state=DISABLED
+        )
+        self._chkbtn_ignore_unknown.grid(
+            row=5,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore prefix
+        lbl_ignore_prefixed = ttk.Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
+        lbl_ignore_prefixed.grid(
+            row=6,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_ignore_prefixed = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_prefix, state=DISABLED
+        )
+        self._chkbtn_ignore_prefixed.grid(
+            row=6,
+            column=1,
+            padx=(5, 5),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+        self._entry_ignore_prefix_txt = ttk.Entry(
+            frames.export,
+            textvariable=variables.ignore_prefix_txt,
+            state=DISABLED,
+        )
+        self._entry_ignore_prefix_txt.grid(
+            row=6,
+            column=2,
+            padx=(5, Layout.MARGIN_X),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
             sticky=&#34;nsew&#34;,
         )
         # endregion
@@ -651,6 +715,18 @@ class Layout:
     @property
     def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_jpg
+
+    @property
+    def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_ignore_prefixed
+
+    @property
+    def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_ignore_unknown
+
+    @property
+    def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+        return self._entry_ignore_prefix_txt
 
     @property
     def progress_bar(self) -&gt; ttk.Progressbar:
@@ -1045,6 +1121,7 @@ class Layout:
             padx=(5, 5),
             pady=(Layout.MARGIN_Y, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -1067,6 +1144,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -1089,6 +1167,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -1111,6 +1190,7 @@ class Layout:
             padx=(5, 5),
             pady=(2, 2),
             sticky=&#34;nsew&#34;,
+            columnspan=2,
         )
         # endregion
 
@@ -1132,6 +1212,66 @@ class Layout:
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore source &#34;unknown&#34;
+        lbl_ignore_unknown = ttk.Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
+        lbl_ignore_unknown.grid(
+            row=5,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_ignore_unknown = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_source_unknown, state=DISABLED
+        )
+        self._chkbtn_ignore_unknown.grid(
+            row=5,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky=&#34;nsew&#34;,
+            columnspan=2,
+        )
+        # endregion
+
+        # region ignore prefix
+        lbl_ignore_prefixed = ttk.Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
+        lbl_ignore_prefixed.grid(
+            row=6,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+
+        self._chkbtn_ignore_prefixed = ttk.Checkbutton(
+            frames.export, variable=variables.ignore_prefix, state=DISABLED
+        )
+        self._chkbtn_ignore_prefixed.grid(
+            row=6,
+            column=1,
+            padx=(5, 5),
+            pady=(2, Layout.MARGIN_Y),
+            sticky=&#34;nsew&#34;,
+        )
+        self._entry_ignore_prefix_txt = ttk.Entry(
+            frames.export,
+            textvariable=variables.ignore_prefix_txt,
+            state=DISABLED,
+        )
+        self._entry_ignore_prefix_txt.grid(
+            row=6,
+            column=2,
+            padx=(5, Layout.MARGIN_X),
+            pady=(2, Layout.MARGIN_Y),
+            ipadx=2,
+            ipady=2,
             sticky=&#34;nsew&#34;,
         )
         # endregion
@@ -1344,6 +1484,18 @@ class Layout:
     @property
     def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
         return self._chkbtn_export_jpg
+
+    @property
+    def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_ignore_prefixed
+
+    @property
+    def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+        return self._chkbtn_ignore_unknown
+
+    @property
+    def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+        return self._entry_ignore_prefix_txt
 
     @property
     def progress_bar(self) -&gt; ttk.Progressbar:
@@ -1618,6 +1770,30 @@ def checkbox_export_stp(self) -&gt; ttk.Checkbutton:
     return self._chkbtn_export_stp</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_prefixed"><code class="name">var <span class="ident">checkbox_ignore_prefixed</span> : tkinter.ttk.Checkbutton</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+    return self._chkbtn_ignore_prefixed</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_source_unknown"><code class="name">var <span class="ident">checkbox_ignore_source_unknown</span> : tkinter.ttk.Checkbutton</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+    return self._chkbtn_ignore_unknown</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.input_bom_export_path"><code class="name">var <span class="ident">input_bom_export_path</span> : tkinter.ttk.Entry</code></dt>
 <dd>
 <div class="desc"></div>
@@ -1652,6 +1828,18 @@ def input_docket_export_path(self) -&gt; ttk.Entry:
 <pre><code class="python">@property
 def input_drawing_export_path(self) -&gt; ttk.Entry:
     return self._entry_drawing_export_path</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.layout.Layout.input_ignore_prefixed_txt"><code class="name">var <span class="ident">input_ignore_prefixed_txt</span> : tkinter.ttk.Entry</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+    return self._entry_ignore_prefix_txt</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path"><code class="name">var <span class="ident">input_jpg_export_path</span> : tkinter.ttk.Entry</code></dt>
@@ -1803,9 +1991,12 @@ def tree_report_failed_props(self) -&gt; ttk.Treeview:
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_jpg" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_jpg">checkbox_export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stl" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stl">checkbox_export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stp" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_export_stp">checkbox_export_stp</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_prefixed" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_prefixed">checkbox_ignore_prefixed</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_source_unknown" href="#pytia_bill_of_material.app.main.layout.Layout.checkbox_ignore_source_unknown">checkbox_ignore_source_unknown</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_bom_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_bom_export_path">input_bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_docket_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_docket_export_path">input_docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_drawing_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_drawing_export_path">input_drawing_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_ignore_prefixed_txt" href="#pytia_bill_of_material.app.main.layout.Layout.input_ignore_prefixed_txt">input_ignore_prefixed_txt</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_jpg_export_path">input_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_project" href="#pytia_bill_of_material.app.main.layout.Layout.input_project">input_project</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path" href="#pytia_bill_of_material.app.main.layout.Layout.input_stl_export_path">input_stl_export_path</a></code></li>

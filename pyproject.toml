@@ -4,7 +4,7 @@ classifiers = ["Operating System :: Microsoft :: Windows"]
 description = "A gui for exporting the bill of material from a catia v5 product"
 name = "pytia-bill-of-material"
 readme = "README.md"
-version = "0.7.1"
+version = "0.8.0"
 
 [tool.poetry.dependencies]
 openpyxl = "3.1.1"

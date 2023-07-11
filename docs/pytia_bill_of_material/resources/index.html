@@ -183,6 +183,7 @@ class KeywordElements:
     source: str
     made: str
     bought: str
+    unknown: str
     description: str
     number: str
     type: str
@@ -726,7 +727,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.7.1', counter: int = 0, disable_volume_warning: bool = False)</span>
+<span>(</span><span>*, version: str = '0.8.0', counter: int = 0, disable_volume_warning: bool = False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -766,10 +767,10 @@ class AppData:
 </dd>
 <dt id="pytia_bill_of_material.resources.AppliedKeywords"><code class="flex name class">
 <span>class <span class="ident">AppliedKeywords</span></span>
-<span>(</span><span>*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</span>
+<span>(</span><span>*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, unknown: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>AppliedKeywords(*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</p></div>
+<div class="desc"><p>AppliedKeywords(*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, unknown: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -801,6 +802,7 @@ class AppliedKeywords(KeywordElements):
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.source" href="#pytia_bill_of_material.resources.KeywordElements.source">source</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.summary" href="#pytia_bill_of_material.resources.KeywordElements.summary">summary</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.type" href="#pytia_bill_of_material.resources.KeywordElements.type">type</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.unknown" href="#pytia_bill_of_material.resources.KeywordElements.unknown">unknown</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1115,7 +1117,7 @@ class Info:
 </dd>
 <dt id="pytia_bill_of_material.resources.KeywordElements"><code class="flex name class">
 <span>class <span class="ident">KeywordElements</span></span>
-<span>(</span><span>*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</span>
+<span>(</span><span>*, partnumber: str, revision: str, definition: str, nomenclature: str, source: str, made: str, bought: str, unknown: str, description: str, number: str, type: str, part: str, assembly: str, quantity: str, bom: str, summary: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for keyword elements.</p></div>
@@ -1134,6 +1136,7 @@ class KeywordElements:
     source: str
     made: str
     bought: str
+    unknown: str
     description: str
     number: str
     type: str
@@ -1206,6 +1209,10 @@ class KeywordElements:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.KeywordElements.type"><code class="name">var <span class="ident">type</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.KeywordElements.unknown"><code class="name">var <span class="ident">unknown</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -2585,6 +2592,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.source" href="#pytia_bill_of_material.resources.KeywordElements.source">source</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.summary" href="#pytia_bill_of_material.resources.KeywordElements.summary">summary</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.KeywordElements.type" href="#pytia_bill_of_material.resources.KeywordElements.type">type</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.KeywordElements.unknown" href="#pytia_bill_of_material.resources.KeywordElements.unknown">unknown</a></code></li>
 </ul>
 </li>
 <li>

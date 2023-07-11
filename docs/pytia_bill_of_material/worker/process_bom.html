@@ -58,12 +58,29 @@ class ProcessBomTask(TaskProtocol):
         TaskProtocol (_type_): The protocol for the task runner.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_xlsx&#34;, &#34;_project&#34;, &#34;_paths&#34;, &#34;_bom&#34;)
+    __slots__ = (
+        &#34;_xlsx&#34;,
+        &#34;_project&#34;,
+        &#34;_paths&#34;,
+        &#34;_bom&#34;,
+        &#34;_ignore_prefix&#34;,
+        &#34;_ignore_prefix_txt&#34;,
+        &#34;_ignore_bought&#34;,
+    )
 
-    def __init__(self, xlsx: Path, project_number: str, paths: Paths) -&gt; None:
+    def __init__(
+        self,
+        xlsx: Path,
+        project_number: str,
+        paths: Paths,
+        ignore_prefix_txt: str | None,
+        ignore_source_unknown: bool,
+    ) -&gt; None:
         self._xlsx = xlsx
         self._project = project_number
         self._paths = paths
+        self._ignore_prefix_txt = ignore_prefix_txt
+        self._ignore_source_unknown = ignore_source_unknown
 
     @property
     def bom(self) -&gt; BOM:
@@ -76,7 +93,6 @@ class ProcessBomTask(TaskProtocol):
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
         self._bom = self._retrieve_bom_from_catia_export(
             worksheet=wb.worksheets[0],
-            paths=self._paths,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
@@ -96,11 +112,9 @@ class ProcessBomTask(TaskProtocol):
         workbook.close()
         return workbook
 
-    @classmethod
     def _retrieve_bom_from_catia_export(
-        cls,
+        self,
         worksheet: Worksheet | ReadOnlyWorksheet,
-        paths: Paths,
         overwrite_project: str = KEEP,
     ) -&gt; BOM:
         &#34;&#34;&#34;
@@ -189,8 +203,8 @@ class ProcessBomTask(TaskProtocol):
             # of said new assembly. Those headers should always be those from the
             # bom.json file (but checking is better than hoping).
             elif resource.applied_keywords.bom in _bom_or_summary:
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 1, header_items=header_items
                 )
                 # The data row for sub-assembly-boms is always two rows after the
@@ -205,8 +219,8 @@ class ProcessBomTask(TaskProtocol):
             # don&#39;t need to bother setting it back to false somewhere else.
             elif resource.applied_keywords.summary in _bom_or_summary:
                 is_summary = True
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 4, header_items=header_items
                 )
                 # The data row for summary-boms is always five rows after the
@@ -248,25 +262,25 @@ class ProcessBomTask(TaskProtocol):
                     if isinstance(cell_value, str) and re.match(r&#34;^\s+$&#34;, cell_value):
                         cell_value = None
 
-                    cell_value = cls._overwrite_project_number(
+                    cell_value = self._overwrite_project_number(
                         header_position=position,
                         cell_value=cell_value,
                         overwrite_number=overwrite_project,
                     )
 
-                    cell_value = cls._translate_username(
+                    cell_value = self._translate_username(
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_fixed_text(
+                    cell_value = self._apply_fixed_text(
                         header_position=position, cell_value=cell_value
                     )
 
-                    # cell_value = cls._apply_placeholder_header(
+                    # cell_value = self._apply_placeholder_header(
                     #     header_position=position, cell_value=cell_value
                     # )
 
-                    cls._add_to_row_data(
+                    self._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
                     )
 
@@ -286,29 +300,53 @@ class ProcessBomTask(TaskProtocol):
                 # Warn the user when a part or product is missing. This happens mostly
                 # when there are items in the catia tree, that aren&#39;t stored in a file.
                 # (Cameras, Simulations, etc.)
-                if row_data[resource.applied_keywords.partnumber] not in paths.items:
+                if (
+                    row_data[resource.applied_keywords.partnumber]
+                    not in self._paths.items
+                ):
                     item_path = None
                     log.warning(
                         &#34;No path found for item &#34;
                         f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
                     )
                 else:
-                    item_path = paths.items[
+                    item_path = self._paths.items[
                         row_data[resource.applied_keywords.partnumber]
                     ]
 
-                # Now finally add the data to the dataclass.
-                assembly_item = BOMAssemblyItem(
-                    partnumber=row_data[resource.applied_keywords.partnumber],
-                    source=row_data[resource.applied_keywords.source],
-                    properties=row_data,
-                    path=item_path,
-                )
-                assembly.items.append(assembly_item)
-                log.info(
-                    f&#34; - Added item {row_data[resource.applied_keywords.partnumber]!r} to element &#34;
-                    f&#34;{assembly.partnumber!r}{&#39; (summary).&#39; if is_summary else &#39;.&#39;}&#34;
-                )
+                # Finally we check if the assembly item isn&#39;t tagged to be ignored.
+                # If not, it&#39;s added to the dataclass.
+                if (
+                    self._ignore_source_unknown
+                    and row_data[resource.applied_keywords.source]
+                    == resource.applied_keywords.unknown
+                ) or (
+                    self._ignore_prefix_txt is not None
+                    and any(
+                        [
+                            str(
+                                row_data[resource.applied_keywords.partnumber]
+                            ).startswith(s)
+                            for s in self._ignore_prefix_txt.split(&#34;;&#34;)
+                        ]
+                    )
+                ):
+                    log.info(
+                        &#34; - Ignoring item &#34;
+                        f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
+                    )
+                else:
+                    assembly_item = BOMAssemblyItem(
+                        partnumber=row_data[resource.applied_keywords.partnumber],
+                        source=row_data[resource.applied_keywords.source],
+                        properties=row_data,
+                        path=item_path,
+                    )
+                    assembly.items.append(assembly_item)
+                    log.info(
+                        f&#34; - Added item {row_data[resource.applied_keywords.partnumber]!r} to element &#34;
+                        f&#34;{assembly.partnumber!r}{&#39; (summary).&#39; if is_summary else &#39;.&#39;}&#34;
+                    )
         return bom
 
     @staticmethod
@@ -527,7 +565,7 @@ class ProcessBomTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.process_bom.ProcessBomTask"><code class="flex name class">
 <span>class <span class="ident">ProcessBomTask</span></span>
-<span>(</span><span>xlsx: pathlib.Path, project_number: str, paths: models.paths.Paths)</span>
+<span>(</span><span>xlsx: pathlib.Path, project_number: str, paths: models.paths.Paths, ignore_prefix_txt: str | None, ignore_source_unknown: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class processes the bill of material from the converted xlsx file.
@@ -550,12 +588,29 @@ It generates the BOM object from the xlsx file.</p>
         TaskProtocol (_type_): The protocol for the task runner.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_xlsx&#34;, &#34;_project&#34;, &#34;_paths&#34;, &#34;_bom&#34;)
+    __slots__ = (
+        &#34;_xlsx&#34;,
+        &#34;_project&#34;,
+        &#34;_paths&#34;,
+        &#34;_bom&#34;,
+        &#34;_ignore_prefix&#34;,
+        &#34;_ignore_prefix_txt&#34;,
+        &#34;_ignore_bought&#34;,
+    )
 
-    def __init__(self, xlsx: Path, project_number: str, paths: Paths) -&gt; None:
+    def __init__(
+        self,
+        xlsx: Path,
+        project_number: str,
+        paths: Paths,
+        ignore_prefix_txt: str | None,
+        ignore_source_unknown: bool,
+    ) -&gt; None:
         self._xlsx = xlsx
         self._project = project_number
         self._paths = paths
+        self._ignore_prefix_txt = ignore_prefix_txt
+        self._ignore_source_unknown = ignore_source_unknown
 
     @property
     def bom(self) -&gt; BOM:
@@ -568,7 +623,6 @@ It generates the BOM object from the xlsx file.</p>
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
         self._bom = self._retrieve_bom_from_catia_export(
             worksheet=wb.worksheets[0],
-            paths=self._paths,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
@@ -588,11 +642,9 @@ It generates the BOM object from the xlsx file.</p>
         workbook.close()
         return workbook
 
-    @classmethod
     def _retrieve_bom_from_catia_export(
-        cls,
+        self,
         worksheet: Worksheet | ReadOnlyWorksheet,
-        paths: Paths,
         overwrite_project: str = KEEP,
     ) -&gt; BOM:
         &#34;&#34;&#34;
@@ -681,8 +733,8 @@ It generates the BOM object from the xlsx file.</p>
             # of said new assembly. Those headers should always be those from the
             # bom.json file (but checking is better than hoping).
             elif resource.applied_keywords.bom in _bom_or_summary:
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 1, header_items=header_items
                 )
                 # The data row for sub-assembly-boms is always two rows after the
@@ -697,8 +749,8 @@ It generates the BOM object from the xlsx file.</p>
             # don&#39;t need to bother setting it back to false somewhere else.
             elif resource.applied_keywords.summary in _bom_or_summary:
                 is_summary = True
-                assembly = BOMAssembly(partnumber=_name, path=paths.items[_name])
-                header_positions = cls._get_header_positions(
+                assembly = BOMAssembly(partnumber=_name, path=self._paths.items[_name])
+                header_positions = self._get_header_positions(
                     worksheet=worksheet, row=ri + 4, header_items=header_items
                 )
                 # The data row for summary-boms is always five rows after the
@@ -740,25 +792,25 @@ It generates the BOM object from the xlsx file.</p>
                     if isinstance(cell_value, str) and re.match(r&#34;^\s+$&#34;, cell_value):
                         cell_value = None
 
-                    cell_value = cls._overwrite_project_number(
+                    cell_value = self._overwrite_project_number(
                         header_position=position,
                         cell_value=cell_value,
                         overwrite_number=overwrite_project,
                     )
 
-                    cell_value = cls._translate_username(
+                    cell_value = self._translate_username(
                         header_position=position, cell_value=cell_value
                     )
 
-                    cell_value = cls._apply_fixed_text(
+                    cell_value = self._apply_fixed_text(
                         header_position=position, cell_value=cell_value
                     )
 
-                    # cell_value = cls._apply_placeholder_header(
+                    # cell_value = self._apply_placeholder_header(
                     #     header_position=position, cell_value=cell_value
                     # )
 
-                    cls._add_to_row_data(
+                    self._add_to_row_data(
                         row_data, header_position=position, cell_value=cell_value
                     )
 
@@ -778,29 +830,53 @@ It generates the BOM object from the xlsx file.</p>
                 # Warn the user when a part or product is missing. This happens mostly
                 # when there are items in the catia tree, that aren&#39;t stored in a file.
                 # (Cameras, Simulations, etc.)
-                if row_data[resource.applied_keywords.partnumber] not in paths.items:
+                if (
+                    row_data[resource.applied_keywords.partnumber]
+                    not in self._paths.items
+                ):
                     item_path = None
                     log.warning(
                         &#34;No path found for item &#34;
                         f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
                     )
                 else:
-                    item_path = paths.items[
+                    item_path = self._paths.items[
                         row_data[resource.applied_keywords.partnumber]
                     ]
 
-                # Now finally add the data to the dataclass.
-                assembly_item = BOMAssemblyItem(
-                    partnumber=row_data[resource.applied_keywords.partnumber],
-                    source=row_data[resource.applied_keywords.source],
-                    properties=row_data,
-                    path=item_path,
-                )
-                assembly.items.append(assembly_item)
-                log.info(
-                    f&#34; - Added item {row_data[resource.applied_keywords.partnumber]!r} to element &#34;
-                    f&#34;{assembly.partnumber!r}{&#39; (summary).&#39; if is_summary else &#39;.&#39;}&#34;
-                )
+                # Finally we check if the assembly item isn&#39;t tagged to be ignored.
+                # If not, it&#39;s added to the dataclass.
+                if (
+                    self._ignore_source_unknown
+                    and row_data[resource.applied_keywords.source]
+                    == resource.applied_keywords.unknown
+                ) or (
+                    self._ignore_prefix_txt is not None
+                    and any(
+                        [
+                            str(
+                                row_data[resource.applied_keywords.partnumber]
+                            ).startswith(s)
+                            for s in self._ignore_prefix_txt.split(&#34;;&#34;)
+                        ]
+                    )
+                ):
+                    log.info(
+                        &#34; - Ignoring item &#34;
+                        f&#34;{row_data[resource.applied_keywords.partnumber]!r}.&#34;
+                    )
+                else:
+                    assembly_item = BOMAssemblyItem(
+                        partnumber=row_data[resource.applied_keywords.partnumber],
+                        source=row_data[resource.applied_keywords.source],
+                        properties=row_data,
+                        path=item_path,
+                    )
+                    assembly.items.append(assembly_item)
+                    log.info(
+                        f&#34; - Added item {row_data[resource.applied_keywords.partnumber]!r} to element &#34;
+                        f&#34;{assembly.partnumber!r}{&#39; (summary).&#39; if is_summary else &#39;.&#39;}&#34;
+                    )
         return bom
 
     @staticmethod
@@ -1046,7 +1122,6 @@ def bom(self) -&gt; BOM:
     wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
     self._bom = self._retrieve_bom_from_catia_export(
         worksheet=wb.worksheets[0],
-        paths=self._paths,
         overwrite_project=self._project,
     )
     self._sort_bom(bom=self._bom)</code></pre>

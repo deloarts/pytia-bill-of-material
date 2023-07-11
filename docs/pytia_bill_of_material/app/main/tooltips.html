@@ -235,6 +235,39 @@ class ToolTips:
                 &#34;overwritten.&#34;
             ),
         )
+        ToolTip(
+            widget=layout.checkbox_ignore_source_unknown,
+            text=(
+                &#34;Items that have no specific source (unknown) will be excluded from &#34;
+                &#34;the bill of material. Those items won&#39;t be checked for errors and &#34;
+                &#34;won&#39;t show up in the report.\n\n&#34;
+                &#34;Warning: This only ignores children of a product, but not nodes &#34;
+                &#34;within those children. For this you have to uncheck the CATIA &#34;
+                &#34;option &#39;Visualize in the Bill of Material&#39;.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_ignore_prefixed,
+            text=(
+                &#34;Items with partnumbers, that start with the following characters will &#34;
+                &#34;be excluded from the bill of material. Those items won&#39;t be checked &#34;
+                &#34;for errors and won&#39;t show up in the report.\n\n&#34;
+                &#34;Example:\nThe item with the partnumber &#39;My Part&#39; will be excluded if &#34;
+                &#34;you add the text &#39;My&#39; to the entry.\n\n&#34;
+                &#34;Note: You can add multiple prefixes by separating them with a &#34;
+                &#34;semicolon. Entries are case sensitive.\n\n&#34;
+                &#34;Warning: This only ignores children of a product, but not nodes &#34;
+                &#34;within those children. For this you have to uncheck the CATIA &#34;
+                &#34;option &#39;Visualize in the Bill of Material&#39;.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.input_ignore_prefixed_txt,
+            text=(
+                &#34;You can add multiple prefixes by separating them with a semicolon. &#34;
+                &#34;Entries are case sensitive.&#34;
+            ),
+        )
         # endregion
 
         # region REPORT
@@ -480,6 +513,39 @@ class ToolTips:
                 &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
                 &#34;This requires a valid path. Existing files at the target location will be &#34;
                 &#34;overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_ignore_source_unknown,
+            text=(
+                &#34;Items that have no specific source (unknown) will be excluded from &#34;
+                &#34;the bill of material. Those items won&#39;t be checked for errors and &#34;
+                &#34;won&#39;t show up in the report.\n\n&#34;
+                &#34;Warning: This only ignores children of a product, but not nodes &#34;
+                &#34;within those children. For this you have to uncheck the CATIA &#34;
+                &#34;option &#39;Visualize in the Bill of Material&#39;.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_ignore_prefixed,
+            text=(
+                &#34;Items with partnumbers, that start with the following characters will &#34;
+                &#34;be excluded from the bill of material. Those items won&#39;t be checked &#34;
+                &#34;for errors and won&#39;t show up in the report.\n\n&#34;
+                &#34;Example:\nThe item with the partnumber &#39;My Part&#39; will be excluded if &#34;
+                &#34;you add the text &#39;My&#39; to the entry.\n\n&#34;
+                &#34;Note: You can add multiple prefixes by separating them with a &#34;
+                &#34;semicolon. Entries are case sensitive.\n\n&#34;
+                &#34;Warning: This only ignores children of a product, but not nodes &#34;
+                &#34;within those children. For this you have to uncheck the CATIA &#34;
+                &#34;option &#39;Visualize in the Bill of Material&#39;.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.input_ignore_prefixed_txt,
+            text=(
+                &#34;You can add multiple prefixes by separating them with a semicolon. &#34;
+                &#34;Entries are case sensitive.&#34;
             ),
         )
         # endregion

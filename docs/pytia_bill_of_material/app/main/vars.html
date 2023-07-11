@@ -63,6 +63,10 @@ class Variables:
     export_stl: BooleanVar
     export_jpg: BooleanVar
 
+    ignore_prefix_txt: StringVar
+    ignore_prefix: BooleanVar
+    ignore_source_unknown: BooleanVar
+
     # Progress variables
     progress: DoubleVar
 
@@ -92,6 +96,12 @@ class Variables:
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
         self.export_jpg = BooleanVar(master=root, name=&#34;export_jpg&#34;)
+
+        self.ignore_prefix_txt = StringVar(master=root, name=&#34;ignore_prefix_txt&#34;)
+        self.ignore_prefix = BooleanVar(master=root, name=&#34;ignore_prefix&#34;)
+        self.ignore_source_unknown = BooleanVar(
+            master=root, name=&#34;ignore_source_unknown&#34;
+        )
 
         self.progress = DoubleVar(master=root, name=&#34;progress&#34;, value=0)
 
@@ -149,6 +159,10 @@ class Variables:
     export_stl: BooleanVar
     export_jpg: BooleanVar
 
+    ignore_prefix_txt: StringVar
+    ignore_prefix: BooleanVar
+    ignore_source_unknown: BooleanVar
+
     # Progress variables
     progress: DoubleVar
 
@@ -178,6 +192,12 @@ class Variables:
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
         self.export_jpg = BooleanVar(master=root, name=&#34;export_jpg&#34;)
+
+        self.ignore_prefix_txt = StringVar(master=root, name=&#34;ignore_prefix_txt&#34;)
+        self.ignore_prefix = BooleanVar(master=root, name=&#34;ignore_prefix&#34;)
+        self.ignore_source_unknown = BooleanVar(
+            master=root, name=&#34;ignore_source_unknown&#34;
+        )
 
         self.progress = DoubleVar(master=root, name=&#34;progress&#34;, value=0)
 
@@ -214,6 +234,18 @@ class Variables:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.app.main.vars.Variables.export_stp"><code class="name">var <span class="ident">export_stp</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix"><code class="name">var <span class="ident">ignore_prefix</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix_txt"><code class="name">var <span class="ident">ignore_prefix_txt</span> : tkinter.StringVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.ignore_source_unknown"><code class="name">var <span class="ident">ignore_source_unknown</span> : tkinter.BooleanVar</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -269,7 +301,7 @@ class Variables:
 <ul>
 <li>
 <h4><code><a title="pytia_bill_of_material.app.main.vars.Variables" href="#pytia_bill_of_material.app.main.vars.Variables">Variables</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bom_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.bom_export_path">bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.docket_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.docket_export_path">docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.drawing_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.drawing_export_path">drawing_export_path</a></code></li>
@@ -278,6 +310,9 @@ class Variables:
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_jpg" href="#pytia_bill_of_material.app.main.vars.Variables.export_jpg">export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stl" href="#pytia_bill_of_material.app.main.vars.Variables.export_stl">export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stp" href="#pytia_bill_of_material.app.main.vars.Variables.export_stp">export_stp</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_prefix">ignore_prefix</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix_txt" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_prefix_txt">ignore_prefix_txt</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_source_unknown" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_source_unknown">ignore_source_unknown</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.jpg_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.jpg_export_path">jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.machine" href="#pytia_bill_of_material.app.main.vars.Variables.machine">machine</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.progress" href="#pytia_bill_of_material.app.main.vars.Variables.progress">progress</a></code></li>
