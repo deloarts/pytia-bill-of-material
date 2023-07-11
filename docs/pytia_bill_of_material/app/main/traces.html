@@ -87,6 +87,7 @@ class Traces:
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
+        self.vars.ignore_prefix_txt.trace_add(&#34;write&#34;, self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
     def _validate_button_export(self) -&gt; None:
@@ -210,6 +211,16 @@ class Traces:
             self.layout.input_jpg_export_path.configure(foreground=&#34;red&#34;)
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
+    def trace_ignore_prefix_txt(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
+        and sets the state of the checkbox accordingly to the variable.&#34;&#34;&#34;
+        if len(self.vars.ignore_prefix_txt.get()) &gt; 0:
+            self.vars.ignore_prefix.set(True)
+            self.layout.checkbox_ignore_prefixed.configure(state=NORMAL)
+        else:
+            self.vars.ignore_prefix.set(False)
+            self.layout.checkbox_ignore_prefixed.configure(state=DISABLED)
 
     def trace_show_report(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -321,6 +332,7 @@ class Traces:
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
+        self.vars.ignore_prefix_txt.trace_add(&#34;write&#34;, self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
 
     def _validate_button_export(self) -&gt; None:
@@ -444,6 +456,16 @@ class Traces:
             self.layout.input_jpg_export_path.configure(foreground=&#34;red&#34;)
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
+    def trace_ignore_prefix_txt(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
+        and sets the state of the checkbox accordingly to the variable.&#34;&#34;&#34;
+        if len(self.vars.ignore_prefix_txt.get()) &gt; 0:
+            self.vars.ignore_prefix.set(True)
+            self.layout.checkbox_ignore_prefixed.configure(state=NORMAL)
+        else:
+            self.vars.ignore_prefix.set(False)
+            self.layout.checkbox_ignore_prefixed.configure(state=DISABLED)
 
     def trace_show_report(self, *_) -&gt; None:
         &#34;&#34;&#34;
@@ -567,6 +589,27 @@ Validates the path and sets the state of the checkbox accordingly to the path va
         self.layout.input_drawing_export_path.configure(foreground=&#34;red&#34;)
         self.vars.export_drawing.set(False)
         self.layout.checkbox_export_drawing.configure(state=DISABLED)</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_ignore_prefix_txt"><code class="name flex">
+<span>def <span class="ident">trace_ignore_prefix_txt</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>ignore_prefix_txt</code> StringVar. Validates the input
+and sets the state of the checkbox accordingly to the variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_ignore_prefix_txt(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
+    and sets the state of the checkbox accordingly to the variable.&#34;&#34;&#34;
+    if len(self.vars.ignore_prefix_txt.get()) &gt; 0:
+        self.vars.ignore_prefix.set(True)
+        self.layout.checkbox_ignore_prefixed.configure(state=NORMAL)
+    else:
+        self.vars.ignore_prefix.set(False)
+        self.layout.checkbox_ignore_prefixed.configure(state=DISABLED)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path"><code class="name flex">
@@ -746,6 +789,7 @@ of the checkbox accordingly to the path variable.</p></div>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path">trace_bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path">trace_docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path">trace_drawing_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_ignore_prefix_txt" href="#pytia_bill_of_material.app.main.traces.Traces.trace_ignore_prefix_txt">trace_ignore_prefix_txt</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path">trace_jpg_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_project" href="#pytia_bill_of_material.app.main.traces.Traces.trace_project">trace_project</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_show_report" href="#pytia_bill_of_material.app.main.traces.Traces.trace_show_report">trace_show_report</a></code></li>

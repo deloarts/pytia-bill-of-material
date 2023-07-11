@@ -152,6 +152,7 @@ class KeywordElements:
     source: str
     made: str
     bought: str
+    unknown: str
     description: str
     number: str
     type: str
