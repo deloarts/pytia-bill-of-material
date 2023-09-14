@@ -7,6 +7,7 @@ import logging
 from tkinter import END, Text, Tk
 
 from pytia.log import log
+from ttkbootstrap import Style
 
 
 class WidgetLogHandler(logging.Handler):
@@ -23,7 +24,7 @@ class WidgetLogHandler(logging.Handler):
     ```
     """
 
-    def __init__(self, root: Tk, widget: Text):
+    def __init__(self, root: Tk, widget: Text, style: Style):
         """
         Inits the WidgetLogHandler.
 
@@ -38,11 +39,15 @@ class WidgetLogHandler(logging.Handler):
 
         self._widget.tag_config("DATE", foreground="grey")
         self._widget.tag_config("TIME", foreground="grey")
-        self._widget.tag_config("DEBUG", foreground="blue")
-        self._widget.tag_config("INFO", foreground="green")
-        self._widget.tag_config("WARNING", foreground="orange")
-        self._widget.tag_config("ERROR", foreground="red")
-        self._widget.tag_config("EXCEPTION", foreground="black", background="red")
+        self._widget.tag_config("DEBUG", foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config("INFO", foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config(
+            "WARNING", foreground=style.colors.warning  # type:ignore
+        )
+        self._widget.tag_config("ERROR", foreground=style.colors.danger)  # type:ignore
+        self._widget.tag_config(
+            "EXCEPTION", foreground=style.colors.danger  # type:ignore
+        )
 
         atexit.register(lambda: log.logger.removeHandler(self))
 

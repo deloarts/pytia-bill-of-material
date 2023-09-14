@@ -15,6 +15,7 @@ from helper.names import get_bom_export_name
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from templates import templates
+from ttkbootstrap import Style
 
 
 class Traces:
@@ -27,6 +28,7 @@ class Traces:
         state_setter: UISetter,
         frames: Frames,
         layout: Layout,
+        style: Style,
         workspace: Workspace,
     ) -> None:
         """
@@ -44,6 +46,7 @@ class Traces:
         self.set_ui = state_setter
         self.frames = frames
         self.layout = layout
+        self.style = style
         self.workspace = workspace
 
         self._add_traces()
@@ -84,18 +87,25 @@ class Traces:
 
         self._validate_button_export()
 
+    # @default_color
     def trace_bom_export_path(self, *_) -> None:
         """
         Trace callback for the `bom_export_path` StringVar. Validates the path and sets the state
         of the export button accordingly to the path variable.
         """
+
         if (
-            os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
+            Path(self.vars.bom_export_path.get()).parent.exists()
+            and os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and ".xlsx" in self.vars.bom_export_path.get()
         ):
-            self.layout.input_bom_export_path.configure(foreground="black")
+            self.layout.input_bom_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
         else:
-            self.layout.input_bom_export_path.configure(foreground="red")
+            self.layout.input_bom_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
 
         self._validate_button_export()
 
@@ -119,7 +129,7 @@ class Traces:
             self.layout.checkbox_export_docket.configure(state=DISABLED)
 
         self.layout.input_docket_export_path.configure(
-            foreground="black" if is_dir else "red"
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
     def trace_drawing_export_path(self, *_) -> None:
@@ -130,11 +140,15 @@ class Traces:
         if os.path.isdir(self.vars.drawing_export_path.get()) and os.path.isabs(
             self.vars.drawing_export_path.get()
         ):
-            self.layout.input_drawing_export_path.configure(foreground="black")
+            self.layout.input_drawing_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
             self.layout.checkbox_export_drawing.configure(state=NORMAL)
             self.vars.export_drawing.set(True)
         else:
-            self.layout.input_drawing_export_path.configure(foreground="red")
+            self.layout.input_drawing_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
             self.vars.export_drawing.set(False)
             self.layout.checkbox_export_drawing.configure(state=DISABLED)
 
@@ -145,11 +159,15 @@ class Traces:
         if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(
             self.vars.stp_export_path.get()
         ):
-            self.layout.input_stp_export_path.configure(foreground="black")
+            self.layout.input_stp_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
             self.layout.checkbox_export_stp.configure(state=NORMAL)
             self.vars.export_stp.set(True)
         else:
-            self.layout.input_stp_export_path.configure(foreground="red")
+            self.layout.input_stp_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
             self.vars.export_stp.set(False)
             self.layout.checkbox_export_stp.configure(state=DISABLED)
 
@@ -160,11 +178,15 @@ class Traces:
         if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(
             self.vars.stl_export_path.get()
         ):
-            self.layout.input_stl_export_path.configure(foreground="black")
+            self.layout.input_stl_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
             self.layout.checkbox_export_stl.configure(state=NORMAL)
             self.vars.export_stl.set(True)
         else:
-            self.layout.input_stl_export_path.configure(foreground="red")
+            self.layout.input_stl_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
             self.vars.export_stl.set(False)
             self.layout.checkbox_export_stl.configure(state=DISABLED)
 
@@ -175,11 +197,15 @@ class Traces:
         if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(
             self.vars.jpg_export_path.get()
         ):
-            self.layout.input_jpg_export_path.configure(foreground="black")
+            self.layout.input_jpg_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
             self.layout.checkbox_export_jpg.configure(state=NORMAL)
             self.vars.export_jpg.set(True)
         else:
-            self.layout.input_jpg_export_path.configure(foreground="red")
+            self.layout.input_jpg_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
 

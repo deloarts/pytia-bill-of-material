@@ -5,8 +5,9 @@
 import logging
 import tkinter as tk
 from pathlib import Path
-from tkinter import font, ttk
+from tkinter import font
 
+import ttkbootstrap as ttk
 from app.main.callbacks import Callbacks
 from app.main.controller import Controller
 from app.main.frames import Frames
@@ -40,10 +41,11 @@ class MainUI(tk.Tk):
     """The user interface of the app."""
 
     WIDTH = 800
-    HEIGHT = 580
+    HEIGHT = 595
 
     def __init__(self) -> None:
-        tk.Tk.__init__(self)
+        ttk.tk.Tk.__init__(self)
+        self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
@@ -97,15 +99,6 @@ class MainUI(tk.Tk):
         self.geometry(f"{MainUI.WIDTH}x{MainUI.HEIGHT}+{x_coordinate}+{y_coordinate}")
         self.minsize(width=MainUI.WIDTH, height=MainUI.HEIGHT)
         self.resizable(width=False, height=False)
-
-        # STYLES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        style = ttk.Style(self)
-        style.configure("Infrastructure.TLabelframe.Label", foreground="grey")
-        style.configure("Paths.TLabelframe.Label", foreground="grey")
-        style.configure("Export.TLabelframe.Label", foreground="grey")
-        style.configure("Report.TLabelframe.Label", foreground="grey")
-        style.configure("Log.TLabelframe.Label", foreground="grey")
-        style.configure("Footer.TButton", width=14)
 
         self.update()
         self.window_manager.remove_window_buttons()
@@ -162,7 +155,7 @@ class MainUI(tk.Tk):
         log_format = logging.Formatter(
             r"%(asctime)s  %(levelname)s  %(message)s", datefmt=r"%Y-%m-%d %H:%M:%S"
         )
-        widget_handler = WidgetLogHandler(self, self.layout.text_log)
+        widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)
         log.logger.addHandler(widget_handler)
@@ -192,6 +185,7 @@ class MainUI(tk.Tk):
             state_setter=self.set_ui,
             frames=self.frames,
             layout=self.layout,
+            style=self.style,
             workspace=self.workspace,
         )
 

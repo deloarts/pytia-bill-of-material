@@ -63,6 +63,27 @@ JPGS = "jpgs"
 X000D = "_x000D_\n"
 KEEP = "Keep"
 
+STYLES = [
+    "cosmo",
+    "litera",
+    "flatly",
+    "journal",
+    "lumen",
+    "minty",
+    "pulse",
+    "sandstone",
+    "united",
+    "yeti",
+    "morph",
+    "simplex",
+    "cerculean",
+    "solar",
+    "superhero",
+    "darkly",
+    "cyborg",
+    "vapor",
+]
+
 
 class Status(Enum):
     OK = "ok"
