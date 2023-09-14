@@ -33,10 +33,23 @@
 
 # pylint: disable=C0116
 
-from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk, ttk
+from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk
 
 from app.main.frames import Frames
 from app.main.vars import Variables
+from const import STYLES
+from helper.appearance import set_appearance_menu
+from helper.messages import show_help
+from ttkbootstrap import (
+    Button,
+    Checkbutton,
+    Combobox,
+    Entry,
+    Label,
+    Menu,
+    Progressbar,
+    Treeview,
+)
 
 
 class Layout:
@@ -56,8 +69,22 @@ class Layout:
         &#34;&#34;&#34; &#34;&#34;&#34;&#34;&#34;&#34;
         # region FRAME Infra ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+        # region MENU
+        menubar = Menu(root)
+
+        self._appearance_menu = Menu(menubar, tearoff=False)
+        for style in STYLES:
+            self._appearance_menu.add_command(label=style)
+
+        menubar.add_cascade(label=&#34;Help&#34;, command=show_help)
+        menubar.add_cascade(label=&#34;Appearance&#34;, menu=self._appearance_menu)
+
+        set_appearance_menu(self._appearance_menu)
+        root.configure(menu=menubar)
+        # endregion
+
         # region project
-        lbl_project = ttk.Label(frames.infrastructure, text=&#34;Project&#34;, width=18)
+        lbl_project = Label(frames.infrastructure, text=&#34;Project&#34;, width=18)
         lbl_project.grid(
             row=0,
             column=0,
@@ -66,7 +93,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._combo_project = ttk.Combobox(
+        self._combo_project = Combobox(
             frames.infrastructure,
             values=[],
             textvariable=variables.project,
@@ -77,8 +104,6 @@ class Layout:
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(Layout.MARGIN_Y, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
             columnspan=2,
         )
@@ -89,7 +114,7 @@ class Layout:
         # endregion
 
         # region bom export path
-        lbl_bom_export_path = ttk.Label(
+        lbl_bom_export_path = Label(
             frames.paths, text=&#34;Bill of Material File&#34;, width=18
         )
         lbl_bom_export_path.grid(
@@ -100,7 +125,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_bom_export_path = ttk.Entry(
+        self._entry_bom_export_path = Entry(
             frames.paths,
             textvariable=variables.bom_export_path,
             state=DISABLED,
@@ -110,15 +135,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(Layout.MARGIN_Y, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_bom_export_path = ttk.Button(
+        self._btn_browse_bom_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_bom_export_path.grid(
@@ -131,7 +155,7 @@ class Layout:
         # endregion
 
         # region docket export path
-        lbl_docket_export_path = ttk.Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
+        lbl_docket_export_path = Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
         lbl_docket_export_path.grid(
             row=1,
             column=0,
@@ -140,7 +164,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_docket_export_path = ttk.Entry(
+        self._entry_docket_export_path = Entry(
             frames.paths,
             textvariable=variables.docket_export_path,
             state=DISABLED,
@@ -150,15 +174,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_docket_export_path = ttk.Button(
+        self._btn_browse_docket_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_docket_export_path.grid(
@@ -171,9 +194,7 @@ class Layout:
         # endregion
 
         # region drawing export path
-        lbl_drawing_export_path = ttk.Label(
-            frames.paths, text=&#34;Drawing Folder&#34;, width=18
-        )
+        lbl_drawing_export_path = Label(frames.paths, text=&#34;Drawing Folder&#34;, width=18)
         lbl_drawing_export_path.grid(
             row=2,
             column=0,
@@ -182,7 +203,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_drawing_export_path = ttk.Entry(
+        self._entry_drawing_export_path = Entry(
             frames.paths,
             textvariable=variables.drawing_export_path,
             state=DISABLED,
@@ -192,15 +213,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_drawing_export_path = ttk.Button(
+        self._btn_browse_drawing_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_drawing_export_path.grid(
@@ -213,7 +233,7 @@ class Layout:
         # endregion
 
         # region stp export path
-        lbl_stp_export_path = ttk.Label(frames.paths, text=&#34;STP Folder&#34;, width=18)
+        lbl_stp_export_path = Label(frames.paths, text=&#34;STP Folder&#34;, width=18)
         lbl_stp_export_path.grid(
             row=3,
             column=0,
@@ -222,7 +242,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_stp_export_path = ttk.Entry(
+        self._entry_stp_export_path = Entry(
             frames.paths,
             textvariable=variables.stp_export_path,
             state=DISABLED,
@@ -232,15 +252,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_stp_export_path = ttk.Button(
+        self._btn_browse_stp_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_stp_export_path.grid(
@@ -253,7 +272,7 @@ class Layout:
         # endregion
 
         # region stl export path
-        lbl_stl_export_path = ttk.Label(frames.paths, text=&#34;STL Folder&#34;, width=18)
+        lbl_stl_export_path = Label(frames.paths, text=&#34;STL Folder&#34;, width=18)
         lbl_stl_export_path.grid(
             row=4,
             column=0,
@@ -262,7 +281,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_stl_export_path = ttk.Entry(
+        self._entry_stl_export_path = Entry(
             frames.paths,
             textvariable=variables.stl_export_path,
             state=DISABLED,
@@ -272,15 +291,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_stl_export_path = ttk.Button(
+        self._btn_browse_stl_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_stl_export_path.grid(
@@ -293,7 +311,7 @@ class Layout:
         # endregion
 
         # region jpg export path
-        lbl_jpg_export_path = ttk.Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
+        lbl_jpg_export_path = Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
         lbl_jpg_export_path.grid(
             row=5,
             column=0,
@@ -302,7 +320,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_jpg_export_path = ttk.Entry(
+        self._entry_jpg_export_path = Entry(
             frames.paths,
             textvariable=variables.jpg_export_path,
             state=DISABLED,
@@ -312,15 +330,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_jpg_export_path = ttk.Button(
+        self._btn_browse_jpg_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=5,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_jpg_export_path.grid(
@@ -334,7 +351,7 @@ class Layout:
 
         # region FRAME Export ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region export docket
-        lbl_export_docket = ttk.Label(frames.export, text=&#34;Export Docket&#34;, width=18)
+        lbl_export_docket = Label(frames.export, text=&#34;Export Docket&#34;, width=18)
         lbl_export_docket.grid(
             row=0,
             column=0,
@@ -343,8 +360,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_docket = ttk.Checkbutton(
-            frames.export, variable=variables.export_docket, state=DISABLED
+        self._chkbtn_export_docket = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_docket,
+            state=DISABLED,
         )
         self._chkbtn_export_docket.grid(
             row=0,
@@ -357,7 +377,7 @@ class Layout:
         # endregion
 
         # region export drawing
-        lbl_export_drawing = ttk.Label(frames.export, text=&#34;Export Drawing&#34;, width=18)
+        lbl_export_drawing = Label(frames.export, text=&#34;Export Drawing&#34;, width=18)
         lbl_export_drawing.grid(
             row=1,
             column=0,
@@ -366,8 +386,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_drawing = ttk.Checkbutton(
-            frames.export, variable=variables.export_drawing, state=DISABLED
+        self._chkbtn_export_drawing = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_drawing,
+            state=DISABLED,
         )
         self._chkbtn_export_drawing.grid(
             row=1,
@@ -380,7 +403,7 @@ class Layout:
         # endregion
 
         # region export stp
-        lbl_export_stp = ttk.Label(frames.export, text=&#34;Export STP&#34;, width=18)
+        lbl_export_stp = Label(frames.export, text=&#34;Export STP&#34;, width=18)
         lbl_export_stp.grid(
             row=2,
             column=0,
@@ -389,8 +412,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_stp = ttk.Checkbutton(
-            frames.export, variable=variables.export_stp, state=DISABLED
+        self._chkbtn_export_stp = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_stp,
+            state=DISABLED,
         )
         self._chkbtn_export_stp.grid(
             row=2,
@@ -403,7 +429,7 @@ class Layout:
         # endregion
 
         # region export stl
-        lbl_export_stl = ttk.Label(frames.export, text=&#34;Export STL&#34;, width=18)
+        lbl_export_stl = Label(frames.export, text=&#34;Export STL&#34;, width=18)
         lbl_export_stl.grid(
             row=3,
             column=0,
@@ -412,8 +438,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_stl = ttk.Checkbutton(
-            frames.export, variable=variables.export_stl, state=DISABLED
+        self._chkbtn_export_stl = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_stl,
+            state=DISABLED,
         )
         self._chkbtn_export_stl.grid(
             row=3,
@@ -426,7 +455,7 @@ class Layout:
         # endregion
 
         # region export jpg
-        lbl_export_jpg = ttk.Label(frames.export, text=&#34;Export JPG&#34;, width=18)
+        lbl_export_jpg = Label(frames.export, text=&#34;Export JPG&#34;, width=18)
         lbl_export_jpg.grid(
             row=4,
             column=0,
@@ -435,8 +464,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_jpg = ttk.Checkbutton(
-            frames.export, variable=variables.export_jpg, state=DISABLED
+        self._chkbtn_export_jpg = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_jpg,
+            state=DISABLED,
         )
         self._chkbtn_export_jpg.grid(
             row=4,
@@ -449,7 +481,7 @@ class Layout:
         # endregion
 
         # region ignore source &#34;unknown&#34;
-        lbl_ignore_unknown = ttk.Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
+        lbl_ignore_unknown = Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
         lbl_ignore_unknown.grid(
             row=5,
             column=0,
@@ -458,8 +490,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_ignore_unknown = ttk.Checkbutton(
-            frames.export, variable=variables.ignore_source_unknown, state=DISABLED
+        self._chkbtn_ignore_unknown = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.ignore_source_unknown,
+            state=DISABLED,
         )
         self._chkbtn_ignore_unknown.grid(
             row=5,
@@ -472,7 +507,7 @@ class Layout:
         # endregion
 
         # region ignore prefix
-        lbl_ignore_prefixed = ttk.Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
+        lbl_ignore_prefixed = Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
         lbl_ignore_prefixed.grid(
             row=6,
             column=0,
@@ -481,8 +516,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_ignore_prefixed = ttk.Checkbutton(
-            frames.export, variable=variables.ignore_prefix, state=DISABLED
+        self._chkbtn_ignore_prefixed = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.ignore_prefix,
+            state=DISABLED,
         )
         self._chkbtn_ignore_prefixed.grid(
             row=6,
@@ -491,7 +529,7 @@ class Layout:
             pady=(2, Layout.MARGIN_Y),
             sticky=&#34;nsew&#34;,
         )
-        self._entry_ignore_prefix_txt = ttk.Entry(
+        self._entry_ignore_prefix_txt = Entry(
             frames.export,
             textvariable=variables.ignore_prefix_txt,
             state=DISABLED,
@@ -501,8 +539,6 @@ class Layout:
             column=2,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
         # endregion
@@ -510,7 +546,7 @@ class Layout:
 
         # region FRAME Report ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        lbl_report = ttk.Label(frames.report, text=&#34;Foo&#34;, width=18)
+        lbl_report = Label(frames.report, text=&#34;Foo&#34;, width=18)
         lbl_report.grid(
             row=0,
             column=0,
@@ -519,7 +555,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._tree_report_failed_items = ttk.Treeview(
+        self._tree_report_failed_items = Treeview(
             frames.report, columns=(&#34;failed_items&#34;,), show=&#34;headings&#34;, height=10
         )
         self._tree_report_failed_items.heading(&#34;failed_items&#34;, text=&#34;Failed Items&#34;)
@@ -533,7 +569,7 @@ class Layout:
             rowspan=5,
         )
 
-        self._tree_report_failed_props = ttk.Treeview(
+        self._tree_report_failed_props = Treeview(
             frames.report, columns=(&#34;failed_props&#34;,), show=&#34;headings&#34;, height=10
         )
         self._tree_report_failed_props.heading(&#34;failed_props&#34;, text=&#34;Failed Properties&#34;)
@@ -559,8 +595,8 @@ class Layout:
             row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky=&#34;sew&#34;
         )
 
-        self._btn_open_document = ttk.Button(
-            frames.report, text=&#34;Open Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_open_document = Button(
+            frames.report, text=&#34;Open Document&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_open_document.grid(
             row=2,
@@ -570,8 +606,8 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_open_parent = ttk.Button(
-            frames.report, text=&#34;Open Parent&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_open_parent = Button(
+            frames.report, text=&#34;Open Parent&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_open_parent.grid(
             row=3,
@@ -581,8 +617,8 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_close_document = ttk.Button(
-            frames.report, text=&#34;Close Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_close_document = Button(
+            frames.report, text=&#34;Close Document&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_close_document.grid(
             row=4,
@@ -592,8 +628,11 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_close_report = ttk.Button(
-            frames.report_footer, text=&#34;Close&#34;, style=&#34;Footer.TButton&#34;
+        self._btn_close_report = Button(
+            frames.report_footer,
+            text=&#34;Close&#34;,
+            style=&#34;outline&#34;,
+            width=10,
         )
         self._btn_close_report.grid(row=0, column=0, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
@@ -616,7 +655,7 @@ class Layout:
 
         # region FRAME Footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region progress
-        self._progress_bar = ttk.Progressbar(
+        self._progress_bar = Progressbar(
             frames.footer,
             orient=HORIZONTAL,
             length=100,
@@ -631,113 +670,122 @@ class Layout:
         # endregion
 
         # region button save
-        self._btn_export = ttk.Button(
-            frames.footer, text=&#34;Export&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_export = Button(
+            frames.footer,
+            text=&#34;Export&#34;,
+            style=&#34;outline&#34;,
+            width=10,
+            state=DISABLED,
         )
         self._btn_export.grid(row=0, column=1, padx=(5, 2), pady=0, sticky=&#34;e&#34;)
         # endregion
 
         # region button abort
-        self._btn_exit = ttk.Button(frames.footer, text=&#34;Exit&#34;, style=&#34;Footer.TButton&#34;)
+        self._btn_exit = Button(
+            frames.footer,
+            text=&#34;Exit&#34;,
+            style=&#34;outline&#34;,
+            width=10,
+        )
         self._btn_exit.grid(row=0, column=2, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
         # endregion
 
     @property
-    def input_project(self) -&gt; ttk.Combobox:
+    def input_project(self) -&gt; Combobox:
         &#34;&#34;&#34;Returns the project combobox.&#34;&#34;&#34;
         return self._combo_project
 
     @property
-    def input_bom_export_path(self) -&gt; ttk.Entry:
+    def input_bom_export_path(self) -&gt; Entry:
         return self._entry_bom_export_path
 
     @property
-    def button_bom_export_path(self) -&gt; ttk.Button:
+    def button_bom_export_path(self) -&gt; Button:
         return self._btn_browse_bom_export_path
 
     @property
-    def input_docket_export_path(self) -&gt; ttk.Entry:
+    def input_docket_export_path(self) -&gt; Entry:
         return self._entry_docket_export_path
 
     @property
-    def button_docket_export_path(self) -&gt; ttk.Button:
+    def button_docket_export_path(self) -&gt; Button:
         return self._btn_browse_docket_export_path
 
     @property
-    def input_drawing_export_path(self) -&gt; ttk.Entry:
+    def input_drawing_export_path(self) -&gt; Entry:
         return self._entry_drawing_export_path
 
     @property
-    def button_drawing_export_path(self) -&gt; ttk.Button:
+    def button_drawing_export_path(self) -&gt; Button:
         return self._btn_browse_drawing_export_path
 
     @property
-    def input_stp_export_path(self) -&gt; ttk.Entry:
+    def input_stp_export_path(self) -&gt; Entry:
         return self._entry_stp_export_path
 
     @property
-    def button_stp_export_path(self) -&gt; ttk.Button:
+    def button_stp_export_path(self) -&gt; Button:
         return self._btn_browse_stp_export_path
 
     @property
-    def input_stl_export_path(self) -&gt; ttk.Entry:
+    def input_stl_export_path(self) -&gt; Entry:
         return self._entry_stl_export_path
 
     @property
-    def button_stl_export_path(self) -&gt; ttk.Button:
+    def button_stl_export_path(self) -&gt; Button:
         return self._btn_browse_stl_export_path
 
     @property
-    def input_jpg_export_path(self) -&gt; ttk.Entry:
+    def input_jpg_export_path(self) -&gt; Entry:
         return self._entry_jpg_export_path
 
     @property
-    def button_jpg_export_path(self) -&gt; ttk.Button:
+    def button_jpg_export_path(self) -&gt; Button:
         return self._btn_browse_jpg_export_path
 
     @property
-    def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_docket(self) -&gt; Checkbutton:
         return self._chkbtn_export_docket
 
     @property
-    def checkbox_export_drawing(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_drawing(self) -&gt; Checkbutton:
         return self._chkbtn_export_drawing
 
     @property
-    def checkbox_export_stp(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_stp(self) -&gt; Checkbutton:
         return self._chkbtn_export_stp
 
     @property
-    def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_stl(self) -&gt; Checkbutton:
         return self._chkbtn_export_stl
 
     @property
-    def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_jpg(self) -&gt; Checkbutton:
         return self._chkbtn_export_jpg
 
     @property
-    def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+    def checkbox_ignore_prefixed(self) -&gt; Checkbutton:
         return self._chkbtn_ignore_prefixed
 
     @property
-    def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+    def checkbox_ignore_source_unknown(self) -&gt; Checkbutton:
         return self._chkbtn_ignore_unknown
 
     @property
-    def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+    def input_ignore_prefixed_txt(self) -&gt; Entry:
         return self._entry_ignore_prefix_txt
 
     @property
-    def progress_bar(self) -&gt; ttk.Progressbar:
+    def progress_bar(self) -&gt; Progressbar:
         return self._progress_bar
 
     @property
-    def tree_report_failed_items(self) -&gt; ttk.Treeview:
+    def tree_report_failed_items(self) -&gt; Treeview:
         return self._tree_report_failed_items
 
     @property
-    def tree_report_failed_props(self) -&gt; ttk.Treeview:
+    def tree_report_failed_props(self) -&gt; Treeview:
         return self._tree_report_failed_props
 
     @property
@@ -749,32 +797,32 @@ class Layout:
         return self._text_log
 
     @property
-    def button_export(self) -&gt; ttk.Button:
+    def button_export(self) -&gt; Button:
         &#34;&#34;&#34;Returns the export button.&#34;&#34;&#34;
         return self._btn_export
 
     @property
-    def button_open_document(self) -&gt; ttk.Button:
+    def button_open_document(self) -&gt; Button:
         &#34;&#34;&#34;Returns the open document button.&#34;&#34;&#34;
         return self._btn_open_document
 
     @property
-    def button_open_parent(self) -&gt; ttk.Button:
+    def button_open_parent(self) -&gt; Button:
         &#34;&#34;&#34;Returns the open parent button.&#34;&#34;&#34;
         return self._btn_open_parent
 
     @property
-    def button_close_document(self) -&gt; ttk.Button:
+    def button_close_document(self) -&gt; Button:
         &#34;&#34;&#34;Returns the close document button.&#34;&#34;&#34;
         return self._btn_close_document
 
     @property
-    def button_exit(self) -&gt; ttk.Button:
+    def button_exit(self) -&gt; Button:
         &#34;&#34;&#34;Returns the exit button.&#34;&#34;&#34;
         return self._btn_exit
 
     @property
-    def button_close_report(self) -&gt; ttk.Button:
+    def button_close_report(self) -&gt; Button:
         &#34;&#34;&#34;Returns the close report button.&#34;&#34;&#34;
         return self._btn_close_report</code></pre>
 </details>
@@ -825,8 +873,22 @@ class Layout:
         &#34;&#34;&#34; &#34;&#34;&#34;&#34;&#34;&#34;
         # region FRAME Infra ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+        # region MENU
+        menubar = Menu(root)
+
+        self._appearance_menu = Menu(menubar, tearoff=False)
+        for style in STYLES:
+            self._appearance_menu.add_command(label=style)
+
+        menubar.add_cascade(label=&#34;Help&#34;, command=show_help)
+        menubar.add_cascade(label=&#34;Appearance&#34;, menu=self._appearance_menu)
+
+        set_appearance_menu(self._appearance_menu)
+        root.configure(menu=menubar)
+        # endregion
+
         # region project
-        lbl_project = ttk.Label(frames.infrastructure, text=&#34;Project&#34;, width=18)
+        lbl_project = Label(frames.infrastructure, text=&#34;Project&#34;, width=18)
         lbl_project.grid(
             row=0,
             column=0,
@@ -835,7 +897,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._combo_project = ttk.Combobox(
+        self._combo_project = Combobox(
             frames.infrastructure,
             values=[],
             textvariable=variables.project,
@@ -846,8 +908,6 @@ class Layout:
             column=1,
             padx=(5, Layout.MARGIN_X),
             pady=(Layout.MARGIN_Y, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
             columnspan=2,
         )
@@ -858,7 +918,7 @@ class Layout:
         # endregion
 
         # region bom export path
-        lbl_bom_export_path = ttk.Label(
+        lbl_bom_export_path = Label(
             frames.paths, text=&#34;Bill of Material File&#34;, width=18
         )
         lbl_bom_export_path.grid(
@@ -869,7 +929,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_bom_export_path = ttk.Entry(
+        self._entry_bom_export_path = Entry(
             frames.paths,
             textvariable=variables.bom_export_path,
             state=DISABLED,
@@ -879,15 +939,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(Layout.MARGIN_Y, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_bom_export_path = ttk.Button(
+        self._btn_browse_bom_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_bom_export_path.grid(
@@ -900,7 +959,7 @@ class Layout:
         # endregion
 
         # region docket export path
-        lbl_docket_export_path = ttk.Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
+        lbl_docket_export_path = Label(frames.paths, text=&#34;Docket Folder&#34;, width=18)
         lbl_docket_export_path.grid(
             row=1,
             column=0,
@@ -909,7 +968,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_docket_export_path = ttk.Entry(
+        self._entry_docket_export_path = Entry(
             frames.paths,
             textvariable=variables.docket_export_path,
             state=DISABLED,
@@ -919,15 +978,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_docket_export_path = ttk.Button(
+        self._btn_browse_docket_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_docket_export_path.grid(
@@ -940,9 +998,7 @@ class Layout:
         # endregion
 
         # region drawing export path
-        lbl_drawing_export_path = ttk.Label(
-            frames.paths, text=&#34;Drawing Folder&#34;, width=18
-        )
+        lbl_drawing_export_path = Label(frames.paths, text=&#34;Drawing Folder&#34;, width=18)
         lbl_drawing_export_path.grid(
             row=2,
             column=0,
@@ -951,7 +1007,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_drawing_export_path = ttk.Entry(
+        self._entry_drawing_export_path = Entry(
             frames.paths,
             textvariable=variables.drawing_export_path,
             state=DISABLED,
@@ -961,15 +1017,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_drawing_export_path = ttk.Button(
+        self._btn_browse_drawing_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_drawing_export_path.grid(
@@ -982,7 +1037,7 @@ class Layout:
         # endregion
 
         # region stp export path
-        lbl_stp_export_path = ttk.Label(frames.paths, text=&#34;STP Folder&#34;, width=18)
+        lbl_stp_export_path = Label(frames.paths, text=&#34;STP Folder&#34;, width=18)
         lbl_stp_export_path.grid(
             row=3,
             column=0,
@@ -991,7 +1046,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_stp_export_path = ttk.Entry(
+        self._entry_stp_export_path = Entry(
             frames.paths,
             textvariable=variables.stp_export_path,
             state=DISABLED,
@@ -1001,15 +1056,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_stp_export_path = ttk.Button(
+        self._btn_browse_stp_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_stp_export_path.grid(
@@ -1022,7 +1076,7 @@ class Layout:
         # endregion
 
         # region stl export path
-        lbl_stl_export_path = ttk.Label(frames.paths, text=&#34;STL Folder&#34;, width=18)
+        lbl_stl_export_path = Label(frames.paths, text=&#34;STL Folder&#34;, width=18)
         lbl_stl_export_path.grid(
             row=4,
             column=0,
@@ -1031,7 +1085,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_stl_export_path = ttk.Entry(
+        self._entry_stl_export_path = Entry(
             frames.paths,
             textvariable=variables.stl_export_path,
             state=DISABLED,
@@ -1041,15 +1095,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, 2),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_stl_export_path = ttk.Button(
+        self._btn_browse_stl_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=4,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_stl_export_path.grid(
@@ -1062,7 +1115,7 @@ class Layout:
         # endregion
 
         # region jpg export path
-        lbl_jpg_export_path = ttk.Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
+        lbl_jpg_export_path = Label(frames.paths, text=&#34;JPG Folder&#34;, width=18)
         lbl_jpg_export_path.grid(
             row=5,
             column=0,
@@ -1071,7 +1124,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._entry_jpg_export_path = ttk.Entry(
+        self._entry_jpg_export_path = Entry(
             frames.paths,
             textvariable=variables.jpg_export_path,
             state=DISABLED,
@@ -1081,15 +1134,14 @@ class Layout:
             column=1,
             padx=(5, 2),
             pady=(2, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
 
-        self._btn_browse_jpg_export_path = ttk.Button(
+        self._btn_browse_jpg_export_path = Button(
             frames.paths,
             text=&#34;...&#34;,
-            width=5,
+            style=&#34;outline&#34;,
+            width=3,
             state=DISABLED,
         )
         self._btn_browse_jpg_export_path.grid(
@@ -1103,7 +1155,7 @@ class Layout:
 
         # region FRAME Export ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region export docket
-        lbl_export_docket = ttk.Label(frames.export, text=&#34;Export Docket&#34;, width=18)
+        lbl_export_docket = Label(frames.export, text=&#34;Export Docket&#34;, width=18)
         lbl_export_docket.grid(
             row=0,
             column=0,
@@ -1112,8 +1164,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_docket = ttk.Checkbutton(
-            frames.export, variable=variables.export_docket, state=DISABLED
+        self._chkbtn_export_docket = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_docket,
+            state=DISABLED,
         )
         self._chkbtn_export_docket.grid(
             row=0,
@@ -1126,7 +1181,7 @@ class Layout:
         # endregion
 
         # region export drawing
-        lbl_export_drawing = ttk.Label(frames.export, text=&#34;Export Drawing&#34;, width=18)
+        lbl_export_drawing = Label(frames.export, text=&#34;Export Drawing&#34;, width=18)
         lbl_export_drawing.grid(
             row=1,
             column=0,
@@ -1135,8 +1190,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_drawing = ttk.Checkbutton(
-            frames.export, variable=variables.export_drawing, state=DISABLED
+        self._chkbtn_export_drawing = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_drawing,
+            state=DISABLED,
         )
         self._chkbtn_export_drawing.grid(
             row=1,
@@ -1149,7 +1207,7 @@ class Layout:
         # endregion
 
         # region export stp
-        lbl_export_stp = ttk.Label(frames.export, text=&#34;Export STP&#34;, width=18)
+        lbl_export_stp = Label(frames.export, text=&#34;Export STP&#34;, width=18)
         lbl_export_stp.grid(
             row=2,
             column=0,
@@ -1158,8 +1216,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_stp = ttk.Checkbutton(
-            frames.export, variable=variables.export_stp, state=DISABLED
+        self._chkbtn_export_stp = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_stp,
+            state=DISABLED,
         )
         self._chkbtn_export_stp.grid(
             row=2,
@@ -1172,7 +1233,7 @@ class Layout:
         # endregion
 
         # region export stl
-        lbl_export_stl = ttk.Label(frames.export, text=&#34;Export STL&#34;, width=18)
+        lbl_export_stl = Label(frames.export, text=&#34;Export STL&#34;, width=18)
         lbl_export_stl.grid(
             row=3,
             column=0,
@@ -1181,8 +1242,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_stl = ttk.Checkbutton(
-            frames.export, variable=variables.export_stl, state=DISABLED
+        self._chkbtn_export_stl = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_stl,
+            state=DISABLED,
         )
         self._chkbtn_export_stl.grid(
             row=3,
@@ -1195,7 +1259,7 @@ class Layout:
         # endregion
 
         # region export jpg
-        lbl_export_jpg = ttk.Label(frames.export, text=&#34;Export JPG&#34;, width=18)
+        lbl_export_jpg = Label(frames.export, text=&#34;Export JPG&#34;, width=18)
         lbl_export_jpg.grid(
             row=4,
             column=0,
@@ -1204,8 +1268,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_export_jpg = ttk.Checkbutton(
-            frames.export, variable=variables.export_jpg, state=DISABLED
+        self._chkbtn_export_jpg = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.export_jpg,
+            state=DISABLED,
         )
         self._chkbtn_export_jpg.grid(
             row=4,
@@ -1218,7 +1285,7 @@ class Layout:
         # endregion
 
         # region ignore source &#34;unknown&#34;
-        lbl_ignore_unknown = ttk.Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
+        lbl_ignore_unknown = Label(frames.export, text=&#34;Ignore Unknown&#34;, width=18)
         lbl_ignore_unknown.grid(
             row=5,
             column=0,
@@ -1227,8 +1294,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_ignore_unknown = ttk.Checkbutton(
-            frames.export, variable=variables.ignore_source_unknown, state=DISABLED
+        self._chkbtn_ignore_unknown = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.ignore_source_unknown,
+            state=DISABLED,
         )
         self._chkbtn_ignore_unknown.grid(
             row=5,
@@ -1241,7 +1311,7 @@ class Layout:
         # endregion
 
         # region ignore prefix
-        lbl_ignore_prefixed = ttk.Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
+        lbl_ignore_prefixed = Label(frames.export, text=&#34;Ignore Prefixed&#34;, width=18)
         lbl_ignore_prefixed.grid(
             row=6,
             column=0,
@@ -1250,8 +1320,11 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._chkbtn_ignore_prefixed = ttk.Checkbutton(
-            frames.export, variable=variables.ignore_prefix, state=DISABLED
+        self._chkbtn_ignore_prefixed = Checkbutton(
+            frames.export,
+            bootstyle=&#34;round-toggle&#34;,  # type:ignore
+            variable=variables.ignore_prefix,
+            state=DISABLED,
         )
         self._chkbtn_ignore_prefixed.grid(
             row=6,
@@ -1260,7 +1333,7 @@ class Layout:
             pady=(2, Layout.MARGIN_Y),
             sticky=&#34;nsew&#34;,
         )
-        self._entry_ignore_prefix_txt = ttk.Entry(
+        self._entry_ignore_prefix_txt = Entry(
             frames.export,
             textvariable=variables.ignore_prefix_txt,
             state=DISABLED,
@@ -1270,8 +1343,6 @@ class Layout:
             column=2,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
-            ipadx=2,
-            ipady=2,
             sticky=&#34;nsew&#34;,
         )
         # endregion
@@ -1279,7 +1350,7 @@ class Layout:
 
         # region FRAME Report ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        lbl_report = ttk.Label(frames.report, text=&#34;Foo&#34;, width=18)
+        lbl_report = Label(frames.report, text=&#34;Foo&#34;, width=18)
         lbl_report.grid(
             row=0,
             column=0,
@@ -1288,7 +1359,7 @@ class Layout:
             sticky=&#34;nsew&#34;,
         )
 
-        self._tree_report_failed_items = ttk.Treeview(
+        self._tree_report_failed_items = Treeview(
             frames.report, columns=(&#34;failed_items&#34;,), show=&#34;headings&#34;, height=10
         )
         self._tree_report_failed_items.heading(&#34;failed_items&#34;, text=&#34;Failed Items&#34;)
@@ -1302,7 +1373,7 @@ class Layout:
             rowspan=5,
         )
 
-        self._tree_report_failed_props = ttk.Treeview(
+        self._tree_report_failed_props = Treeview(
             frames.report, columns=(&#34;failed_props&#34;,), show=&#34;headings&#34;, height=10
         )
         self._tree_report_failed_props.heading(&#34;failed_props&#34;, text=&#34;Failed Properties&#34;)
@@ -1328,8 +1399,8 @@ class Layout:
             row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky=&#34;sew&#34;
         )
 
-        self._btn_open_document = ttk.Button(
-            frames.report, text=&#34;Open Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_open_document = Button(
+            frames.report, text=&#34;Open Document&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_open_document.grid(
             row=2,
@@ -1339,8 +1410,8 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_open_parent = ttk.Button(
-            frames.report, text=&#34;Open Parent&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_open_parent = Button(
+            frames.report, text=&#34;Open Parent&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_open_parent.grid(
             row=3,
@@ -1350,8 +1421,8 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_close_document = ttk.Button(
-            frames.report, text=&#34;Close Document&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_close_document = Button(
+            frames.report, text=&#34;Close Document&#34;, style=&#34;outline&#34;, state=DISABLED
         )
         self._btn_close_document.grid(
             row=4,
@@ -1361,8 +1432,11 @@ class Layout:
             sticky=&#34;sew&#34;,
         )
 
-        self._btn_close_report = ttk.Button(
-            frames.report_footer, text=&#34;Close&#34;, style=&#34;Footer.TButton&#34;
+        self._btn_close_report = Button(
+            frames.report_footer,
+            text=&#34;Close&#34;,
+            style=&#34;outline&#34;,
+            width=10,
         )
         self._btn_close_report.grid(row=0, column=0, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
@@ -1385,7 +1459,7 @@ class Layout:
 
         # region FRAME Footer ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region progress
-        self._progress_bar = ttk.Progressbar(
+        self._progress_bar = Progressbar(
             frames.footer,
             orient=HORIZONTAL,
             length=100,
@@ -1400,113 +1474,122 @@ class Layout:
         # endregion
 
         # region button save
-        self._btn_export = ttk.Button(
-            frames.footer, text=&#34;Export&#34;, style=&#34;Footer.TButton&#34;, state=DISABLED
+        self._btn_export = Button(
+            frames.footer,
+            text=&#34;Export&#34;,
+            style=&#34;outline&#34;,
+            width=10,
+            state=DISABLED,
         )
         self._btn_export.grid(row=0, column=1, padx=(5, 2), pady=0, sticky=&#34;e&#34;)
         # endregion
 
         # region button abort
-        self._btn_exit = ttk.Button(frames.footer, text=&#34;Exit&#34;, style=&#34;Footer.TButton&#34;)
+        self._btn_exit = Button(
+            frames.footer,
+            text=&#34;Exit&#34;,
+            style=&#34;outline&#34;,
+            width=10,
+        )
         self._btn_exit.grid(row=0, column=2, padx=(2, 0), pady=0, sticky=&#34;e&#34;)
         # endregion
         # endregion
 
     @property
-    def input_project(self) -&gt; ttk.Combobox:
+    def input_project(self) -&gt; Combobox:
         &#34;&#34;&#34;Returns the project combobox.&#34;&#34;&#34;
         return self._combo_project
 
     @property
-    def input_bom_export_path(self) -&gt; ttk.Entry:
+    def input_bom_export_path(self) -&gt; Entry:
         return self._entry_bom_export_path
 
     @property
-    def button_bom_export_path(self) -&gt; ttk.Button:
+    def button_bom_export_path(self) -&gt; Button:
         return self._btn_browse_bom_export_path
 
     @property
-    def input_docket_export_path(self) -&gt; ttk.Entry:
+    def input_docket_export_path(self) -&gt; Entry:
         return self._entry_docket_export_path
 
     @property
-    def button_docket_export_path(self) -&gt; ttk.Button:
+    def button_docket_export_path(self) -&gt; Button:
         return self._btn_browse_docket_export_path
 
     @property
-    def input_drawing_export_path(self) -&gt; ttk.Entry:
+    def input_drawing_export_path(self) -&gt; Entry:
         return self._entry_drawing_export_path
 
     @property
-    def button_drawing_export_path(self) -&gt; ttk.Button:
+    def button_drawing_export_path(self) -&gt; Button:
         return self._btn_browse_drawing_export_path
 
     @property
-    def input_stp_export_path(self) -&gt; ttk.Entry:
+    def input_stp_export_path(self) -&gt; Entry:
         return self._entry_stp_export_path
 
     @property
-    def button_stp_export_path(self) -&gt; ttk.Button:
+    def button_stp_export_path(self) -&gt; Button:
         return self._btn_browse_stp_export_path
 
     @property
-    def input_stl_export_path(self) -&gt; ttk.Entry:
+    def input_stl_export_path(self) -&gt; Entry:
         return self._entry_stl_export_path
 
     @property
-    def button_stl_export_path(self) -&gt; ttk.Button:
+    def button_stl_export_path(self) -&gt; Button:
         return self._btn_browse_stl_export_path
 
     @property
-    def input_jpg_export_path(self) -&gt; ttk.Entry:
+    def input_jpg_export_path(self) -&gt; Entry:
         return self._entry_jpg_export_path
 
     @property
-    def button_jpg_export_path(self) -&gt; ttk.Button:
+    def button_jpg_export_path(self) -&gt; Button:
         return self._btn_browse_jpg_export_path
 
     @property
-    def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_docket(self) -&gt; Checkbutton:
         return self._chkbtn_export_docket
 
     @property
-    def checkbox_export_drawing(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_drawing(self) -&gt; Checkbutton:
         return self._chkbtn_export_drawing
 
     @property
-    def checkbox_export_stp(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_stp(self) -&gt; Checkbutton:
         return self._chkbtn_export_stp
 
     @property
-    def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_stl(self) -&gt; Checkbutton:
         return self._chkbtn_export_stl
 
     @property
-    def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+    def checkbox_export_jpg(self) -&gt; Checkbutton:
         return self._chkbtn_export_jpg
 
     @property
-    def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+    def checkbox_ignore_prefixed(self) -&gt; Checkbutton:
         return self._chkbtn_ignore_prefixed
 
     @property
-    def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+    def checkbox_ignore_source_unknown(self) -&gt; Checkbutton:
         return self._chkbtn_ignore_unknown
 
     @property
-    def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+    def input_ignore_prefixed_txt(self) -&gt; Entry:
         return self._entry_ignore_prefix_txt
 
     @property
-    def progress_bar(self) -&gt; ttk.Progressbar:
+    def progress_bar(self) -&gt; Progressbar:
         return self._progress_bar
 
     @property
-    def tree_report_failed_items(self) -&gt; ttk.Treeview:
+    def tree_report_failed_items(self) -&gt; Treeview:
         return self._tree_report_failed_items
 
     @property
-    def tree_report_failed_props(self) -&gt; ttk.Treeview:
+    def tree_report_failed_props(self) -&gt; Treeview:
         return self._tree_report_failed_props
 
     @property
@@ -1518,32 +1601,32 @@ class Layout:
         return self._text_log
 
     @property
-    def button_export(self) -&gt; ttk.Button:
+    def button_export(self) -&gt; Button:
         &#34;&#34;&#34;Returns the export button.&#34;&#34;&#34;
         return self._btn_export
 
     @property
-    def button_open_document(self) -&gt; ttk.Button:
+    def button_open_document(self) -&gt; Button:
         &#34;&#34;&#34;Returns the open document button.&#34;&#34;&#34;
         return self._btn_open_document
 
     @property
-    def button_open_parent(self) -&gt; ttk.Button:
+    def button_open_parent(self) -&gt; Button:
         &#34;&#34;&#34;Returns the open parent button.&#34;&#34;&#34;
         return self._btn_open_parent
 
     @property
-    def button_close_document(self) -&gt; ttk.Button:
+    def button_close_document(self) -&gt; Button:
         &#34;&#34;&#34;Returns the close document button.&#34;&#34;&#34;
         return self._btn_close_document
 
     @property
-    def button_exit(self) -&gt; ttk.Button:
+    def button_exit(self) -&gt; Button:
         &#34;&#34;&#34;Returns the exit button.&#34;&#34;&#34;
         return self._btn_exit
 
     @property
-    def button_close_report(self) -&gt; ttk.Button:
+    def button_close_report(self) -&gt; Button:
         &#34;&#34;&#34;Returns the close report button.&#34;&#34;&#34;
         return self._btn_close_report</code></pre>
 </details>
@@ -1568,7 +1651,7 @@ class Layout:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_bom_export_path(self) -&gt; ttk.Button:
+def button_bom_export_path(self) -&gt; Button:
     return self._btn_browse_bom_export_path</code></pre>
 </details>
 </dd>
@@ -1580,7 +1663,7 @@ def button_bom_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_close_document(self) -&gt; ttk.Button:
+def button_close_document(self) -&gt; Button:
     &#34;&#34;&#34;Returns the close document button.&#34;&#34;&#34;
     return self._btn_close_document</code></pre>
 </details>
@@ -1593,7 +1676,7 @@ def button_close_document(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_close_report(self) -&gt; ttk.Button:
+def button_close_report(self) -&gt; Button:
     &#34;&#34;&#34;Returns the close report button.&#34;&#34;&#34;
     return self._btn_close_report</code></pre>
 </details>
@@ -1606,7 +1689,7 @@ def button_close_report(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_docket_export_path(self) -&gt; ttk.Button:
+def button_docket_export_path(self) -&gt; Button:
     return self._btn_browse_docket_export_path</code></pre>
 </details>
 </dd>
@@ -1618,7 +1701,7 @@ def button_docket_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_drawing_export_path(self) -&gt; ttk.Button:
+def button_drawing_export_path(self) -&gt; Button:
     return self._btn_browse_drawing_export_path</code></pre>
 </details>
 </dd>
@@ -1630,7 +1713,7 @@ def button_drawing_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_exit(self) -&gt; ttk.Button:
+def button_exit(self) -&gt; Button:
     &#34;&#34;&#34;Returns the exit button.&#34;&#34;&#34;
     return self._btn_exit</code></pre>
 </details>
@@ -1643,7 +1726,7 @@ def button_exit(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_export(self) -&gt; ttk.Button:
+def button_export(self) -&gt; Button:
     &#34;&#34;&#34;Returns the export button.&#34;&#34;&#34;
     return self._btn_export</code></pre>
 </details>
@@ -1656,7 +1739,7 @@ def button_export(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_jpg_export_path(self) -&gt; ttk.Button:
+def button_jpg_export_path(self) -&gt; Button:
     return self._btn_browse_jpg_export_path</code></pre>
 </details>
 </dd>
@@ -1668,7 +1751,7 @@ def button_jpg_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_open_document(self) -&gt; ttk.Button:
+def button_open_document(self) -&gt; Button:
     &#34;&#34;&#34;Returns the open document button.&#34;&#34;&#34;
     return self._btn_open_document</code></pre>
 </details>
@@ -1681,7 +1764,7 @@ def button_open_document(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_open_parent(self) -&gt; ttk.Button:
+def button_open_parent(self) -&gt; Button:
     &#34;&#34;&#34;Returns the open parent button.&#34;&#34;&#34;
     return self._btn_open_parent</code></pre>
 </details>
@@ -1694,7 +1777,7 @@ def button_open_parent(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_stl_export_path(self) -&gt; ttk.Button:
+def button_stl_export_path(self) -&gt; Button:
     return self._btn_browse_stl_export_path</code></pre>
 </details>
 </dd>
@@ -1706,7 +1789,7 @@ def button_stl_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def button_stp_export_path(self) -&gt; ttk.Button:
+def button_stp_export_path(self) -&gt; Button:
     return self._btn_browse_stp_export_path</code></pre>
 </details>
 </dd>
@@ -1718,7 +1801,7 @@ def button_stp_export_path(self) -&gt; ttk.Button:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
+def checkbox_export_docket(self) -&gt; Checkbutton:
     return self._chkbtn_export_docket</code></pre>
 </details>
 </dd>
@@ -1730,7 +1813,7 @@ def checkbox_export_docket(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_export_drawing(self) -&gt; ttk.Checkbutton:
+def checkbox_export_drawing(self) -&gt; Checkbutton:
     return self._chkbtn_export_drawing</code></pre>
 </details>
 </dd>
@@ -1742,7 +1825,7 @@ def checkbox_export_drawing(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
+def checkbox_export_jpg(self) -&gt; Checkbutton:
     return self._chkbtn_export_jpg</code></pre>
 </details>
 </dd>
@@ -1754,7 +1837,7 @@ def checkbox_export_jpg(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
+def checkbox_export_stl(self) -&gt; Checkbutton:
     return self._chkbtn_export_stl</code></pre>
 </details>
 </dd>
@@ -1766,7 +1849,7 @@ def checkbox_export_stl(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_export_stp(self) -&gt; ttk.Checkbutton:
+def checkbox_export_stp(self) -&gt; Checkbutton:
     return self._chkbtn_export_stp</code></pre>
 </details>
 </dd>
@@ -1778,7 +1861,7 @@ def checkbox_export_stp(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
+def checkbox_ignore_prefixed(self) -&gt; Checkbutton:
     return self._chkbtn_ignore_prefixed</code></pre>
 </details>
 </dd>
@@ -1790,7 +1873,7 @@ def checkbox_ignore_prefixed(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
+def checkbox_ignore_source_unknown(self) -&gt; Checkbutton:
     return self._chkbtn_ignore_unknown</code></pre>
 </details>
 </dd>
@@ -1802,7 +1885,7 @@ def checkbox_ignore_source_unknown(self) -&gt; ttk.Checkbutton:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_bom_export_path(self) -&gt; ttk.Entry:
+def input_bom_export_path(self) -&gt; Entry:
     return self._entry_bom_export_path</code></pre>
 </details>
 </dd>
@@ -1814,7 +1897,7 @@ def input_bom_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_docket_export_path(self) -&gt; ttk.Entry:
+def input_docket_export_path(self) -&gt; Entry:
     return self._entry_docket_export_path</code></pre>
 </details>
 </dd>
@@ -1826,7 +1909,7 @@ def input_docket_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_drawing_export_path(self) -&gt; ttk.Entry:
+def input_drawing_export_path(self) -&gt; Entry:
     return self._entry_drawing_export_path</code></pre>
 </details>
 </dd>
@@ -1838,7 +1921,7 @@ def input_drawing_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
+def input_ignore_prefixed_txt(self) -&gt; Entry:
     return self._entry_ignore_prefix_txt</code></pre>
 </details>
 </dd>
@@ -1850,7 +1933,7 @@ def input_ignore_prefixed_txt(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_jpg_export_path(self) -&gt; ttk.Entry:
+def input_jpg_export_path(self) -&gt; Entry:
     return self._entry_jpg_export_path</code></pre>
 </details>
 </dd>
@@ -1862,7 +1945,7 @@ def input_jpg_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_project(self) -&gt; ttk.Combobox:
+def input_project(self) -&gt; Combobox:
     &#34;&#34;&#34;Returns the project combobox.&#34;&#34;&#34;
     return self._combo_project</code></pre>
 </details>
@@ -1875,7 +1958,7 @@ def input_project(self) -&gt; ttk.Combobox:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_stl_export_path(self) -&gt; ttk.Entry:
+def input_stl_export_path(self) -&gt; Entry:
     return self._entry_stl_export_path</code></pre>
 </details>
 </dd>
@@ -1887,7 +1970,7 @@ def input_stl_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def input_stp_export_path(self) -&gt; ttk.Entry:
+def input_stp_export_path(self) -&gt; Entry:
     return self._entry_stp_export_path</code></pre>
 </details>
 </dd>
@@ -1899,7 +1982,7 @@ def input_stp_export_path(self) -&gt; ttk.Entry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def progress_bar(self) -&gt; ttk.Progressbar:
+def progress_bar(self) -&gt; Progressbar:
     return self._progress_bar</code></pre>
 </details>
 </dd>
@@ -1935,7 +2018,7 @@ def text_log(self) -&gt; Text:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def tree_report_failed_items(self) -&gt; ttk.Treeview:
+def tree_report_failed_items(self) -&gt; Treeview:
     return self._tree_report_failed_items</code></pre>
 </details>
 </dd>
@@ -1947,7 +2030,7 @@ def tree_report_failed_items(self) -&gt; ttk.Treeview:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def tree_report_failed_props(self) -&gt; ttk.Treeview:
+def tree_report_failed_props(self) -&gt; Treeview:
     return self._tree_report_failed_props</code></pre>
 </details>
 </dd>

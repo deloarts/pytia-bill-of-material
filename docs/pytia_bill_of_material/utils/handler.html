@@ -36,6 +36,7 @@ import logging
 from tkinter import END, Text, Tk
 
 from pytia.log import log
+from ttkbootstrap import Style
 
 
 class WidgetLogHandler(logging.Handler):
@@ -52,7 +53,7 @@ class WidgetLogHandler(logging.Handler):
     ```
     &#34;&#34;&#34;
 
-    def __init__(self, root: Tk, widget: Text):
+    def __init__(self, root: Tk, widget: Text, style: Style):
         &#34;&#34;&#34;
         Inits the WidgetLogHandler.
 
@@ -67,11 +68,15 @@ class WidgetLogHandler(logging.Handler):
 
         self._widget.tag_config(&#34;DATE&#34;, foreground=&#34;grey&#34;)
         self._widget.tag_config(&#34;TIME&#34;, foreground=&#34;grey&#34;)
-        self._widget.tag_config(&#34;DEBUG&#34;, foreground=&#34;blue&#34;)
-        self._widget.tag_config(&#34;INFO&#34;, foreground=&#34;green&#34;)
-        self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
-        self._widget.tag_config(&#34;ERROR&#34;, foreground=&#34;red&#34;)
-        self._widget.tag_config(&#34;EXCEPTION&#34;, foreground=&#34;black&#34;, background=&#34;red&#34;)
+        self._widget.tag_config(&#34;DEBUG&#34;, foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config(&#34;INFO&#34;, foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config(
+            &#34;WARNING&#34;, foreground=style.colors.warning  # type:ignore
+        )
+        self._widget.tag_config(&#34;ERROR&#34;, foreground=style.colors.danger)  # type:ignore
+        self._widget.tag_config(
+            &#34;EXCEPTION&#34;, foreground=style.colors.danger  # type:ignore
+        )
 
         atexit.register(lambda: log.logger.removeHandler(self))
 
@@ -128,7 +133,7 @@ class WidgetLogHandler(logging.Handler):
 <dl>
 <dt id="pytia_bill_of_material.utils.handler.WidgetLogHandler"><code class="flex name class">
 <span>class <span class="ident">WidgetLogHandler</span></span>
-<span>(</span><span>root: tkinter.Tk, widget: tkinter.Text)</span>
+<span>(</span><span>root: tkinter.Tk, widget: tkinter.Text, style: ttkbootstrap.style.Style)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Handles logging to Text widgets. Highlights log levels.</p>
@@ -165,7 +170,7 @@ class WidgetLogHandler(logging.Handler):
     ```
     &#34;&#34;&#34;
 
-    def __init__(self, root: Tk, widget: Text):
+    def __init__(self, root: Tk, widget: Text, style: Style):
         &#34;&#34;&#34;
         Inits the WidgetLogHandler.
 
@@ -180,11 +185,15 @@ class WidgetLogHandler(logging.Handler):
 
         self._widget.tag_config(&#34;DATE&#34;, foreground=&#34;grey&#34;)
         self._widget.tag_config(&#34;TIME&#34;, foreground=&#34;grey&#34;)
-        self._widget.tag_config(&#34;DEBUG&#34;, foreground=&#34;blue&#34;)
-        self._widget.tag_config(&#34;INFO&#34;, foreground=&#34;green&#34;)
-        self._widget.tag_config(&#34;WARNING&#34;, foreground=&#34;orange&#34;)
-        self._widget.tag_config(&#34;ERROR&#34;, foreground=&#34;red&#34;)
-        self._widget.tag_config(&#34;EXCEPTION&#34;, foreground=&#34;black&#34;, background=&#34;red&#34;)
+        self._widget.tag_config(&#34;DEBUG&#34;, foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config(&#34;INFO&#34;, foreground=style.colors.info)  # type:ignore
+        self._widget.tag_config(
+            &#34;WARNING&#34;, foreground=style.colors.warning  # type:ignore
+        )
+        self._widget.tag_config(&#34;ERROR&#34;, foreground=style.colors.danger)  # type:ignore
+        self._widget.tag_config(
+            &#34;EXCEPTION&#34;, foreground=style.colors.danger  # type:ignore
+        )
 
         atexit.register(lambda: log.logger.removeHandler(self))
 

@@ -34,8 +34,9 @@
 import logging
 import tkinter as tk
 from pathlib import Path
-from tkinter import font, ttk
+from tkinter import font
 
+import ttkbootstrap as ttk
 from app.main.callbacks import Callbacks
 from app.main.controller import Controller
 from app.main.frames import Frames
@@ -69,10 +70,11 @@ class MainUI(tk.Tk):
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
     WIDTH = 800
-    HEIGHT = 580
+    HEIGHT = 595
 
     def __init__(self) -&gt; None:
-        tk.Tk.__init__(self)
+        ttk.tk.Tk.__init__(self)
+        self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
@@ -126,15 +128,6 @@ class MainUI(tk.Tk):
         self.geometry(f&#34;{MainUI.WIDTH}x{MainUI.HEIGHT}+{x_coordinate}+{y_coordinate}&#34;)
         self.minsize(width=MainUI.WIDTH, height=MainUI.HEIGHT)
         self.resizable(width=False, height=False)
-
-        # STYLES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        style = ttk.Style(self)
-        style.configure(&#34;Infrastructure.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Paths.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Export.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Report.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Log.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Footer.TButton&#34;, width=14)
 
         self.update()
         self.window_manager.remove_window_buttons()
@@ -191,7 +184,7 @@ class MainUI(tk.Tk):
         log_format = logging.Formatter(
             r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
         )
-        widget_handler = WidgetLogHandler(self, self.layout.text_log)
+        widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)
         log.logger.addHandler(widget_handler)
@@ -221,6 +214,7 @@ class MainUI(tk.Tk):
             state_setter=self.set_ui,
             frames=self.frames,
             layout=self.layout,
+            style=self.style,
             workspace=self.workspace,
         )
 
@@ -242,12 +236,7 @@ class MainUI(tk.Tk):
 <span>class <span class="ident">MainUI</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>The user interface of the app.</p>
-<p>Return a new Toplevel widget on screen SCREENNAME. A new Tcl interpreter will
-be created. BASENAME will be used for the identification of the profile file (see
-readprofile).
-It is constructed from sys.argv[0] without extensions if None is given. CLASSNAME
-is the name of the widget class.</p></div>
+<div class="desc"><p>The user interface of the app.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -256,10 +245,11 @@ is the name of the widget class.</p></div>
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
     WIDTH = 800
-    HEIGHT = 580
+    HEIGHT = 595
 
     def __init__(self) -&gt; None:
-        tk.Tk.__init__(self)
+        ttk.tk.Tk.__init__(self)
+        self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
@@ -313,15 +303,6 @@ is the name of the widget class.</p></div>
         self.geometry(f&#34;{MainUI.WIDTH}x{MainUI.HEIGHT}+{x_coordinate}+{y_coordinate}&#34;)
         self.minsize(width=MainUI.WIDTH, height=MainUI.HEIGHT)
         self.resizable(width=False, height=False)
-
-        # STYLES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        style = ttk.Style(self)
-        style.configure(&#34;Infrastructure.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Paths.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Export.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Report.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Log.TLabelframe.Label&#34;, foreground=&#34;grey&#34;)
-        style.configure(&#34;Footer.TButton&#34;, width=14)
 
         self.update()
         self.window_manager.remove_window_buttons()
@@ -378,7 +359,7 @@ is the name of the widget class.</p></div>
         log_format = logging.Formatter(
             r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
         )
-        widget_handler = WidgetLogHandler(self, self.layout.text_log)
+        widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)
         log.logger.addHandler(widget_handler)
@@ -408,6 +389,7 @@ is the name of the widget class.</p></div>
             state_setter=self.set_ui,
             frames=self.frames,
             layout=self.layout,
+            style=self.style,
             workspace=self.workspace,
         )
 
@@ -517,6 +499,7 @@ is the name of the widget class.</p></div>
         state_setter=self.set_ui,
         frames=self.frames,
         layout=self.layout,
+        style=self.style,
         workspace=self.workspace,
     )</code></pre>
 </details>
