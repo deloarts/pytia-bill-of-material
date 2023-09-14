@@ -33,6 +33,7 @@ from const import (
     CONFIG_SETTINGS,
     CONFIG_USERS,
     LOGON,
+    STYLES,
 )
 from resources.utils import expand_env_vars
 
@@ -300,6 +301,7 @@ class AppData:
     version: str = field(default=APP_VERSION)
     counter: int = 0
     disable_volume_warning: bool = False
+    theme: str = STYLES[0]
 
     def __post_init__(self) -> None:
         self.version = (
@@ -449,7 +451,7 @@ class Resources:  # pylint: disable=R0902
             with open(appdata_file, "r", encoding="utf8") as f:
                 try:
                     value = AppData(**json.load(f))
-                except JSONDecodeError:
+                except Exception:
                     value = AppData()
                     tkmsg.showwarning(
                         title="Configuration warning",
