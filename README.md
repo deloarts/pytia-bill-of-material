@@ -3,7 +3,7 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-beta-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.8.0-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/badge/Version-0.9.0-orange.svg?style=for-the-badge)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
@@ -19,6 +19,7 @@ Check out the pytia ecosystem:
 - **pytia-bill-of-material** ([web](https://pytia.deloarts.com/bill-of-material/v0.html), [repo](https://github.com/deloarts/pytia-bill-of-material)): Exports the bill of material and data of a product.
 - **pytia-title-block** ([web](https://pytia.deloarts.com/title-block/v0.html), [repo](https://github.com/deloarts/pytia-title-block)): An app to edit a drawing's title block.
 - **pytia-quick-export** ([web](https://pytia.deloarts.com/quick-export/v0.html), [repo](https://github.com/deloarts/pytia-quick-export)): Single file export with useful features.
+- **pytia-reorder-tree** ([web](https://pytia.deloarts.com/reorder-tree/v0.html), [repo](https://github.com/deloarts/pytia-reorder-tree)): Brings order in your product graph tree.
 - **pytia-ui-tools** ([web](https://pytia.deloarts.com/), [repo](https://github.com/deloarts/pytia-ui-tools)): A toolbox for all pytia apps.
 
 Table of contents:
@@ -334,6 +335,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+**v0.9.0**: Add themes.  
 **v0.8.0**: Add ignore-options.  
 **v0.7.1**: Add group to default setting. Resolve paths.  
 **v0.7.0**: Add image export feature.  

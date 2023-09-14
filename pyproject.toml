@@ -4,13 +4,13 @@ classifiers = ["Operating System :: Microsoft :: Windows"]
 description = "A gui for exporting the bill of material from a catia v5 product"
 name = "pytia-bill-of-material"
 readme = "README.md"
-version = "0.8.0"
+version = "0.9.0"
 
 [tool.poetry.dependencies]
 openpyxl = "3.1.1"
 python = "^3.10"
-pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.2"}
-pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.6.6"}
+pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.4"}
+pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.7.0"}
 
 [tool.poetry.group.dev.dependencies]
 Jinja2 = "^3.1.2"
