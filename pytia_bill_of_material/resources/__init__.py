@@ -9,10 +9,8 @@ import atexit
 import importlib.resources
 import json
 import os
-import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict, dataclass, field, fields
-from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import Dict, List, Literal, Optional, Protocol
 
