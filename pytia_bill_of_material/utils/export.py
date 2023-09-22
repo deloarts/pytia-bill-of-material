@@ -22,6 +22,7 @@ from pytia.wrapper.documents.drawing_documents import PyDrawingDocument
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
+from resources.utils import expand_env_vars
 from templates import templates
 
 
@@ -132,7 +133,9 @@ def export_drawing(
         document (PyProductDocument | PyPartDocument): The document from which to export the data.
     """
     if document.properties.exists(PROP_DRAWING_PATH):
-        drawing_path = Path(document.properties.get_by_name(PROP_DRAWING_PATH).value)
+        drawing_path = Path(
+            expand_env_vars(document.properties.get_by_name(PROP_DRAWING_PATH).value)
+        )
         if drawing_path.exists():
             pdf_target_path = Path(folder, filename + ".pdf")
             dxf_target_path = Path(folder, filename + ".dxf")
