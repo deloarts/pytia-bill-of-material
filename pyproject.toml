@@ -9,21 +9,21 @@ version = "0.9.1"
 [tool.poetry.dependencies]
 openpyxl = "3.1.1"
 python = "^3.10"
-pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.4"}
-pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.7.0"}
+pytia = {git = "ssh://git@github.com/deloarts/pytia.git", tag = "v0.3.5"}
+pytia-ui-tools = {git = "ssh://git@github.com/deloarts/pytia-ui-tools.git", tag = "v0.7.1"}
 
 [tool.poetry.group.dev.dependencies]
 Jinja2 = "^3.1.2"
-black = "22.10.0"
-packaging = "^21.3"
+black = "23.3.0"
+packaging = "^23.2"
 pdoc3 = "^0.10.0"
-pre-commit = "^2.19.0"
+pre-commit = "^3.5.0"
 pygit2 = "1.12.0"
-pylint = "2.13.9"
-pytest = "^7.1.1"
-setuptools = "^68.0.0"
+pylint = "3.0.0"
+pytest = "^7.4.1"
+setuptools = "^68.2.0"
 toml = "^0.10.2"
-validators = "^0.19.0"
+validators = "^0.22.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
