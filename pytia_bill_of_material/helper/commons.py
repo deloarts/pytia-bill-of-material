@@ -3,7 +3,8 @@
 """
 
 import re
-from tkinter import DISABLED, NORMAL
+from tkinter import DISABLED
+from tkinter import NORMAL
 
 from app.main.layout import Layout
 from resources import resource

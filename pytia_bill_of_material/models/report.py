@@ -4,9 +4,11 @@
 
 # pylint: disable=C0116
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
+from typing import List
 
 from const import Status
 

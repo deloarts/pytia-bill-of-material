@@ -11,7 +11,8 @@ from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
-from const import TEMP_EXPORT, Status
+from const import TEMP_EXPORT
+from const import Status
 from helper.lazy_loaders import LazyDocumentHelper
 from models.bom import BOM
 from models.paths import Paths

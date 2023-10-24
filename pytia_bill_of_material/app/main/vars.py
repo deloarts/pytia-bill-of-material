@@ -2,7 +2,10 @@
     The variables submodule for the app.
 """
 from dataclasses import dataclass
-from tkinter import BooleanVar, DoubleVar, StringVar, Tk
+from tkinter import BooleanVar
+from tkinter import DoubleVar
+from tkinter import StringVar
+from tkinter import Tk
 
 from models.bom import BOM
 from models.report import Report

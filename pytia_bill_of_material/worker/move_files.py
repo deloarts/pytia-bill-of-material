@@ -5,7 +5,12 @@
 import os
 from pathlib import Path
 
-from const import BOM, DOCKETS, DRAWINGS, JPGS, STLS, STPS
+from const import BOM
+from const import DOCKETS
+from const import DRAWINGS
+from const import JPGS
+from const import STLS
+from const import STPS
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from pytia_ui_tools.utils.files import file_utility

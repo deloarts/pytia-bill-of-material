@@ -3,7 +3,9 @@
 """
 
 from tkinter import Tk
-from ttkbootstrap import Frame, Labelframe
+
+from ttkbootstrap import Frame
+from ttkbootstrap import Labelframe
 
 
 class Frames:

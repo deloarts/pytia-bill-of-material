@@ -2,8 +2,10 @@
     Runner for the main task.
 """
 
-from tkinter import DoubleVar, Tk
-from typing import Callable, List
+from tkinter import DoubleVar
+from tkinter import Tk
+from typing import Callable
+from typing import List
 
 from models.runner import RunnerModel
 from pytia.log import log

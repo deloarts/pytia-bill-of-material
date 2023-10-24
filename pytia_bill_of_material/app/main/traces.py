@@ -3,8 +3,11 @@
 """
 
 import os
-from pathlib import Path, WindowsPath
-from tkinter import DISABLED, NORMAL, Tk
+from pathlib import Path
+from pathlib import WindowsPath
+from tkinter import DISABLED
+from tkinter import NORMAL
+from tkinter import Tk
 
 from app.main.frames import Frames
 from app.main.layout import Layout

@@ -4,7 +4,9 @@
 
 import atexit
 import logging
-from tkinter import END, Text, Tk
+from tkinter import END
+from tkinter import Text
+from tkinter import Tk
 
 from pytia.log import log
 from ttkbootstrap import Style

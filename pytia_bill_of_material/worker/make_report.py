@@ -6,7 +6,8 @@ import re
 
 from const import Status
 from models.bom import BOM
-from models.report import Report, ReportItem
+from models.report import Report
+from models.report import ReportItem
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource

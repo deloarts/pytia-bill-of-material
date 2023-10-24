@@ -8,8 +8,8 @@ from pathlib import Path
 
 from const import EXPLORER
 from psutil import (
-    process_iter,
-)  # Dependency of pytia, no need to add to the dependencies.json
+    process_iter,  # Dependency of pytia, no need to add to the dependencies.json
+)
 
 
 def application_is_running(exe: str) -> bool:

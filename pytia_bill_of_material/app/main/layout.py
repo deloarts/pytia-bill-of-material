@@ -4,23 +4,25 @@
 
 # pylint: disable=C0116
 
-from tkinter import DISABLED, HORIZONTAL, WORD, Text, Tk
+from tkinter import DISABLED
+from tkinter import HORIZONTAL
+from tkinter import WORD
+from tkinter import Text
+from tkinter import Tk
 
 from app.main.frames import Frames
 from app.main.vars import Variables
 from const import STYLES
 from helper.appearance import set_appearance_menu
 from helper.messages import show_help
-from ttkbootstrap import (
-    Button,
-    Checkbutton,
-    Combobox,
-    Entry,
-    Label,
-    Menu,
-    Progressbar,
-    Treeview,
-)
+from ttkbootstrap import Button
+from ttkbootstrap import Checkbutton
+from ttkbootstrap import Combobox
+from ttkbootstrap import Entry
+from ttkbootstrap import Label
+from ttkbootstrap import Menu
+from ttkbootstrap import Progressbar
+from ttkbootstrap import Treeview
 
 
 class Layout:

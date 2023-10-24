@@ -3,8 +3,12 @@
 """
 
 import os
-from pathlib import Path, WindowsPath
-from tkinter import DISABLED, NORMAL, Tk, filedialog
+from pathlib import Path
+from pathlib import WindowsPath
+from tkinter import DISABLED
+from tkinter import NORMAL
+from tkinter import Tk
+from tkinter import filedialog
 from tkinter import messagebox as tkmsg
 
 from app.main.frames import Frames

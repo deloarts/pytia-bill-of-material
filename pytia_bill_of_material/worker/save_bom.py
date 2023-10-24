@@ -7,13 +7,16 @@ from typing import List
 
 from const import BOM as BOM_FOLDER
 from helper.commons import ResourceCommons
-from models.bom import BOM, BOMAssemblyItem
+from models.bom import BOM
+from models.bom import BOMAssemblyItem
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
-from utils.excel import create_header, style_worksheet, write_data
+from utils.excel import create_header
+from utils.excel import style_worksheet
+from utils.excel import write_data
 
 
 class SaveBomTask(TaskProtocol):

@@ -6,7 +6,12 @@ import os
 import re
 from pathlib import Path
 
-from const import BOM, DOCKETS, DRAWINGS, JPGS, STLS, STPS
+from const import BOM
+from const import DOCKETS
+from const import DRAWINGS
+from const import JPGS
+from const import STLS
+from const import STPS
 from helper.commons import ResourceCommons
 from helper.lazy_loaders import LazyDocumentHelper
 from models.paths import Paths
@@ -16,7 +21,8 @@ from pycatia.product_structure_interfaces.product import Product
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.framework import framework
 from pytia.log import log
-from pytia.utilities.bill_of_material import set_current_format, set_secondary_format
+from pytia.utilities.bill_of_material import set_current_format
+from pytia.utilities.bill_of_material import set_secondary_format
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource

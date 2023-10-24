@@ -2,22 +2,21 @@
     Export submodule. Holds utility functions for handling data exports.
 """
 from pathlib import Path
-from typing import List, Literal, Tuple
+from typing import List
+from typing import Literal
+from typing import Tuple
 
-from const import LOGON, PROP_DRAWING_PATH
+from const import LOGON
+from const import PROP_DRAWING_PATH
 from pycatia import catia
-from pycatia.enumeration.enumeration_types import (
-    cat_capture_format,
-    cat_specs_and_geom_window_layout,
-)
+from pycatia.enumeration.enumeration_types import cat_capture_format
+from pycatia.enumeration.enumeration_types import cat_specs_and_geom_window_layout
 from pycatia.in_interfaces.specs_and_geom_window import SpecsAndGeomWindow
 from pytia.exceptions import PytiaFileOperationError
 from pytia.log import log
-from pytia.utilities.docket import (
-    DocketConfig,
-    create_docket_from_template,
-    export_docket_as_pdf,
-)
+from pytia.utilities.docket import DocketConfig
+from pytia.utilities.docket import create_docket_from_template
+from pytia.utilities.docket import export_docket_as_pdf
 from pytia.wrapper.documents.drawing_documents import PyDrawingDocument
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument

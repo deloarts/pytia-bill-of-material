@@ -4,7 +4,9 @@
 
 import os
 from pathlib import Path
-from tkinter import DISABLED, NORMAL, Tk
+from tkinter import DISABLED
+from tkinter import NORMAL
+from tkinter import Tk
 from tkinter import messagebox as tkmsg
 
 from app.main.layout import Layout
