@@ -33,11 +33,13 @@
 
 import os
 from pathlib import Path
-from tkinter import DISABLED, NORMAL, Tk
+from tkinter import DISABLED
+from tkinter import NORMAL
+from tkinter import Tk
 from tkinter import messagebox as tkmsg
 
 from app.main.layout import Layout
-from helper.commons import CallbackCommons
+from helper.callbacks import CallbackCommons
 from pycatia.in_interfaces.document import Document
 from pytia.framework import framework
 from resources import resource
@@ -113,7 +115,7 @@ class ReportDocument:
 <dl>
 <dt id="pytia_bill_of_material.helper.documents.ReportDocument"><code class="flex name class">
 <span>class <span class="ident">ReportDocument</span></span>
-<span>(</span><span>root: tkinter.Tk, commons: helper.commons.CallbackCommons, layout: app.main.layout.Layout)</span>
+<span>(</span><span>root: tkinter.Tk, commons: helper.callbacks.CallbackCommons, layout: app.main.layout.Layout)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>ReportDocument class. Handles documents for the bom report.</p>

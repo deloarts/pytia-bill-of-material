@@ -33,10 +33,17 @@
 
 from pathlib import Path
 
-from const import DOCKETS, DRAWINGS, JPGS, LOGON, STLS, STPS, TEMP_EXPORT
+from const import DOCKETS
+from const import DRAWINGS
+from const import JPGS
+from const import LOGON
+from const import STLS
+from const import STPS
+from const import TEMP_EXPORT
 from helper.lazy_loaders import LazyDocumentHelper
 from helper.names import get_data_export_name
-from models.bom import BOM, BOMAssemblyItem
+from models.bom import BOM
+from models.bom import BOMAssemblyItem
 from protocols.task_protocol import TaskProtocol
 from pytia.exceptions import PytiaWrongDocumentTypeError
 from pytia.log import log
