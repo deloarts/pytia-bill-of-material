@@ -4,7 +4,7 @@
 
 from typing import List
 
-from helper.commons import ResourceCommons
+from helper.resource import ResourceCommons
 from models.bom import BOMAssemblyItem
 from openpyxl.styles import Alignment
 from openpyxl.styles import Font

@@ -9,7 +9,7 @@ from typing import Dict
 
 from const import KEEP
 from const import X000D
-from helper.commons import ResourceCommons
+from helper.resource import ResourceCommons
 from models.bom import BOM
 from models.bom import BOMAssembly
 from models.bom import BOMAssemblyItem
@@ -22,6 +22,19 @@ from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import row_is_empty
+
+CONN_ERR_MSG = (
+    "Failed to process the worksheet from the CATIA export. "
+    "This happened most likely due to a connection error between CATIA "
+    "and EXCEL.\n\n"
+    "As a fallback solution you can try the following:\n"
+    "  1) Launch this app again\n"
+    "  2) Set the BOM format using the Tools menu\n"
+    "  3) Close the app\n"
+    "  4) Manually export the BOM as xls (Analyze Menu)\n"
+    "  5) Launch this app again\n"
+    "  6) Import this external xls-file using the Tools menu"
+)
 
 
 class ProcessBomTask(TaskProtocol):
@@ -66,8 +79,18 @@ class ProcessBomTask(TaskProtocol):
         log.info("Processing bill of material.")
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
+        ws = wb.worksheets[0]
+
+        try:
+            value = ws.cell(1, 1).value
+            if value is None or len(str(value)) == 0:
+                raise ConnectionAbortedError(CONN_ERR_MSG)
+        except Exception as e:
+            log.error(f"Failed loading the EXCEL worksheet: {e}")
+            raise ConnectionAbortedError(CONN_ERR_MSG)
+
         self._bom = self._retrieve_bom_from_catia_export(
-            worksheet=wb.worksheets[0],
+            worksheet=ws,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
