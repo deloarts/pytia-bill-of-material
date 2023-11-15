@@ -8,7 +8,6 @@ from tkinter import messagebox as tkmsg
 from tkinter import simpledialog
 
 from app.main.vars import Variables
-from pytia.exceptions import PytiaFileNotFoundError
 from resources import resource
 
 
