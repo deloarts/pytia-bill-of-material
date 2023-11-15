@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List
 
 from const import BOM as BOM_FOLDER
-from helper.commons import ResourceCommons
+from helper.resource import ResourceCommons
 from models.bom import BOM
 from models.bom import BOMAssemblyItem
 from openpyxl.workbook import Workbook

@@ -24,6 +24,7 @@ from helper.messages import show_help
 from pytia.exceptions import PytiaBodyEmptyError
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.exceptions import PytiaDocumentNotSavedError
+from pytia.exceptions import PytiaFileNotFoundError
 from pytia.exceptions import PytiaNoDocumentOpenError
 from pytia.exceptions import PytiaPropertyNotFoundError
 from pytia.exceptions import PytiaWrongDocumentTypeError

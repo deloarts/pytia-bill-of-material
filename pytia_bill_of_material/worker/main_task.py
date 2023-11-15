@@ -162,8 +162,22 @@ class MainTask:
         self.docket_cfg = task.docket_config
 
     def _catia_export(self, *_) -> None:
+        external_xls_path: Path | None = None
+        if Path(self.variables.external_bom_path.get()).is_file():
+            external_xls_path = Path(self.variables.external_bom_path.get())
+            tkmsg.showinfo(
+                title=resource.settings.title,
+                message=(
+                    "The bill of material will be processed from the given external "
+                    f"file:\n\n{external_xls_path.name!r}.\n\nThis will skip the "
+                    "export via the CATIA Bill of Material Manager."
+                ),
+            )
+
         task = CatiaExportTask(
-            doc_helper=self.doc_helper, export_root_path=self.export_folder
+            doc_helper=self.doc_helper,
+            export_root_path=self.export_folder,
+            external_xls_path=external_xls_path,
         )
         task.run()
 

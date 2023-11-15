@@ -12,8 +12,8 @@ from const import DRAWINGS
 from const import JPGS
 from const import STLS
 from const import STPS
-from helper.commons import ResourceCommons
 from helper.lazy_loaders import LazyDocumentHelper
+from helper.resource import ResourceCommons
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
 from pycatia.in_interfaces.document import Document
@@ -71,12 +71,12 @@ class PrepareTask(TaskProtocol):
         os.makedirs(Path(self.export_root_path, STPS))
         os.makedirs(Path(self.export_root_path, JPGS))
 
-        self._set_catia_bom_format()
+        self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
 
     @staticmethod
-    def _set_catia_bom_format() -> None:
+    def set_catia_bom_format() -> None:
         """
         Sets the BOM format to the format specified in the `bom.json` (`header_items`) config file.
         """

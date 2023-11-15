@@ -30,6 +30,8 @@ class Variables:
     stl_export_path: StringVar
     jpg_export_path: StringVar
 
+    external_bom_path: StringVar
+
     # Export variables
     export_docket: BooleanVar
     export_drawing: BooleanVar
@@ -64,6 +66,10 @@ class Variables:
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
+
+        self.external_bom_path = StringVar(
+            master=root, name="external_bom_path", value=""
+        )
 
         self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")

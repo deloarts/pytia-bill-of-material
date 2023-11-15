@@ -14,6 +14,7 @@ from app.main.frames import Frames
 from app.main.vars import Variables
 from const import STYLES
 from helper.appearance import set_appearance_menu
+from helper.files import set_external_bom_file
 from helper.messages import show_help
 from ttkbootstrap import Button
 from ttkbootstrap import Checkbutton
@@ -23,6 +24,7 @@ from ttkbootstrap import Label
 from ttkbootstrap import Menu
 from ttkbootstrap import Progressbar
 from ttkbootstrap import Treeview
+from worker.prepare import PrepareTask
 
 
 class Layout:
@@ -49,8 +51,18 @@ class Layout:
         for style in STYLES:
             self._appearance_menu.add_command(label=style)
 
+        self._tools_menu = Menu(menubar, tearoff=False)
+        self._tools_menu.add_command(
+            label="Set BOM Format", command=PrepareTask.set_catia_bom_format
+        )
+        self._tools_menu.add_command(
+            label="Set external BOM",
+            command=lambda: set_external_bom_file(root, variables),
+        )
+
         menubar.add_cascade(label="Help", command=show_help)
         menubar.add_cascade(label="Appearance", menu=self._appearance_menu)
+        menubar.add_cascade(label="Tools", menu=self._tools_menu)
 
         set_appearance_menu(self._appearance_menu)
         root.configure(menu=menubar)
@@ -68,7 +80,6 @@ class Layout:
 
         self._combo_project = Combobox(
             frames.infrastructure,
-            values=[],
             textvariable=variables.project,
             state=DISABLED,
         )
