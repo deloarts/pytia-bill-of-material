@@ -4,11 +4,13 @@
 
 import os
 from pathlib import Path
-from tkinter import DISABLED, NORMAL, Tk
+from tkinter import DISABLED
+from tkinter import NORMAL
+from tkinter import Tk
 from tkinter import messagebox as tkmsg
 
 from app.main.layout import Layout
-from helper.commons import CallbackCommons
+from helper.callbacks import CallbackCommons
 from pycatia.in_interfaces.document import Document
 from pytia.framework import framework
 from resources import resource

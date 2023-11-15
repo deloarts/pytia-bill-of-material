@@ -1,13 +1,13 @@
 [
     {
         "name": "pytia",
-        "version": "0.3.4",
-        "wheel": "https://github.com/deloarts/pytia/releases/download/v0.3.4/pytia-0.3.4-py3-none-any.whl"
+        "version": "0.3.5",
+        "wheel": "https://github.com/deloarts/pytia/releases/download/v0.3.5/pytia-0.3.5-py3-none-any.whl"
     },
     {
         "name": "pytia_ui_tools",
-        "version": "0.7.0",
-        "wheel": "https://github.com/deloarts/pytia-ui-tools/releases/download/v0.7.0/pytia_ui_tools-0.7.0-py3-none-any.whl"
+        "version": "0.7.1",
+        "wheel": "https://github.com/deloarts/pytia-ui-tools/releases/download/v0.7.1/pytia_ui_tools-0.7.1-py3-none-any.whl"
     },
     {
         "name": "openpyxl",

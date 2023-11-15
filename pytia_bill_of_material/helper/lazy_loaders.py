@@ -6,9 +6,11 @@ import functools
 import os
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import List
+from typing import Optional
 
-from pytia.exceptions import PytiaDifferentDocumentError, PytiaDocumentNotSavedError
+from pytia.exceptions import PytiaDifferentDocumentError
+from pytia.exceptions import PytiaDocumentNotSavedError
 from pytia.log import log
 from resources import resource
 from utils.language import get_ui_language

@@ -6,9 +6,14 @@ import os
 import re
 from pathlib import Path
 
-from const import BOM, DOCKETS, DRAWINGS, JPGS, STLS, STPS
-from helper.commons import ResourceCommons
+from const import BOM
+from const import DOCKETS
+from const import DRAWINGS
+from const import JPGS
+from const import STLS
+from const import STPS
 from helper.lazy_loaders import LazyDocumentHelper
+from helper.resource import ResourceCommons
 from models.paths import Paths
 from protocols.task_protocol import TaskProtocol
 from pycatia.in_interfaces.document import Document
@@ -16,7 +21,8 @@ from pycatia.product_structure_interfaces.product import Product
 from pytia.exceptions import PytiaDifferentDocumentError
 from pytia.framework import framework
 from pytia.log import log
-from pytia.utilities.bill_of_material import set_current_format, set_secondary_format
+from pytia.utilities.bill_of_material import set_current_format
+from pytia.utilities.bill_of_material import set_secondary_format
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
@@ -65,12 +71,12 @@ class PrepareTask(TaskProtocol):
         os.makedirs(Path(self.export_root_path, STPS))
         os.makedirs(Path(self.export_root_path, JPGS))
 
-        self._set_catia_bom_format()
+        self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
 
     @staticmethod
-    def _set_catia_bom_format() -> None:
+    def set_catia_bom_format() -> None:
         """
         Sets the BOM format to the format specified in the `bom.json` (`header_items`) config file.
         """

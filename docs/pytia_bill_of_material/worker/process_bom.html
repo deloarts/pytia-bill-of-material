@@ -33,11 +33,15 @@
 
 import re
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
+from typing import Dict
 
-from const import KEEP, X000D
-from helper.commons import ResourceCommons
-from models.bom import BOM, BOMAssembly, BOMAssemblyItem
+from const import KEEP
+from const import X000D
+from helper.resource import ResourceCommons
+from models.bom import BOM
+from models.bom import BOMAssembly
+from models.bom import BOMAssemblyItem
 from models.paths import Paths
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
@@ -47,6 +51,19 @@ from protocols.task_protocol import TaskProtocol
 from pytia.log import log
 from resources import resource
 from utils.excel import row_is_empty
+
+CONN_ERR_MSG = (
+    &#34;Failed to process the worksheet from the CATIA export. &#34;
+    &#34;This happened most likely due to a connection error between CATIA &#34;
+    &#34;and EXCEL.\n\n&#34;
+    &#34;As a fallback solution you can try the following:\n&#34;
+    &#34;  1) Launch this app again\n&#34;
+    &#34;  2) Set the BOM format using the Tools menu\n&#34;
+    &#34;  3) Close the app\n&#34;
+    &#34;  4) Manually export the BOM as xls (Analyze Menu)\n&#34;
+    &#34;  5) Launch this app again\n&#34;
+    &#34;  6) Import this external xls-file using the Tools menu&#34;
+)
 
 
 class ProcessBomTask(TaskProtocol):
@@ -91,8 +108,18 @@ class ProcessBomTask(TaskProtocol):
         log.info(&#34;Processing bill of material.&#34;)
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
+        ws = wb.worksheets[0]
+
+        try:
+            value = ws.cell(1, 1).value
+            if value is None or len(str(value)) == 0:
+                raise ConnectionAbortedError(CONN_ERR_MSG)
+        except Exception as e:
+            log.error(f&#34;Failed loading the EXCEL worksheet: {e}&#34;)
+            raise ConnectionAbortedError(CONN_ERR_MSG)
+
         self._bom = self._retrieve_bom_from_catia_export(
-            worksheet=wb.worksheets[0],
+            worksheet=ws,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
@@ -621,8 +648,18 @@ It generates the BOM object from the xlsx file.</p>
         log.info(&#34;Processing bill of material.&#34;)
 
         wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
+        ws = wb.worksheets[0]
+
+        try:
+            value = ws.cell(1, 1).value
+            if value is None or len(str(value)) == 0:
+                raise ConnectionAbortedError(CONN_ERR_MSG)
+        except Exception as e:
+            log.error(f&#34;Failed loading the EXCEL worksheet: {e}&#34;)
+            raise ConnectionAbortedError(CONN_ERR_MSG)
+
         self._bom = self._retrieve_bom_from_catia_export(
-            worksheet=wb.worksheets[0],
+            worksheet=ws,
             overwrite_project=self._project,
         )
         self._sort_bom(bom=self._bom)
@@ -1120,8 +1157,18 @@ def bom(self) -&gt; BOM:
     log.info(&#34;Processing bill of material.&#34;)
 
     wb = self._get_workbook_from_xlsx(xlsx_path=self._xlsx)
+    ws = wb.worksheets[0]
+
+    try:
+        value = ws.cell(1, 1).value
+        if value is None or len(str(value)) == 0:
+            raise ConnectionAbortedError(CONN_ERR_MSG)
+    except Exception as e:
+        log.error(f&#34;Failed loading the EXCEL worksheet: {e}&#34;)
+        raise ConnectionAbortedError(CONN_ERR_MSG)
+
     self._bom = self._retrieve_bom_from_catia_export(
-        worksheet=wb.worksheets[0],
+        worksheet=ws,
         overwrite_project=self._project,
     )
     self._sort_bom(bom=self._bom)</code></pre>

@@ -9,9 +9,12 @@ import zipfile
 from pathlib import Path
 from typing import Optional
 
-from const import PYTIA_BILL_OF_MATERIAL, TEMP, TEMP_TEMPLATES, TEMPLATE_DOCKET
-from resources import resource
+from const import PYTIA_BILL_OF_MATERIAL
+from const import TEMP
+from const import TEMP_TEMPLATES
+from const import TEMPLATE_DOCKET
 from pytia_ui_tools.utils.files import file_utility
+from resources import resource
 
 
 class Templates:

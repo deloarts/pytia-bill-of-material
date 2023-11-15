@@ -4,7 +4,8 @@
 
 import os
 from pathlib import Path
-from tkinter import BooleanVar, StringVar
+from tkinter import BooleanVar
+from tkinter import StringVar
 
 
 def set_default_folder_and_checkbox_from_workspace(

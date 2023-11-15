@@ -67,7 +67,12 @@ class CatiaExportTask(TaskProtocol):
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_xls&#34;, &#34;_xlsx&#34;, &#34;_bom&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+    def __init__(
+        self,
+        doc_helper: LazyDocumentHelper,
+        export_root_path: Path,
+        external_xls_path: Path | None,
+    ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
 
@@ -76,6 +81,7 @@ class CatiaExportTask(TaskProtocol):
         &#34;&#34;&#34;
         self.doc_helper = doc_helper
         self.export_root_path = export_root_path
+        self.external_xls_path = external_xls_path
 
     @property
     def xls(self) -&gt; Path:
@@ -89,16 +95,21 @@ class CatiaExportTask(TaskProtocol):
         &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
         log.info(&#34;Exporting bill of material from catia.&#34;)
 
-        self._xls = Path(
-            export_bom(
-                product=self.doc_helper.document.product,
-                filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
-                folder=self.export_root_path,
+        # The external_xls_path should be validated from the input,
+        # so we don&#39;t do it here again. Maybe change that?
+        if self.external_xls_path:
+            self._xls = self.external_xls_path
+        else:
+            self._xls = Path(
+                export_bom(
+                    product=self.doc_helper.document.product,
+                    filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
+                    folder=self.export_root_path,
+                )
             )
-        )
-        self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
+            file_utility.add_delete(path=self._xls, ask_retry=True)
 
-        file_utility.add_delete(path=self._xls, ask_retry=True)
+        self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
         file_utility.add_delete(path=self._xlsx, ask_retry=True)
 
     @staticmethod
@@ -155,7 +166,7 @@ class CatiaExportTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.catia_export.CatiaExportTask"><code class="flex name class">
 <span>class <span class="ident">CatiaExportTask</span></span>
-<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper, export_root_path: pathlib.Path)</span>
+<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper, export_root_path: pathlib.Path, external_xls_path: pathlib.Path | None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Exports the BOM data from CATIA. This is done via a xls file, which is the converted to
@@ -203,7 +214,12 @@ a xlsx file.</p>
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_xls&#34;, &#34;_xlsx&#34;, &#34;_bom&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+    def __init__(
+        self,
+        doc_helper: LazyDocumentHelper,
+        export_root_path: Path,
+        external_xls_path: Path | None,
+    ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
 
@@ -212,6 +228,7 @@ a xlsx file.</p>
         &#34;&#34;&#34;
         self.doc_helper = doc_helper
         self.export_root_path = export_root_path
+        self.external_xls_path = external_xls_path
 
     @property
     def xls(self) -&gt; Path:
@@ -225,16 +242,21 @@ a xlsx file.</p>
         &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
         log.info(&#34;Exporting bill of material from catia.&#34;)
 
-        self._xls = Path(
-            export_bom(
-                product=self.doc_helper.document.product,
-                filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
-                folder=self.export_root_path,
+        # The external_xls_path should be validated from the input,
+        # so we don&#39;t do it here again. Maybe change that?
+        if self.external_xls_path:
+            self._xls = self.external_xls_path
+        else:
+            self._xls = Path(
+                export_bom(
+                    product=self.doc_helper.document.product,
+                    filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
+                    folder=self.export_root_path,
+                )
             )
-        )
-        self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
+            file_utility.add_delete(path=self._xls, ask_retry=True)
 
-        file_utility.add_delete(path=self._xls, ask_retry=True)
+        self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
         file_utility.add_delete(path=self._xlsx, ask_retry=True)
 
     @staticmethod
@@ -327,16 +349,21 @@ def xlsx(self) -&gt; Path:
     &#34;&#34;&#34;Runs the export.&#34;&#34;&#34;
     log.info(&#34;Exporting bill of material from catia.&#34;)
 
-    self._xls = Path(
-        export_bom(
-            product=self.doc_helper.document.product,
-            filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
-            folder=self.export_root_path,
+    # The external_xls_path should be validated from the input,
+    # so we don&#39;t do it here again. Maybe change that?
+    if self.external_xls_path:
+        self._xls = self.external_xls_path
+    else:
+        self._xls = Path(
+            export_bom(
+                product=self.doc_helper.document.product,
+                filename=file_utility.get_random_filename(filetype=&#34;xls&#34;),
+                folder=self.export_root_path,
+            )
         )
-    )
-    self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
+        file_utility.add_delete(path=self._xls, ask_retry=True)
 
-    file_utility.add_delete(path=self._xls, ask_retry=True)
+    self._xlsx = self._convert_xls_to_xlsx(xls_path=self._xls)
     file_utility.add_delete(path=self._xlsx, ask_retry=True)</code></pre>
 </details>
 </dd>

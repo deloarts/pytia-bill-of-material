@@ -5,7 +5,8 @@
 from const import STYLES
 from pytia.log import log
 from resources import resource
-from ttkbootstrap import Menu, Style
+from ttkbootstrap import Menu
+from ttkbootstrap import Style
 
 
 def set_appearance_menu(appearance_menu: Menu) -> None:

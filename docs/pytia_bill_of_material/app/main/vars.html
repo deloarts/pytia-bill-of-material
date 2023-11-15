@@ -31,7 +31,10 @@
     The variables submodule for the app.
 &#34;&#34;&#34;
 from dataclasses import dataclass
-from tkinter import BooleanVar, DoubleVar, StringVar, Tk
+from tkinter import BooleanVar
+from tkinter import DoubleVar
+from tkinter import StringVar
+from tkinter import Tk
 
 from models.bom import BOM
 from models.report import Report
@@ -55,6 +58,8 @@ class Variables:
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+
+    external_bom_path: StringVar
 
     # Export variables
     export_docket: BooleanVar
@@ -90,6 +95,10 @@ class Variables:
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
         self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
+
+        self.external_bom_path = StringVar(
+            master=root, name=&#34;external_bom_path&#34;, value=&#34;&#34;
+        )
 
         self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
@@ -152,6 +161,8 @@ class Variables:
     stl_export_path: StringVar
     jpg_export_path: StringVar
 
+    external_bom_path: StringVar
+
     # Export variables
     export_docket: BooleanVar
     export_drawing: BooleanVar
@@ -186,6 +197,10 @@ class Variables:
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
         self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
+
+        self.external_bom_path = StringVar(
+            master=root, name=&#34;external_bom_path&#34;, value=&#34;&#34;
+        )
 
         self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
@@ -234,6 +249,10 @@ class Variables:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.app.main.vars.Variables.export_stp"><code class="name">var <span class="ident">export_stp</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.external_bom_path"><code class="name">var <span class="ident">external_bom_path</span> : tkinter.StringVar</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -310,6 +329,7 @@ class Variables:
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_jpg" href="#pytia_bill_of_material.app.main.vars.Variables.export_jpg">export_jpg</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stl" href="#pytia_bill_of_material.app.main.vars.Variables.export_stl">export_stl</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.export_stp" href="#pytia_bill_of_material.app.main.vars.Variables.export_stp">export_stp</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.external_bom_path" href="#pytia_bill_of_material.app.main.vars.Variables.external_bom_path">external_bom_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_prefix">ignore_prefix</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_prefix_txt" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_prefix_txt">ignore_prefix_txt</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.ignore_source_unknown" href="#pytia_bill_of_material.app.main.vars.Variables.ignore_source_unknown">ignore_source_unknown</a></code></li>

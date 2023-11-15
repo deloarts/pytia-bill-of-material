@@ -2,7 +2,10 @@
     The variables submodule for the app.
 """
 from dataclasses import dataclass
-from tkinter import BooleanVar, DoubleVar, StringVar, Tk
+from tkinter import BooleanVar
+from tkinter import DoubleVar
+from tkinter import StringVar
+from tkinter import Tk
 
 from models.bom import BOM
 from models.report import Report
@@ -26,6 +29,8 @@ class Variables:
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+
+    external_bom_path: StringVar
 
     # Export variables
     export_docket: BooleanVar
@@ -61,6 +66,10 @@ class Variables:
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
+
+        self.external_bom_path = StringVar(
+            master=root, name="external_bom_path", value=""
+        )
 
         self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")
