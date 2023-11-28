@@ -3,11 +3,11 @@
 A python app for exporting the bill of material from a CATIA V5 product.
 
 ![state](https://img.shields.io/badge/State-beta-brown.svg?style=for-the-badge)
-![version](https://img.shields.io/badge/Version-0.9.2-orange.svg?style=for-the-badge)
+![version](https://img.shields.io/github/v/release/deloarts/pytia-bill-of-material?style=for-the-badge&color=orange)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
-![OS](https://img.shields.io/badge/OS-WIN10%20|%20WIN11-blue.svg?style=for-the-badge)
+![OS](https://img.shields.io/badge/OS-WIN11-blue.svg?style=for-the-badge)
 
 > ⚠️ The layout of this app is heavily biased towards the workflow and needs of my companies' engineering team. Although almost everything can be changed via config files and presets, the apps basic functionality is built to work in the environment of said company.
 
@@ -335,26 +335,26 @@ On a new revision, do the following:
 
 ## 7 changelog
 
-**v0.9.2**: Add fallback solution for export error.  
-**v0.9.1**: Fix drawing export.  
-**v0.9.0**: Add themes.  
-**v0.8.0**: Add ignore-options.  
-**v0.7.1**: Add group to default setting. Resolve paths.  
-**v0.7.0**: Add image export feature.  
-**v0.6.4**: Fix launcher path.  
-**v0.6.3**: Expand environment variables in settings paths.  
-**v0.6.2**: Fix hidden user prompt.  
-**v0.6.1**: Fix excel header naming.  
-**v0.6.0**: Custom excel header names.  
-**v0.5.0**: Remove local dependencies.  
-**v0.4.0**: Add made and bought option to excel export.  
-**v0.3.2**: Performance improvement and minor fixes.  
-**v0.3.1**: Fix drawing path bug.  
-**v0.3.0**: Add drawing export feature.  
-**v0.2.0**: Add report document handler and log console.  
-**v0.1.2**: Fix deleting template files too early.  
-**v0.1.1**: Add failed property description.  
-**v0.1.0**: Initial commit.  
+[**v0.9.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.2): Add fallback solution for export error.  
+[**v0.9.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.1): Fix drawing export.  
+[**v0.9.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.0): Add themes.  
+[**v0.8.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.8.0): Add ignore-options.  
+[**v0.7.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.7.1): Add group to default setting. Resolve paths.  
+[**v0.7.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.7.0): Add image export feature.  
+[**v0.6.4**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.6.4): Fix launcher path.  
+[**v0.6.3**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.6.3): Expand environment variables in settings paths.  
+[**v0.6.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.6.2): Fix hidden user prompt.  
+[**v0.6.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.6.1): Fix excel header naming.  
+[**v0.6.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.6.0): Custom excel header names.  
+[**v0.5.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.5.0): Remove local dependencies.  
+[**v0.4.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.4.0): Add made and bought option to excel export.  
+[**v0.3.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.3.2): Performance improvement and minor fixes.  
+[**v0.3.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.3.1): Fix drawing path bug.  
+[**v0.3.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.3.0): Add drawing export feature.  
+[**v0.2.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.2.0): Add report document handler and log console.  
+[**v0.1.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.1.2): Fix deleting template files too early.  
+[**v0.1.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.1.1): Add failed property description.  
+[**v0.1.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.1.0): Initial commit.  
 
 ## 8 to dos
 
