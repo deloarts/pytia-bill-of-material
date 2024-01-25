@@ -1,0 +1,132 @@
+{
+    "texts": [
+        {
+            "name": "text.header",
+            "value": "Documentation",
+            "view": "bg"
+        },
+        {
+            "name": "text.machine",
+            "value": "Machine Number",
+            "view": "bg"
+        },
+        {
+            "name": "property.machine",
+            "value": "pytia.machine",
+            "view": "bg"
+        },
+        {
+            "name": "text.revision",
+            "value": "Revision Number",
+            "view": "bg"
+        },
+        {
+            "name": "property.revision",
+            "value": "revision",
+            "view": "bg"
+        },
+        {
+            "name": "text.partnumber",
+            "value": "Part Number",
+            "view": "bg"
+        },
+        {
+            "name": "property.partnumber",
+            "value": "partnumber",
+            "view": "bg"
+        },
+        {
+            "name": "text.material",
+            "value": "Material",
+            "view": "bg"
+        },
+        {
+            "name": "property.material",
+            "value": "pytia.material",
+            "view": "bg"
+        },
+        {
+            "name": "text.base_size",
+            "value": "Base Size",
+            "view": "bg"
+        },
+        {
+            "name": "property.base_size",
+            "value": "pytia.base_size",
+            "view": "bg"
+        },
+        {
+            "name": "text.definition",
+            "value": "Definition",
+            "view": "bg"
+        },
+        {
+            "name": "property.definition",
+            "value": "definition",
+            "view": "bg"
+        },
+        {
+            "name": "text.manufacturer",
+            "value": "Manufacturer",
+            "view": "bg"
+        },
+        {
+            "name": "property.manufacturer",
+            "value": "pytia.manufacturer",
+            "view": "bg"
+        },
+        {
+            "name": "text.department",
+            "value": "Department",
+            "view": "bg"
+        },
+        {
+            "name": "text.department_value",
+            "value": "Engineering",
+            "view": "bg"
+        },
+        {
+            "name": "text.quantity",
+            "value": "Quantity",
+            "view": "bg"
+        },
+        {
+            "name": "arg.quantity",
+            "value": "quantity",
+            "view": "bg"
+        },
+        {
+            "name": "text.date_release",
+            "value": "Datum",
+            "view": "bg"
+        },
+        {
+            "name": "object.date",
+            "value": "%d.%m.%Y",
+            "view": "bg"
+        },
+        {
+            "name": "text.legal_notice",
+            "value": "This document serves as an overview of the mechanical design data.\nIt makes no claim to dimensional accuracy or manufacturing processes.",
+            "view": "bg"
+        }
+    ],
+    "views": [
+        {
+            "name": "isometric",
+            "x": 110,
+            "y": 173.5,
+            "max_width": 150,
+            "max_height": 150,
+            "definition": [
+                -0.707107,
+                0.707107,
+                0.000000,
+                -0.408248,
+                -0.408248,
+                0.816497
+            ]
+        }
+    ],
+    "images": []
+}
