@@ -45,16 +45,19 @@ CONFIG_INFOS = "information.json"
 CONFIG_INFOS_DEFAULT = "information.default.json"
 CONFIG_USERS = "users.json"
 CONFIG_DOCKET = "docket.json"
+CONFIG_DOCUMENTATION = "documentation.json"
 CONFIG_PROPERTIES = "properties.json"
 
 PROP_DRAWING_PATH = "pytia.drawing_path"
 
 TEMPLATE_DOCKET = "docket.CATDrawing"
+TEMPLATE_DOCUMENTATION = "documentation.CATDrawing"
 
 WEB_PIP = "https://www.pypi.org"
 
 BOM = "bom"
 DOCKETS = "dockets"
+DOCUMENTATION = "documentation"
 DRAWINGS = "drawings"
 STPS = "steps"
 STLS = "stls"

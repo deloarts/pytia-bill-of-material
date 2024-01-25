@@ -3,8 +3,11 @@
 """
 
 from pathlib import Path
+from typing import Annotated
+from typing import Dict
 
 from const import DOCKETS
+from const import DOCUMENTATION
 from const import DRAWINGS
 from const import JPGS
 from const import LOGON
@@ -24,15 +27,19 @@ from pytia.wrapper.documents.product_documents import PyProductDocument
 from pytia_ui_tools.utils.files import file_utility
 from pytia_ui_tools.utils.qr import QR
 from resources import resource
+from templates import templates
 from utils import export
 
 from .runner import Runner
+
+PartnumberString = Annotated[str, lambda s: str(s)]
 
 
 class ExportItemsTask(TaskProtocol):
     """
     Exports all items:
     - Dockets
+    - Docu Dockets
     - Drawings
     - STP
     - STL
@@ -54,12 +61,14 @@ class ExportItemsTask(TaskProtocol):
         runner: Runner,
         bom: BOM,
         export_docket: bool,
+        export_documentation: bool,
         export_drawing: bool,
         export_stp: bool,
         export_stl: bool,
         export_jpg: bool,
         export_root_path: Path,
         docket_config: DocketConfig,
+        documentation_config: DocketConfig,
     ) -> None:
         """
         Inits the class.
@@ -69,23 +78,27 @@ class ExportItemsTask(TaskProtocol):
             runner (Runner): The task runner instance.
             bom (BOM): The BOM object.
             export_docket (bool): Wether to export the docket or not.
+            export_documentation (bool): Wether to export the docu docket or not.
             export_drawing (bool): Wether to export the drawing or not.
             export_stp (bool): Wether to export the stp or not.
             export_stl (bool): Wether to export the stl or not.
             export_jpg (bool): Wether to export the jpg or not.
             export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
+            documentation_config (DocketConfig): The configuration for the docu docket.
         """
         self.lazy_loader = lazy_loader
         self.runner = runner
         self.bom = bom
         self.export_docket = export_docket
+        self.export_documentation = export_documentation
         self.export_drawing = export_drawing
         self.export_stp = export_stp
         self.export_stl = export_stl
         self.export_jpg = export_jpg
         self.export_root_path = export_root_path
         self.docket_config = docket_config
+        self.documentation_config = documentation_config
 
     def run(self) -> None:
         """
@@ -98,6 +111,7 @@ class ExportItemsTask(TaskProtocol):
         if any(
             [
                 self.export_docket,
+                self.export_documentation,
                 self.export_stp,
                 self.export_stl,
                 self.export_drawing,
@@ -105,8 +119,23 @@ class ExportItemsTask(TaskProtocol):
             ]
         ):
             self.lazy_loader.close_all_documents()
+            complete_items: Dict[PartnumberString, BOMAssemblyItem] = {}
 
-            for item in self.bom.summary.items:
+            # The following 'solution' is required to export all assemblies,
+            # even those that don't show in the summary of the CATIA BOM.
+            # It's not possible to only use all items of the bom.assemblies
+            # object, because this would result in false quantities.
+            # Therefor it's a must to compare those list object with great
+            # care.
+            for summary_item in self.bom.summary.items:
+                complete_items[summary_item.partnumber] = summary_item
+
+                for assembly in self.bom.assemblies:
+                    for assembly_item in assembly.items:
+                        if not assembly_item.partnumber in complete_items:
+                            complete_items[assembly_item.partnumber] = assembly_item
+
+            for partnumber, item in complete_items.items():
                 if not resource.applied_keywords.source in item.properties:
                     raise Exception(
                         f"Keyword {resource.applied_keywords.source!r} not in bill of material."
@@ -117,7 +146,7 @@ class ExportItemsTask(TaskProtocol):
                 ):
                     self.runner.add(
                         func=self._export_item,
-                        name=f"Export item {item.partnumber!r}",
+                        name=f"Export item {partnumber!r}",
                         bom_item=item,
                     )
 
@@ -187,8 +216,10 @@ class ExportItemsTask(TaskProtocol):
         if ".CATPart" in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
+
                 if self.export_docket:
                     export.export_docket(
+                        docket_template=templates.docket_path,
                         filename=export_filename_with_project,
                         folder=Path(self.export_root_path, DOCKETS),
                         document=part_document,
@@ -210,7 +241,30 @@ class ExportItemsTask(TaskProtocol):
                         ],
                         qr_path=qr_path,
                     )
-
+                if self.export_documentation:
+                    export.export_docket(
+                        docket_template=templates.documentation_path,
+                        filename=export_filename,
+                        folder=Path(self.export_root_path, DOCUMENTATION),
+                        document=part_document,
+                        config=self.documentation_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
+                        qr_path=qr_path,
+                    )
                 if self.export_drawing:
                     export.export_drawing(
                         filename=export_filename,
@@ -244,8 +298,10 @@ class ExportItemsTask(TaskProtocol):
         elif ".CATProduct" in str(bom_item.path):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
+
                 if self.export_docket:
                     export.export_docket(
+                        docket_template=templates.docket_path,
                         filename=export_filename_with_project,
                         folder=Path(self.export_root_path, DOCKETS),
                         document=product_document,
@@ -257,6 +313,30 @@ class ExportItemsTask(TaskProtocol):
                             resource.bom.required_header_items.quantity
                         ],
                         logon=LOGON,
+                        qr_path=qr_path,
+                    )
+                if self.export_documentation:
+                    export.export_docket(
+                        docket_template=templates.documentation_path,
+                        filename=export_filename,
+                        folder=Path(self.export_root_path, DOCUMENTATION),
+                        document=product_document,
+                        config=self.documentation_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
                         qr_path=qr_path,
                     )
                 if self.export_drawing:

@@ -165,6 +165,14 @@ class Controller:
                 export_checkbox_variable=self.vars.export_docket,
             )
 
+        if templates.documentation_path is not None:
+            set_default_folder_and_checkbox_from_workspace(
+                workspace_folder=self.workspace.workspace_folder,
+                workspace_default_path=self.workspace.elements.documentation_folder,
+                export_path_variable=self.vars.documentation_export_path,
+                export_checkbox_variable=self.vars.export_documentation,
+            )
+
         # Write default stp export path
         set_default_folder_and_checkbox_from_workspace(
             workspace_folder=self.workspace.workspace_folder,
