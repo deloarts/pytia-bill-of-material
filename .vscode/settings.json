@@ -11,6 +11,7 @@
         "chkbtn",
         "CNEXT",
         "columnspan",
+        "docu",
         "endregion",
         "gaierror",
         "Gekauft",
@@ -81,7 +82,7 @@
         "editor.formatOnSave": true,
         "editor.formatOnPaste": false,
         "editor.codeActionsOnSave": {
-            "source.organizeImports": true
+            "source.organizeImports": "explicit"
         },
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
