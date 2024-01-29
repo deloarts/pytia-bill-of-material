@@ -14,7 +14,7 @@ PYTIA_BILL_OF_MATERIAL = "pytia_bill_of_material"
 APP_NAME = "PYTIA Bill Of Material"
 APP_VERSION = __version__
 
-LOGON = str(os.environ.get("USERNAME"))
+LOGON = str(os.environ.get("USERNAME")).lower()
 CNEXT = "win_b64\\code\\bin\\CNEXT.exe"
 TEMP = str(os.environ.get("TEMP"))
 TEMP_EXPORT = Path(TEMP, PYTIA_BILL_OF_MATERIAL, "export")
