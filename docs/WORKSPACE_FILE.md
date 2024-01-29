@@ -26,6 +26,7 @@ editors:
 bom_name: "Bill of Material"
 bom_folder: ./export/bom
 docket_folder: ./export/dockets
+documentation_folder: ./export/dockets
 stp_folder: ./export/stp
 stl_folder: ./export/stl
 image_folder: "./export/images"
@@ -50,6 +51,7 @@ editors | `List[str]` or `str` | The list of editors that are allowed to make ch
 bom_name | `str` | The default file name for the exported bill of material. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 bom_folder | `str` | The standard path for the bill of material. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the same folder, where the workspace config is stored. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 docket_folder | `str` | The standard path for dockets. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
+documentation_folder | `str` | The standard path for documentation dockets. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 stp_folder | `str` | The standard path for step files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 stl_folder | `str` | The standard path for stl files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
 image_folder | `str` | The standard path for png files. Used with [pytia bill of material](https://github.com/deloarts/pytia-bill-of-material).
@@ -119,6 +121,9 @@ bom_folder: ./export/bom
 
 # The docket folder is the pre-defined location of the pdf dockets. It will be used if the set folder exists. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the folder in which the workspace file is stored.
 docket_folder: ./export/dockets
+
+# The documentation docket folder is the pre-defined location of the pdf documentation drawing. It will be used if the set folder exists. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the folder in which the workspace file is stored.
+documentation_folder: ./export/documentation
 
 # The stp folder is the pre-defined location of the step files. It will be used if the set folder exists. Can be absolute or relative, use a dot and a slash `./` to mark the root folder. The root folder is the folder in which the workspace file is stored.
 stp_folder: ./export/stp

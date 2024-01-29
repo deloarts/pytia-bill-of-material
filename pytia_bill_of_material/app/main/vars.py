@@ -7,7 +7,6 @@ from tkinter import DoubleVar
 from tkinter import StringVar
 from tkinter import Tk
 
-from models.bom import BOM
 from models.report import Report
 
 
@@ -25,6 +24,7 @@ class Variables:
     # Path variables
     bom_export_path: StringVar
     docket_export_path: StringVar
+    documentation_export_path: StringVar
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
@@ -34,6 +34,7 @@ class Variables:
 
     # Export variables
     export_docket: BooleanVar
+    export_documentation: BooleanVar
     export_drawing: BooleanVar
     export_stp: BooleanVar
     export_stl: BooleanVar
@@ -61,8 +62,11 @@ class Variables:
         self.machine = StringVar(master=root, name="machine")
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
-        self.drawing_export_path = StringVar(master=root, name="drawing_export_path")
         self.docket_export_path = StringVar(master=root, name="docket_export_path")
+        self.documentation_export_path = StringVar(
+            master=root, name="documentation_export_path"
+        )
+        self.drawing_export_path = StringVar(master=root, name="drawing_export_path")
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
@@ -72,6 +76,7 @@ class Variables:
         )
 
         self.export_docket = BooleanVar(master=root, name="export_docket")
+        self.export_documentation = BooleanVar(master=root, name="export_documentation")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")
         self.export_stp = BooleanVar(master=root, name="export_stp")
         self.export_stl = BooleanVar(master=root, name="export_stl")

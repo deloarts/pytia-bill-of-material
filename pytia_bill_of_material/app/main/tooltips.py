@@ -97,6 +97,24 @@ class ToolTips:
             text=("Select the folder into which all docket files will be exported."),
         )
 
+        docu_path_tooltip = (
+            "Defines the export folder of the generated documentation docket files. "
+            "Existing files are going to be overwritten."
+        )
+        if templates.documentation_path is None:
+            docu_path_tooltip += (
+                "\n\nDisabled because no documentation docket template is available."
+            )
+        elif workspace.elements.documentation_folder is not None:
+            docu_path_tooltip += (
+                "\n\nThe path has been pre-selected from the workspace file."
+            )
+        ToolTip(widget=layout.input_documentation_export_path, text=docu_path_tooltip)
+        ToolTip(
+            widget=layout.button_documentation_export_path,
+            text=("Select the folder into which all docket files will be exported."),
+        )
+
         drawing_path_tooltip = (
             "Defines the export folder of the drawing files (pdf and dxf). "
             "Existing files are going to be overwritten."
@@ -160,6 +178,15 @@ class ToolTips:
             text=(
                 "Generates a pdf docket for each item in the summary of the exported bill of "
                 "material. Only exports items which are of source 'made'.\n\n"
+                "This requires a valid path. Existing files at the target location will be "
+                "overwritten."
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_documentation,
+            text=(
+                "Generates a pdf documentation docket for each item in the summary of"
+                "the bill of material. Only exports items which are of source 'made'.\n\n"
                 "This requires a valid path. Existing files at the target location will be "
                 "overwritten."
             ),

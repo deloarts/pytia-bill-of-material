@@ -78,6 +78,7 @@ class MainTask:
         self.xlsx_path: Path
         self.doc_paths: Paths
         self.docket_cfg: DocketConfig
+        self.documentation_cfg: DocketConfig
         self.bom: BOM
 
         self.runner_main = Runner(
@@ -160,6 +161,7 @@ class MainTask:
 
         self.doc_paths = task.paths
         self.docket_cfg = task.docket_config
+        self.documentation_cfg = task.documentation_config
 
     def _catia_export(self, *_) -> None:
         external_xls_path: Path | None = None
@@ -219,12 +221,14 @@ class MainTask:
             runner=self.runner_item_export,
             bom=self.bom,
             export_docket=self.variables.export_docket.get(),
+            export_documentation=self.variables.export_documentation.get(),
             export_drawing=self.variables.export_drawing.get(),
             export_stp=self.variables.export_stp.get(),
             export_stl=self.variables.export_stl.get(),
             export_jpg=self.variables.export_jpg.get(),
             export_root_path=self.export_folder,
             docket_config=self.docket_cfg,
+            documentation_config=self.documentation_cfg,
         )
         task.run()
 
@@ -235,6 +239,9 @@ class MainTask:
             bom_export_path=Path(self.variables.bom_export_path.get()),
             drawing_export_path=Path(self.variables.drawing_export_path.get()),
             docket_export_path=Path(self.variables.docket_export_path.get()),
+            documentation_export_path=Path(
+                self.variables.documentation_export_path.get()
+            ),
             stp_export_path=Path(self.variables.stp_export_path.get()),
             stl_export_path=Path(self.variables.stl_export_path.get()),
             jpg_export_path=Path(self.variables.jpg_export_path.get()),

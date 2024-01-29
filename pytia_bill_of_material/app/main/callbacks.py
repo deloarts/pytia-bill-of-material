@@ -101,6 +101,9 @@ class Callbacks:
         self.layout.button_docket_export_path.configure(
             command=self.on_btn_docket_export_path
         )
+        self.layout.button_documentation_export_path.configure(
+            command=self.on_btn_docu_export_path
+        )
         self.layout.button_drawing_export_path.configure(
             command=self.on_btn_drawing_export_path
         )
@@ -250,6 +253,29 @@ class Callbacks:
             )
         ):
             self.vars.docket_export_path.set(str(path))
+
+    def on_btn_docu_export_path(self) -> None:
+        """
+        Event handler for the browse documentation export path button. Asks the user
+        to select a folder, into which to export the docket files.
+        """
+        log.info("Callback for button 'Browse documentation export path'.")
+
+        initial_dir = Path(self.vars.documentation_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.documentation_export_path.set(str(path))
 
     def on_btn_drawing_export_path(self) -> None:
         """

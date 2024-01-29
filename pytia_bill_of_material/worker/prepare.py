@@ -8,6 +8,7 @@ from pathlib import Path
 
 from const import BOM
 from const import DOCKETS
+from const import DOCUMENTATION
 from const import DRAWINGS
 from const import JPGS
 from const import STLS
@@ -40,7 +41,7 @@ class PrepareTask(TaskProtocol):
         PytiaDifferentDocumentError: Raised when the initial document has changed.
     """
 
-    __slots__ = ("_doc_helper", "_paths", "_docket_config")
+    __slots__ = ("_doc_helper", "_paths", "_docket_config", "_docu_config")
 
     def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -> None:
         self.doc_helper = doc_helper
@@ -60,12 +61,17 @@ class PrepareTask(TaskProtocol):
     def docket_config(self) -> DocketConfig:
         return self._docket_config
 
+    @property
+    def documentation_config(self) -> DocketConfig:
+        return self._docu_config
+
     def run(self) -> None:
         """Runs the task."""
         log.info("Preparing to export bill of material.")
 
         os.makedirs(Path(self.export_root_path, BOM))
         os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DOCUMENTATION))
         os.makedirs(Path(self.export_root_path, DRAWINGS))
         os.makedirs(Path(self.export_root_path, STLS))
         os.makedirs(Path(self.export_root_path, STPS))
@@ -74,6 +80,7 @@ class PrepareTask(TaskProtocol):
         self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
+        self._docu_config = DocketConfig.from_dict(resource.documentation)
 
     @staticmethod
     def set_catia_bom_format() -> None:

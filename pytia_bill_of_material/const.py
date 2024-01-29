@@ -14,7 +14,7 @@ PYTIA_BILL_OF_MATERIAL = "pytia_bill_of_material"
 APP_NAME = "PYTIA Bill Of Material"
 APP_VERSION = __version__
 
-LOGON = str(os.environ.get("USERNAME"))
+LOGON = str(os.environ.get("USERNAME")).lower()
 CNEXT = "win_b64\\code\\bin\\CNEXT.exe"
 TEMP = str(os.environ.get("TEMP"))
 TEMP_EXPORT = Path(TEMP, PYTIA_BILL_OF_MATERIAL, "export")
@@ -45,16 +45,19 @@ CONFIG_INFOS = "information.json"
 CONFIG_INFOS_DEFAULT = "information.default.json"
 CONFIG_USERS = "users.json"
 CONFIG_DOCKET = "docket.json"
+CONFIG_DOCUMENTATION = "documentation.json"
 CONFIG_PROPERTIES = "properties.json"
 
 PROP_DRAWING_PATH = "pytia.drawing_path"
 
 TEMPLATE_DOCKET = "docket.CATDrawing"
+TEMPLATE_DOCUMENTATION = "documentation.CATDrawing"
 
 WEB_PIP = "https://www.pypi.org"
 
 BOM = "bom"
 DOCKETS = "dockets"
+DOCUMENTATION = "documentation"
 DRAWINGS = "drawings"
 STPS = "steps"
 STLS = "stls"

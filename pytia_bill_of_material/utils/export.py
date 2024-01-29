@@ -22,10 +22,10 @@ from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
 from resources.utils import expand_env_vars
-from templates import templates
 
 
 def export_docket(
+    docket_template: Path | None,
     filename: str,
     folder: Path,
     document: PyProductDocument | PyPartDocument,
@@ -37,6 +37,7 @@ def export_docket(
     after the main task has finished.
 
     Args:
+        docket_template (Path): The path to the template CATDrawing file.
         filename (str): The filename of the docket pdf.
         folder (Path): The folder into which the pdf will be exported.
         document (PyPartDocument | PyProductDocument): The part or product document from which \
@@ -53,7 +54,7 @@ def export_docket(
     if ".pdf" not in filename:
         filename += ".pdf"
 
-    if templates.docket_path is None:
+    if docket_template is None:
         raise PytiaFileOperationError("Cannot export docket, given folder is None.")
 
     # Translate creator username
@@ -98,7 +99,7 @@ def export_docket(
         publisher = LOGON
 
     docket = create_docket_from_template(
-        template=templates.docket_path,
+        template=docket_template,
         document=document,
         config=config,
         hide_unknown_properties=True,
@@ -155,7 +156,7 @@ def export_drawing(
                             view = sheet.views.item(i_view)
                             view.lock_status = True
                             log.info(
-                                f"Locked view {view.name!r} or sheet {sheet.name!r}."
+                                f"Locked view {view.name!r} of sheet {sheet.name!r}."
                             )
                     drawing_document.save()
         else:
