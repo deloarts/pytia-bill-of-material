@@ -37,6 +37,7 @@ from pathlib import Path
 
 from const import BOM
 from const import DOCKETS
+from const import DOCUMENTATION
 from const import DRAWINGS
 from const import JPGS
 from const import STLS
@@ -69,7 +70,7 @@ class PrepareTask(TaskProtocol):
         PytiaDifferentDocumentError: Raised when the initial document has changed.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
+    __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;, &#34;_docu_config&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
         self.doc_helper = doc_helper
@@ -89,12 +90,17 @@ class PrepareTask(TaskProtocol):
     def docket_config(self) -&gt; DocketConfig:
         return self._docket_config
 
+    @property
+    def documentation_config(self) -&gt; DocketConfig:
+        return self._docu_config
+
     def run(self) -&gt; None:
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         os.makedirs(Path(self.export_root_path, BOM))
         os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DOCUMENTATION))
         os.makedirs(Path(self.export_root_path, DRAWINGS))
         os.makedirs(Path(self.export_root_path, STLS))
         os.makedirs(Path(self.export_root_path, STPS))
@@ -103,6 +109,7 @@ class PrepareTask(TaskProtocol):
         self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
+        self._docu_config = DocketConfig.from_dict(resource.documentation)
 
     @staticmethod
     def set_catia_bom_format() -&gt; None:
@@ -208,7 +215,7 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
         PytiaDifferentDocumentError: Raised when the initial document has changed.
     &#34;&#34;&#34;
 
-    __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;)
+    __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;, &#34;_docu_config&#34;)
 
     def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
         self.doc_helper = doc_helper
@@ -228,12 +235,17 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
     def docket_config(self) -&gt; DocketConfig:
         return self._docket_config
 
+    @property
+    def documentation_config(self) -&gt; DocketConfig:
+        return self._docu_config
+
     def run(self) -&gt; None:
         &#34;&#34;&#34;Runs the task.&#34;&#34;&#34;
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         os.makedirs(Path(self.export_root_path, BOM))
         os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DOCUMENTATION))
         os.makedirs(Path(self.export_root_path, DRAWINGS))
         os.makedirs(Path(self.export_root_path, STLS))
         os.makedirs(Path(self.export_root_path, STPS))
@@ -242,6 +254,7 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
         self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
         self._docket_config = DocketConfig.from_dict(resource.docket)
+        self._docu_config = DocketConfig.from_dict(resource.documentation)
 
     @staticmethod
     def set_catia_bom_format() -&gt; None:
@@ -357,6 +370,18 @@ def docket_config(self) -&gt; DocketConfig:
     return self._docket_config</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.worker.prepare.PrepareTask.documentation_config"><code class="name">var <span class="ident">documentation_config</span> : pytia.utilities.docket.DocketConfig</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def documentation_config(self) -&gt; DocketConfig:
+    return self._docu_config</code></pre>
+</details>
+</dd>
 <dt id="pytia_bill_of_material.worker.prepare.PrepareTask.paths"><code class="name">var <span class="ident">paths</span> : models.paths.Paths</code></dt>
 <dd>
 <div class="desc"></div>
@@ -387,6 +412,7 @@ def paths(self) -&gt; Paths:
 
     os.makedirs(Path(self.export_root_path, BOM))
     os.makedirs(Path(self.export_root_path, DOCKETS))
+    os.makedirs(Path(self.export_root_path, DOCUMENTATION))
     os.makedirs(Path(self.export_root_path, DRAWINGS))
     os.makedirs(Path(self.export_root_path, STLS))
     os.makedirs(Path(self.export_root_path, STPS))
@@ -394,7 +420,8 @@ def paths(self) -&gt; Paths:
 
     self.set_catia_bom_format()
     self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
-    self._docket_config = DocketConfig.from_dict(resource.docket)</code></pre>
+    self._docket_config = DocketConfig.from_dict(resource.docket)
+    self._docu_config = DocketConfig.from_dict(resource.documentation)</code></pre>
 </details>
 </dd>
 </dl>
@@ -419,6 +446,7 @@ def paths(self) -&gt; Paths:
 <h4><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask" href="#pytia_bill_of_material.worker.prepare.PrepareTask">PrepareTask</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask.docket_config" href="#pytia_bill_of_material.worker.prepare.PrepareTask.docket_config">docket_config</a></code></li>
+<li><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask.documentation_config" href="#pytia_bill_of_material.worker.prepare.PrepareTask.documentation_config">documentation_config</a></code></li>
 <li><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask.paths" href="#pytia_bill_of_material.worker.prepare.PrepareTask.paths">paths</a></code></li>
 <li><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask.run" href="#pytia_bill_of_material.worker.prepare.PrepareTask.run">run</a></code></li>
 <li><code><a title="pytia_bill_of_material.worker.prepare.PrepareTask.set_catia_bom_format" href="#pytia_bill_of_material.worker.prepare.PrepareTask.set_catia_bom_format">set_catia_bom_format</a></code></li>

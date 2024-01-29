@@ -159,6 +159,7 @@ Object | Description
 Project | The user can overwrite the project number for all items of the bill of material. If set to `Keep` no project number will be overwritten.
 Bill of Material File | The full path to the bill of material xlsx file. The folder must exist, otherwise the `Export` button will be disabled.
 Docket Folder | The folder into which all generated docket files will be stored. The folder must exist, otherwise the `Export Docket` checkbox will be disabled.
+Documentation Folder | The folder into which all generated documentation docket files will be stored. The folder must exist, otherwise the `Export Documentation` checkbox will be disabled.
 Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled.
 STP Folder | The folder into which all generated step files will be stored. The folder must exist, otherwise the `Export STP` checkbox will be disabled.
 STL Folder | The folder into which all generated stl files will be stored. The folder must exist, otherwise the `Export STL` checkbox will be disabled.
