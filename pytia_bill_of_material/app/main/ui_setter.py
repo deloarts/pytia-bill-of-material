@@ -50,6 +50,7 @@ class UISetter:
         self.workspace = workspace
 
         self._state_checkbox_export_docket = tk.NORMAL
+        self._state_checkbox_export_docu = tk.NORMAL
         self._state_checkbox_export_drawing = tk.NORMAL
         self._state_checkbox_export_stp = tk.NORMAL
         self._state_checkbox_export_stl = tk.NORMAL
@@ -88,6 +89,13 @@ class UISetter:
             state=tk.NORMAL if templates.docket_path is not None else tk.DISABLED
         )
 
+        self.layout.input_documentation_export_path.configure(
+            state=tk.NORMAL if templates.documentation_path is not None else tk.DISABLED
+        )
+        self.layout.button_documentation_export_path.configure(
+            state=tk.NORMAL if templates.documentation_path is not None else tk.DISABLED
+        )
+
         self.layout.input_drawing_export_path.configure(state=tk.NORMAL)
         self.layout.button_drawing_export_path.configure(state=tk.NORMAL)
 
@@ -104,6 +112,12 @@ class UISetter:
             state=self._state_checkbox_export_docket
             if os.path.isdir(self.vars.docket_export_path.get())
             and templates.docket_path is not None
+            else tk.DISABLED
+        )
+        self.layout.checkbox_export_documentation.configure(
+            state=self._state_checkbox_export_docu
+            if os.path.isdir(self.vars.documentation_export_path.get())
+            and templates.documentation_path is not None
             else tk.DISABLED
         )
         self.layout.checkbox_export_drawing.configure(
@@ -153,6 +167,9 @@ class UISetter:
 
         self.layout.input_docket_export_path.configure(state=tk.DISABLED)
         self.layout.button_docket_export_path.configure(state=tk.DISABLED)
+
+        self.layout.input_documentation_export_path.configure(state=tk.DISABLED)
+        self.layout.button_documentation_export_path.configure(state=tk.DISABLED)
 
         self.layout.input_drawing_export_path.configure(state=tk.DISABLED)
         self.layout.button_drawing_export_path.configure(state=tk.DISABLED)

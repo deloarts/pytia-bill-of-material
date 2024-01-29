@@ -98,7 +98,7 @@ This file contains a list of users known to the system.
 
 name | type | description
 --- | --- | ---
-logon | `str` | The windows logon name of the user.
+logon | `str` | The windows logon name of the user in lowercase.
 id | `str` | The ID of the user. Can be used for the employee ID.
 name | `str` | The name of the user.
 mail | `str` | The users mail address.

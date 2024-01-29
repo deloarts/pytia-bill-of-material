@@ -38,12 +38,14 @@ import importlib.resources
 import os
 import zipfile
 from pathlib import Path
+from typing import List
 from typing import Optional
 
 from const import PYTIA_BILL_OF_MATERIAL
 from const import TEMP
 from const import TEMP_TEMPLATES
 from const import TEMPLATE_DOCKET
+from const import TEMPLATE_DOCUMENTATION
 from pytia_ui_tools.utils.files import file_utility
 from resources import resource
 
@@ -63,55 +65,60 @@ class Templates:
         templates folder, not from the zipped app.
         &#34;&#34;&#34;
         self.tempfolder = Path(TEMP, PYTIA_BILL_OF_MATERIAL)
-        self.temp_docket_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCKET)
 
-        self._docket_path = None
+        temp_docket_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCKET)
+        temp_docu_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCUMENTATION)
 
         if not resource.settings.debug:
-            self._make_tempfolder()
-            self._extract()
+            self._make_tempfolder(existing_templates=[temp_docket_path, temp_docu_path])
+            self._extract(filename=TEMPLATE_DOCKET, temp_path=temp_docket_path)
+            self._extract(filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path)
 
-        self._get_docket_path()
+        self._docket_path = self._get_path(
+            filename=TEMPLATE_DOCKET, temp_path=temp_docket_path
+        )
+        self._docu_path = self._get_path(
+            filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path
+        )
 
-    def _make_tempfolder(self) -&gt; None:
+    def _make_tempfolder(self, existing_templates: List[Path]) -&gt; None:
         &#34;&#34;&#34;Creates the temp-folder for the templates. Deletes existing templates.&#34;&#34;&#34;
-        if os.path.exists(self.temp_docket_path):
-            os.remove(self.temp_docket_path)
+        for temp_template in existing_templates:
+            if os.path.exists(temp_template):
+                os.remove(temp_template)
         os.makedirs(self.tempfolder, exist_ok=True)
 
-    def _extract(self) -&gt; None:
+    def _extract(self, filename: str, temp_path: Path) -&gt; None:
         &#34;&#34;&#34;Extracts the templates from the zipped app.&#34;&#34;&#34;
         try:
             with zipfile.ZipFile(
                 Path(resource.settings.paths.release, resource.settings.files.app), &#34;r&#34;
             ) as zfile:
-                zfile.extract(
-                    member=f&#34;templates/{TEMPLATE_DOCKET}&#34;, path=self.tempfolder
-                )
-            file_utility.add_delete(
-                path=self.temp_docket_path, skip_silent=True, at_exit=True
-            )
+                zfile.extract(member=f&#34;templates/{filename}&#34;, path=self.tempfolder)
+            file_utility.add_delete(path=temp_path, skip_silent=True, at_exit=True)
         except:
             pass
+
+    def _get_path(self, filename: str, temp_path: Path) -&gt; Path | None:
+        &#34;&#34;&#34;Returns the path to the CATDrawing template. Depends on the apps mode.&#34;&#34;&#34;
+        if resource.settings.debug:
+            if importlib.resources.is_resource(&#34;templates&#34;, filename):
+                with importlib.resources.path(&#34;templates&#34;, filename) as p:
+                    return p
+            else:
+                return None
+        else:
+            return temp_path if os.path.exists(temp_path) else None
 
     @property
     def docket_path(self) -&gt; Optional[Path]:
         &#34;&#34;&#34;The path to the docket template file.&#34;&#34;&#34;
         return self._docket_path
 
-    def _get_docket_path(self) -&gt; None:
-        &#34;&#34;&#34;Returns the path to the docket template. Depends on the apps mode.&#34;&#34;&#34;
-        if resource.settings.debug:
-            if importlib.resources.is_resource(&#34;templates&#34;, TEMPLATE_DOCKET):
-                with importlib.resources.path(&#34;templates&#34;, TEMPLATE_DOCKET) as p:
-                    self._docket_path = p
-            else:
-                self._docket_path = None
-
-        else:
-            self._docket_path = (
-                self.temp_docket_path if os.path.exists(self.temp_docket_path) else None
-            )
+    @property
+    def documentation_path(self) -&gt; Optional[Path]:
+        &#34;&#34;&#34;The path to the documentation template file.&#34;&#34;&#34;
+        return self._docu_path
 
 
 templates = Templates()</code></pre>
@@ -155,55 +162,60 @@ templates folder, not from the zipped app.</p></div>
         templates folder, not from the zipped app.
         &#34;&#34;&#34;
         self.tempfolder = Path(TEMP, PYTIA_BILL_OF_MATERIAL)
-        self.temp_docket_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCKET)
 
-        self._docket_path = None
+        temp_docket_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCKET)
+        temp_docu_path = Path(TEMP_TEMPLATES, TEMPLATE_DOCUMENTATION)
 
         if not resource.settings.debug:
-            self._make_tempfolder()
-            self._extract()
+            self._make_tempfolder(existing_templates=[temp_docket_path, temp_docu_path])
+            self._extract(filename=TEMPLATE_DOCKET, temp_path=temp_docket_path)
+            self._extract(filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path)
 
-        self._get_docket_path()
+        self._docket_path = self._get_path(
+            filename=TEMPLATE_DOCKET, temp_path=temp_docket_path
+        )
+        self._docu_path = self._get_path(
+            filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path
+        )
 
-    def _make_tempfolder(self) -&gt; None:
+    def _make_tempfolder(self, existing_templates: List[Path]) -&gt; None:
         &#34;&#34;&#34;Creates the temp-folder for the templates. Deletes existing templates.&#34;&#34;&#34;
-        if os.path.exists(self.temp_docket_path):
-            os.remove(self.temp_docket_path)
+        for temp_template in existing_templates:
+            if os.path.exists(temp_template):
+                os.remove(temp_template)
         os.makedirs(self.tempfolder, exist_ok=True)
 
-    def _extract(self) -&gt; None:
+    def _extract(self, filename: str, temp_path: Path) -&gt; None:
         &#34;&#34;&#34;Extracts the templates from the zipped app.&#34;&#34;&#34;
         try:
             with zipfile.ZipFile(
                 Path(resource.settings.paths.release, resource.settings.files.app), &#34;r&#34;
             ) as zfile:
-                zfile.extract(
-                    member=f&#34;templates/{TEMPLATE_DOCKET}&#34;, path=self.tempfolder
-                )
-            file_utility.add_delete(
-                path=self.temp_docket_path, skip_silent=True, at_exit=True
-            )
+                zfile.extract(member=f&#34;templates/{filename}&#34;, path=self.tempfolder)
+            file_utility.add_delete(path=temp_path, skip_silent=True, at_exit=True)
         except:
             pass
+
+    def _get_path(self, filename: str, temp_path: Path) -&gt; Path | None:
+        &#34;&#34;&#34;Returns the path to the CATDrawing template. Depends on the apps mode.&#34;&#34;&#34;
+        if resource.settings.debug:
+            if importlib.resources.is_resource(&#34;templates&#34;, filename):
+                with importlib.resources.path(&#34;templates&#34;, filename) as p:
+                    return p
+            else:
+                return None
+        else:
+            return temp_path if os.path.exists(temp_path) else None
 
     @property
     def docket_path(self) -&gt; Optional[Path]:
         &#34;&#34;&#34;The path to the docket template file.&#34;&#34;&#34;
         return self._docket_path
 
-    def _get_docket_path(self) -&gt; None:
-        &#34;&#34;&#34;Returns the path to the docket template. Depends on the apps mode.&#34;&#34;&#34;
-        if resource.settings.debug:
-            if importlib.resources.is_resource(&#34;templates&#34;, TEMPLATE_DOCKET):
-                with importlib.resources.path(&#34;templates&#34;, TEMPLATE_DOCKET) as p:
-                    self._docket_path = p
-            else:
-                self._docket_path = None
-
-        else:
-            self._docket_path = (
-                self.temp_docket_path if os.path.exists(self.temp_docket_path) else None
-            )</code></pre>
+    @property
+    def documentation_path(self) -&gt; Optional[Path]:
+        &#34;&#34;&#34;The path to the documentation template file.&#34;&#34;&#34;
+        return self._docu_path</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -218,6 +230,19 @@ templates folder, not from the zipped app.</p></div>
 def docket_path(self) -&gt; Optional[Path]:
     &#34;&#34;&#34;The path to the docket template file.&#34;&#34;&#34;
     return self._docket_path</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.templates.Templates.documentation_path"><code class="name">var <span class="ident">documentation_path</span> : pathlib.Path | None</code></dt>
+<dd>
+<div class="desc"><p>The path to the documentation template file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def documentation_path(self) -&gt; Optional[Path]:
+    &#34;&#34;&#34;The path to the documentation template file.&#34;&#34;&#34;
+    return self._docu_path</code></pre>
 </details>
 </dd>
 </dl>
@@ -242,6 +267,7 @@ def docket_path(self) -&gt; Optional[Path]:
 <h4><code><a title="pytia_bill_of_material.templates.Templates" href="#pytia_bill_of_material.templates.Templates">Templates</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.templates.Templates.docket_path" href="#pytia_bill_of_material.templates.Templates.docket_path">docket_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.templates.Templates.documentation_path" href="#pytia_bill_of_material.templates.Templates.documentation_path">documentation_path</a></code></li>
 </ul>
 </li>
 </ul>

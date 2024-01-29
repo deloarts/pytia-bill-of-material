@@ -177,10 +177,49 @@ class Layout:
         )
         # endregion
 
+        # region documentation export path
+        lbl_docu_export_path = Label(frames.paths, text="Docs Folder", width=18)
+        lbl_docu_export_path.grid(
+            row=2,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._entry_docu_export_path = Entry(
+            frames.paths,
+            textvariable=variables.documentation_export_path,
+            state=DISABLED,
+        )
+        self._entry_docu_export_path.grid(
+            row=2,
+            column=1,
+            padx=(5, 2),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._btn_browse_docu_export_path = Button(
+            frames.paths,
+            text="...",
+            style="outline",
+            width=3,
+            state=DISABLED,
+        )
+        self._btn_browse_docu_export_path.grid(
+            row=2,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
         # region drawing export path
         lbl_drawing_export_path = Label(frames.paths, text="Drawing Folder", width=18)
         lbl_drawing_export_path.grid(
-            row=2,
+            row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -193,7 +232,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_drawing_export_path.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -208,7 +247,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_drawing_export_path.grid(
-            row=2,
+            row=3,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, 2),
@@ -219,7 +258,7 @@ class Layout:
         # region stp export path
         lbl_stp_export_path = Label(frames.paths, text="STP Folder", width=18)
         lbl_stp_export_path.grid(
-            row=3,
+            row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -232,7 +271,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_stp_export_path.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -247,7 +286,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_stp_export_path.grid(
-            row=3,
+            row=4,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, 2),
@@ -258,7 +297,7 @@ class Layout:
         # region stl export path
         lbl_stl_export_path = Label(frames.paths, text="STL Folder", width=18)
         lbl_stl_export_path.grid(
-            row=4,
+            row=5,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -271,7 +310,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_stl_export_path.grid(
-            row=4,
+            row=5,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -286,7 +325,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_stl_export_path.grid(
-            row=4,
+            row=5,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, 2),
@@ -297,7 +336,7 @@ class Layout:
         # region jpg export path
         lbl_jpg_export_path = Label(frames.paths, text="JPG Folder", width=18)
         lbl_jpg_export_path.grid(
-            row=5,
+            row=6,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, Layout.MARGIN_Y),
@@ -310,7 +349,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_jpg_export_path.grid(
-            row=5,
+            row=6,
             column=1,
             padx=(5, 2),
             pady=(2, Layout.MARGIN_Y),
@@ -325,7 +364,7 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_jpg_export_path.grid(
-            row=5,
+            row=6,
             column=2,
             padx=(2, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -360,10 +399,38 @@ class Layout:
         )
         # endregion
 
+        # region export documentation docket
+        lbl_export_documentation = Label(
+            frames.export, text="Export Documentation", width=18
+        )
+        lbl_export_documentation.grid(
+            row=1,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_export_documentation = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.export_documentation,
+            state=DISABLED,
+        )
+        self._chkbtn_export_documentation.grid(
+            row=1,
+            column=1,
+            padx=(5, 5),
+            pady=(2, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
+        # endregion
+
         # region export drawing
         lbl_export_drawing = Label(frames.export, text="Export Drawing", width=18)
         lbl_export_drawing.grid(
-            row=1,
+            row=2,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -377,7 +444,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_drawing.grid(
-            row=1,
+            row=2,
             column=1,
             padx=(5, 5),
             pady=(2, 2),
@@ -389,7 +456,7 @@ class Layout:
         # region export stp
         lbl_export_stp = Label(frames.export, text="Export STP", width=18)
         lbl_export_stp.grid(
-            row=2,
+            row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -403,7 +470,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_stp.grid(
-            row=2,
+            row=3,
             column=1,
             padx=(5, 5),
             pady=(2, 2),
@@ -415,7 +482,7 @@ class Layout:
         # region export stl
         lbl_export_stl = Label(frames.export, text="Export STL", width=18)
         lbl_export_stl.grid(
-            row=3,
+            row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -429,7 +496,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_stl.grid(
-            row=3,
+            row=4,
             column=1,
             padx=(5, 5),
             pady=(2, 2),
@@ -441,7 +508,7 @@ class Layout:
         # region export jpg
         lbl_export_jpg = Label(frames.export, text="Export JPG", width=18)
         lbl_export_jpg.grid(
-            row=4,
+            row=5,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, Layout.MARGIN_Y),
@@ -455,7 +522,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_jpg.grid(
-            row=4,
+            row=5,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -467,7 +534,7 @@ class Layout:
         # region ignore source "unknown"
         lbl_ignore_unknown = Label(frames.export, text="Ignore Unknown", width=18)
         lbl_ignore_unknown.grid(
-            row=5,
+            row=6,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -481,7 +548,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_ignore_unknown.grid(
-            row=5,
+            row=6,
             column=1,
             padx=(5, 5),
             pady=(2, 2),
@@ -493,7 +560,7 @@ class Layout:
         # region ignore prefix
         lbl_ignore_prefixed = Label(frames.export, text="Ignore Prefixed", width=18)
         lbl_ignore_prefixed.grid(
-            row=6,
+            row=7,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, Layout.MARGIN_Y),
@@ -507,7 +574,7 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_ignore_prefixed.grid(
-            row=6,
+            row=7,
             column=1,
             padx=(5, 5),
             pady=(2, Layout.MARGIN_Y),
@@ -519,7 +586,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_ignore_prefix_txt.grid(
-            row=6,
+            row=7,
             column=2,
             padx=(5, Layout.MARGIN_X),
             pady=(2, Layout.MARGIN_Y),
@@ -697,6 +764,14 @@ class Layout:
         return self._btn_browse_docket_export_path
 
     @property
+    def input_documentation_export_path(self) -> Entry:
+        return self._entry_docu_export_path
+
+    @property
+    def button_documentation_export_path(self) -> Button:
+        return self._btn_browse_docu_export_path
+
+    @property
     def input_drawing_export_path(self) -> Entry:
         return self._entry_drawing_export_path
 
@@ -731,6 +806,10 @@ class Layout:
     @property
     def checkbox_export_docket(self) -> Checkbutton:
         return self._chkbtn_export_docket
+
+    @property
+    def checkbox_export_documentation(self) -> Checkbutton:
+        return self._chkbtn_export_documentation
 
     @property
     def checkbox_export_drawing(self) -> Checkbutton:

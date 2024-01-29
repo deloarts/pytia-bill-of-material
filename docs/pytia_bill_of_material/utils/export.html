@@ -51,10 +51,10 @@ from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
 from resources import resource
 from resources.utils import expand_env_vars
-from templates import templates
 
 
 def export_docket(
+    docket_template: Path | None,
     filename: str,
     folder: Path,
     document: PyProductDocument | PyPartDocument,
@@ -66,6 +66,7 @@ def export_docket(
     after the main task has finished.
 
     Args:
+        docket_template (Path): The path to the template CATDrawing file.
         filename (str): The filename of the docket pdf.
         folder (Path): The folder into which the pdf will be exported.
         document (PyPartDocument | PyProductDocument): The part or product document from which \
@@ -82,7 +83,7 @@ def export_docket(
     if &#34;.pdf&#34; not in filename:
         filename += &#34;.pdf&#34;
 
-    if templates.docket_path is None:
+    if docket_template is None:
         raise PytiaFileOperationError(&#34;Cannot export docket, given folder is None.&#34;)
 
     # Translate creator username
@@ -127,7 +128,7 @@ def export_docket(
         publisher = LOGON
 
     docket = create_docket_from_template(
-        template=templates.docket_path,
+        template=docket_template,
         document=document,
         config=config,
         hide_unknown_properties=True,
@@ -184,7 +185,7 @@ def export_drawing(
                             view = sheet.views.item(i_view)
                             view.lock_status = True
                             log.info(
-                                f&#34;Locked view {view.name!r} or sheet {sheet.name!r}.&#34;
+                                f&#34;Locked view {view.name!r} of sheet {sheet.name!r}.&#34;
                             )
                     drawing_document.save()
         else:
@@ -319,13 +320,15 @@ def export_jpg(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pytia_bill_of_material.utils.export.export_docket"><code class="name flex">
-<span>def <span class="ident">export_docket</span></span>(<span>filename: str, folder: pathlib.Path, document: pytia.wrapper.documents.product_documents.PyProductDocument | pytia.wrapper.documents.part_documents.PyPartDocument, config: pytia.utilities.docket.DocketConfig, **kwargs) ‑> None</span>
+<span>def <span class="ident">export_docket</span></span>(<span>docket_template: pathlib.Path | None, filename: str, folder: pathlib.Path, document: pytia.wrapper.documents.product_documents.PyProductDocument | pytia.wrapper.documents.part_documents.PyPartDocument, config: pytia.utilities.docket.DocketConfig, **kwargs) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Exports the docket into a PDF file. The docket will be exported into the temp folder and moved
 after the main task has finished.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>docket_template</code></strong> :&ensp;<code>Path</code></dt>
+<dd>The path to the template CATDrawing file.</dd>
 <dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
 <dd>The filename of the docket pdf.</dd>
 <dt><strong><code>folder</code></strong> :&ensp;<code>Path</code></dt>
@@ -349,6 +352,7 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def export_docket(
+    docket_template: Path | None,
     filename: str,
     folder: Path,
     document: PyProductDocument | PyPartDocument,
@@ -360,6 +364,7 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
     after the main task has finished.
 
     Args:
+        docket_template (Path): The path to the template CATDrawing file.
         filename (str): The filename of the docket pdf.
         folder (Path): The folder into which the pdf will be exported.
         document (PyPartDocument | PyProductDocument): The part or product document from which \
@@ -376,7 +381,7 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
     if &#34;.pdf&#34; not in filename:
         filename += &#34;.pdf&#34;
 
-    if templates.docket_path is None:
+    if docket_template is None:
         raise PytiaFileOperationError(&#34;Cannot export docket, given folder is None.&#34;)
 
     # Translate creator username
@@ -421,7 +426,7 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
         publisher = LOGON
 
     docket = create_docket_from_template(
-        template=templates.docket_path,
+        template=docket_template,
         document=document,
         config=config,
         hide_unknown_properties=True,
@@ -498,7 +503,7 @@ is created when using the <a href="https://github.com/deloarts/pytia-title-block
                             view = sheet.views.item(i_view)
                             view.lock_status = True
                             log.info(
-                                f&#34;Locked view {view.name!r} or sheet {sheet.name!r}.&#34;
+                                f&#34;Locked view {view.name!r} of sheet {sheet.name!r}.&#34;
                             )
                     drawing_document.save()
         else:

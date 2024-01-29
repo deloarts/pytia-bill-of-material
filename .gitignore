@@ -22,9 +22,11 @@ filters.json
 settings.json
 users.json
 docket.json
+documentation.json
 
 # Template files
 docket.CATDrawing
+documentation.CATDrawing
 
 # VS Code files
 .vscode/*

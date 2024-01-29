@@ -53,14 +53,12 @@ This module must work on its own without any other dependencies!</p>
 
 import importlib.resources
 import json
+import re
 import subprocess
 import sys
 import tkinter as tk
 import tkinter.messagebox as tkmsg
 from dataclasses import dataclass
-from distutils.version import (
-    LooseVersion,  # FIXME: Module will be removed in Python 3.12
-)
 from http.client import HTTPSConnection
 from importlib import metadata
 from socket import gaierror
@@ -91,8 +89,6 @@ class PackageInfo:
 
 
 class Environment:
-    &#34;&#34;&#34;Class for dependency environments.&#34;&#34;&#34;
-
     def __init__(self) -&gt; None:
         ...
 
@@ -291,6 +287,79 @@ class VisualInstaller(tk.Tk):
         self.after(100, self._install_pip)
         self.after(250, self.focus_force)
         self.mainloop()
+
+
+class LooseVersion:
+    &#34;&#34;&#34;
+    This is a simplified copy of distutils.version.LooseVersion (from Python 3.10),
+    since this module is deprecated in Python 3.12.
+    &#34;&#34;&#34;
+
+    component_re = re.compile(r&#34;(\d+ | [a-z]+ | \.)&#34;, re.VERBOSE)
+
+    def __eq__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented:
+            return c
+        return c == 0
+
+    def __lt__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &lt; 0
+
+    def __le__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &lt;= 0
+
+    def __gt__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &gt; 0
+
+    def __ge__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &gt;= 0
+
+    def __init__(self, vstring=None):
+        if vstring:
+            self.parse(vstring)
+
+    def parse(self, vstring):
+        self.vstring = vstring
+        components = [x for x in self.component_re.split(vstring) if x and x != &#34;.&#34;]
+        for i, obj in enumerate(components):
+            try:
+                components[i] = int(obj)
+            except ValueError:
+                pass
+
+        self.version = components
+
+    def __str__(self):
+        return self.vstring
+
+    def __repr__(self):
+        return &#34;LooseVersion (&#39;%s&#39;)&#34; % str(self)
+
+    def _cmp(self, other):
+        if isinstance(other, str):
+            other = LooseVersion(other)
+        elif not isinstance(other, LooseVersion):
+            return NotImplemented
+
+        if self.version == other.version:
+            return 0
+        if self.version &lt; other.version:
+            return -1
+        if self.version &gt; other.version:
+            return 1
 
 
 deps = Dependencies()</code></pre>
@@ -585,14 +654,12 @@ def web_resource_available(address: str) -&gt; bool:
 <span>class <span class="ident">Environment</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for dependency environments.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Environment:
-    &#34;&#34;&#34;Class for dependency environments.&#34;&#34;&#34;
-
     def __init__(self) -&gt; None:
         ...
 
@@ -656,6 +723,121 @@ def warn_if_not_virtual(cls) -&gt; None:
         )
         if not result:
             sys.exit()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="pytia_bill_of_material.dependencies.LooseVersion"><code class="flex name class">
+<span>class <span class="ident">LooseVersion</span></span>
+<span>(</span><span>vstring=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is a simplified copy of distutils.version.LooseVersion (from Python 3.10),
+since this module is deprecated in Python 3.12.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LooseVersion:
+    &#34;&#34;&#34;
+    This is a simplified copy of distutils.version.LooseVersion (from Python 3.10),
+    since this module is deprecated in Python 3.12.
+    &#34;&#34;&#34;
+
+    component_re = re.compile(r&#34;(\d+ | [a-z]+ | \.)&#34;, re.VERBOSE)
+
+    def __eq__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented:
+            return c
+        return c == 0
+
+    def __lt__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &lt; 0
+
+    def __le__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &lt;= 0
+
+    def __gt__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &gt; 0
+
+    def __ge__(self, other):
+        c = self._cmp(other)
+        if c is NotImplemented or c is None:
+            return c
+        return c &gt;= 0
+
+    def __init__(self, vstring=None):
+        if vstring:
+            self.parse(vstring)
+
+    def parse(self, vstring):
+        self.vstring = vstring
+        components = [x for x in self.component_re.split(vstring) if x and x != &#34;.&#34;]
+        for i, obj in enumerate(components):
+            try:
+                components[i] = int(obj)
+            except ValueError:
+                pass
+
+        self.version = components
+
+    def __str__(self):
+        return self.vstring
+
+    def __repr__(self):
+        return &#34;LooseVersion (&#39;%s&#39;)&#34; % str(self)
+
+    def _cmp(self, other):
+        if isinstance(other, str):
+            other = LooseVersion(other)
+        elif not isinstance(other, LooseVersion):
+            return NotImplemented
+
+        if self.version == other.version:
+            return 0
+        if self.version &lt; other.version:
+            return -1
+        if self.version &gt; other.version:
+            return 1</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="pytia_bill_of_material.dependencies.LooseVersion.component_re"><code class="name">var <span class="ident">component_re</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pytia_bill_of_material.dependencies.LooseVersion.parse"><code class="name flex">
+<span>def <span class="ident">parse</span></span>(<span>self, vstring)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse(self, vstring):
+    self.vstring = vstring
+    components = [x for x in self.component_re.split(vstring) if x and x != &#34;.&#34;]
+    for i, obj in enumerate(components):
+        try:
+            components[i] = int(obj)
+        except ValueError:
+            pass
+
+    self.version = components</code></pre>
 </details>
 </dd>
 </dl>
@@ -838,6 +1020,13 @@ class PackageInfo:
 <ul class="">
 <li><code><a title="pytia_bill_of_material.dependencies.Environment.is_virtual" href="#pytia_bill_of_material.dependencies.Environment.is_virtual">is_virtual</a></code></li>
 <li><code><a title="pytia_bill_of_material.dependencies.Environment.warn_if_not_virtual" href="#pytia_bill_of_material.dependencies.Environment.warn_if_not_virtual">warn_if_not_virtual</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="pytia_bill_of_material.dependencies.LooseVersion" href="#pytia_bill_of_material.dependencies.LooseVersion">LooseVersion</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.dependencies.LooseVersion.component_re" href="#pytia_bill_of_material.dependencies.LooseVersion.component_re">component_re</a></code></li>
+<li><code><a title="pytia_bill_of_material.dependencies.LooseVersion.parse" href="#pytia_bill_of_material.dependencies.LooseVersion.parse">parse</a></code></li>
 </ul>
 </li>
 <li>

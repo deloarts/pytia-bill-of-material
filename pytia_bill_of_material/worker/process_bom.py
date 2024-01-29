@@ -144,6 +144,7 @@ class ProcessBomTask(TaskProtocol):
         # Worksheet.max_row will change during runtime, when accessing a row greater
         # than the current max_row.
         max_row = worksheet.max_row
+        assert max_row
 
         log.info("Retrieving bill of material from exported Excel file.")
 
@@ -377,8 +378,10 @@ class ProcessBomTask(TaskProtocol):
             Dict[str, int]: The dictionary of header positions.
         """
         header: dict = {}
+        max_column = worksheet.max_column
+        assert max_column
 
-        for i in range(1, worksheet.max_column + 1):
+        for i in range(1, max_column + 1):
             header[worksheet.cell(row, i).value] = i
 
         # Check if CATIA exported all headers from the provided header items dict from the bom.json

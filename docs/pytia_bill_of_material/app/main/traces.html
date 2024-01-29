@@ -89,6 +89,9 @@ class Traces:
         self.vars.project.trace_add(&#34;write&#34;, self.trace_project)
         self.vars.bom_export_path.trace_add(&#34;write&#34;, self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add(&#34;write&#34;, self.trace_docket_export_path)
+        self.vars.documentation_export_path.trace_add(
+            &#34;write&#34;, self.trace_docu_export_path
+        )
         self.vars.drawing_export_path.trace_add(&#34;write&#34;, self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
@@ -161,6 +164,30 @@ class Traces:
             self.layout.checkbox_export_docket.configure(state=DISABLED)
 
         self.layout.input_docket_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docu_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;
+        Trace callback for the `documentation_export_path` StringVar.
+        Validates the path and sets the state of the checkbox accordingly to the path
+        variable.
+        &#34;&#34;&#34;
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.documentation_export_path.get())
+                and os.path.isabs(self.vars.documentation_export_path.get())
+            )
+            and templates.documentation_path is not None
+            and os.path.isfile(templates.documentation_path)
+        ):
+            self.layout.checkbox_export_documentation.configure(state=NORMAL)
+            self.vars.export_documentation.set(True)
+        else:
+            self.vars.export_documentation.set(False)
+            self.layout.checkbox_export_documentation.configure(state=DISABLED)
+
+        self.layout.input_documentation_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
@@ -359,6 +386,9 @@ class Traces:
         self.vars.project.trace_add(&#34;write&#34;, self.trace_project)
         self.vars.bom_export_path.trace_add(&#34;write&#34;, self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add(&#34;write&#34;, self.trace_docket_export_path)
+        self.vars.documentation_export_path.trace_add(
+            &#34;write&#34;, self.trace_docu_export_path
+        )
         self.vars.drawing_export_path.trace_add(&#34;write&#34;, self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
@@ -431,6 +461,30 @@ class Traces:
             self.layout.checkbox_export_docket.configure(state=DISABLED)
 
         self.layout.input_docket_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docu_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;
+        Trace callback for the `documentation_export_path` StringVar.
+        Validates the path and sets the state of the checkbox accordingly to the path
+        variable.
+        &#34;&#34;&#34;
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.documentation_export_path.get())
+                and os.path.isabs(self.vars.documentation_export_path.get())
+            )
+            and templates.documentation_path is not None
+            and os.path.isfile(templates.documentation_path)
+        ):
+            self.layout.checkbox_export_documentation.configure(state=NORMAL)
+            self.vars.export_documentation.set(True)
+        else:
+            self.vars.export_documentation.set(False)
+            self.layout.checkbox_export_documentation.configure(state=DISABLED)
+
+        self.layout.input_documentation_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
@@ -620,6 +674,42 @@ of the checkbox accordingly to the path variable.</p></div>
         self.layout.checkbox_export_docket.configure(state=DISABLED)
 
     self.layout.input_docket_export_path.configure(
+        foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+    )</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_docu_export_path"><code class="name flex">
+<span>def <span class="ident">trace_docu_export_path</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>documentation_export_path</code> StringVar.
+Validates the path and sets the state of the checkbox accordingly to the path
+variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_docu_export_path(self, *_) -&gt; None:
+    &#34;&#34;&#34;
+    Trace callback for the `documentation_export_path` StringVar.
+    Validates the path and sets the state of the checkbox accordingly to the path
+    variable.
+    &#34;&#34;&#34;
+    if (
+        is_dir := bool(
+            os.path.isdir(self.vars.documentation_export_path.get())
+            and os.path.isabs(self.vars.documentation_export_path.get())
+        )
+        and templates.documentation_path is not None
+        and os.path.isfile(templates.documentation_path)
+    ):
+        self.layout.checkbox_export_documentation.configure(state=NORMAL)
+        self.vars.export_documentation.set(True)
+    else:
+        self.vars.export_documentation.set(False)
+        self.layout.checkbox_export_documentation.configure(state=DISABLED)
+
+    self.layout.input_documentation_export_path.configure(
         foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
     )</code></pre>
 </details>
@@ -864,6 +954,7 @@ of the checkbox accordingly to the path variable.</p></div>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path">trace_bom_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path">trace_docket_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docu_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docu_export_path">trace_docu_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path">trace_drawing_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_ignore_prefix_txt" href="#pytia_bill_of_material.app.main.traces.Traces.trace_ignore_prefix_txt">trace_ignore_prefix_txt</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_jpg_export_path">trace_jpg_export_path</a></code></li>

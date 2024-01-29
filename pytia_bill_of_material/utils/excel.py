@@ -97,12 +97,9 @@ def write_data(
 
 def row_is_empty(worksheet: Worksheet | ReadOnlyWorksheet, row: int) -> bool:
     """Returns wether the given row is empty or not."""
-    return all(
-        [
-            worksheet.cell(row, i).value is None
-            for i in range(1, worksheet.max_column + 1)
-        ]
-    )
+    max_column = worksheet.max_column
+    assert max_column
+    return all([worksheet.cell(row, i).value is None for i in range(1, max_column + 1)])
 
 
 def style_worksheet(worksheet: Worksheet) -> None:

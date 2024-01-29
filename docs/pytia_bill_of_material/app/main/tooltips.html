@@ -126,6 +126,24 @@ class ToolTips:
             text=(&#34;Select the folder into which all docket files will be exported.&#34;),
         )
 
+        docu_path_tooltip = (
+            &#34;Defines the export folder of the generated documentation docket files. &#34;
+            &#34;Existing files are going to be overwritten.&#34;
+        )
+        if templates.documentation_path is None:
+            docu_path_tooltip += (
+                &#34;\n\nDisabled because no documentation docket template is available.&#34;
+            )
+        elif workspace.elements.documentation_folder is not None:
+            docu_path_tooltip += (
+                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
+            )
+        ToolTip(widget=layout.input_documentation_export_path, text=docu_path_tooltip)
+        ToolTip(
+            widget=layout.button_documentation_export_path,
+            text=(&#34;Select the folder into which all docket files will be exported.&#34;),
+        )
+
         drawing_path_tooltip = (
             &#34;Defines the export folder of the drawing files (pdf and dxf). &#34;
             &#34;Existing files are going to be overwritten.&#34;
@@ -189,6 +207,15 @@ class ToolTips:
             text=(
                 &#34;Generates a pdf docket for each item in the summary of the exported bill of &#34;
                 &#34;material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location will be &#34;
+                &#34;overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_documentation,
+            text=(
+                &#34;Generates a pdf documentation docket for each item in the summary of&#34;
+                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
                 &#34;This requires a valid path. Existing files at the target location will be &#34;
                 &#34;overwritten.&#34;
             ),
@@ -406,6 +433,24 @@ class ToolTips:
             text=(&#34;Select the folder into which all docket files will be exported.&#34;),
         )
 
+        docu_path_tooltip = (
+            &#34;Defines the export folder of the generated documentation docket files. &#34;
+            &#34;Existing files are going to be overwritten.&#34;
+        )
+        if templates.documentation_path is None:
+            docu_path_tooltip += (
+                &#34;\n\nDisabled because no documentation docket template is available.&#34;
+            )
+        elif workspace.elements.documentation_folder is not None:
+            docu_path_tooltip += (
+                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
+            )
+        ToolTip(widget=layout.input_documentation_export_path, text=docu_path_tooltip)
+        ToolTip(
+            widget=layout.button_documentation_export_path,
+            text=(&#34;Select the folder into which all docket files will be exported.&#34;),
+        )
+
         drawing_path_tooltip = (
             &#34;Defines the export folder of the drawing files (pdf and dxf). &#34;
             &#34;Existing files are going to be overwritten.&#34;
@@ -469,6 +514,15 @@ class ToolTips:
             text=(
                 &#34;Generates a pdf docket for each item in the summary of the exported bill of &#34;
                 &#34;material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location will be &#34;
+                &#34;overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_export_documentation,
+            text=(
+                &#34;Generates a pdf documentation docket for each item in the summary of&#34;
+                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
                 &#34;This requires a valid path. Existing files at the target location will be &#34;
                 &#34;overwritten.&#34;
             ),

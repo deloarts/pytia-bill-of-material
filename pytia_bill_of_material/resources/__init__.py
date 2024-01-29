@@ -27,6 +27,7 @@ from const import CONFIG_APPDATA
 from const import CONFIG_BOM
 from const import CONFIG_BOM_DEFAULT
 from const import CONFIG_DOCKET
+from const import CONFIG_DOCUMENTATION
 from const import CONFIG_FILTERS
 from const import CONFIG_FILTERS_DEFAULT
 from const import CONFIG_INFOS
@@ -327,6 +328,7 @@ class Resources:  # pylint: disable=R0902
         self._read_filters()
         self._read_users()
         self._read_docket()
+        self._read_docu()
         self._read_infos()
         self._read_appdata()
 
@@ -379,6 +381,11 @@ class Resources:  # pylint: disable=R0902
         return self._docket
 
     @property
+    def documentation(self) -> dict:
+        """documentation.json"""
+        return self._docu
+
+    @property
     def infos(self) -> List[Info]:
         """infos.json"""
         return self._infos
@@ -412,6 +419,11 @@ class Resources:  # pylint: disable=R0902
         """Reads the docket json from the resources folder."""
         with importlib.resources.open_binary("resources", CONFIG_DOCKET) as f:
             self._docket = json.load(f)
+
+    def _read_docu(self) -> None:
+        """Reads the documentation json from the resources folder."""
+        with importlib.resources.open_binary("resources", CONFIG_DOCUMENTATION) as f:
+            self._docu = json.load(f)
 
     def _read_bom(self) -> None:
         """Reads the export json from the resources folder."""

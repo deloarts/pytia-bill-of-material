@@ -60,6 +60,9 @@ class Traces:
         self.vars.project.trace_add("write", self.trace_project)
         self.vars.bom_export_path.trace_add("write", self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add("write", self.trace_docket_export_path)
+        self.vars.documentation_export_path.trace_add(
+            "write", self.trace_docu_export_path
+        )
         self.vars.drawing_export_path.trace_add("write", self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add("write", self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
@@ -132,6 +135,30 @@ class Traces:
             self.layout.checkbox_export_docket.configure(state=DISABLED)
 
         self.layout.input_docket_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docu_export_path(self, *_) -> None:
+        """
+        Trace callback for the `documentation_export_path` StringVar.
+        Validates the path and sets the state of the checkbox accordingly to the path
+        variable.
+        """
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.documentation_export_path.get())
+                and os.path.isabs(self.vars.documentation_export_path.get())
+            )
+            and templates.documentation_path is not None
+            and os.path.isfile(templates.documentation_path)
+        ):
+            self.layout.checkbox_export_documentation.configure(state=NORMAL)
+            self.vars.export_documentation.set(True)
+        else:
+            self.vars.export_documentation.set(False)
+            self.layout.checkbox_export_documentation.configure(state=DISABLED)
+
+        self.layout.input_documentation_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 

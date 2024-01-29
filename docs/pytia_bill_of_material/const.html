@@ -35,7 +35,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-__version__ = &#34;0.9.2&#34;
+__version__ = &#34;0.10.0&#34;
 
 PYTIA = &#34;pytia&#34;
 PYTIA_BILL_OF_MATERIAL = &#34;pytia_bill_of_material&#34;
@@ -43,7 +43,7 @@ PYTIA_BILL_OF_MATERIAL = &#34;pytia_bill_of_material&#34;
 APP_NAME = &#34;PYTIA Bill Of Material&#34;
 APP_VERSION = __version__
 
-LOGON = str(os.environ.get(&#34;USERNAME&#34;))
+LOGON = str(os.environ.get(&#34;USERNAME&#34;)).lower()
 CNEXT = &#34;win_b64\\code\\bin\\CNEXT.exe&#34;
 TEMP = str(os.environ.get(&#34;TEMP&#34;))
 TEMP_EXPORT = Path(TEMP, PYTIA_BILL_OF_MATERIAL, &#34;export&#34;)
@@ -74,16 +74,19 @@ CONFIG_INFOS = &#34;information.json&#34;
 CONFIG_INFOS_DEFAULT = &#34;information.default.json&#34;
 CONFIG_USERS = &#34;users.json&#34;
 CONFIG_DOCKET = &#34;docket.json&#34;
+CONFIG_DOCUMENTATION = &#34;documentation.json&#34;
 CONFIG_PROPERTIES = &#34;properties.json&#34;
 
 PROP_DRAWING_PATH = &#34;pytia.drawing_path&#34;
 
 TEMPLATE_DOCKET = &#34;docket.CATDrawing&#34;
+TEMPLATE_DOCUMENTATION = &#34;documentation.CATDrawing&#34;
 
 WEB_PIP = &#34;https://www.pypi.org&#34;
 
 BOM = &#34;bom&#34;
 DOCKETS = &#34;dockets&#34;
+DOCUMENTATION = &#34;documentation&#34;
 DRAWINGS = &#34;drawings&#34;
 STPS = &#34;steps&#34;
 STLS = &#34;stls&#34;
