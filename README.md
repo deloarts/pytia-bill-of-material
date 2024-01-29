@@ -338,6 +338,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+[**v0.10.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.10.0): Add documentation docket, fix deprecation, fix logon.  
 [**v0.9.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.2): Add fallback solution for export error.  
 [**v0.9.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.1): Fix drawing export.  
 [**v0.9.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.0): Add themes.  
