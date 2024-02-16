@@ -18,6 +18,7 @@ from models.bom import BOM
 from models.paths import Paths
 from pytia.log import log
 from pytia.utilities.docket import DocketConfig
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from resources import resource
 from utils.system import explorer
@@ -46,6 +47,7 @@ class MainTask:
         doc_helper: LazyDocumentHelper,
         variables: Variables,
         frames: Frames,
+        workspace: Workspace,
     ):
         """
         Inits the main task class.
@@ -69,6 +71,7 @@ class MainTask:
         self.doc_helper = doc_helper
         self.variables = variables
         self.frames = frames
+        self.workspace = workspace
 
         self.export_folder = Path(
             TEMP_EXPORT, datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -190,10 +193,12 @@ class MainTask:
             xlsx=self.xlsx_path,
             project_number=self.project,
             paths=self.doc_paths,
-            ignore_prefix_txt=self.variables.ignore_prefix_txt.get()
-            if len(self.variables.ignore_prefix_txt.get()) > 0
-            and self.variables.ignore_prefix.get()
-            else None,
+            ignore_prefix_txt=(
+                self.variables.ignore_prefix_txt.get()
+                if len(self.variables.ignore_prefix_txt.get()) > 0
+                and self.variables.ignore_prefix.get()
+                else None
+            ),
             ignore_source_unknown=self.variables.ignore_source_unknown.get(),
         )
         task.run()
@@ -229,6 +234,7 @@ class MainTask:
             export_root_path=self.export_folder,
             docket_config=self.docket_cfg,
             documentation_config=self.documentation_cfg,
+            workspace=self.workspace,
         )
         task.run()
 
