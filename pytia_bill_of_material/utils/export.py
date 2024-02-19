@@ -178,9 +178,17 @@ def export_drawing(
                             )
                     drawing_document.save()
         else:
+            with open(
+                Path(folder, filename + " (failed).txt"), "w", encoding="utf8"
+            ) as f:
+                f.write(
+                    f"Failed to export drawing of file: {filename}.\n"
+                    f"Path not valid: {drawing_file_value}"
+                )
             log.error(
                 f"Skipped drawing export of {document.document.name!r}: Path not valid."
             )
+
     else:
         log.info(f"Skipped drawing export of {document.document.name!r}: Path not set.")
 
