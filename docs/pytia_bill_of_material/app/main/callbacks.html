@@ -182,6 +182,7 @@ class Callbacks:
             doc_helper=self.doc_helper,
             variables=self.vars,
             frames=self.frames,
+            workspace=self.workspace,
         )
         self.root.after(100, main_task.run)
 
@@ -666,6 +667,7 @@ class Callbacks:
             doc_helper=self.doc_helper,
             variables=self.vars,
             frames=self.frames,
+            workspace=self.workspace,
         )
         self.root.after(100, main_task.run)
 
@@ -1214,6 +1216,7 @@ into which to export the pdf and dxf files.</p></div>
         doc_helper=self.doc_helper,
         variables=self.vars,
         frames=self.frames,
+        workspace=self.workspace,
     )
     self.root.after(100, main_task.run)</code></pre>
 </details>

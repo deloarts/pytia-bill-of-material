@@ -24,6 +24,7 @@ from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from pytia_ui_tools.utils.qr import QR
 from resources import resource
@@ -69,6 +70,7 @@ class ExportItemsTask(TaskProtocol):
         export_root_path: Path,
         docket_config: DocketConfig,
         documentation_config: DocketConfig,
+        workspace: Workspace,
     ) -> None:
         """
         Inits the class.
@@ -99,6 +101,7 @@ class ExportItemsTask(TaskProtocol):
         self.export_root_path = export_root_path
         self.docket_config = docket_config
         self.documentation_config = documentation_config
+        self.workspace = workspace
 
     def run(self) -> None:
         """
@@ -270,6 +273,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(
@@ -344,6 +348,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(
