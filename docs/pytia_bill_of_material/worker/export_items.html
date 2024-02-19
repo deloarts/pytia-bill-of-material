@@ -53,6 +53,7 @@ from pytia.log import log
 from pytia.utilities.docket import DocketConfig
 from pytia.wrapper.documents.part_documents import PyPartDocument
 from pytia.wrapper.documents.product_documents import PyProductDocument
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from pytia_ui_tools.utils.qr import QR
 from resources import resource
@@ -98,6 +99,7 @@ class ExportItemsTask(TaskProtocol):
         export_root_path: Path,
         docket_config: DocketConfig,
         documentation_config: DocketConfig,
+        workspace: Workspace,
     ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
@@ -128,6 +130,7 @@ class ExportItemsTask(TaskProtocol):
         self.export_root_path = export_root_path
         self.docket_config = docket_config
         self.documentation_config = documentation_config
+        self.workspace = workspace
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;
@@ -299,6 +302,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(
@@ -373,6 +377,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(
@@ -410,7 +415,7 @@ class ExportItemsTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.export_items.ExportItemsTask"><code class="flex name class">
 <span>class <span class="ident">ExportItemsTask</span></span>
-<span>(</span><span>lazy_loader: helper.lazy_loaders.LazyDocumentHelper, runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, bom: models.bom.BOM, export_docket: bool, export_documentation: bool, export_drawing: bool, export_stp: bool, export_stl: bool, export_jpg: bool, export_root_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig, documentation_config: pytia.utilities.docket.DocketConfig)</span>
+<span>(</span><span>lazy_loader: helper.lazy_loaders.LazyDocumentHelper, runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, bom: models.bom.BOM, export_docket: bool, export_documentation: bool, export_drawing: bool, export_stp: bool, export_stl: bool, export_jpg: bool, export_root_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig, documentation_config: pytia.utilities.docket.DocketConfig, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Exports all items:
@@ -502,6 +507,7 @@ class ExportItemsTask(TaskProtocol):
         export_root_path: Path,
         docket_config: DocketConfig,
         documentation_config: DocketConfig,
+        workspace: Workspace,
     ) -&gt; None:
         &#34;&#34;&#34;
         Inits the class.
@@ -532,6 +538,7 @@ class ExportItemsTask(TaskProtocol):
         self.export_root_path = export_root_path
         self.docket_config = docket_config
         self.documentation_config = documentation_config
+        self.workspace = workspace
 
     def run(self) -&gt; None:
         &#34;&#34;&#34;
@@ -703,6 +710,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=part_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(
@@ -777,6 +785,7 @@ class ExportItemsTask(TaskProtocol):
                         filename=export_filename,
                         folder=Path(self.export_root_path, DRAWINGS),
                         document=product_document,
+                        workspace=self.workspace,
                     )
                 if self.export_stp:
                     export.export_stp(

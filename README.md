@@ -160,7 +160,7 @@ Project | The user can overwrite the project number for all items of the bill of
 Bill of Material File | The full path to the bill of material xlsx file. The folder must exist, otherwise the `Export` button will be disabled.
 Docket Folder | The folder into which all generated docket files will be stored. The folder must exist, otherwise the `Export Docket` checkbox will be disabled.
 Documentation Folder | The folder into which all generated documentation docket files will be stored. The folder must exist, otherwise the `Export Documentation` checkbox will be disabled.
-Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled.
+Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled. Note: Drawings can only be exported, if the Title Block Editor app has written the correct path to the linked document.
 STP Folder | The folder into which all generated step files will be stored. The folder must exist, otherwise the `Export STP` checkbox will be disabled.
 STL Folder | The folder into which all generated stl files will be stored. The folder must exist, otherwise the `Export STL` checkbox will be disabled.
 JPG Folder | The folder into which all generated jpg files will be stored. The folder must exist, otherwise the `Export JPG` checkbox will be disabled.
@@ -338,6 +338,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+[**v0.10.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.10.1): Drawing export from workspace level.  
 [**v0.10.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.10.0): Add documentation docket, fix deprecation, fix logon.  
 [**v0.9.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.2): Add fallback solution for export error.  
 [**v0.9.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.9.1): Fix drawing export.  

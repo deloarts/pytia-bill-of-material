@@ -47,6 +47,7 @@ from models.bom import BOM
 from models.paths import Paths
 from pytia.log import log
 from pytia.utilities.docket import DocketConfig
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from resources import resource
 from utils.system import explorer
@@ -75,6 +76,7 @@ class MainTask:
         doc_helper: LazyDocumentHelper,
         variables: Variables,
         frames: Frames,
+        workspace: Workspace,
     ):
         &#34;&#34;&#34;
         Inits the main task class.
@@ -98,6 +100,7 @@ class MainTask:
         self.doc_helper = doc_helper
         self.variables = variables
         self.frames = frames
+        self.workspace = workspace
 
         self.export_folder = Path(
             TEMP_EXPORT, datetime.now().strftime(&#34;%Y_%m_%d_%H_%M_%S&#34;)
@@ -219,10 +222,12 @@ class MainTask:
             xlsx=self.xlsx_path,
             project_number=self.project,
             paths=self.doc_paths,
-            ignore_prefix_txt=self.variables.ignore_prefix_txt.get()
-            if len(self.variables.ignore_prefix_txt.get()) &gt; 0
-            and self.variables.ignore_prefix.get()
-            else None,
+            ignore_prefix_txt=(
+                self.variables.ignore_prefix_txt.get()
+                if len(self.variables.ignore_prefix_txt.get()) &gt; 0
+                and self.variables.ignore_prefix.get()
+                else None
+            ),
             ignore_source_unknown=self.variables.ignore_source_unknown.get(),
         )
         task.run()
@@ -258,6 +263,7 @@ class MainTask:
             export_root_path=self.export_folder,
             docket_config=self.docket_cfg,
             documentation_config=self.documentation_cfg,
+            workspace=self.workspace,
         )
         task.run()
 
@@ -289,7 +295,7 @@ class MainTask:
 <dl>
 <dt id="pytia_bill_of_material.worker.main_task.MainTask"><code class="flex name class">
 <span>class <span class="ident">MainTask</span></span>
-<span>(</span><span>main_ui: tkinter.Tk, layout: app.main.layout.Layout, ui_setter: app.main.ui_setter.UISetter, doc_helper: helper.lazy_loaders.LazyDocumentHelper, variables: app.main.vars.Variables, frames: app.main.frames.Frames)</span>
+<span>(</span><span>main_ui: tkinter.Tk, layout: app.main.layout.Layout, ui_setter: app.main.ui_setter.UISetter, doc_helper: helper.lazy_loaders.LazyDocumentHelper, variables: app.main.vars.Variables, frames: app.main.frames.Frames, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class runs all tasks to export and process the bill of material.
@@ -332,6 +338,7 @@ It uses the task runner to update the UI state.</p>
         doc_helper: LazyDocumentHelper,
         variables: Variables,
         frames: Frames,
+        workspace: Workspace,
     ):
         &#34;&#34;&#34;
         Inits the main task class.
@@ -355,6 +362,7 @@ It uses the task runner to update the UI state.</p>
         self.doc_helper = doc_helper
         self.variables = variables
         self.frames = frames
+        self.workspace = workspace
 
         self.export_folder = Path(
             TEMP_EXPORT, datetime.now().strftime(&#34;%Y_%m_%d_%H_%M_%S&#34;)
@@ -476,10 +484,12 @@ It uses the task runner to update the UI state.</p>
             xlsx=self.xlsx_path,
             project_number=self.project,
             paths=self.doc_paths,
-            ignore_prefix_txt=self.variables.ignore_prefix_txt.get()
-            if len(self.variables.ignore_prefix_txt.get()) &gt; 0
-            and self.variables.ignore_prefix.get()
-            else None,
+            ignore_prefix_txt=(
+                self.variables.ignore_prefix_txt.get()
+                if len(self.variables.ignore_prefix_txt.get()) &gt; 0
+                and self.variables.ignore_prefix.get()
+                else None
+            ),
             ignore_source_unknown=self.variables.ignore_source_unknown.get(),
         )
         task.run()
@@ -515,6 +525,7 @@ It uses the task runner to update the UI state.</p>
             export_root_path=self.export_folder,
             docket_config=self.docket_cfg,
             documentation_config=self.documentation_cfg,
+            workspace=self.workspace,
         )
         task.run()
 
