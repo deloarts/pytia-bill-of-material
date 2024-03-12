@@ -1,6 +1,7 @@
 """
     The variables submodule for the app.
 """
+
 from dataclasses import dataclass
 from tkinter import BooleanVar
 from tkinter import DoubleVar
@@ -20,15 +21,17 @@ class Variables:
     # Infrastructure variables
     project: StringVar
     machine: StringVar
+    bundle: BooleanVar
 
     # Path variables
     bom_export_path: StringVar
-    docket_export_path: StringVar
     documentation_export_path: StringVar
+    docket_export_path: StringVar
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+    bundle_export_path: StringVar
 
     external_bom_path: StringVar
 
@@ -60,23 +63,25 @@ class Variables:
 
         self.project = StringVar(master=root, name="project")
         self.machine = StringVar(master=root, name="machine")
+        self.bundle = BooleanVar(master=root, name="bundle", value=False)
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
-        self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.documentation_export_path = StringVar(
             master=root, name="documentation_export_path"
         )
+        self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.drawing_export_path = StringVar(master=root, name="drawing_export_path")
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
+        self.bundle_export_path = StringVar(master=root, name="bundle_export_path")
 
         self.external_bom_path = StringVar(
             master=root, name="external_bom_path", value=""
         )
 
-        self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_documentation = BooleanVar(master=root, name="export_documentation")
+        self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")
         self.export_stp = BooleanVar(master=root, name="export_stp")
         self.export_stl = BooleanVar(master=root, name="export_stl")

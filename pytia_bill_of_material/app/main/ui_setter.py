@@ -49,12 +49,14 @@ class UISetter:
         self.frames = frames
         self.workspace = workspace
 
-        self._state_checkbox_export_docket = tk.NORMAL
         self._state_checkbox_export_docu = tk.NORMAL
+        self._state_checkbox_export_docket = tk.NORMAL
         self._state_checkbox_export_drawing = tk.NORMAL
         self._state_checkbox_export_stp = tk.NORMAL
         self._state_checkbox_export_stl = tk.NORMAL
         self._state_checkbox_export_jpg = tk.NORMAL
+
+        self._state_checkbox_export_bundle = tk.NORMAL
 
         self._state_checkbox_ignore_prefixed = tk.NORMAL
         self._state_checkbox_ignore_unknown = tk.NORMAL
@@ -73,11 +75,14 @@ class UISetter:
             self.frames.export.grid()
 
         self.layout.input_project.configure(
-            state="readonly"
-            if resource.settings.restrictions.strict_project
-            and self.workspace.elements.projects
-            else tk.NORMAL
+            state=(
+                "readonly"
+                if resource.settings.restrictions.strict_project
+                and self.workspace.elements.projects
+                else tk.NORMAL
+            )
         )
+        self.layout.checkbox_bundle_data.configure(state=tk.NORMAL)
 
         self.layout.input_bom_export_path.configure(state=tk.NORMAL)
         self.layout.button_bom_export_path.configure(state=tk.NORMAL)
@@ -108,45 +113,62 @@ class UISetter:
         self.layout.input_jpg_export_path.configure(state=tk.NORMAL)
         self.layout.button_jpg_export_path.configure(state=tk.NORMAL)
 
+        self.layout.input_bundle_export_path.configure(state=tk.NORMAL)
+        self.layout.button_bundle_export_path.configure(state=tk.NORMAL)
+
         self.layout.checkbox_export_docket.configure(
-            state=self._state_checkbox_export_docket
-            if os.path.isdir(self.vars.docket_export_path.get())
-            and templates.docket_path is not None
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_docket
+                if os.path.isdir(self.vars.docket_export_path.get())
+                and templates.docket_path is not None
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_export_documentation.configure(
-            state=self._state_checkbox_export_docu
-            if os.path.isdir(self.vars.documentation_export_path.get())
-            and templates.documentation_path is not None
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_docu
+                if os.path.isdir(self.vars.documentation_export_path.get())
+                and templates.documentation_path is not None
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_export_drawing.configure(
-            state=self._state_checkbox_export_drawing
-            if os.path.isdir(self.vars.drawing_export_path.get())
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_drawing
+                if os.path.isdir(self.vars.drawing_export_path.get())
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_export_stp.configure(
-            state=self._state_checkbox_export_stp
-            if os.path.isdir(self.vars.stp_export_path.get())
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_stp
+                if os.path.isdir(self.vars.stp_export_path.get())
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_export_stl.configure(
-            state=self._state_checkbox_export_stl
-            if os.path.isdir(self.vars.stl_export_path.get())
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_stl
+                if os.path.isdir(self.vars.stl_export_path.get())
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_export_jpg.configure(
-            state=self._state_checkbox_export_jpg
-            if os.path.isdir(self.vars.jpg_export_path.get())
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_export_jpg
+                if os.path.isdir(self.vars.jpg_export_path.get())
+                else tk.DISABLED
+            )
         )
         self.layout.checkbox_ignore_source_unknown.configure(
             state=self._state_checkbox_ignore_unknown
         )
         self.layout.checkbox_ignore_prefixed.configure(
-            state=self._state_checkbox_ignore_prefixed
-            if len(self.vars.ignore_prefix_txt.get()) > 0
-            else tk.DISABLED
+            state=(
+                self._state_checkbox_ignore_prefixed
+                if len(self.vars.ignore_prefix_txt.get()) > 0
+                else tk.DISABLED
+            )
         )
         self.layout.input_ignore_prefixed_txt.configure(state=tk.NORMAL)
 
@@ -161,6 +183,7 @@ class UISetter:
         Sets the cursor to 'arrow'.
         """
         self.layout.input_project.configure(state=tk.DISABLED)
+        self.layout.checkbox_bundle_data.configure(state=tk.DISABLED)
 
         self.layout.input_bom_export_path.configure(state=tk.DISABLED)
         self.layout.button_bom_export_path.configure(state=tk.DISABLED)
@@ -182,6 +205,9 @@ class UISetter:
 
         self.layout.input_jpg_export_path.configure(state=tk.DISABLED)
         self.layout.button_jpg_export_path.configure(state=tk.DISABLED)
+
+        self.layout.input_bundle_export_path.configure(state=tk.DISABLED)
+        self.layout.button_bundle_export_path.configure(state=tk.DISABLED)
 
         self._state_checkbox_export_docket = self.layout.checkbox_export_docket.state()
         self.layout.checkbox_export_docket.configure(state=tk.DISABLED)

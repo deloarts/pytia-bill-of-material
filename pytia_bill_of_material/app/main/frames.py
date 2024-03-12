@@ -62,7 +62,7 @@ class Frames:
         self._frame_footer.grid_columnconfigure(0, weight=1)
 
         root.grid_columnconfigure(0, weight=1)
-        root.grid_rowconfigure(0, weight=1)
+        root.grid_rowconfigure(1, weight=1)
 
     @property
     def infrastructure(self) -> Labelframe:

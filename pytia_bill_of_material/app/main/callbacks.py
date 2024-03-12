@@ -116,6 +116,9 @@ class Callbacks:
         self.layout.button_jpg_export_path.configure(
             command=self.on_btn_jpg_export_path
         )
+        self.layout.button_bundle_export_path.configure(
+            command=self.on_btn_bundle_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -> None:
         """Bind checkbox callbacks."""
@@ -369,6 +372,29 @@ class Callbacks:
             )
         ):
             self.vars.jpg_export_path.set(str(path))
+
+    def on_btn_bundle_export_path(self) -> None:
+        """
+        Event handler for the browse bundle export path button. Asks the user to select a folder,
+        into which to export the files.
+        """
+        log.info("Callback for button 'Browse Bundle export path'.")
+
+        initial_dir = Path(self.vars.bundle_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.bundle_export_path.set(str(path))
 
     def on_chkbox_export_docket(self) -> None:
         """

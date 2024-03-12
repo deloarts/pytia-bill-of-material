@@ -87,10 +87,37 @@ class Layout:
             row=0,
             column=1,
             padx=(5, Layout.MARGIN_X),
-            pady=(Layout.MARGIN_Y, Layout.MARGIN_Y),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
             columnspan=2,
         )
+        # endregion
+
+        # region Bundle
+        lbl_bundle_option = Label(frames.infrastructure, text="Bundle Data", width=18)
+        lbl_bundle_option.grid(
+            row=1,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+
+        self._chkbtn_bundle_data = Checkbutton(
+            frames.infrastructure,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.bundle,
+            state=DISABLED,
+        )
+        self._chkbtn_bundle_data.grid(
+            row=1,
+            column=1,
+            padx=(5, 5),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+            columnspan=2,
+        )
+
         # endregion
 
         # TODO: Add export-only-where-project-is-... option
@@ -138,49 +165,10 @@ class Layout:
         )
         # endregion
 
-        # region docket export path
-        lbl_docket_export_path = Label(frames.paths, text="Docket Folder", width=18)
-        lbl_docket_export_path.grid(
-            row=1,
-            column=0,
-            padx=(Layout.MARGIN_X, 15),
-            pady=(2, 2),
-            sticky="nsew",
-        )
-
-        self._entry_docket_export_path = Entry(
-            frames.paths,
-            textvariable=variables.docket_export_path,
-            state=DISABLED,
-        )
-        self._entry_docket_export_path.grid(
-            row=1,
-            column=1,
-            padx=(5, 2),
-            pady=(2, 2),
-            sticky="nsew",
-        )
-
-        self._btn_browse_docket_export_path = Button(
-            frames.paths,
-            text="...",
-            style="outline",
-            width=3,
-            state=DISABLED,
-        )
-        self._btn_browse_docket_export_path.grid(
-            row=1,
-            column=2,
-            padx=(2, Layout.MARGIN_X),
-            pady=(2, 2),
-            sticky="nsew",
-        )
-        # endregion
-
         # region documentation export path
         lbl_docu_export_path = Label(frames.paths, text="Docs Folder", width=18)
         lbl_docu_export_path.grid(
-            row=2,
+            row=1,
             column=0,
             padx=(Layout.MARGIN_X, 15),
             pady=(2, 2),
@@ -193,7 +181,7 @@ class Layout:
             state=DISABLED,
         )
         self._entry_docu_export_path.grid(
-            row=2,
+            row=1,
             column=1,
             padx=(5, 2),
             pady=(2, 2),
@@ -208,6 +196,47 @@ class Layout:
             state=DISABLED,
         )
         self._btn_browse_docu_export_path.grid(
+            row=1,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+        # endregion
+
+        # region docket export path
+        self._lbl_docket_export_path = Label(
+            frames.paths, text="Docket Folder", width=18
+        )
+        self._lbl_docket_export_path.grid(
+            row=2,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._entry_docket_export_path = Entry(
+            frames.paths,
+            textvariable=variables.docket_export_path,
+            state=DISABLED,
+        )
+        self._entry_docket_export_path.grid(
+            row=2,
+            column=1,
+            padx=(5, 2),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._btn_browse_docket_export_path = Button(
+            frames.paths,
+            text="...",
+            style="outline",
+            width=3,
+            state=DISABLED,
+        )
+        self._btn_browse_docket_export_path.grid(
             row=2,
             column=2,
             padx=(2, Layout.MARGIN_X),
@@ -217,8 +246,10 @@ class Layout:
         # endregion
 
         # region drawing export path
-        lbl_drawing_export_path = Label(frames.paths, text="Drawing Folder", width=18)
-        lbl_drawing_export_path.grid(
+        self._lbl_drawing_export_path = Label(
+            frames.paths, text="Drawing Folder", width=18
+        )
+        self._lbl_drawing_export_path.grid(
             row=3,
             column=0,
             padx=(Layout.MARGIN_X, 15),
@@ -256,8 +287,8 @@ class Layout:
         # endregion
 
         # region stp export path
-        lbl_stp_export_path = Label(frames.paths, text="STP Folder", width=18)
-        lbl_stp_export_path.grid(
+        self._lbl_stp_export_path = Label(frames.paths, text="STP Folder", width=18)
+        self._lbl_stp_export_path.grid(
             row=4,
             column=0,
             padx=(Layout.MARGIN_X, 15),
@@ -295,8 +326,8 @@ class Layout:
         # endregion
 
         # region stl export path
-        lbl_stl_export_path = Label(frames.paths, text="STL Folder", width=18)
-        lbl_stl_export_path.grid(
+        self._lbl_stl_export_path = Label(frames.paths, text="STL Folder", width=18)
+        self._lbl_stl_export_path.grid(
             row=5,
             column=0,
             padx=(Layout.MARGIN_X, 15),
@@ -334,8 +365,8 @@ class Layout:
         # endregion
 
         # region jpg export path
-        lbl_jpg_export_path = Label(frames.paths, text="JPG Folder", width=18)
-        lbl_jpg_export_path.grid(
+        self._lbl_jpg_export_path = Label(frames.paths, text="JPG Folder", width=18)
+        self._lbl_jpg_export_path.grid(
             row=6,
             column=0,
             padx=(Layout.MARGIN_X, 15),
@@ -372,42 +403,58 @@ class Layout:
         )
         # endregion
 
-        # region FRAME Export ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        # region export docket
-        lbl_export_docket = Label(frames.export, text="Export Docket", width=18)
-        lbl_export_docket.grid(
-            row=0,
+        # region bundle export path
+        self._lbl_bundle_export_path = Label(
+            frames.paths, text="Bundle Folder", width=18
+        )
+        self._lbl_bundle_export_path.grid(
+            row=7,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(Layout.MARGIN_Y, 2),
+            pady=(2, Layout.MARGIN_Y),
             sticky="nsew",
         )
+        self._lbl_bundle_export_path.grid_remove()
 
-        self._chkbtn_export_docket = Checkbutton(
-            frames.export,
-            bootstyle="round-toggle",  # type:ignore
-            variable=variables.export_docket,
+        self._entry_bundle_export_path = Entry(
+            frames.paths,
+            textvariable=variables.bundle_export_path,
             state=DISABLED,
         )
-        self._chkbtn_export_docket.grid(
-            row=0,
+        self._entry_bundle_export_path.grid(
+            row=7,
             column=1,
-            padx=(5, 5),
-            pady=(Layout.MARGIN_Y, 2),
+            padx=(5, 2),
+            pady=(2, Layout.MARGIN_Y),
             sticky="nsew",
-            columnspan=2,
         )
+        self._entry_bundle_export_path.grid_remove()
+
+        self._btn_browse_bundle_export_path = Button(
+            frames.paths,
+            text="...",
+            style="outline",
+            width=3,
+            state=DISABLED,
+        )
+        self._btn_browse_bundle_export_path.grid(
+            row=7,
+            column=2,
+            padx=(2, Layout.MARGIN_X),
+            pady=(2, Layout.MARGIN_Y),
+            sticky="nsew",
+        )
+        self._btn_browse_bundle_export_path.grid_remove()
         # endregion
 
+        # region FRAME Export ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         # region export documentation docket
-        lbl_export_documentation = Label(
-            frames.export, text="Export Documentation", width=18
-        )
+        lbl_export_documentation = Label(frames.export, text="Export Docs", width=18)
         lbl_export_documentation.grid(
-            row=1,
+            row=0,
             column=0,
             padx=(Layout.MARGIN_X, 15),
-            pady=(2, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
         )
 
@@ -418,6 +465,32 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_documentation.grid(
+            row=0,
+            column=1,
+            padx=(5, 5),
+            pady=(Layout.MARGIN_Y, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
+        # endregion
+
+        # region export docket
+        lbl_export_docket = Label(frames.export, text="Export Docket", width=18)
+        lbl_export_docket.grid(
+            row=1,
+            column=0,
+            padx=(Layout.MARGIN_X, 15),
+            pady=(2, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_export_docket = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.export_docket,
+            state=DISABLED,
+        )
+        self._chkbtn_export_docket.grid(
             row=1,
             column=1,
             padx=(5, 5),
@@ -748,20 +821,16 @@ class Layout:
         return self._combo_project
 
     @property
+    def checkbox_bundle_data(self) -> Checkbutton:
+        return self._chkbtn_bundle_data
+
+    @property
     def input_bom_export_path(self) -> Entry:
         return self._entry_bom_export_path
 
     @property
     def button_bom_export_path(self) -> Button:
         return self._btn_browse_bom_export_path
-
-    @property
-    def input_docket_export_path(self) -> Entry:
-        return self._entry_docket_export_path
-
-    @property
-    def button_docket_export_path(self) -> Button:
-        return self._btn_browse_docket_export_path
 
     @property
     def input_documentation_export_path(self) -> Entry:
@@ -772,12 +841,32 @@ class Layout:
         return self._btn_browse_docu_export_path
 
     @property
+    def label_docket_path(self) -> Label:
+        return self._lbl_docket_export_path
+
+    @property
+    def input_docket_export_path(self) -> Entry:
+        return self._entry_docket_export_path
+
+    @property
+    def button_docket_export_path(self) -> Button:
+        return self._btn_browse_docket_export_path
+
+    @property
+    def label_drawing_path(self) -> Label:
+        return self._lbl_drawing_export_path
+
+    @property
     def input_drawing_export_path(self) -> Entry:
         return self._entry_drawing_export_path
 
     @property
     def button_drawing_export_path(self) -> Button:
         return self._btn_browse_drawing_export_path
+
+    @property
+    def label_stp_path(self) -> Label:
+        return self._lbl_stp_export_path
 
     @property
     def input_stp_export_path(self) -> Entry:
@@ -788,6 +877,10 @@ class Layout:
         return self._btn_browse_stp_export_path
 
     @property
+    def label_stl_path(self) -> Label:
+        return self._lbl_stl_export_path
+
+    @property
     def input_stl_export_path(self) -> Entry:
         return self._entry_stl_export_path
 
@@ -796,12 +889,28 @@ class Layout:
         return self._btn_browse_stl_export_path
 
     @property
+    def label_jpg_path(self) -> Label:
+        return self._lbl_jpg_export_path
+
+    @property
     def input_jpg_export_path(self) -> Entry:
         return self._entry_jpg_export_path
 
     @property
     def button_jpg_export_path(self) -> Button:
         return self._btn_browse_jpg_export_path
+
+    @property
+    def label_bundle_path(self) -> Label:
+        return self._lbl_bundle_export_path
+
+    @property
+    def input_bundle_export_path(self) -> Entry:
+        return self._entry_bundle_export_path
+
+    @property
+    def button_bundle_export_path(self) -> Button:
+        return self._btn_browse_bundle_export_path
 
     @property
     def checkbox_export_docket(self) -> Checkbutton:
