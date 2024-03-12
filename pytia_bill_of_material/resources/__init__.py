@@ -20,7 +20,6 @@ from typing import List
 from typing import Literal
 from typing import Optional
 
-from _typeshed import DataclassInstance
 from const import APP_VERSION
 from const import APPDATA
 from const import CONFIG_APPDATA
@@ -165,8 +164,7 @@ class KeywordElements:
 
 
 @dataclass
-class AppliedKeywords(KeywordElements):
-    ...
+class AppliedKeywords(KeywordElements): ...
 
 
 @dataclass(slots=True, kw_only=True)
@@ -529,7 +527,7 @@ class Resources:  # pylint: disable=R0902
         """
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
-        def _apply_to_object(_item: DataclassInstance):
+        def _apply_to_object(_item):
             for object_fields in fields(_item):
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
