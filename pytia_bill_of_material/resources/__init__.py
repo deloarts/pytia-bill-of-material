@@ -19,8 +19,8 @@ from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
-from typing import Protocol
 
+from _typeshed import DataclassInstance
 from const import APP_VERSION
 from const import APPDATA
 from const import CONFIG_APPDATA
@@ -40,10 +40,6 @@ from const import CONFIG_USERS
 from const import LOGON
 from const import STYLES
 from resources.utils import expand_env_vars
-
-
-class DataclassProtocol(Protocol):
-    __dataclass_fields__: Dict
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -533,8 +529,8 @@ class Resources:  # pylint: disable=R0902
         """
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
-        def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):  # type: ignore
+        def _apply_to_object(_item: DataclassInstance):
+            for object_fields in fields(_item):
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
