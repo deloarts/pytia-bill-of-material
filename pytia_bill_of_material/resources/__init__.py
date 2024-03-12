@@ -300,6 +300,7 @@ class AppData:
     counter: int = 0
     disable_volume_warning: bool = False
     theme: str = STYLES[0]
+    zip_bundle: bool = True
 
     def __post_init__(self) -> None:
         self.version = (

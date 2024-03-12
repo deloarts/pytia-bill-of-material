@@ -47,27 +47,40 @@ class MoveFilesTask(TaskProtocol):
         log.info("Moving files.")
 
         self._add_move(
-            category=BOM, target=Path(self.vars.bom_export_path.get()).parent
+            source=Path(self.export_root_path, BOM),
+            target=Path(self.vars.bom_export_path.get()).parent,
         )
         self._add_move(
-            category=DOCUMENTATION,
+            source=Path(self.export_root_path, DOCUMENTATION),
             target=Path(self.vars.documentation_export_path.get()),
         )
 
         if self.vars.bundle.get():
             self._add_move(
-                category=BUNDLE, target=Path(self.vars.bundle_export_path.get())
+                source=Path(self.export_root_path, BUNDLE),
+                target=Path(self.vars.bundle_export_path.get()),
             )
         else:
             self._add_move(
-                category=DOCKETS, target=Path(self.vars.docket_export_path.get())
+                source=Path(self.export_root_path, DOCKETS),
+                target=Path(self.vars.docket_export_path.get()),
             )
             self._add_move(
-                category=DRAWINGS, target=Path(self.vars.drawing_export_path.get())
+                source=Path(self.export_root_path, DRAWINGS),
+                target=Path(self.vars.drawing_export_path.get()),
             )
-            self._add_move(category=STLS, target=Path(self.vars.stl_export_path.get()))
-            self._add_move(category=STPS, target=Path(self.vars.stp_export_path.get()))
-            self._add_move(category=JPGS, target=Path(self.vars.jpg_export_path.get()))
+            self._add_move(
+                source=Path(self.export_root_path, STLS),
+                target=Path(self.vars.stl_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, STPS),
+                target=Path(self.vars.stp_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, JPGS),
+                target=Path(self.vars.jpg_export_path.get()),
+            )
 
         for item in file_utility.move_items:
             self.runner.add(
@@ -83,10 +96,12 @@ class MoveFilesTask(TaskProtocol):
             )
         self.runner.run_tasks()
 
-    def _add_move(self, category: str, target: Path) -> None:
-        p = Path(self.export_root_path, category)
-        for item in os.listdir(p):
-            s = Path(p, item)
-            t = Path(target, item) if target.is_dir() else target
-            if s.is_file():
-                file_utility.add_move(source=s, target=t)
+    def _add_move(self, source: Path, target: Path) -> None:
+        """Moves every file inside the source dir to the target dir."""
+        for abs_file in source.rglob("*.*"):
+            rel_file = abs_file.relative_to(source)
+            target_file = Path(target, rel_file)
+            os.makedirs(
+                target_file.parent, exist_ok=True
+            )  # TODO: Integrate this into file_utility
+            file_utility.add_move(source=abs_file, target=target_file)

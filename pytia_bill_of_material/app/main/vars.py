@@ -9,6 +9,7 @@ from tkinter import StringVar
 from tkinter import Tk
 
 from models.report import Report
+from resources import resource
 
 
 @dataclass(slots=True, kw_only=True)
@@ -22,6 +23,7 @@ class Variables:
     project: StringVar
     machine: StringVar
     bundle: BooleanVar
+    zip_bundle: BooleanVar
 
     # Path variables
     bom_export_path: StringVar
@@ -64,6 +66,9 @@ class Variables:
         self.project = StringVar(master=root, name="project")
         self.machine = StringVar(master=root, name="machine")
         self.bundle = BooleanVar(master=root, name="bundle", value=False)
+        self.zip_bundle = BooleanVar(
+            master=root, name="zip_bundle", value=resource.appdata.zip_bundle
+        )
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
         self.documentation_export_path = StringVar(

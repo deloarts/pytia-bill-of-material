@@ -30,7 +30,7 @@ class Frames:
         self._frame_export.grid(
             row=2, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
         )
-        self._frame_export.grid_columnconfigure(2, weight=1)
+        self._frame_export.grid_columnconfigure(5, weight=1)
         # self._frame_export.grid_remove()
 
         self._frame_report = Labelframe(master=root, text="Report")

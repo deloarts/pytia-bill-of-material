@@ -17,6 +17,7 @@ from const import Status
 from helper.names import get_bom_export_name
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
+from resources import resource
 from templates import templates
 from ttkbootstrap import Style
 
@@ -72,6 +73,8 @@ class Traces:
 
         self.vars.ignore_prefix_txt.trace_add("write", self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add("write", self.trace_show_report)
+
+        self.vars.zip_bundle.trace_add("write", self.trace_zip_bundle)
 
     def _validate_button_export(self) -> None:
         self.set_ui.set_button_export()
@@ -382,3 +385,7 @@ class Traces:
             self.frames.paths.grid()
             self.frames.export.grid()
             self.frames.footer.grid()
+
+    def trace_zip_bundle(self, *_) -> None:
+        """Trace callback for the `zip_bundle` StringVar"""
+        resource.appdata.zip_bundle = self.vars.zip_bundle.get()

@@ -5,6 +5,7 @@
 import os
 from pathlib import Path
 from shutil import make_archive
+from shutil import rmtree
 from typing import Annotated
 from typing import Dict
 
@@ -384,11 +385,10 @@ class ExportItemsTask(TaskProtocol):
                 "a product."
             )
 
-        if bundle:
+        if bundle and self.variables.zip_bundle.get():
             make_archive(
                 base_name=str(bundle_path),
                 format="zip",
                 root_dir=bundle_path,
             )
-            for f in os.listdir(bundle_path):
-                file_utility.add_delete(Path(bundle_path, f))
+            rmtree(bundle_path)
