@@ -51,7 +51,7 @@ class Frames:
 
         self._frame_log = Labelframe(master=root, text="Log")
         self._frame_log.grid(
-            row=0, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
+            row=1, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
         )
         self._frame_log.grid_columnconfigure(0, weight=1)
         self._frame_log.grid_rowconfigure(0, weight=1)
