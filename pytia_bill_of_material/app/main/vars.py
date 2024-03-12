@@ -22,8 +22,6 @@ class Variables:
     # Infrastructure variables
     project: StringVar
     machine: StringVar
-    bundle: BooleanVar
-    zip_bundle: BooleanVar
 
     # Path variables
     bom_export_path: StringVar
@@ -38,6 +36,11 @@ class Variables:
     external_bom_path: StringVar
 
     # Export variables
+    bundle: BooleanVar
+    zip_bundle: BooleanVar
+    bundle_by_prop: BooleanVar
+    bundle_by_prop_txt: StringVar
+
     export_docket: BooleanVar
     export_documentation: BooleanVar
     export_drawing: BooleanVar
@@ -65,10 +68,6 @@ class Variables:
 
         self.project = StringVar(master=root, name="project")
         self.machine = StringVar(master=root, name="machine")
-        self.bundle = BooleanVar(master=root, name="bundle", value=False)
-        self.zip_bundle = BooleanVar(
-            master=root, name="zip_bundle", value=resource.appdata.zip_bundle
-        )
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
         self.documentation_export_path = StringVar(
@@ -83,6 +82,19 @@ class Variables:
 
         self.external_bom_path = StringVar(
             master=root, name="external_bom_path", value=""
+        )
+
+        self.bundle = BooleanVar(master=root, name="bundle", value=False)
+        self.zip_bundle = BooleanVar(
+            master=root, name="zip_bundle", value=resource.appdata.zip_bundle
+        )
+        self.bundle_by_prop = BooleanVar(
+            master=root, name="bundle_by_prop", value=resource.appdata.bundle_by_prop
+        )
+        self.bundle_by_prop_txt = StringVar(
+            master=root,
+            name="bundle_by_prop_txt",
+            value=resource.settings.export.bundle_by_prop,
         )
 
         self.export_documentation = BooleanVar(master=root, name="export_documentation")

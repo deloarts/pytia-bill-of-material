@@ -11,7 +11,8 @@
                 0.577,
                 0.577
             ]
-        ]
+        ],
+        "bundle_by_prop": "pytia.process_1"
     },
     "restrictions": {
         "allow_all_users": false,

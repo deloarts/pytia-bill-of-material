@@ -468,6 +468,41 @@ class Layout:
             pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
         )
+
+        self._chkbtn_bundle_by_prop = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.bundle_by_prop,
+            state=DISABLED,
+        )
+        self._chkbtn_bundle_by_prop.grid(
+            row=0,
+            column=4,
+            padx=(5, 2),
+            pady=(Layout.MARGIN_Y, 2),
+            sticky="nsw",
+        )
+        lbl_bundle_by_prop = Label(frames.export, text="Bundle by property:", width=25)
+        lbl_bundle_by_prop.grid(
+            row=0,
+            column=5,
+            padx=(2, 5),
+            pady=(Layout.MARGIN_Y, 2),
+            sticky="nsw",
+        )
+        self._entry_bundle_by_prop = Entry(
+            frames.export,
+            textvariable=variables.bundle_by_prop_txt,
+            state=DISABLED,
+        )
+        self._entry_bundle_by_prop.grid(
+            row=0,
+            column=6,
+            padx=(2, Layout.MARGIN_X),
+            pady=(Layout.MARGIN_Y, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
         # endregion
 
         # region export documentation docket
@@ -837,6 +872,14 @@ class Layout:
     @property
     def checkbox_bundle_zip(self) -> Checkbutton:
         return self._chkbtn_bundle_zip
+
+    @property
+    def checkbox_bundle_by_prop(self) -> Checkbutton:
+        return self._chkbtn_bundle_by_prop
+
+    @property
+    def input_bundle_by_prop_txt(self) -> Entry:
+        return self._entry_bundle_by_prop
 
     @property
     def input_bom_export_path(self) -> Entry:

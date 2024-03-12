@@ -49,6 +49,7 @@ class SettingsExport:
     apply_username_in_docket: bool
     lock_drawing_views: bool
     jpg_views: List[List[float]]
+    bundle_by_prop: str
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -301,6 +302,7 @@ class AppData:
     disable_volume_warning: bool = False
     theme: str = STYLES[0]
     zip_bundle: bool = True
+    bundle_by_prop: bool = True
 
     def __post_init__(self) -> None:
         self.version = (

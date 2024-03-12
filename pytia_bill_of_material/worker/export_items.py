@@ -214,8 +214,19 @@ class ExportItemsTask(TaskProtocol):
 
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
+
         bundle_name = f"{machine} {partnumber} Rev{revision}"
-        bundle_path = Path(self.export_root_path, BUNDLE, bundle_name)
+        if self.variables.bundle_by_prop_txt.get() in bom_item.properties:
+            bundle_prop = bom_item.properties[self.variables.bundle_by_prop_txt.get()]
+        else:
+            log.warning("Cannot bundle by property: Doesn't exist.")
+            bundle_prop = ""
+
+        if self.variables.bundle_by_prop.get() and len(bundle_prop) > 0:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_prop, bundle_name)
+        else:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_name)
+
         if bundle:
             os.makedirs(bundle_path, exist_ok=True)
 

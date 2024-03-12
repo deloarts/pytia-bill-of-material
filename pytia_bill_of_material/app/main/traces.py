@@ -75,6 +75,7 @@ class Traces:
         self.vars.show_report.trace_add("write", self.trace_show_report)
 
         self.vars.zip_bundle.trace_add("write", self.trace_zip_bundle)
+        self.vars.bundle_by_prop.trace_add("write", self.trace_bundle_by_prop)
 
     def _validate_button_export(self) -> None:
         self.set_ui.set_button_export()
@@ -389,3 +390,7 @@ class Traces:
     def trace_zip_bundle(self, *_) -> None:
         """Trace callback for the `zip_bundle` StringVar"""
         resource.appdata.zip_bundle = self.vars.zip_bundle.get()
+
+    def trace_bundle_by_prop(self, *_) -> None:
+        """Trace callback for the `zip_bundle` StringVar"""
+        resource.appdata.bundle_by_prop = self.vars.bundle_by_prop.get()
