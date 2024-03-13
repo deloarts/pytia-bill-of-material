@@ -5,7 +5,9 @@
 import os
 from pathlib import Path
 
+from app.main.vars import Variables
 from const import BOM
+from const import BUNDLE
 from const import DOCKETS
 from const import DOCUMENTATION
 from const import DRAWINGS
@@ -29,18 +31,7 @@ class MoveFilesTask(TaskProtocol):
 
     __slots__ = "_runner"
 
-    def __init__(
-        self,
-        runner: Runner,
-        export_root_path: Path,
-        bom_export_path: Path,
-        drawing_export_path: Path,
-        docket_export_path: Path,
-        documentation_export_path: Path,
-        stp_export_path: Path,
-        stl_export_path: Path,
-        jpg_export_path: Path,
-    ) -> None:
+    def __init__(self, runner: Runner, export_root_path: Path, vars: Variables) -> None:
         """
         Inits the class.
 
@@ -49,25 +40,47 @@ class MoveFilesTask(TaskProtocol):
         """
         self.runner = runner
         self.export_root_path = export_root_path
-        self.bom_export_path = bom_export_path.parent
-        self.drawing_export_path = drawing_export_path
-        self.docket_export_path = docket_export_path
-        self.documentation_export_path = documentation_export_path
-        self.stp_export_path = stp_export_path
-        self.stl_export_path = stl_export_path
-        self.jpg_export_path = jpg_export_path
+        self.vars = vars
 
     def run(self) -> None:
         """Runs the task."""
         log.info("Moving files.")
 
-        self._add_move(category=BOM, target=self.bom_export_path)
-        self._add_move(category=DOCKETS, target=self.docket_export_path)
-        self._add_move(category=DOCUMENTATION, target=self.documentation_export_path)
-        self._add_move(category=DRAWINGS, target=self.drawing_export_path)
-        self._add_move(category=STLS, target=self.stl_export_path)
-        self._add_move(category=STPS, target=self.stp_export_path)
-        self._add_move(category=JPGS, target=self.jpg_export_path)
+        self._add_move(
+            source=Path(self.export_root_path, BOM),
+            target=Path(self.vars.bom_export_path.get()).parent,
+        )
+        self._add_move(
+            source=Path(self.export_root_path, DOCUMENTATION),
+            target=Path(self.vars.documentation_export_path.get()),
+        )
+
+        if self.vars.bundle.get():
+            self._add_move(
+                source=Path(self.export_root_path, BUNDLE),
+                target=Path(self.vars.bundle_export_path.get()),
+            )
+        else:
+            self._add_move(
+                source=Path(self.export_root_path, DOCKETS),
+                target=Path(self.vars.docket_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, DRAWINGS),
+                target=Path(self.vars.drawing_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, STLS),
+                target=Path(self.vars.stl_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, STPS),
+                target=Path(self.vars.stp_export_path.get()),
+            )
+            self._add_move(
+                source=Path(self.export_root_path, JPGS),
+                target=Path(self.vars.jpg_export_path.get()),
+            )
 
         for item in file_utility.move_items:
             self.runner.add(
@@ -83,9 +96,12 @@ class MoveFilesTask(TaskProtocol):
             )
         self.runner.run_tasks()
 
-    def _add_move(self, category: str, target: Path) -> None:
-        for item in os.listdir(Path(self.export_root_path, category)):
-            file_utility.add_move(
-                Path(self.export_root_path, category, item),
-                Path(target, item) if target.is_dir() else target,
-            )
+    def _add_move(self, source: Path, target: Path) -> None:
+        """Moves every file inside the source dir to the target dir."""
+        for abs_file in source.rglob("*.*"):
+            rel_file = abs_file.relative_to(source)
+            target_file = Path(target, rel_file)
+            os.makedirs(
+                target_file.parent, exist_ok=True
+            )  # TODO: Integrate this into file_utility
+            file_utility.add_move(source=abs_file, target=target_file)

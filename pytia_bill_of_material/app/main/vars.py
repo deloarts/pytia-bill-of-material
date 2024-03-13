@@ -1,6 +1,7 @@
 """
     The variables submodule for the app.
 """
+
 from dataclasses import dataclass
 from tkinter import BooleanVar
 from tkinter import DoubleVar
@@ -8,6 +9,7 @@ from tkinter import StringVar
 from tkinter import Tk
 
 from models.report import Report
+from resources import resource
 
 
 @dataclass(slots=True, kw_only=True)
@@ -23,16 +25,23 @@ class Variables:
 
     # Path variables
     bom_export_path: StringVar
-    docket_export_path: StringVar
     documentation_export_path: StringVar
+    docket_export_path: StringVar
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+    bundle_export_path: StringVar
 
     external_bom_path: StringVar
 
     # Export variables
+    bundle: BooleanVar
+    zip_bundle: BooleanVar
+    bundle_by_prop: BooleanVar
+    bundle_by_prop_value: StringVar
+    bundle_by_prop_txt: StringVar
+
     export_docket: BooleanVar
     export_documentation: BooleanVar
     export_drawing: BooleanVar
@@ -62,21 +71,40 @@ class Variables:
         self.machine = StringVar(master=root, name="machine")
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
-        self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.documentation_export_path = StringVar(
             master=root, name="documentation_export_path"
         )
+        self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.drawing_export_path = StringVar(master=root, name="drawing_export_path")
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
         self.stl_export_path = StringVar(master=root, name="stl_export_path")
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
+        self.bundle_export_path = StringVar(master=root, name="bundle_export_path")
 
         self.external_bom_path = StringVar(
             master=root, name="external_bom_path", value=""
         )
 
-        self.export_docket = BooleanVar(master=root, name="export_docket")
+        self.bundle = BooleanVar(master=root, name="bundle", value=False)
+        self.zip_bundle = BooleanVar(
+            master=root, name="zip_bundle", value=resource.appdata.zip_bundle
+        )
+        self.bundle_by_prop = BooleanVar(
+            master=root, name="bundle_by_prop", value=resource.appdata.bundle_by_prop
+        )
+        self.bundle_by_prop_txt = StringVar(
+            master=root,
+            name="bundle_by_prop_txt",
+            value=resource.appdata.bundle_by_prop_txt,
+        )
+        self.bundle_by_prop_value = StringVar(
+            master=root,
+            name="bundle_by_prop_value",
+            value=resource.appdata.bundle_by_prop_value,
+        )
+
         self.export_documentation = BooleanVar(master=root, name="export_documentation")
+        self.export_docket = BooleanVar(master=root, name="export_docket")
         self.export_drawing = BooleanVar(master=root, name="export_drawing")
         self.export_stp = BooleanVar(master=root, name="export_stp")
         self.export_stl = BooleanVar(master=root, name="export_stl")

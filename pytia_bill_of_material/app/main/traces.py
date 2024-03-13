@@ -17,6 +17,7 @@ from const import Status
 from helper.names import get_bom_export_name
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
+from resources import resource
 from templates import templates
 from ttkbootstrap import Style
 
@@ -58,6 +59,7 @@ class Traces:
     def _add_traces(self) -> None:
         """Adds all traces."""
         self.vars.project.trace_add("write", self.trace_project)
+        self.vars.bundle.trace_add("write", self.trace_bundle)
         self.vars.bom_export_path.trace_add("write", self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add("write", self.trace_docket_export_path)
         self.vars.documentation_export_path.trace_add(
@@ -67,8 +69,14 @@ class Traces:
         self.vars.stp_export_path.trace_add("write", self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add("write", self.trace_jpg_export_path)
+        self.vars.bundle_export_path.trace_add("write", self.trace_bundle_export_path)
+
         self.vars.ignore_prefix_txt.trace_add("write", self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add("write", self.trace_show_report)
+
+        self.vars.zip_bundle.trace_add("write", self.trace_zip_bundle)
+        self.vars.bundle_by_prop.trace_add("write", self.trace_bundle_by_prop)
+        self.vars.bundle_by_prop_txt.trace_add("write", self.trace_bundle_by_prop_txt)
 
     def _validate_button_export(self) -> None:
         self.set_ui.set_button_export()
@@ -115,29 +123,6 @@ class Traces:
 
         self._validate_button_export()
 
-    def trace_docket_export_path(self, *_) -> None:
-        """
-        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
-        of the checkbox accordingly to the path variable.
-        """
-        if (
-            is_dir := bool(
-                os.path.isdir(self.vars.docket_export_path.get())
-                and os.path.isabs(self.vars.docket_export_path.get())
-            )
-            and templates.docket_path is not None
-            and os.path.isfile(templates.docket_path)
-        ):
-            self.layout.checkbox_export_docket.configure(state=NORMAL)
-            self.vars.export_docket.set(True)
-        else:
-            self.vars.export_docket.set(False)
-            self.layout.checkbox_export_docket.configure(state=DISABLED)
-
-        self.layout.input_docket_export_path.configure(
-            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
-        )
-
     def trace_docu_export_path(self, *_) -> None:
         """
         Trace callback for the `documentation_export_path` StringVar.
@@ -159,6 +144,29 @@ class Traces:
             self.layout.checkbox_export_documentation.configure(state=DISABLED)
 
         self.layout.input_documentation_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docket_export_path(self, *_) -> None:
+        """
+        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        """
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.docket_export_path.get())
+                and os.path.isabs(self.vars.docket_export_path.get())
+            )
+            and templates.docket_path is not None
+            and os.path.isfile(templates.docket_path)
+        ):
+            self.layout.checkbox_export_docket.configure(state=NORMAL)
+            self.vars.export_docket.set(True)
+        else:
+            self.vars.export_docket.set(False)
+            self.layout.checkbox_export_docket.configure(state=DISABLED)
+
+        self.layout.input_docket_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
@@ -239,6 +247,42 @@ class Traces:
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
+    def trace_bundle_export_path(self, *_) -> None:
+        """Trace callback for the `bundle_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        """
+        if self.vars.bundle.get():
+            if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(
+                self.vars.bundle_export_path.get()
+            ):
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.fg  # type: ignore
+                )
+                self.layout.checkbox_export_docket.configure(state=NORMAL)
+                self.layout.checkbox_export_drawing.configure(state=NORMAL)
+                self.layout.checkbox_export_stp.configure(state=NORMAL)
+                self.layout.checkbox_export_stl.configure(state=NORMAL)
+                self.layout.checkbox_export_jpg.configure(state=NORMAL)
+                self.vars.export_docket.set(True)
+                self.vars.export_drawing.set(True)
+                self.vars.export_stp.set(True)
+                self.vars.export_stl.set(True)
+                self.vars.export_jpg.set(True)
+            else:
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.danger  # type: ignore
+                )
+                self.vars.export_docket.set(False)
+                self.vars.export_drawing.set(False)
+                self.vars.export_stp.set(False)
+                self.vars.export_stl.set(False)
+                self.vars.export_jpg.set(False)
+                self.layout.checkbox_export_docket.configure(state=DISABLED)
+                self.layout.checkbox_export_drawing.configure(state=DISABLED)
+                self.layout.checkbox_export_stp.configure(state=DISABLED)
+                self.layout.checkbox_export_stl.configure(state=DISABLED)
+                self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
     def trace_ignore_prefix_txt(self, *_) -> None:
         """Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
         and sets the state of the checkbox accordingly to the variable."""
@@ -283,3 +327,89 @@ class Traces:
             self.frames.paths.grid()
             self.frames.export.grid()
             self.frames.footer.grid()
+
+    def trace_bundle(self, *_) -> None:
+        """Trace callback for the `bundle` BooleanVar."""
+
+        if self.vars.bundle.get():
+            self.layout.checkbox_bundle_zip.configure(state=NORMAL)
+            self.layout.checkbox_bundle_by_prop.configure(state=NORMAL)
+            self.layout.input_bundle_by_prop_txt.configure(state="readonly")
+
+            self.layout.label_bundle_path.grid()
+            self.layout.input_bundle_export_path.grid()
+            self.layout.button_bundle_export_path.grid()
+
+            self.layout.label_docket_path.grid_remove()
+            self.layout.input_docket_export_path.grid_remove()
+            self.layout.button_docket_export_path.grid_remove()
+
+            self.layout.label_drawing_path.grid_remove()
+            self.layout.input_drawing_export_path.grid_remove()
+            self.layout.button_drawing_export_path.grid_remove()
+
+            self.layout.label_stp_path.grid_remove()
+            self.layout.input_stp_export_path.grid_remove()
+            self.layout.button_stp_export_path.grid_remove()
+
+            self.layout.label_stl_path.grid_remove()
+            self.layout.input_stl_export_path.grid_remove()
+            self.layout.button_stl_export_path.grid_remove()
+
+            self.layout.label_jpg_path.grid_remove()
+            self.layout.input_jpg_export_path.grid_remove()
+            self.layout.button_jpg_export_path.grid_remove()
+        else:
+            self.layout.checkbox_bundle_zip.configure(state=DISABLED)
+            self.layout.checkbox_bundle_by_prop.configure(state=DISABLED)
+            self.layout.input_bundle_by_prop_txt.configure(state=DISABLED)
+
+            self.layout.label_bundle_path.grid_remove()
+            self.layout.input_bundle_export_path.grid_remove()
+            self.layout.button_bundle_export_path.grid_remove()
+
+            self.layout.label_docket_path.grid()
+            self.layout.input_docket_export_path.grid()
+            self.layout.button_docket_export_path.grid()
+
+            self.layout.label_drawing_path.grid()
+            self.layout.input_drawing_export_path.grid()
+            self.layout.button_drawing_export_path.grid()
+
+            self.layout.label_stp_path.grid()
+            self.layout.input_stp_export_path.grid()
+            self.layout.button_stp_export_path.grid()
+
+            self.layout.label_stl_path.grid()
+            self.layout.input_stl_export_path.grid()
+            self.layout.button_stl_export_path.grid()
+
+            self.layout.label_jpg_path.grid()
+            self.layout.input_jpg_export_path.grid()
+            self.layout.button_jpg_export_path.grid()
+
+        self.trace_docket_export_path()
+        self.trace_drawing_export_path()
+        self.trace_stp_export_path()
+        self.trace_stl_export_path()
+        self.trace_jpg_export_path()
+
+        self.trace_bundle_export_path()
+
+    def trace_zip_bundle(self, *_) -> None:
+        """Trace callback for the `zip_bundle` BooleanVar"""
+        resource.appdata.zip_bundle = self.vars.zip_bundle.get()
+
+    def trace_bundle_by_prop(self, *_) -> None:
+        """Trace callback for the `bundle_by_prop` BooleanVar"""
+        resource.appdata.bundle_by_prop = self.vars.bundle_by_prop.get()
+
+    def trace_bundle_by_prop_txt(self, *_) -> None:
+        """Trace callback for the `bundle_by_prop_txt` StringVar"""
+        self.vars.bundle_by_prop_value.set(
+            resource.bom.header_items.summary_as_dict()[
+                self.vars.bundle_by_prop_txt.get()
+            ]
+        )
+        resource.appdata.bundle_by_prop_txt = self.vars.bundle_by_prop_txt.get()
+        resource.appdata.bundle_by_prop_value = self.vars.bundle_by_prop_value.get()

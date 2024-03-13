@@ -30,7 +30,7 @@ class Frames:
         self._frame_export.grid(
             row=2, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
         )
-        self._frame_export.grid_columnconfigure(2, weight=1)
+        self._frame_export.grid_columnconfigure(6, weight=1)
         # self._frame_export.grid_remove()
 
         self._frame_report = Labelframe(master=root, text="Report")
@@ -51,7 +51,7 @@ class Frames:
 
         self._frame_log = Labelframe(master=root, text="Log")
         self._frame_log.grid(
-            row=0, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
+            row=1, column=0, sticky="nsew", padx=(10, 10), pady=(5, 10)
         )
         self._frame_log.grid_columnconfigure(0, weight=1)
         self._frame_log.grid_rowconfigure(0, weight=1)
@@ -62,7 +62,7 @@ class Frames:
         self._frame_footer.grid_columnconfigure(0, weight=1)
 
         root.grid_columnconfigure(0, weight=1)
-        root.grid_rowconfigure(0, weight=1)
+        root.grid_rowconfigure(1, weight=1)
 
     @property
     def infrastructure(self) -> Labelframe:
