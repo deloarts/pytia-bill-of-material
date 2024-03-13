@@ -30,6 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34;
     The variables submodule for the app.
 &#34;&#34;&#34;
+
 from dataclasses import dataclass
 from tkinter import BooleanVar
 from tkinter import DoubleVar
@@ -37,6 +38,7 @@ from tkinter import StringVar
 from tkinter import Tk
 
 from models.report import Report
+from resources import resource
 
 
 @dataclass(slots=True, kw_only=True)
@@ -52,16 +54,23 @@ class Variables:
 
     # Path variables
     bom_export_path: StringVar
-    docket_export_path: StringVar
     documentation_export_path: StringVar
+    docket_export_path: StringVar
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+    bundle_export_path: StringVar
 
     external_bom_path: StringVar
 
     # Export variables
+    bundle: BooleanVar
+    zip_bundle: BooleanVar
+    bundle_by_prop: BooleanVar
+    bundle_by_prop_value: StringVar
+    bundle_by_prop_txt: StringVar
+
     export_docket: BooleanVar
     export_documentation: BooleanVar
     export_drawing: BooleanVar
@@ -91,21 +100,40 @@ class Variables:
         self.machine = StringVar(master=root, name=&#34;machine&#34;)
 
         self.bom_export_path = StringVar(master=root, name=&#34;bom_export_path&#34;)
-        self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.documentation_export_path = StringVar(
             master=root, name=&#34;documentation_export_path&#34;
         )
+        self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.drawing_export_path = StringVar(master=root, name=&#34;drawing_export_path&#34;)
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
         self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
+        self.bundle_export_path = StringVar(master=root, name=&#34;bundle_export_path&#34;)
 
         self.external_bom_path = StringVar(
             master=root, name=&#34;external_bom_path&#34;, value=&#34;&#34;
         )
 
-        self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
+        self.bundle = BooleanVar(master=root, name=&#34;bundle&#34;, value=False)
+        self.zip_bundle = BooleanVar(
+            master=root, name=&#34;zip_bundle&#34;, value=resource.appdata.zip_bundle
+        )
+        self.bundle_by_prop = BooleanVar(
+            master=root, name=&#34;bundle_by_prop&#34;, value=resource.appdata.bundle_by_prop
+        )
+        self.bundle_by_prop_txt = StringVar(
+            master=root,
+            name=&#34;bundle_by_prop_txt&#34;,
+            value=resource.appdata.bundle_by_prop_txt,
+        )
+        self.bundle_by_prop_value = StringVar(
+            master=root,
+            name=&#34;bundle_by_prop_value&#34;,
+            value=resource.appdata.bundle_by_prop_value,
+        )
+
         self.export_documentation = BooleanVar(master=root, name=&#34;export_documentation&#34;)
+        self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
@@ -160,16 +188,23 @@ class Variables:
 
     # Path variables
     bom_export_path: StringVar
-    docket_export_path: StringVar
     documentation_export_path: StringVar
+    docket_export_path: StringVar
     drawing_export_path: StringVar
     stp_export_path: StringVar
     stl_export_path: StringVar
     jpg_export_path: StringVar
+    bundle_export_path: StringVar
 
     external_bom_path: StringVar
 
     # Export variables
+    bundle: BooleanVar
+    zip_bundle: BooleanVar
+    bundle_by_prop: BooleanVar
+    bundle_by_prop_value: StringVar
+    bundle_by_prop_txt: StringVar
+
     export_docket: BooleanVar
     export_documentation: BooleanVar
     export_drawing: BooleanVar
@@ -199,21 +234,40 @@ class Variables:
         self.machine = StringVar(master=root, name=&#34;machine&#34;)
 
         self.bom_export_path = StringVar(master=root, name=&#34;bom_export_path&#34;)
-        self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.documentation_export_path = StringVar(
             master=root, name=&#34;documentation_export_path&#34;
         )
+        self.docket_export_path = StringVar(master=root, name=&#34;docket_export_path&#34;)
         self.drawing_export_path = StringVar(master=root, name=&#34;drawing_export_path&#34;)
         self.stp_export_path = StringVar(master=root, name=&#34;stp_export_path&#34;)
         self.stl_export_path = StringVar(master=root, name=&#34;stl_export_path&#34;)
         self.jpg_export_path = StringVar(master=root, name=&#34;jpg_export_path&#34;)
+        self.bundle_export_path = StringVar(master=root, name=&#34;bundle_export_path&#34;)
 
         self.external_bom_path = StringVar(
             master=root, name=&#34;external_bom_path&#34;, value=&#34;&#34;
         )
 
-        self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
+        self.bundle = BooleanVar(master=root, name=&#34;bundle&#34;, value=False)
+        self.zip_bundle = BooleanVar(
+            master=root, name=&#34;zip_bundle&#34;, value=resource.appdata.zip_bundle
+        )
+        self.bundle_by_prop = BooleanVar(
+            master=root, name=&#34;bundle_by_prop&#34;, value=resource.appdata.bundle_by_prop
+        )
+        self.bundle_by_prop_txt = StringVar(
+            master=root,
+            name=&#34;bundle_by_prop_txt&#34;,
+            value=resource.appdata.bundle_by_prop_txt,
+        )
+        self.bundle_by_prop_value = StringVar(
+            master=root,
+            name=&#34;bundle_by_prop_value&#34;,
+            value=resource.appdata.bundle_by_prop_value,
+        )
+
         self.export_documentation = BooleanVar(master=root, name=&#34;export_documentation&#34;)
+        self.export_docket = BooleanVar(master=root, name=&#34;export_docket&#34;)
         self.export_drawing = BooleanVar(master=root, name=&#34;export_drawing&#34;)
         self.export_stp = BooleanVar(master=root, name=&#34;export_stp&#34;)
         self.export_stl = BooleanVar(master=root, name=&#34;export_stl&#34;)
@@ -232,6 +286,26 @@ class Variables:
 <h3>Instance variables</h3>
 <dl>
 <dt id="pytia_bill_of_material.app.main.vars.Variables.bom_export_path"><code class="name">var <span class="ident">bom_export_path</span> : tkinter.StringVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.bundle"><code class="name">var <span class="ident">bundle</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop"><code class="name">var <span class="ident">bundle_by_prop</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_txt"><code class="name">var <span class="ident">bundle_by_prop_txt</span> : tkinter.StringVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_value"><code class="name">var <span class="ident">bundle_by_prop_value</span> : tkinter.StringVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.bundle_export_path"><code class="name">var <span class="ident">bundle_export_path</span> : tkinter.StringVar</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -319,6 +393,10 @@ class Variables:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
+<dt id="pytia_bill_of_material.app.main.vars.Variables.zip_bundle"><code class="name">var <span class="ident">zip_bundle</span> : tkinter.BooleanVar</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -341,6 +419,11 @@ class Variables:
 <h4><code><a title="pytia_bill_of_material.app.main.vars.Variables" href="#pytia_bill_of_material.app.main.vars.Variables">Variables</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bom_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.bom_export_path">bom_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bundle" href="#pytia_bill_of_material.app.main.vars.Variables.bundle">bundle</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop" href="#pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop">bundle_by_prop</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_txt" href="#pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_txt">bundle_by_prop_txt</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_value" href="#pytia_bill_of_material.app.main.vars.Variables.bundle_by_prop_value">bundle_by_prop_value</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.bundle_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.bundle_export_path">bundle_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.docket_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.docket_export_path">docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.documentation_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.documentation_export_path">documentation_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.drawing_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.drawing_export_path">drawing_export_path</a></code></li>
@@ -362,6 +445,7 @@ class Variables:
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.show_report" href="#pytia_bill_of_material.app.main.vars.Variables.show_report">show_report</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.stl_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.stl_export_path">stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.vars.Variables.stp_export_path" href="#pytia_bill_of_material.app.main.vars.Variables.stp_export_path">stp_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.vars.Variables.zip_bundle" href="#pytia_bill_of_material.app.main.vars.Variables.zip_bundle">zip_bundle</a></code></li>
 </ul>
 </li>
 </ul>

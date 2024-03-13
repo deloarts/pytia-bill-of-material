@@ -129,21 +129,25 @@ def export_docket(
     else:
         publisher = LOGON
 
-    docket = create_docket_from_template(
-        template=docket_template,
-        document=document,
-        config=config,
-        hide_unknown_properties=True,
-        creator=creator,
-        modifier=modifier,
-        publisher=publisher,
-        **kwargs,
-    )
-    export_docket_as_pdf(
-        docket=docket,
-        name=filename,
-        folder=folder,
-    )
+    # FIXME: Move this safety function to pytia.
+    try:
+        docket = create_docket_from_template(
+            template=docket_template,
+            document=document,
+            config=config,
+            hide_unknown_properties=True,
+            creator=creator,
+            modifier=modifier,
+            publisher=publisher,
+            **kwargs,
+        )
+        export_docket_as_pdf(
+            docket=docket,
+            name=filename,
+            folder=folder,
+        )
+    except ZeroDivisionError as e:
+        log.error(f&#34;Failed to create docket: Body is invisible. Verbose: {e}&#34;)
 
 
 def export_drawing(
@@ -451,21 +455,25 @@ element with the name 'arg.quantity' you have to supply the argument <code>quant
     else:
         publisher = LOGON
 
-    docket = create_docket_from_template(
-        template=docket_template,
-        document=document,
-        config=config,
-        hide_unknown_properties=True,
-        creator=creator,
-        modifier=modifier,
-        publisher=publisher,
-        **kwargs,
-    )
-    export_docket_as_pdf(
-        docket=docket,
-        name=filename,
-        folder=folder,
-    )</code></pre>
+    # FIXME: Move this safety function to pytia.
+    try:
+        docket = create_docket_from_template(
+            template=docket_template,
+            document=document,
+            config=config,
+            hide_unknown_properties=True,
+            creator=creator,
+            modifier=modifier,
+            publisher=publisher,
+            **kwargs,
+        )
+        export_docket_as_pdf(
+            docket=docket,
+            name=filename,
+            folder=folder,
+        )
+    except ZeroDivisionError as e:
+        log.error(f&#34;Failed to create docket: Body is invisible. Verbose: {e}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.utils.export.export_drawing"><code class="name flex">

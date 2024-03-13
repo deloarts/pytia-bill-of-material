@@ -31,10 +31,15 @@
     Exports all items selected by the user. Dockets, STP, STL, ...
 &#34;&#34;&#34;
 
+import os
 from pathlib import Path
+from shutil import make_archive
+from shutil import rmtree
 from typing import Annotated
 from typing import Dict
 
+from app.main.vars import Variables
+from const import BUNDLE
 from const import DOCKETS
 from const import DOCUMENTATION
 from const import DRAWINGS
@@ -89,13 +94,8 @@ class ExportItemsTask(TaskProtocol):
         self,
         lazy_loader: LazyDocumentHelper,
         runner: Runner,
+        variables: Variables,
         bom: BOM,
-        export_docket: bool,
-        export_documentation: bool,
-        export_drawing: bool,
-        export_stp: bool,
-        export_stl: bool,
-        export_jpg: bool,
         export_root_path: Path,
         docket_config: DocketConfig,
         documentation_config: DocketConfig,
@@ -107,29 +107,22 @@ class ExportItemsTask(TaskProtocol):
         Args:
             lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
+            variables (Variables): The apps variables instance.
             bom (BOM): The BOM object.
-            export_docket (bool): Wether to export the docket or not.
-            export_documentation (bool): Wether to export the docu docket or not.
-            export_drawing (bool): Wether to export the drawing or not.
-            export_stp (bool): Wether to export the stp or not.
-            export_stl (bool): Wether to export the stl or not.
-            export_jpg (bool): Wether to export the jpg or not.
             export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
             documentation_config (DocketConfig): The configuration for the docu docket.
         &#34;&#34;&#34;
         self.lazy_loader = lazy_loader
         self.runner = runner
+        self.variables = variables
         self.bom = bom
-        self.export_docket = export_docket
-        self.export_documentation = export_documentation
-        self.export_drawing = export_drawing
-        self.export_stp = export_stp
-        self.export_stl = export_stl
-        self.export_jpg = export_jpg
+
         self.export_root_path = export_root_path
+
         self.docket_config = docket_config
         self.documentation_config = documentation_config
+
         self.workspace = workspace
 
     def run(self) -&gt; None:
@@ -142,12 +135,12 @@ class ExportItemsTask(TaskProtocol):
         log.info(&#34;Exporting selected items.&#34;)
         if any(
             [
-                self.export_docket,
-                self.export_documentation,
-                self.export_stp,
-                self.export_stl,
-                self.export_drawing,
-                self.export_jpg,
+                self.variables.export_documentation.get(),
+                self.variables.export_docket.get(),
+                self.variables.export_drawing.get(),
+                self.variables.export_stp.get(),
+                self.variables.export_stl.get(),
+                self.variables.export_jpg.get(),
             ]
         ):
             self.lazy_loader.close_all_documents()
@@ -241,43 +234,51 @@ class ExportItemsTask(TaskProtocol):
             return
 
         log.info(f&#34;Exporting data of item {bom_item.partnumber!r}.&#34;)
+
+        bundle = self.variables.bundle.get()
+
+        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
+        revision = bom_item.properties[resource.bom.required_header_items.revision]
+
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
+
+        bundle_name = f&#34;{machine} {partnumber} Rev{revision}&#34;
+        if self.variables.bundle_by_prop_value.get() in bom_item.properties:
+            bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
+        else:
+            log.warning(
+                &#34;Cannot bundle by property &#34;
+                f&#34;{self.variables.bundle_by_prop_txt.get()!r}: Doesn&#39;t exist.&#34;
+            )
+            bundle_prop = &#34;&#34;
+
+        if self.variables.bundle_by_prop.get() and len(bundle_prop) &gt; 0:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_prop, bundle_name)
+        else:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_name)
+
+        if bundle:
+            os.makedirs(bundle_path, exist_ok=True)
+
         qr_path = self._generate_qr(bom_item=bom_item)
+        docu_path = Path(self.export_root_path, DOCUMENTATION)
+        docket_path = bundle_path if bundle else Path(self.export_root_path, DOCKETS)
+        drawing_path = bundle_path if bundle else Path(self.export_root_path, DRAWINGS)
+        stp_path = bundle_path if bundle else Path(self.export_root_path, STPS)
+        stl_path = bundle_path if bundle else Path(self.export_root_path, STLS)
+        jpg_path = bundle_path if bundle else Path(self.export_root_path, JPGS)
 
         if &#34;.CATPart&#34; in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
 
-                if self.export_docket:
-                    export.export_docket(
-                        docket_template=templates.docket_path,
-                        filename=export_filename_with_project,
-                        folder=Path(self.export_root_path, DOCKETS),
-                        document=part_document,
-                        config=self.docket_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
-                        qr_path=qr_path,
-                    )
-                if self.export_documentation:
+                if self.variables.export_documentation.get():
                     export.export_docket(
                         docket_template=templates.documentation_path,
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DOCUMENTATION),
+                        folder=docu_path,
                         document=part_document,
                         config=self.documentation_config,
                         project=bom_item.properties[
@@ -297,33 +298,57 @@ class ExportItemsTask(TaskProtocol):
                         ],
                         qr_path=qr_path,
                     )
-                if self.export_drawing:
+                if self.variables.export_docket.get():
+                    export.export_docket(
+                        docket_template=templates.docket_path,
+                        filename=export_filename_with_project,
+                        folder=docket_path,
+                        document=part_document,
+                        config=self.docket_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
+                        qr_path=qr_path,
+                    )
+                if self.variables.export_drawing.get():
                     export.export_drawing(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DRAWINGS),
+                        folder=drawing_path,
                         document=part_document,
                         workspace=self.workspace,
                     )
-                if self.export_stp:
+                if self.variables.export_stp.get():
                     export.export_stp(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STPS),
+                        folder=stp_path,
                         document=part_document,
                     )
-                if self.export_stl:
+                if self.variables.export_stl.get():
                     export.export_stl(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STLS),
+                        folder=stl_path,
                         document=part_document,
                     )
-                if self.export_jpg:
+                if self.variables.export_jpg.get():
                     views = [
                         (view[0], view[1], view[2])
                         for view in resource.settings.export.jpg_views
                     ]
                     export.export_jpg(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, JPGS),
+                        folder=jpg_path,
                         views=views,
                         bg=(1, 1, 1),
                     )
@@ -332,11 +357,35 @@ class ExportItemsTask(TaskProtocol):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
 
-                if self.export_docket:
+                if self.variables.export_documentation.get():
+                    export.export_docket(
+                        docket_template=templates.documentation_path,
+                        filename=export_filename,
+                        folder=docu_path,
+                        document=product_document,
+                        config=self.documentation_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
+                        qr_path=qr_path,
+                    )
+                if self.variables.export_docket.get():
                     export.export_docket(
                         docket_template=templates.docket_path,
                         filename=export_filename_with_project,
-                        folder=Path(self.export_root_path, DOCKETS),
+                        folder=docket_path,
                         document=product_document,
                         config=self.docket_config,
                         project=bom_item.properties[
@@ -348,51 +397,27 @@ class ExportItemsTask(TaskProtocol):
                         logon=LOGON,
                         qr_path=qr_path,
                     )
-                if self.export_documentation:
-                    export.export_docket(
-                        docket_template=templates.documentation_path,
-                        filename=export_filename,
-                        folder=Path(self.export_root_path, DOCUMENTATION),
-                        document=product_document,
-                        config=self.documentation_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
-                        qr_path=qr_path,
-                    )
-                if self.export_drawing:
+                if self.variables.export_drawing.get():
                     export.export_drawing(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DRAWINGS),
+                        folder=drawing_path,
                         document=product_document,
                         workspace=self.workspace,
                     )
-                if self.export_stp:
+                if self.variables.export_stp.get():
                     export.export_stp(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STPS),
+                        folder=stp_path,
                         document=product_document,
                     )
-                if self.export_jpg:
+                if self.variables.export_jpg.get():
                     views = [
                         (view[0], view[1], view[2])
                         for view in resource.settings.export.jpg_views
                     ]
                     export.export_jpg(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, JPGS),
+                        folder=jpg_path,
                         views=views,
                         bg=(1, 1, 1),
                     )
@@ -401,7 +426,15 @@ class ExportItemsTask(TaskProtocol):
             raise PytiaWrongDocumentTypeError(
                 f&#34;Failed exporting data: Document {str(bom_item.path)!r} is neither a part nor &#34;
                 &#34;a product.&#34;
-            )</code></pre>
+            )
+
+        if bundle and self.variables.zip_bundle.get():
+            make_archive(
+                base_name=str(bundle_path),
+                format=&#34;zip&#34;,
+                root_dir=bundle_path,
+            )
+            rmtree(bundle_path)</code></pre>
 </details>
 </section>
 <section>
@@ -415,7 +448,7 @@ class ExportItemsTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.export_items.ExportItemsTask"><code class="flex name class">
 <span>class <span class="ident">ExportItemsTask</span></span>
-<span>(</span><span>lazy_loader: helper.lazy_loaders.LazyDocumentHelper, runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, bom: models.bom.BOM, export_docket: bool, export_documentation: bool, export_drawing: bool, export_stp: bool, export_stl: bool, export_jpg: bool, export_root_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig, documentation_config: pytia.utilities.docket.DocketConfig, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
+<span>(</span><span>lazy_loader: helper.lazy_loaders.LazyDocumentHelper, runner: <a title="pytia_bill_of_material.worker.runner.Runner" href="runner.html#pytia_bill_of_material.worker.runner.Runner">Runner</a>, variables: app.main.vars.Variables, bom: models.bom.BOM, export_root_path: pathlib.Path, docket_config: pytia.utilities.docket.DocketConfig, documentation_config: pytia.utilities.docket.DocketConfig, workspace: pytia_ui_tools.handlers.workspace_handler.Workspace)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Exports all items:
@@ -448,20 +481,10 @@ class ExportItemsTask(TaskProtocol):
 <dd>The doc helper instance.</dd>
 <dt><strong><code>runner</code></strong> :&ensp;<code>Runner</code></dt>
 <dd>The task runner instance.</dd>
+<dt><strong><code>variables</code></strong> :&ensp;<code>Variables</code></dt>
+<dd>The apps variables instance.</dd>
 <dt><strong><code>bom</code></strong> :&ensp;<code>BOM</code></dt>
 <dd>The BOM object.</dd>
-<dt><strong><code>export_docket</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the docket or not.</dd>
-<dt><strong><code>export_documentation</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the docu docket or not.</dd>
-<dt><strong><code>export_drawing</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the drawing or not.</dd>
-<dt><strong><code>export_stp</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the stp or not.</dd>
-<dt><strong><code>export_stl</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the stl or not.</dd>
-<dt><strong><code>export_jpg</code></strong> :&ensp;<code>bool</code></dt>
-<dd>Wether to export the jpg or not.</dd>
 <dt><strong><code>export_root_path</code></strong> :&ensp;<code>Path</code></dt>
 <dd>The root folder for all exports.</dd>
 <dt><strong><code>docket_config</code></strong> :&ensp;<code>DocketConfig</code></dt>
@@ -497,13 +520,8 @@ class ExportItemsTask(TaskProtocol):
         self,
         lazy_loader: LazyDocumentHelper,
         runner: Runner,
+        variables: Variables,
         bom: BOM,
-        export_docket: bool,
-        export_documentation: bool,
-        export_drawing: bool,
-        export_stp: bool,
-        export_stl: bool,
-        export_jpg: bool,
         export_root_path: Path,
         docket_config: DocketConfig,
         documentation_config: DocketConfig,
@@ -515,29 +533,22 @@ class ExportItemsTask(TaskProtocol):
         Args:
             lazy_loader (LazyDocumentHelper): The doc helper instance.
             runner (Runner): The task runner instance.
+            variables (Variables): The apps variables instance.
             bom (BOM): The BOM object.
-            export_docket (bool): Wether to export the docket or not.
-            export_documentation (bool): Wether to export the docu docket or not.
-            export_drawing (bool): Wether to export the drawing or not.
-            export_stp (bool): Wether to export the stp or not.
-            export_stl (bool): Wether to export the stl or not.
-            export_jpg (bool): Wether to export the jpg or not.
             export_root_path (Path): The root folder for all exports.
             docket_config (DocketConfig): The configuration for the docket.
             documentation_config (DocketConfig): The configuration for the docu docket.
         &#34;&#34;&#34;
         self.lazy_loader = lazy_loader
         self.runner = runner
+        self.variables = variables
         self.bom = bom
-        self.export_docket = export_docket
-        self.export_documentation = export_documentation
-        self.export_drawing = export_drawing
-        self.export_stp = export_stp
-        self.export_stl = export_stl
-        self.export_jpg = export_jpg
+
         self.export_root_path = export_root_path
+
         self.docket_config = docket_config
         self.documentation_config = documentation_config
+
         self.workspace = workspace
 
     def run(self) -&gt; None:
@@ -550,12 +561,12 @@ class ExportItemsTask(TaskProtocol):
         log.info(&#34;Exporting selected items.&#34;)
         if any(
             [
-                self.export_docket,
-                self.export_documentation,
-                self.export_stp,
-                self.export_stl,
-                self.export_drawing,
-                self.export_jpg,
+                self.variables.export_documentation.get(),
+                self.variables.export_docket.get(),
+                self.variables.export_drawing.get(),
+                self.variables.export_stp.get(),
+                self.variables.export_stl.get(),
+                self.variables.export_jpg.get(),
             ]
         ):
             self.lazy_loader.close_all_documents()
@@ -649,43 +660,51 @@ class ExportItemsTask(TaskProtocol):
             return
 
         log.info(f&#34;Exporting data of item {bom_item.partnumber!r}.&#34;)
+
+        bundle = self.variables.bundle.get()
+
+        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
+        revision = bom_item.properties[resource.bom.required_header_items.revision]
+
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
+
+        bundle_name = f&#34;{machine} {partnumber} Rev{revision}&#34;
+        if self.variables.bundle_by_prop_value.get() in bom_item.properties:
+            bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
+        else:
+            log.warning(
+                &#34;Cannot bundle by property &#34;
+                f&#34;{self.variables.bundle_by_prop_txt.get()!r}: Doesn&#39;t exist.&#34;
+            )
+            bundle_prop = &#34;&#34;
+
+        if self.variables.bundle_by_prop.get() and len(bundle_prop) &gt; 0:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_prop, bundle_name)
+        else:
+            bundle_path = Path(self.export_root_path, BUNDLE, bundle_name)
+
+        if bundle:
+            os.makedirs(bundle_path, exist_ok=True)
+
         qr_path = self._generate_qr(bom_item=bom_item)
+        docu_path = Path(self.export_root_path, DOCUMENTATION)
+        docket_path = bundle_path if bundle else Path(self.export_root_path, DOCKETS)
+        drawing_path = bundle_path if bundle else Path(self.export_root_path, DRAWINGS)
+        stp_path = bundle_path if bundle else Path(self.export_root_path, STPS)
+        stl_path = bundle_path if bundle else Path(self.export_root_path, STLS)
+        jpg_path = bundle_path if bundle else Path(self.export_root_path, JPGS)
 
         if &#34;.CATPart&#34; in str(bom_item.path):
             with PyPartDocument() as part_document:
                 part_document.open(bom_item.path)
 
-                if self.export_docket:
-                    export.export_docket(
-                        docket_template=templates.docket_path,
-                        filename=export_filename_with_project,
-                        folder=Path(self.export_root_path, DOCKETS),
-                        document=part_document,
-                        config=self.docket_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
-                        qr_path=qr_path,
-                    )
-                if self.export_documentation:
+                if self.variables.export_documentation.get():
                     export.export_docket(
                         docket_template=templates.documentation_path,
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DOCUMENTATION),
+                        folder=docu_path,
                         document=part_document,
                         config=self.documentation_config,
                         project=bom_item.properties[
@@ -705,33 +724,57 @@ class ExportItemsTask(TaskProtocol):
                         ],
                         qr_path=qr_path,
                     )
-                if self.export_drawing:
+                if self.variables.export_docket.get():
+                    export.export_docket(
+                        docket_template=templates.docket_path,
+                        filename=export_filename_with_project,
+                        folder=docket_path,
+                        document=part_document,
+                        config=self.docket_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
+                        qr_path=qr_path,
+                    )
+                if self.variables.export_drawing.get():
                     export.export_drawing(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DRAWINGS),
+                        folder=drawing_path,
                         document=part_document,
                         workspace=self.workspace,
                     )
-                if self.export_stp:
+                if self.variables.export_stp.get():
                     export.export_stp(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STPS),
+                        folder=stp_path,
                         document=part_document,
                     )
-                if self.export_stl:
+                if self.variables.export_stl.get():
                     export.export_stl(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STLS),
+                        folder=stl_path,
                         document=part_document,
                     )
-                if self.export_jpg:
+                if self.variables.export_jpg.get():
                     views = [
                         (view[0], view[1], view[2])
                         for view in resource.settings.export.jpg_views
                     ]
                     export.export_jpg(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, JPGS),
+                        folder=jpg_path,
                         views=views,
                         bg=(1, 1, 1),
                     )
@@ -740,11 +783,35 @@ class ExportItemsTask(TaskProtocol):
             with PyProductDocument() as product_document:
                 product_document.open(bom_item.path)
 
-                if self.export_docket:
+                if self.variables.export_documentation.get():
+                    export.export_docket(
+                        docket_template=templates.documentation_path,
+                        filename=export_filename,
+                        folder=docu_path,
+                        document=product_document,
+                        config=self.documentation_config,
+                        project=bom_item.properties[
+                            resource.bom.required_header_items.project
+                        ],
+                        machine=bom_item.properties[
+                            resource.bom.required_header_items.machine
+                        ],
+                        partnumber=bom_item.properties[
+                            resource.bom.required_header_items.partnumber
+                        ],
+                        revision=bom_item.properties[
+                            resource.bom.required_header_items.revision
+                        ],
+                        quantity=bom_item.properties[
+                            resource.bom.required_header_items.quantity
+                        ],
+                        qr_path=qr_path,
+                    )
+                if self.variables.export_docket.get():
                     export.export_docket(
                         docket_template=templates.docket_path,
                         filename=export_filename_with_project,
-                        folder=Path(self.export_root_path, DOCKETS),
+                        folder=docket_path,
                         document=product_document,
                         config=self.docket_config,
                         project=bom_item.properties[
@@ -756,51 +823,27 @@ class ExportItemsTask(TaskProtocol):
                         logon=LOGON,
                         qr_path=qr_path,
                     )
-                if self.export_documentation:
-                    export.export_docket(
-                        docket_template=templates.documentation_path,
-                        filename=export_filename,
-                        folder=Path(self.export_root_path, DOCUMENTATION),
-                        document=product_document,
-                        config=self.documentation_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
-                        qr_path=qr_path,
-                    )
-                if self.export_drawing:
+                if self.variables.export_drawing.get():
                     export.export_drawing(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, DRAWINGS),
+                        folder=drawing_path,
                         document=product_document,
                         workspace=self.workspace,
                     )
-                if self.export_stp:
+                if self.variables.export_stp.get():
                     export.export_stp(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, STPS),
+                        folder=stp_path,
                         document=product_document,
                     )
-                if self.export_jpg:
+                if self.variables.export_jpg.get():
                     views = [
                         (view[0], view[1], view[2])
                         for view in resource.settings.export.jpg_views
                     ]
                     export.export_jpg(
                         filename=export_filename,
-                        folder=Path(self.export_root_path, JPGS),
+                        folder=jpg_path,
                         views=views,
                         bg=(1, 1, 1),
                     )
@@ -809,7 +852,15 @@ class ExportItemsTask(TaskProtocol):
             raise PytiaWrongDocumentTypeError(
                 f&#34;Failed exporting data: Document {str(bom_item.path)!r} is neither a part nor &#34;
                 &#34;a product.&#34;
-            )</code></pre>
+            )
+
+        if bundle and self.variables.zip_bundle.get():
+            make_archive(
+                base_name=str(bundle_path),
+                format=&#34;zip&#34;,
+                root_dir=bundle_path,
+            )
+            rmtree(bundle_path)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -843,12 +894,12 @@ class ExportItemsTask(TaskProtocol):
     log.info(&#34;Exporting selected items.&#34;)
     if any(
         [
-            self.export_docket,
-            self.export_documentation,
-            self.export_stp,
-            self.export_stl,
-            self.export_drawing,
-            self.export_jpg,
+            self.variables.export_documentation.get(),
+            self.variables.export_docket.get(),
+            self.variables.export_drawing.get(),
+            self.variables.export_stp.get(),
+            self.variables.export_stl.get(),
+            self.variables.export_jpg.get(),
         ]
     ):
         self.lazy_loader.close_all_documents()

@@ -40,6 +40,7 @@ import atexit
 import importlib.resources
 import json
 import os
+import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict
 from dataclasses import dataclass
@@ -50,7 +51,6 @@ from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
-from typing import Protocol
 
 from const import APP_VERSION
 from const import APPDATA
@@ -71,10 +71,6 @@ from const import CONFIG_USERS
 from const import LOGON
 from const import STYLES
 from resources.utils import expand_env_vars
-
-
-class DataclassProtocol(Protocol):
-    __dataclass_fields__: Dict
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -200,8 +196,7 @@ class KeywordElements:
 
 
 @dataclass
-class AppliedKeywords(KeywordElements):
-    ...
+class AppliedKeywords(KeywordElements): ...
 
 
 @dataclass(slots=True, kw_only=True)
@@ -263,6 +258,11 @@ class BOMHeaderItems:
     summary: List[str]
     made: List[str] | None
     bought: List[str] | None
+
+    def summary_as_dict(self) -&gt; dict:
+        return {
+            re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
+        }
 
 
 @dataclass(slots=True, kw_only=True)
@@ -337,6 +337,10 @@ class AppData:
     counter: int = 0
     disable_volume_warning: bool = False
     theme: str = STYLES[0]
+    zip_bundle: bool = True
+    bundle_by_prop: bool = True
+    bundle_by_prop_txt: str = &#34;&#34;
+    bundle_by_prop_value: str = &#34;&#34;
 
     def __post_init__(self) -&gt; None:
         self.version = (
@@ -564,8 +568,8 @@ class Resources:  # pylint: disable=R0902
         &#34;&#34;&#34;
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
-        def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):  # type: ignore
+        def _apply_to_object(_item):
+            for object_fields in fields(_item):
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
@@ -744,7 +748,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.10.1', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo')</span>
+<span>(</span><span>*, version: str = '0.11.0', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo', zip_bundle: bool = True, bundle_by_prop: bool = True, bundle_by_prop_txt: str = '', bundle_by_prop_value: str = '')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -760,6 +764,10 @@ class AppData:
     counter: int = 0
     disable_volume_warning: bool = False
     theme: str = STYLES[0]
+    zip_bundle: bool = True
+    bundle_by_prop: bool = True
+    bundle_by_prop_txt: str = &#34;&#34;
+    bundle_by_prop_value: str = &#34;&#34;
 
     def __post_init__(self) -&gt; None:
         self.version = (
@@ -769,6 +777,18 @@ class AppData:
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="pytia_bill_of_material.resources.AppData.bundle_by_prop"><code class="name">var <span class="ident">bundle_by_prop</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.AppData.bundle_by_prop_txt"><code class="name">var <span class="ident">bundle_by_prop_txt</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.AppData.bundle_by_prop_value"><code class="name">var <span class="ident">bundle_by_prop_value</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
 <dt id="pytia_bill_of_material.resources.AppData.counter"><code class="name">var <span class="ident">counter</span> : int</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
@@ -785,6 +805,10 @@ class AppData:
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
+<dt id="pytia_bill_of_material.resources.AppData.zip_bundle"><code class="name">var <span class="ident">zip_bundle</span> : bool</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
 </dl>
 </dd>
 <dt id="pytia_bill_of_material.resources.AppliedKeywords"><code class="flex name class">
@@ -798,8 +822,7 @@ class AppData:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@dataclass
-class AppliedKeywords(KeywordElements):
-    ...</code></pre>
+class AppliedKeywords(KeywordElements): ...</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -979,7 +1002,12 @@ class BOMHeaderItems:
 
     summary: List[str]
     made: List[str] | None
-    bought: List[str] | None</code></pre>
+    bought: List[str] | None
+
+    def summary_as_dict(self) -&gt; dict:
+        return {
+            re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
+        }</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -994,6 +1022,24 @@ class BOMHeaderItems:
 <dt id="pytia_bill_of_material.resources.BOMHeaderItems.summary"><code class="name">var <span class="ident">summary</span> : List[str]</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="pytia_bill_of_material.resources.BOMHeaderItems.summary_as_dict"><code class="name flex">
+<span>def <span class="ident">summary_as_dict</span></span>(<span>self) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def summary_as_dict(self) -&gt; dict:
+    return {
+        re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
+    }</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -1025,49 +1071,6 @@ class BOMSort:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 </dl>
-</dd>
-<dt id="pytia_bill_of_material.resources.DataclassProtocol"><code class="flex name class">
-<span>class <span class="ident">DataclassProtocol</span></span>
-<span>(</span><span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Base class for protocol classes.</p>
-<p>Protocol classes are defined as::</p>
-<pre><code>class Proto(Protocol):
-    def meth(self) -&gt; int:
-        ...
-</code></pre>
-<p>Such classes are primarily used with static type checkers that recognize
-structural subtyping (static duck-typing), for example::</p>
-<pre><code>class C:
-    def meth(self) -&gt; int:
-        return 0
-
-def func(x: Proto) -&gt; int:
-    return x.meth()
-
-func(C())  # Passes static type check
-</code></pre>
-<p>See PEP 544 for details. Protocol classes decorated with
-@typing.runtime_checkable act as simple-minded runtime protocols that check
-only the presence of given attributes, ignoring their type signatures.
-Protocol classes can be generic, they are defined as::</p>
-<pre><code>class GenProto(Protocol[T]):
-    def meth(self) -&gt; T:
-        ...
-</code></pre></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class DataclassProtocol(Protocol):
-    __dataclass_fields__: Dict</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>typing.Protocol</li>
-<li>typing.Generic</li>
-</ul>
 </dd>
 <dt id="pytia_bill_of_material.resources.FilterElement"><code class="flex name class">
 <span>class <span class="ident">FilterElement</span></span>
@@ -1661,8 +1664,8 @@ def values(self) -&gt; List[str]:
         &#34;&#34;&#34;
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
 
-        def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):  # type: ignore
+        def _apply_to_object(_item):
+            for object_fields in fields(_item):
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 
@@ -2550,10 +2553,14 @@ def values(self) -&gt; List[str]:
 <li>
 <h4><code><a title="pytia_bill_of_material.resources.AppData" href="#pytia_bill_of_material.resources.AppData">AppData</a></code></h4>
 <ul class="">
+<li><code><a title="pytia_bill_of_material.resources.AppData.bundle_by_prop" href="#pytia_bill_of_material.resources.AppData.bundle_by_prop">bundle_by_prop</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.AppData.bundle_by_prop_txt" href="#pytia_bill_of_material.resources.AppData.bundle_by_prop_txt">bundle_by_prop_txt</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.AppData.bundle_by_prop_value" href="#pytia_bill_of_material.resources.AppData.bundle_by_prop_value">bundle_by_prop_value</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.AppData.counter" href="#pytia_bill_of_material.resources.AppData.counter">counter</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.AppData.disable_volume_warning" href="#pytia_bill_of_material.resources.AppData.disable_volume_warning">disable_volume_warning</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.AppData.theme" href="#pytia_bill_of_material.resources.AppData.theme">theme</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.AppData.version" href="#pytia_bill_of_material.resources.AppData.version">version</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.AppData.zip_bundle" href="#pytia_bill_of_material.resources.AppData.zip_bundle">zip_bundle</a></code></li>
 </ul>
 </li>
 <li>
@@ -2593,6 +2600,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.bought" href="#pytia_bill_of_material.resources.BOMHeaderItems.bought">bought</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.made" href="#pytia_bill_of_material.resources.BOMHeaderItems.made">made</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.summary" href="#pytia_bill_of_material.resources.BOMHeaderItems.summary">summary</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.BOMHeaderItems.summary_as_dict" href="#pytia_bill_of_material.resources.BOMHeaderItems.summary_as_dict">summary_as_dict</a></code></li>
 </ul>
 </li>
 <li>
@@ -2601,9 +2609,6 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.BOMSort.bought" href="#pytia_bill_of_material.resources.BOMSort.bought">bought</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.BOMSort.made" href="#pytia_bill_of_material.resources.BOMSort.made">made</a></code></li>
 </ul>
-</li>
-<li>
-<h4><code><a title="pytia_bill_of_material.resources.DataclassProtocol" href="#pytia_bill_of_material.resources.DataclassProtocol">DataclassProtocol</a></code></h4>
 </li>
 <li>
 <h4><code><a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a></code></h4>

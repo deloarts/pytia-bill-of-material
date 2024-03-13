@@ -35,7 +35,9 @@ import os
 import re
 from pathlib import Path
 
+from app.main.vars import Variables
 from const import BOM
+from const import BUNDLE
 from const import DOCKETS
 from const import DOCUMENTATION
 from const import DRAWINGS
@@ -72,9 +74,15 @@ class PrepareTask(TaskProtocol):
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;, &#34;_docu_config&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+    def __init__(
+        self,
+        doc_helper: LazyDocumentHelper,
+        export_root_path: Path,
+        variables: Variables,
+    ) -&gt; None:
         self.doc_helper = doc_helper
         self.export_root_path = export_root_path
+        self.variables = variables
 
         document = Document(framework.catia.active_document.com_object)
         if document.full_name != str(self.doc_helper.path):
@@ -99,12 +107,15 @@ class PrepareTask(TaskProtocol):
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         os.makedirs(Path(self.export_root_path, BOM))
-        os.makedirs(Path(self.export_root_path, DOCKETS))
         os.makedirs(Path(self.export_root_path, DOCUMENTATION))
-        os.makedirs(Path(self.export_root_path, DRAWINGS))
-        os.makedirs(Path(self.export_root_path, STLS))
-        os.makedirs(Path(self.export_root_path, STPS))
-        os.makedirs(Path(self.export_root_path, JPGS))
+        if self.variables.bundle.get():
+            os.makedirs(Path(self.export_root_path, BUNDLE))
+        else:
+            os.makedirs(Path(self.export_root_path, DOCKETS))
+            os.makedirs(Path(self.export_root_path, DRAWINGS))
+            os.makedirs(Path(self.export_root_path, STLS))
+            os.makedirs(Path(self.export_root_path, STPS))
+            os.makedirs(Path(self.export_root_path, JPGS))
 
         self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
@@ -184,7 +195,7 @@ class PrepareTask(TaskProtocol):
 <dl>
 <dt id="pytia_bill_of_material.worker.prepare.PrepareTask"><code class="flex name class">
 <span>class <span class="ident">PrepareTask</span></span>
-<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper, export_root_path: pathlib.Path)</span>
+<span>(</span><span>doc_helper: helper.lazy_loaders.LazyDocumentHelper, export_root_path: pathlib.Path, variables: app.main.vars.Variables)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This class is responsible for preparing the document for the export.
@@ -217,9 +228,15 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
 
     __slots__ = (&#34;_doc_helper&#34;, &#34;_paths&#34;, &#34;_docket_config&#34;, &#34;_docu_config&#34;)
 
-    def __init__(self, doc_helper: LazyDocumentHelper, export_root_path: Path) -&gt; None:
+    def __init__(
+        self,
+        doc_helper: LazyDocumentHelper,
+        export_root_path: Path,
+        variables: Variables,
+    ) -&gt; None:
         self.doc_helper = doc_helper
         self.export_root_path = export_root_path
+        self.variables = variables
 
         document = Document(framework.catia.active_document.com_object)
         if document.full_name != str(self.doc_helper.path):
@@ -244,12 +261,15 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
         log.info(&#34;Preparing to export bill of material.&#34;)
 
         os.makedirs(Path(self.export_root_path, BOM))
-        os.makedirs(Path(self.export_root_path, DOCKETS))
         os.makedirs(Path(self.export_root_path, DOCUMENTATION))
-        os.makedirs(Path(self.export_root_path, DRAWINGS))
-        os.makedirs(Path(self.export_root_path, STLS))
-        os.makedirs(Path(self.export_root_path, STPS))
-        os.makedirs(Path(self.export_root_path, JPGS))
+        if self.variables.bundle.get():
+            os.makedirs(Path(self.export_root_path, BUNDLE))
+        else:
+            os.makedirs(Path(self.export_root_path, DOCKETS))
+            os.makedirs(Path(self.export_root_path, DRAWINGS))
+            os.makedirs(Path(self.export_root_path, STLS))
+            os.makedirs(Path(self.export_root_path, STPS))
+            os.makedirs(Path(self.export_root_path, JPGS))
 
         self.set_catia_bom_format()
         self._paths: Paths = self._retrieve_paths(self.doc_helper.document)
@@ -411,12 +431,15 @@ def paths(self) -&gt; Paths:
     log.info(&#34;Preparing to export bill of material.&#34;)
 
     os.makedirs(Path(self.export_root_path, BOM))
-    os.makedirs(Path(self.export_root_path, DOCKETS))
     os.makedirs(Path(self.export_root_path, DOCUMENTATION))
-    os.makedirs(Path(self.export_root_path, DRAWINGS))
-    os.makedirs(Path(self.export_root_path, STLS))
-    os.makedirs(Path(self.export_root_path, STPS))
-    os.makedirs(Path(self.export_root_path, JPGS))
+    if self.variables.bundle.get():
+        os.makedirs(Path(self.export_root_path, BUNDLE))
+    else:
+        os.makedirs(Path(self.export_root_path, DOCKETS))
+        os.makedirs(Path(self.export_root_path, DRAWINGS))
+        os.makedirs(Path(self.export_root_path, STLS))
+        os.makedirs(Path(self.export_root_path, STPS))
+        os.makedirs(Path(self.export_root_path, JPGS))
 
     self.set_catia_bom_format()
     self._paths: Paths = self._retrieve_paths(self.doc_helper.document)

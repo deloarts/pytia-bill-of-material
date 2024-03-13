@@ -145,6 +145,9 @@ class Callbacks:
         self.layout.button_jpg_export_path.configure(
             command=self.on_btn_jpg_export_path
         )
+        self.layout.button_bundle_export_path.configure(
+            command=self.on_btn_bundle_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
@@ -398,6 +401,29 @@ class Callbacks:
             )
         ):
             self.vars.jpg_export_path.set(str(path))
+
+    def on_btn_bundle_export_path(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the browse bundle export path button. Asks the user to select a folder,
+        into which to export the files.
+        &#34;&#34;&#34;
+        log.info(&#34;Callback for button &#39;Browse Bundle export path&#39;.&#34;)
+
+        initial_dir = Path(self.vars.bundle_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.bundle_export_path.set(str(path))
 
     def on_chkbox_export_docket(self) -&gt; None:
         &#34;&#34;&#34;
@@ -630,6 +656,9 @@ class Callbacks:
         self.layout.button_jpg_export_path.configure(
             command=self.on_btn_jpg_export_path
         )
+        self.layout.button_bundle_export_path.configure(
+            command=self.on_btn_bundle_export_path
+        )
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
@@ -884,6 +913,29 @@ class Callbacks:
         ):
             self.vars.jpg_export_path.set(str(path))
 
+    def on_btn_bundle_export_path(self) -&gt; None:
+        &#34;&#34;&#34;
+        Event handler for the browse bundle export path button. Asks the user to select a folder,
+        into which to export the files.
+        &#34;&#34;&#34;
+        log.info(&#34;Callback for button &#39;Browse Bundle export path&#39;.&#34;)
+
+        initial_dir = Path(self.vars.bundle_export_path.get())
+        if (
+            not initial_dir.is_absolute()
+            and self.workspace.workspace_folder
+            and self.workspace.workspace_folder.exists()
+        ):
+            initial_dir = self.workspace.workspace_folder
+
+        if path := WindowsPath(
+            filedialog.askdirectory(
+                initialdir=initial_dir,
+                title=resource.settings.title,
+            )
+        ):
+            self.vars.bundle_export_path.set(str(path))
+
     def on_chkbox_export_docket(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export docket&#39;. Does nothing.
@@ -1031,6 +1083,40 @@ to which to export the final bill of material.</p></div>
         )
     ):
         self.vars.bom_export_path.set(str(path))</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_bundle_export_path"><code class="name flex">
+<span>def <span class="ident">on_btn_bundle_export_path</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Event handler for the browse bundle export path button. Asks the user to select a folder,
+into which to export the files.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def on_btn_bundle_export_path(self) -&gt; None:
+    &#34;&#34;&#34;
+    Event handler for the browse bundle export path button. Asks the user to select a folder,
+    into which to export the files.
+    &#34;&#34;&#34;
+    log.info(&#34;Callback for button &#39;Browse Bundle export path&#39;.&#34;)
+
+    initial_dir = Path(self.vars.bundle_export_path.get())
+    if (
+        not initial_dir.is_absolute()
+        and self.workspace.workspace_folder
+        and self.workspace.workspace_folder.exists()
+    ):
+        initial_dir = self.workspace.workspace_folder
+
+    if path := WindowsPath(
+        filedialog.askdirectory(
+            initialdir=initial_dir,
+            title=resource.settings.title,
+        )
+    ):
+        self.vars.bundle_export_path.set(str(path))</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_document"><code class="name flex">
@@ -1573,6 +1659,7 @@ the failed property.</p></div>
 <h4><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks" href="#pytia_bill_of_material.app.main.callbacks.Callbacks">Callbacks</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_bom_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_bom_export_path">on_btn_bom_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_bundle_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_bundle_export_path">on_btn_bundle_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_document" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_document">on_btn_close_document</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_report" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_close_report">on_btn_close_report</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_docket_export_path" href="#pytia_bill_of_material.app.main.callbacks.Callbacks.on_btn_docket_export_path">on_btn_docket_export_path</a></code></li>
