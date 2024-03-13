@@ -332,6 +332,10 @@ class Traces:
         """Trace callback for the `bundle` BooleanVar."""
 
         if self.vars.bundle.get():
+            self.layout.checkbox_bundle_zip.configure(state=NORMAL)
+            self.layout.checkbox_bundle_by_prop.configure(state=NORMAL)
+            self.layout.input_bundle_by_prop_txt.configure(state="readonly")
+
             self.layout.label_bundle_path.grid()
             self.layout.input_bundle_export_path.grid()
             self.layout.button_bundle_export_path.grid()
@@ -356,6 +360,10 @@ class Traces:
             self.layout.input_jpg_export_path.grid_remove()
             self.layout.button_jpg_export_path.grid_remove()
         else:
+            self.layout.checkbox_bundle_zip.configure(state=DISABLED)
+            self.layout.checkbox_bundle_by_prop.configure(state=DISABLED)
+            self.layout.input_bundle_by_prop_txt.configure(state=DISABLED)
+
             self.layout.label_bundle_path.grid_remove()
             self.layout.input_bundle_export_path.grid_remove()
             self.layout.button_bundle_export_path.grid_remove()
