@@ -46,6 +46,7 @@ from const import Status
 from helper.names import get_bom_export_name
 from pytia.log import log
 from pytia_ui_tools.handlers.workspace_handler import Workspace
+from resources import resource
 from templates import templates
 from ttkbootstrap import Style
 
@@ -87,6 +88,7 @@ class Traces:
     def _add_traces(self) -&gt; None:
         &#34;&#34;&#34;Adds all traces.&#34;&#34;&#34;
         self.vars.project.trace_add(&#34;write&#34;, self.trace_project)
+        self.vars.bundle.trace_add(&#34;write&#34;, self.trace_bundle)
         self.vars.bom_export_path.trace_add(&#34;write&#34;, self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add(&#34;write&#34;, self.trace_docket_export_path)
         self.vars.documentation_export_path.trace_add(
@@ -96,8 +98,14 @@ class Traces:
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
+        self.vars.bundle_export_path.trace_add(&#34;write&#34;, self.trace_bundle_export_path)
+
         self.vars.ignore_prefix_txt.trace_add(&#34;write&#34;, self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
+
+        self.vars.zip_bundle.trace_add(&#34;write&#34;, self.trace_zip_bundle)
+        self.vars.bundle_by_prop.trace_add(&#34;write&#34;, self.trace_bundle_by_prop)
+        self.vars.bundle_by_prop_txt.trace_add(&#34;write&#34;, self.trace_bundle_by_prop_txt)
 
     def _validate_button_export(self) -&gt; None:
         self.set_ui.set_button_export()
@@ -144,29 +152,6 @@ class Traces:
 
         self._validate_button_export()
 
-    def trace_docket_export_path(self, *_) -&gt; None:
-        &#34;&#34;&#34;
-        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
-        of the checkbox accordingly to the path variable.
-        &#34;&#34;&#34;
-        if (
-            is_dir := bool(
-                os.path.isdir(self.vars.docket_export_path.get())
-                and os.path.isabs(self.vars.docket_export_path.get())
-            )
-            and templates.docket_path is not None
-            and os.path.isfile(templates.docket_path)
-        ):
-            self.layout.checkbox_export_docket.configure(state=NORMAL)
-            self.vars.export_docket.set(True)
-        else:
-            self.vars.export_docket.set(False)
-            self.layout.checkbox_export_docket.configure(state=DISABLED)
-
-        self.layout.input_docket_export_path.configure(
-            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
-        )
-
     def trace_docu_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
         Trace callback for the `documentation_export_path` StringVar.
@@ -188,6 +173,29 @@ class Traces:
             self.layout.checkbox_export_documentation.configure(state=DISABLED)
 
         self.layout.input_documentation_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docket_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;
+        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.docket_export_path.get())
+                and os.path.isabs(self.vars.docket_export_path.get())
+            )
+            and templates.docket_path is not None
+            and os.path.isfile(templates.docket_path)
+        ):
+            self.layout.checkbox_export_docket.configure(state=NORMAL)
+            self.vars.export_docket.set(True)
+        else:
+            self.vars.export_docket.set(False)
+            self.layout.checkbox_export_docket.configure(state=DISABLED)
+
+        self.layout.input_docket_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
@@ -268,6 +276,42 @@ class Traces:
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
+    def trace_bundle_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if self.vars.bundle.get():
+            if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(
+                self.vars.bundle_export_path.get()
+            ):
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.fg  # type: ignore
+                )
+                self.layout.checkbox_export_docket.configure(state=NORMAL)
+                self.layout.checkbox_export_drawing.configure(state=NORMAL)
+                self.layout.checkbox_export_stp.configure(state=NORMAL)
+                self.layout.checkbox_export_stl.configure(state=NORMAL)
+                self.layout.checkbox_export_jpg.configure(state=NORMAL)
+                self.vars.export_docket.set(True)
+                self.vars.export_drawing.set(True)
+                self.vars.export_stp.set(True)
+                self.vars.export_stl.set(True)
+                self.vars.export_jpg.set(True)
+            else:
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.danger  # type: ignore
+                )
+                self.vars.export_docket.set(False)
+                self.vars.export_drawing.set(False)
+                self.vars.export_stp.set(False)
+                self.vars.export_stl.set(False)
+                self.vars.export_jpg.set(False)
+                self.layout.checkbox_export_docket.configure(state=DISABLED)
+                self.layout.checkbox_export_drawing.configure(state=DISABLED)
+                self.layout.checkbox_export_stp.configure(state=DISABLED)
+                self.layout.checkbox_export_stl.configure(state=DISABLED)
+                self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
     def trace_ignore_prefix_txt(self, *_) -&gt; None:
         &#34;&#34;&#34;Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
         and sets the state of the checkbox accordingly to the variable.&#34;&#34;&#34;
@@ -311,7 +355,93 @@ class Traces:
             self.frames.infrastructure.grid()
             self.frames.paths.grid()
             self.frames.export.grid()
-            self.frames.footer.grid()</code></pre>
+            self.frames.footer.grid()
+
+    def trace_bundle(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle` BooleanVar.&#34;&#34;&#34;
+
+        if self.vars.bundle.get():
+            self.layout.checkbox_bundle_zip.configure(state=NORMAL)
+            self.layout.checkbox_bundle_by_prop.configure(state=NORMAL)
+            self.layout.input_bundle_by_prop_txt.configure(state=&#34;readonly&#34;)
+
+            self.layout.label_bundle_path.grid()
+            self.layout.input_bundle_export_path.grid()
+            self.layout.button_bundle_export_path.grid()
+
+            self.layout.label_docket_path.grid_remove()
+            self.layout.input_docket_export_path.grid_remove()
+            self.layout.button_docket_export_path.grid_remove()
+
+            self.layout.label_drawing_path.grid_remove()
+            self.layout.input_drawing_export_path.grid_remove()
+            self.layout.button_drawing_export_path.grid_remove()
+
+            self.layout.label_stp_path.grid_remove()
+            self.layout.input_stp_export_path.grid_remove()
+            self.layout.button_stp_export_path.grid_remove()
+
+            self.layout.label_stl_path.grid_remove()
+            self.layout.input_stl_export_path.grid_remove()
+            self.layout.button_stl_export_path.grid_remove()
+
+            self.layout.label_jpg_path.grid_remove()
+            self.layout.input_jpg_export_path.grid_remove()
+            self.layout.button_jpg_export_path.grid_remove()
+        else:
+            self.layout.checkbox_bundle_zip.configure(state=DISABLED)
+            self.layout.checkbox_bundle_by_prop.configure(state=DISABLED)
+            self.layout.input_bundle_by_prop_txt.configure(state=DISABLED)
+
+            self.layout.label_bundle_path.grid_remove()
+            self.layout.input_bundle_export_path.grid_remove()
+            self.layout.button_bundle_export_path.grid_remove()
+
+            self.layout.label_docket_path.grid()
+            self.layout.input_docket_export_path.grid()
+            self.layout.button_docket_export_path.grid()
+
+            self.layout.label_drawing_path.grid()
+            self.layout.input_drawing_export_path.grid()
+            self.layout.button_drawing_export_path.grid()
+
+            self.layout.label_stp_path.grid()
+            self.layout.input_stp_export_path.grid()
+            self.layout.button_stp_export_path.grid()
+
+            self.layout.label_stl_path.grid()
+            self.layout.input_stl_export_path.grid()
+            self.layout.button_stl_export_path.grid()
+
+            self.layout.label_jpg_path.grid()
+            self.layout.input_jpg_export_path.grid()
+            self.layout.button_jpg_export_path.grid()
+
+        self.trace_docket_export_path()
+        self.trace_drawing_export_path()
+        self.trace_stp_export_path()
+        self.trace_stl_export_path()
+        self.trace_jpg_export_path()
+
+        self.trace_bundle_export_path()
+
+    def trace_zip_bundle(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `zip_bundle` BooleanVar&#34;&#34;&#34;
+        resource.appdata.zip_bundle = self.vars.zip_bundle.get()
+
+    def trace_bundle_by_prop(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_by_prop` BooleanVar&#34;&#34;&#34;
+        resource.appdata.bundle_by_prop = self.vars.bundle_by_prop.get()
+
+    def trace_bundle_by_prop_txt(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_by_prop_txt` StringVar&#34;&#34;&#34;
+        self.vars.bundle_by_prop_value.set(
+            resource.bom.header_items.summary_as_dict()[
+                self.vars.bundle_by_prop_txt.get()
+            ]
+        )
+        resource.appdata.bundle_by_prop_txt = self.vars.bundle_by_prop_txt.get()
+        resource.appdata.bundle_by_prop_value = self.vars.bundle_by_prop_value.get()</code></pre>
 </details>
 </section>
 <section>
@@ -384,6 +514,7 @@ class Traces:
     def _add_traces(self) -&gt; None:
         &#34;&#34;&#34;Adds all traces.&#34;&#34;&#34;
         self.vars.project.trace_add(&#34;write&#34;, self.trace_project)
+        self.vars.bundle.trace_add(&#34;write&#34;, self.trace_bundle)
         self.vars.bom_export_path.trace_add(&#34;write&#34;, self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add(&#34;write&#34;, self.trace_docket_export_path)
         self.vars.documentation_export_path.trace_add(
@@ -393,8 +524,14 @@ class Traces:
         self.vars.stp_export_path.trace_add(&#34;write&#34;, self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add(&#34;write&#34;, self.trace_stl_export_path)
         self.vars.jpg_export_path.trace_add(&#34;write&#34;, self.trace_jpg_export_path)
+        self.vars.bundle_export_path.trace_add(&#34;write&#34;, self.trace_bundle_export_path)
+
         self.vars.ignore_prefix_txt.trace_add(&#34;write&#34;, self.trace_ignore_prefix_txt)
         self.vars.show_report.trace_add(&#34;write&#34;, self.trace_show_report)
+
+        self.vars.zip_bundle.trace_add(&#34;write&#34;, self.trace_zip_bundle)
+        self.vars.bundle_by_prop.trace_add(&#34;write&#34;, self.trace_bundle_by_prop)
+        self.vars.bundle_by_prop_txt.trace_add(&#34;write&#34;, self.trace_bundle_by_prop_txt)
 
     def _validate_button_export(self) -&gt; None:
         self.set_ui.set_button_export()
@@ -441,29 +578,6 @@ class Traces:
 
         self._validate_button_export()
 
-    def trace_docket_export_path(self, *_) -&gt; None:
-        &#34;&#34;&#34;
-        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
-        of the checkbox accordingly to the path variable.
-        &#34;&#34;&#34;
-        if (
-            is_dir := bool(
-                os.path.isdir(self.vars.docket_export_path.get())
-                and os.path.isabs(self.vars.docket_export_path.get())
-            )
-            and templates.docket_path is not None
-            and os.path.isfile(templates.docket_path)
-        ):
-            self.layout.checkbox_export_docket.configure(state=NORMAL)
-            self.vars.export_docket.set(True)
-        else:
-            self.vars.export_docket.set(False)
-            self.layout.checkbox_export_docket.configure(state=DISABLED)
-
-        self.layout.input_docket_export_path.configure(
-            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
-        )
-
     def trace_docu_export_path(self, *_) -&gt; None:
         &#34;&#34;&#34;
         Trace callback for the `documentation_export_path` StringVar.
@@ -485,6 +599,29 @@ class Traces:
             self.layout.checkbox_export_documentation.configure(state=DISABLED)
 
         self.layout.input_documentation_export_path.configure(
+            foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
+        )
+
+    def trace_docket_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;
+        Trace callback for the `docket_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if (
+            is_dir := bool(
+                os.path.isdir(self.vars.docket_export_path.get())
+                and os.path.isabs(self.vars.docket_export_path.get())
+            )
+            and templates.docket_path is not None
+            and os.path.isfile(templates.docket_path)
+        ):
+            self.layout.checkbox_export_docket.configure(state=NORMAL)
+            self.vars.export_docket.set(True)
+        else:
+            self.vars.export_docket.set(False)
+            self.layout.checkbox_export_docket.configure(state=DISABLED)
+
+        self.layout.input_docket_export_path.configure(
             foreground=self.style.colors.fg if is_dir else self.style.colors.danger  # type: ignore
         )
 
@@ -565,6 +702,42 @@ class Traces:
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
+    def trace_bundle_export_path(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_export_path` StringVar. Validates the path and sets the state
+        of the checkbox accordingly to the path variable.
+        &#34;&#34;&#34;
+        if self.vars.bundle.get():
+            if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(
+                self.vars.bundle_export_path.get()
+            ):
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.fg  # type: ignore
+                )
+                self.layout.checkbox_export_docket.configure(state=NORMAL)
+                self.layout.checkbox_export_drawing.configure(state=NORMAL)
+                self.layout.checkbox_export_stp.configure(state=NORMAL)
+                self.layout.checkbox_export_stl.configure(state=NORMAL)
+                self.layout.checkbox_export_jpg.configure(state=NORMAL)
+                self.vars.export_docket.set(True)
+                self.vars.export_drawing.set(True)
+                self.vars.export_stp.set(True)
+                self.vars.export_stl.set(True)
+                self.vars.export_jpg.set(True)
+            else:
+                self.layout.input_bundle_export_path.configure(
+                    foreground=self.style.colors.danger  # type: ignore
+                )
+                self.vars.export_docket.set(False)
+                self.vars.export_drawing.set(False)
+                self.vars.export_stp.set(False)
+                self.vars.export_stl.set(False)
+                self.vars.export_jpg.set(False)
+                self.layout.checkbox_export_docket.configure(state=DISABLED)
+                self.layout.checkbox_export_drawing.configure(state=DISABLED)
+                self.layout.checkbox_export_stp.configure(state=DISABLED)
+                self.layout.checkbox_export_stl.configure(state=DISABLED)
+                self.layout.checkbox_export_jpg.configure(state=DISABLED)
+
     def trace_ignore_prefix_txt(self, *_) -&gt; None:
         &#34;&#34;&#34;Trace callback for the `ignore_prefix_txt` StringVar. Validates the input
         and sets the state of the checkbox accordingly to the variable.&#34;&#34;&#34;
@@ -608,7 +781,93 @@ class Traces:
             self.frames.infrastructure.grid()
             self.frames.paths.grid()
             self.frames.export.grid()
-            self.frames.footer.grid()</code></pre>
+            self.frames.footer.grid()
+
+    def trace_bundle(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle` BooleanVar.&#34;&#34;&#34;
+
+        if self.vars.bundle.get():
+            self.layout.checkbox_bundle_zip.configure(state=NORMAL)
+            self.layout.checkbox_bundle_by_prop.configure(state=NORMAL)
+            self.layout.input_bundle_by_prop_txt.configure(state=&#34;readonly&#34;)
+
+            self.layout.label_bundle_path.grid()
+            self.layout.input_bundle_export_path.grid()
+            self.layout.button_bundle_export_path.grid()
+
+            self.layout.label_docket_path.grid_remove()
+            self.layout.input_docket_export_path.grid_remove()
+            self.layout.button_docket_export_path.grid_remove()
+
+            self.layout.label_drawing_path.grid_remove()
+            self.layout.input_drawing_export_path.grid_remove()
+            self.layout.button_drawing_export_path.grid_remove()
+
+            self.layout.label_stp_path.grid_remove()
+            self.layout.input_stp_export_path.grid_remove()
+            self.layout.button_stp_export_path.grid_remove()
+
+            self.layout.label_stl_path.grid_remove()
+            self.layout.input_stl_export_path.grid_remove()
+            self.layout.button_stl_export_path.grid_remove()
+
+            self.layout.label_jpg_path.grid_remove()
+            self.layout.input_jpg_export_path.grid_remove()
+            self.layout.button_jpg_export_path.grid_remove()
+        else:
+            self.layout.checkbox_bundle_zip.configure(state=DISABLED)
+            self.layout.checkbox_bundle_by_prop.configure(state=DISABLED)
+            self.layout.input_bundle_by_prop_txt.configure(state=DISABLED)
+
+            self.layout.label_bundle_path.grid_remove()
+            self.layout.input_bundle_export_path.grid_remove()
+            self.layout.button_bundle_export_path.grid_remove()
+
+            self.layout.label_docket_path.grid()
+            self.layout.input_docket_export_path.grid()
+            self.layout.button_docket_export_path.grid()
+
+            self.layout.label_drawing_path.grid()
+            self.layout.input_drawing_export_path.grid()
+            self.layout.button_drawing_export_path.grid()
+
+            self.layout.label_stp_path.grid()
+            self.layout.input_stp_export_path.grid()
+            self.layout.button_stp_export_path.grid()
+
+            self.layout.label_stl_path.grid()
+            self.layout.input_stl_export_path.grid()
+            self.layout.button_stl_export_path.grid()
+
+            self.layout.label_jpg_path.grid()
+            self.layout.input_jpg_export_path.grid()
+            self.layout.button_jpg_export_path.grid()
+
+        self.trace_docket_export_path()
+        self.trace_drawing_export_path()
+        self.trace_stp_export_path()
+        self.trace_stl_export_path()
+        self.trace_jpg_export_path()
+
+        self.trace_bundle_export_path()
+
+    def trace_zip_bundle(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `zip_bundle` BooleanVar&#34;&#34;&#34;
+        resource.appdata.zip_bundle = self.vars.zip_bundle.get()
+
+    def trace_bundle_by_prop(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_by_prop` BooleanVar&#34;&#34;&#34;
+        resource.appdata.bundle_by_prop = self.vars.bundle_by_prop.get()
+
+    def trace_bundle_by_prop_txt(self, *_) -&gt; None:
+        &#34;&#34;&#34;Trace callback for the `bundle_by_prop_txt` StringVar&#34;&#34;&#34;
+        self.vars.bundle_by_prop_value.set(
+            resource.bom.header_items.summary_as_dict()[
+                self.vars.bundle_by_prop_txt.get()
+            ]
+        )
+        resource.appdata.bundle_by_prop_txt = self.vars.bundle_by_prop_txt.get()
+        resource.appdata.bundle_by_prop_value = self.vars.bundle_by_prop_value.get()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -642,6 +901,165 @@ of the export button accordingly to the path variable.</p></div>
         )
 
     self._validate_button_export()</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_bundle"><code class="name flex">
+<span>def <span class="ident">trace_bundle</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>bundle</code> BooleanVar.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_bundle(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `bundle` BooleanVar.&#34;&#34;&#34;
+
+    if self.vars.bundle.get():
+        self.layout.checkbox_bundle_zip.configure(state=NORMAL)
+        self.layout.checkbox_bundle_by_prop.configure(state=NORMAL)
+        self.layout.input_bundle_by_prop_txt.configure(state=&#34;readonly&#34;)
+
+        self.layout.label_bundle_path.grid()
+        self.layout.input_bundle_export_path.grid()
+        self.layout.button_bundle_export_path.grid()
+
+        self.layout.label_docket_path.grid_remove()
+        self.layout.input_docket_export_path.grid_remove()
+        self.layout.button_docket_export_path.grid_remove()
+
+        self.layout.label_drawing_path.grid_remove()
+        self.layout.input_drawing_export_path.grid_remove()
+        self.layout.button_drawing_export_path.grid_remove()
+
+        self.layout.label_stp_path.grid_remove()
+        self.layout.input_stp_export_path.grid_remove()
+        self.layout.button_stp_export_path.grid_remove()
+
+        self.layout.label_stl_path.grid_remove()
+        self.layout.input_stl_export_path.grid_remove()
+        self.layout.button_stl_export_path.grid_remove()
+
+        self.layout.label_jpg_path.grid_remove()
+        self.layout.input_jpg_export_path.grid_remove()
+        self.layout.button_jpg_export_path.grid_remove()
+    else:
+        self.layout.checkbox_bundle_zip.configure(state=DISABLED)
+        self.layout.checkbox_bundle_by_prop.configure(state=DISABLED)
+        self.layout.input_bundle_by_prop_txt.configure(state=DISABLED)
+
+        self.layout.label_bundle_path.grid_remove()
+        self.layout.input_bundle_export_path.grid_remove()
+        self.layout.button_bundle_export_path.grid_remove()
+
+        self.layout.label_docket_path.grid()
+        self.layout.input_docket_export_path.grid()
+        self.layout.button_docket_export_path.grid()
+
+        self.layout.label_drawing_path.grid()
+        self.layout.input_drawing_export_path.grid()
+        self.layout.button_drawing_export_path.grid()
+
+        self.layout.label_stp_path.grid()
+        self.layout.input_stp_export_path.grid()
+        self.layout.button_stp_export_path.grid()
+
+        self.layout.label_stl_path.grid()
+        self.layout.input_stl_export_path.grid()
+        self.layout.button_stl_export_path.grid()
+
+        self.layout.label_jpg_path.grid()
+        self.layout.input_jpg_export_path.grid()
+        self.layout.button_jpg_export_path.grid()
+
+    self.trace_docket_export_path()
+    self.trace_drawing_export_path()
+    self.trace_stp_export_path()
+    self.trace_stl_export_path()
+    self.trace_jpg_export_path()
+
+    self.trace_bundle_export_path()</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop"><code class="name flex">
+<span>def <span class="ident">trace_bundle_by_prop</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>bundle_by_prop</code> BooleanVar</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_bundle_by_prop(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `bundle_by_prop` BooleanVar&#34;&#34;&#34;
+    resource.appdata.bundle_by_prop = self.vars.bundle_by_prop.get()</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop_txt"><code class="name flex">
+<span>def <span class="ident">trace_bundle_by_prop_txt</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>bundle_by_prop_txt</code> StringVar</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_bundle_by_prop_txt(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `bundle_by_prop_txt` StringVar&#34;&#34;&#34;
+    self.vars.bundle_by_prop_value.set(
+        resource.bom.header_items.summary_as_dict()[
+            self.vars.bundle_by_prop_txt.get()
+        ]
+    )
+    resource.appdata.bundle_by_prop_txt = self.vars.bundle_by_prop_txt.get()
+    resource.appdata.bundle_by_prop_value = self.vars.bundle_by_prop_value.get()</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_export_path"><code class="name flex">
+<span>def <span class="ident">trace_bundle_export_path</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>bundle_export_path</code> StringVar. Validates the path and sets the state
+of the checkbox accordingly to the path variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_bundle_export_path(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `bundle_export_path` StringVar. Validates the path and sets the state
+    of the checkbox accordingly to the path variable.
+    &#34;&#34;&#34;
+    if self.vars.bundle.get():
+        if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(
+            self.vars.bundle_export_path.get()
+        ):
+            self.layout.input_bundle_export_path.configure(
+                foreground=self.style.colors.fg  # type: ignore
+            )
+            self.layout.checkbox_export_docket.configure(state=NORMAL)
+            self.layout.checkbox_export_drawing.configure(state=NORMAL)
+            self.layout.checkbox_export_stp.configure(state=NORMAL)
+            self.layout.checkbox_export_stl.configure(state=NORMAL)
+            self.layout.checkbox_export_jpg.configure(state=NORMAL)
+            self.vars.export_docket.set(True)
+            self.vars.export_drawing.set(True)
+            self.vars.export_stp.set(True)
+            self.vars.export_stl.set(True)
+            self.vars.export_jpg.set(True)
+        else:
+            self.layout.input_bundle_export_path.configure(
+                foreground=self.style.colors.danger  # type: ignore
+            )
+            self.vars.export_docket.set(False)
+            self.vars.export_drawing.set(False)
+            self.vars.export_stp.set(False)
+            self.vars.export_stl.set(False)
+            self.vars.export_jpg.set(False)
+            self.layout.checkbox_export_docket.configure(state=DISABLED)
+            self.layout.checkbox_export_drawing.configure(state=DISABLED)
+            self.layout.checkbox_export_stp.configure(state=DISABLED)
+            self.layout.checkbox_export_stl.configure(state=DISABLED)
+            self.layout.checkbox_export_jpg.configure(state=DISABLED)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path"><code class="name flex">
@@ -931,6 +1349,20 @@ of the checkbox accordingly to the path variable.</p></div>
         self.layout.checkbox_export_stp.configure(state=DISABLED)</code></pre>
 </details>
 </dd>
+<dt id="pytia_bill_of_material.app.main.traces.Traces.trace_zip_bundle"><code class="name flex">
+<span>def <span class="ident">trace_zip_bundle</span></span>(<span>self, *_) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Trace callback for the <code>zip_bundle</code> BooleanVar</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def trace_zip_bundle(self, *_) -&gt; None:
+    &#34;&#34;&#34;Trace callback for the `zip_bundle` BooleanVar&#34;&#34;&#34;
+    resource.appdata.zip_bundle = self.vars.zip_bundle.get()</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -953,6 +1385,10 @@ of the checkbox accordingly to the path variable.</p></div>
 <h4><code><a title="pytia_bill_of_material.app.main.traces.Traces" href="#pytia_bill_of_material.app.main.traces.Traces">Traces</a></code></h4>
 <ul class="">
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bom_export_path">trace_bom_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bundle" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bundle">trace_bundle</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop">trace_bundle_by_prop</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop_txt" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bundle_by_prop_txt">trace_bundle_by_prop_txt</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_bundle_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_bundle_export_path">trace_bundle_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docket_export_path">trace_docket_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_docu_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_docu_export_path">trace_docu_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_drawing_export_path">trace_drawing_export_path</a></code></li>
@@ -962,6 +1398,7 @@ of the checkbox accordingly to the path variable.</p></div>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_show_report" href="#pytia_bill_of_material.app.main.traces.Traces.trace_show_report">trace_show_report</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_stl_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_stl_export_path">trace_stl_export_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_stp_export_path" href="#pytia_bill_of_material.app.main.traces.Traces.trace_stp_export_path">trace_stp_export_path</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.traces.Traces.trace_zip_bundle" href="#pytia_bill_of_material.app.main.traces.Traces.trace_zip_bundle">trace_zip_bundle</a></code></li>
 </ul>
 </li>
 </ul>

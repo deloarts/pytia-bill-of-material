@@ -137,6 +137,11 @@ class Controller:
         self.layout.input_project.configure(values=project_values)
         # self.vars.project.set(KEEP)
 
+        # Set property combo box
+        self.layout.input_bundle_by_prop_txt.configure(
+            values=[k for k in resource.bom.header_items.summary_as_dict().keys()]
+        )
+
         # Write default bom export path
         bom_folder: Path
         bom_name = get_bom_export_name(

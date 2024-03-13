@@ -56,10 +56,10 @@ class ToolTips:
 
         # region PROJECT NUMBER
         project_tooltip = (
-            f&#34;If set to {KEEP!r} the project number of each item in the bill of material and each &#34;
-            &#34;docket will be used from the part or product properties. Otherwise the project number &#34;
-            &#34;in the bill of material and each docket will be overwritten with the value from &#34;
-            &#34;this input field.&#34;
+            f&#34;If set to {KEEP!r} the project number of each item in the bill of &#34;
+            &#34;material and each docket will be used from the part or product &#34;
+            &#34;properties. Otherwise the project number in the bill of material and each &#34;
+            &#34;docket will be overwritten with the value from this input field.&#34;
         )
         if (
             resource.settings.restrictions.strict_project
@@ -76,15 +76,16 @@ class ToolTips:
         ):
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
-                &#34;Warning: There are no project numbers set in the workspace file, you are &#34;
-                &#34;allowed to use any project number of your choice. But it is recommended to &#34;
-                &#34;setup the workspace file correctly.&#34;
+                &#34;Warning: There are no project numbers set in the workspace file, you &#34;
+                &#34;are allowed to use any project number of your choice. But it is &#34;
+                &#34;recommended to setup the workspace file correctly.&#34;
             )
         elif resource.settings.restrictions.strict_project and not workspace.available:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
-                &#34;Warning: No workspace file found. You are allowed to use any project number &#34;
-                &#34;but you should consider setting up the workspace file correctly.&#34;
+                &#34;Warning: No workspace file found. You are allowed to use any project &#34;
+                &#34;number but you should consider setting up the workspace file &#34;
+                &#34;correctly.&#34;
             )
 
         ToolTip(widget=layout.input_project, text=project_tooltip)
@@ -92,8 +93,8 @@ class ToolTips:
 
         # region PATHS
         bom_path_tooltip = (
-            &#34;Defines the path (folder and filename) of the bill of material Excel file. &#34;
-            &#34;An existing file will be overwritten.&#34;
+            &#34;Defines the path (folder and filename) of the bill of material Excel &#34;
+            &#34;file. An existing file will be overwritten.&#34;
         )
         if (
             workspace.elements.bom_folder is not None
@@ -205,32 +206,35 @@ class ToolTips:
         ToolTip(
             widget=layout.checkbox_export_docket,
             text=(
-                &#34;Generates a pdf docket for each item in the summary of the exported bill of &#34;
-                &#34;material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Generates a pdf docket for each item in the summary of the exported &#34;
+                &#34;bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
             ),
         )
         ToolTip(
             widget=layout.checkbox_export_documentation,
             text=(
                 &#34;Generates a pdf documentation docket for each item in the summary of&#34;
-                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.&#34;
+                &#34;\n\nThis requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
             ),
         )
 
         export_drawing_tooltip = (
             &#34;Saves the drawing as pdf and dxf file for each item in the summary of the &#34;
             &#34;exported bill of material.\n\n&#34;
-            &#34;Only exports drawings that are linked to the document. The link will be set if &#34;
-            &#34;you used the PYTIA Title Block Editor App on the drawing file.\n\n&#34;
+            &#34;Only exports drawings that are linked to the document. The link will be &#34;
+            &#34;set if you used the PYTIA Title Block Editor App on the drawing file.\n\n&#34;
             &#34;This requires a valid path. Existing files at the target location will be &#34;
             &#34;overwritten.&#34;
         )
         if resource.settings.export.lock_drawing_views:
-            export_drawing_tooltip += &#34;\n\nLocks all drawing views after the export to lock the version of the file.&#34;
+            export_drawing_tooltip += (
+                &#34;\n\nLocks all drawing views after the export to lock the version of &#34;
+                &#34;the file.&#34;
+            )
         ToolTip(
             widget=layout.checkbox_export_drawing,
             text=export_drawing_tooltip,
@@ -238,19 +242,19 @@ class ToolTips:
         ToolTip(
             widget=layout.checkbox_export_stp,
             text=(
-                &#34;Saves the 3d data as step-file for each item in the summary of the exported bill &#34;
-                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Saves the 3d data as step-file for each item in the summary of the &#34;
+                &#34;exported bill of material. Only exports items which are of source &#34;
+                &#34;&#39;made&#39;.\n\nThis requires a valid path. Existing files at the target &#34;
+                &#34;location will be overwritten.&#34;
             ),
         )
         ToolTip(
             widget=layout.checkbox_export_stl,
             text=(
-                &#34;Saves the 3d data as stl-file for each item in the summary of the exported bill &#34;
-                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Saves the 3d data as stl-file for each item in the summary of the &#34;
+                &#34;exported bill of material. Only exports items which are of source &#34;
+                &#34;&#39;made&#39;.\n\nThis requires a valid path. Existing files at the target &#34;
+                &#34;location will be overwritten.&#34;
             ),
         )
         ToolTip(
@@ -258,8 +262,30 @@ class ToolTips:
             text=(
                 &#34;Saves jpg images for each item in the summary of the exported bill &#34;
                 &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;This requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_data,
+            text=(
+                &#34;Creates a folder for each exported item, containing the following &#34;
+                &#34;data (if selected above):\n - Docket as PDF\n - Drawing as PDF and &#34;
+                &#34;DXF\n - STEP File\n - STL File (Parts only)\n - Image as PNG\n\nThe &#34;
+                &#34;documentation PDF won&#39;t be added to the bundle.\n\nYou need to &#34;
+                &#34;specify a valid path for the bundle export.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_zip,
+            text=(&#34;Creates a zip-archive for each folder in the bundle.&#34;),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_by_prop,
+            text=(
+                &#34;Creates parent folders for the bundles named after the value of the &#34;
+                &#34;given property. If the property doesn&#39;t exists or doesn&#39;t hold a &#34;
+                &#34;value, the bundle folder will be saved in the parent directory.&#34;
             ),
         )
         ToolTip(
@@ -309,9 +335,10 @@ class ToolTips:
         ToolTip(
             widget=layout.button_close_document,
             text=(
-                &#34;Closes the currently open document and removes it from the &#39;failed items&#39; &#34;
-                &#34;selection.\n\nYou can also just close the current document in CATIA and the &#34;
-                &#34;item will be removed from the &#39;failed items&#39; list automatically.&#34;
+                &#34;Closes the currently open document and removes it from the &#39;failed &#34;
+                &#34;items&#39; selection.\n\nYou can also just close the current document in &#34;
+                &#34;CATIA and the item will be removed from the &#39;failed items&#39; list &#34;
+                &#34;automatically.&#34;
             ),
         )
         # endregion</code></pre>
@@ -363,10 +390,10 @@ class ToolTips:
 
         # region PROJECT NUMBER
         project_tooltip = (
-            f&#34;If set to {KEEP!r} the project number of each item in the bill of material and each &#34;
-            &#34;docket will be used from the part or product properties. Otherwise the project number &#34;
-            &#34;in the bill of material and each docket will be overwritten with the value from &#34;
-            &#34;this input field.&#34;
+            f&#34;If set to {KEEP!r} the project number of each item in the bill of &#34;
+            &#34;material and each docket will be used from the part or product &#34;
+            &#34;properties. Otherwise the project number in the bill of material and each &#34;
+            &#34;docket will be overwritten with the value from this input field.&#34;
         )
         if (
             resource.settings.restrictions.strict_project
@@ -383,15 +410,16 @@ class ToolTips:
         ):
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
-                &#34;Warning: There are no project numbers set in the workspace file, you are &#34;
-                &#34;allowed to use any project number of your choice. But it is recommended to &#34;
-                &#34;setup the workspace file correctly.&#34;
+                &#34;Warning: There are no project numbers set in the workspace file, you &#34;
+                &#34;are allowed to use any project number of your choice. But it is &#34;
+                &#34;recommended to setup the workspace file correctly.&#34;
             )
         elif resource.settings.restrictions.strict_project and not workspace.available:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
-                &#34;Warning: No workspace file found. You are allowed to use any project number &#34;
-                &#34;but you should consider setting up the workspace file correctly.&#34;
+                &#34;Warning: No workspace file found. You are allowed to use any project &#34;
+                &#34;number but you should consider setting up the workspace file &#34;
+                &#34;correctly.&#34;
             )
 
         ToolTip(widget=layout.input_project, text=project_tooltip)
@@ -399,8 +427,8 @@ class ToolTips:
 
         # region PATHS
         bom_path_tooltip = (
-            &#34;Defines the path (folder and filename) of the bill of material Excel file. &#34;
-            &#34;An existing file will be overwritten.&#34;
+            &#34;Defines the path (folder and filename) of the bill of material Excel &#34;
+            &#34;file. An existing file will be overwritten.&#34;
         )
         if (
             workspace.elements.bom_folder is not None
@@ -512,32 +540,35 @@ class ToolTips:
         ToolTip(
             widget=layout.checkbox_export_docket,
             text=(
-                &#34;Generates a pdf docket for each item in the summary of the exported bill of &#34;
-                &#34;material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Generates a pdf docket for each item in the summary of the exported &#34;
+                &#34;bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
+                &#34;This requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
             ),
         )
         ToolTip(
             widget=layout.checkbox_export_documentation,
             text=(
                 &#34;Generates a pdf documentation docket for each item in the summary of&#34;
-                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;the bill of material. Only exports items which are of source &#39;made&#39;.&#34;
+                &#34;\n\nThis requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
             ),
         )
 
         export_drawing_tooltip = (
             &#34;Saves the drawing as pdf and dxf file for each item in the summary of the &#34;
             &#34;exported bill of material.\n\n&#34;
-            &#34;Only exports drawings that are linked to the document. The link will be set if &#34;
-            &#34;you used the PYTIA Title Block Editor App on the drawing file.\n\n&#34;
+            &#34;Only exports drawings that are linked to the document. The link will be &#34;
+            &#34;set if you used the PYTIA Title Block Editor App on the drawing file.\n\n&#34;
             &#34;This requires a valid path. Existing files at the target location will be &#34;
             &#34;overwritten.&#34;
         )
         if resource.settings.export.lock_drawing_views:
-            export_drawing_tooltip += &#34;\n\nLocks all drawing views after the export to lock the version of the file.&#34;
+            export_drawing_tooltip += (
+                &#34;\n\nLocks all drawing views after the export to lock the version of &#34;
+                &#34;the file.&#34;
+            )
         ToolTip(
             widget=layout.checkbox_export_drawing,
             text=export_drawing_tooltip,
@@ -545,19 +576,19 @@ class ToolTips:
         ToolTip(
             widget=layout.checkbox_export_stp,
             text=(
-                &#34;Saves the 3d data as step-file for each item in the summary of the exported bill &#34;
-                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Saves the 3d data as step-file for each item in the summary of the &#34;
+                &#34;exported bill of material. Only exports items which are of source &#34;
+                &#34;&#39;made&#39;.\n\nThis requires a valid path. Existing files at the target &#34;
+                &#34;location will be overwritten.&#34;
             ),
         )
         ToolTip(
             widget=layout.checkbox_export_stl,
             text=(
-                &#34;Saves the 3d data as stl-file for each item in the summary of the exported bill &#34;
-                &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;Saves the 3d data as stl-file for each item in the summary of the &#34;
+                &#34;exported bill of material. Only exports items which are of source &#34;
+                &#34;&#39;made&#39;.\n\nThis requires a valid path. Existing files at the target &#34;
+                &#34;location will be overwritten.&#34;
             ),
         )
         ToolTip(
@@ -565,8 +596,30 @@ class ToolTips:
             text=(
                 &#34;Saves jpg images for each item in the summary of the exported bill &#34;
                 &#34;of material. Only exports items which are of source &#39;made&#39;.\n\n&#34;
-                &#34;This requires a valid path. Existing files at the target location will be &#34;
-                &#34;overwritten.&#34;
+                &#34;This requires a valid path. Existing files at the target location &#34;
+                &#34;will be overwritten.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_data,
+            text=(
+                &#34;Creates a folder for each exported item, containing the following &#34;
+                &#34;data (if selected above):\n - Docket as PDF\n - Drawing as PDF and &#34;
+                &#34;DXF\n - STEP File\n - STL File (Parts only)\n - Image as PNG\n\nThe &#34;
+                &#34;documentation PDF won&#39;t be added to the bundle.\n\nYou need to &#34;
+                &#34;specify a valid path for the bundle export.&#34;
+            ),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_zip,
+            text=(&#34;Creates a zip-archive for each folder in the bundle.&#34;),
+        )
+        ToolTip(
+            widget=layout.checkbox_bundle_by_prop,
+            text=(
+                &#34;Creates parent folders for the bundles named after the value of the &#34;
+                &#34;given property. If the property doesn&#39;t exists or doesn&#39;t hold a &#34;
+                &#34;value, the bundle folder will be saved in the parent directory.&#34;
             ),
         )
         ToolTip(
@@ -616,9 +669,10 @@ class ToolTips:
         ToolTip(
             widget=layout.button_close_document,
             text=(
-                &#34;Closes the currently open document and removes it from the &#39;failed items&#39; &#34;
-                &#34;selection.\n\nYou can also just close the current document in CATIA and the &#34;
-                &#34;item will be removed from the &#39;failed items&#39; list automatically.&#34;
+                &#34;Closes the currently open document and removes it from the &#39;failed &#34;
+                &#34;items&#39; selection.\n\nYou can also just close the current document in &#34;
+                &#34;CATIA and the item will be removed from the &#39;failed items&#39; list &#34;
+                &#34;automatically.&#34;
             ),
         )
         # endregion</code></pre>

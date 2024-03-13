@@ -9,6 +9,7 @@ import atexit
 import importlib.resources
 import json
 import os
+import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict
 from dataclasses import dataclass
@@ -19,7 +20,6 @@ from typing import Dict
 from typing import List
 from typing import Literal
 from typing import Optional
-from typing import Protocol
 
 from const import APP_VERSION
 from const import APPDATA
@@ -40,10 +40,6 @@ from const import CONFIG_USERS
 from const import LOGON
 from const import STYLES
 from resources.utils import expand_env_vars
-
-
-class DataclassProtocol(Protocol):
-    __dataclass_fields__: Dict
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -169,8 +165,7 @@ class KeywordElements:
 
 
 @dataclass
-class AppliedKeywords(KeywordElements):
-    ...
+class AppliedKeywords(KeywordElements): ...
 
 
 @dataclass(slots=True, kw_only=True)
@@ -232,6 +227,11 @@ class BOMHeaderItems:
     summary: List[str]
     made: List[str] | None
     bought: List[str] | None
+
+    def summary_as_dict(self) -> dict:
+        return {
+            re.split(":|=", item)[0]: re.split(":|=", item)[-1] for item in self.summary
+        }
 
 
 @dataclass(slots=True, kw_only=True)
@@ -306,6 +306,10 @@ class AppData:
     counter: int = 0
     disable_volume_warning: bool = False
     theme: str = STYLES[0]
+    zip_bundle: bool = True
+    bundle_by_prop: bool = True
+    bundle_by_prop_txt: str = ""
+    bundle_by_prop_value: str = ""
 
     def __post_init__(self) -> None:
         self.version = (
@@ -533,8 +537,8 @@ class Resources:  # pylint: disable=R0902
         """
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
 
-        def _apply_to_object(_item: DataclassProtocol):
-            for object_fields in fields(_item):  # type: ignore
+        def _apply_to_object(_item):
+            for object_fields in fields(_item):
                 object_item = getattr(_item, object_fields.name)
                 assert isinstance(object_item, list) or isinstance(object_item, str)
 

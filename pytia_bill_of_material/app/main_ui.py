@@ -42,14 +42,16 @@ class MainUI(tk.Tk):
     """The user interface of the app."""
 
     WIDTH = 800
-    HEIGHT = 655
+    HEIGHT = 590
 
     def __init__(self) -> None:
         ttk.tk.Tk.__init__(self)
         self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
+        self.doc_helper: (
+            LazyDocumentHelper  # Instantiate later for performance improvement
+        )
         self.workspace: Workspace  # Instantiate later, dependent on doc_helper
         self.set_ui: UISetter  # Instantiate later, dependent on doc_helper
         self.vars = Variables(root=self)

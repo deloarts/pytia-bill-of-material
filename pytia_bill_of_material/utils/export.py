@@ -100,21 +100,25 @@ def export_docket(
     else:
         publisher = LOGON
 
-    docket = create_docket_from_template(
-        template=docket_template,
-        document=document,
-        config=config,
-        hide_unknown_properties=True,
-        creator=creator,
-        modifier=modifier,
-        publisher=publisher,
-        **kwargs,
-    )
-    export_docket_as_pdf(
-        docket=docket,
-        name=filename,
-        folder=folder,
-    )
+    # FIXME: Move this safety function to pytia.
+    try:
+        docket = create_docket_from_template(
+            template=docket_template,
+            document=document,
+            config=config,
+            hide_unknown_properties=True,
+            creator=creator,
+            modifier=modifier,
+            publisher=publisher,
+            **kwargs,
+        )
+        export_docket_as_pdf(
+            docket=docket,
+            name=filename,
+            folder=folder,
+        )
+    except ZeroDivisionError as e:
+        log.error(f"Failed to create docket: Body is invisible. Verbose: {e}")
 
 
 def export_drawing(
