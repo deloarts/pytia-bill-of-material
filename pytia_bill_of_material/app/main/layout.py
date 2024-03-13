@@ -421,90 +421,6 @@ class Layout:
         # endregion
 
         # region FRAME Export ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-        # region Bundle
-        self._chkbtn_bundle_data = Checkbutton(
-            frames.export,
-            bootstyle="round-toggle",  # type:ignore
-            variable=variables.bundle,
-            state=DISABLED,
-        )
-        self._chkbtn_bundle_data.grid(
-            row=0,
-            column=0,
-            padx=(Layout.MARGIN_X, 2),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsew",
-            columnspan=2,
-        )
-        lbl_bundle_option = Label(frames.export, text="Bundle Data", width=25)
-        lbl_bundle_option.grid(
-            row=0,
-            column=1,
-            padx=(2, 5),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsew",
-        )
-
-        self._chkbtn_bundle_zip = Checkbutton(
-            frames.export,
-            bootstyle="round-toggle",  # type:ignore
-            variable=variables.zip_bundle,
-            state=DISABLED,
-        )
-        self._chkbtn_bundle_zip.grid(
-            row=0,
-            column=2,
-            padx=(5, 2),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsew",
-            columnspan=2,
-        )
-        lbl_bundle_zip_option = Label(frames.export, text="ZIP Bundle", width=25)
-        lbl_bundle_zip_option.grid(
-            row=0,
-            column=3,
-            padx=(2, 5),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsew",
-        )
-
-        self._chkbtn_bundle_by_prop = Checkbutton(
-            frames.export,
-            bootstyle="round-toggle",  # type:ignore
-            variable=variables.bundle_by_prop,
-            state=DISABLED,
-        )
-        self._chkbtn_bundle_by_prop.grid(
-            row=0,
-            column=4,
-            padx=(5, 2),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsw",
-        )
-        lbl_bundle_by_prop = Label(frames.export, text="Bundle by property:", width=25)
-        lbl_bundle_by_prop.grid(
-            row=0,
-            column=5,
-            padx=(2, 5),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsw",
-        )
-        self._entry_bundle_by_prop = Entry(
-            frames.export,
-            textvariable=variables.bundle_by_prop_txt,
-            state=DISABLED,
-        )
-        self._entry_bundle_by_prop.grid(
-            row=0,
-            column=6,
-            padx=(2, Layout.MARGIN_X),
-            pady=(Layout.MARGIN_Y, 2),
-            sticky="nsew",
-            columnspan=2,
-        )
-        # endregion
-
         # region export documentation docket
         self._chkbtn_export_documentation = Checkbutton(
             frames.export,
@@ -513,18 +429,20 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_documentation.grid(
-            row=1,
+            row=0,
             column=0,
-            padx=(Layout.MARGIN_X, 2),
-            pady=(20, 2),
+            padx=(16, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
         )
-        lbl_export_documentation = Label(frames.export, text="Export Docs", width=25)
+        lbl_export_documentation = Label(
+            frames.export, text="Export Documentation", width=21
+        )
         lbl_export_documentation.grid(
-            row=1,
+            row=0,
             column=1,
             padx=(2, 5),
-            pady=(20, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
         # endregion
@@ -537,18 +455,18 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_docket.grid(
-            row=1,
+            row=0,
             column=2,
             padx=(5, 2),
-            pady=(20, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
-        lbl_export_docket = Label(frames.export, text="Export Docket", width=25)
+        lbl_export_docket = Label(frames.export, text="Export Docket", width=21)
         lbl_export_docket.grid(
-            row=1,
+            row=0,
             column=3,
             padx=(2, 5),
-            pady=(20, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
         # endregion
@@ -561,18 +479,18 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_drawing.grid(
-            row=1,
+            row=0,
             column=4,
             padx=(5, 2),
-            pady=(20, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
-        lbl_export_drawing = Label(frames.export, text="Export Drawing", width=25)
+        lbl_export_drawing = Label(frames.export, text="Export Drawing", width=21)
         lbl_export_drawing.grid(
-            row=1,
+            row=0,
             column=5,
             padx=(2, 5),
-            pady=(20, 2),
+            pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
         # endregion
@@ -585,15 +503,15 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_stp.grid(
-            row=2,
+            row=1,
             column=0,
-            padx=(Layout.MARGIN_X, 2),
+            padx=(16, 2),
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_stp = Label(frames.export, text="Export STP", width=25)
+        lbl_export_stp = Label(frames.export, text="Export STP", width=21)
         lbl_export_stp.grid(
-            row=2,
+            row=1,
             column=1,
             padx=(2, 5),
             pady=(2, 2),
@@ -609,15 +527,15 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_stl.grid(
-            row=2,
+            row=1,
             column=2,
             padx=(5, 2),
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_stl = Label(frames.export, text="Export STL", width=25)
+        lbl_export_stl = Label(frames.export, text="Export STL", width=21)
         lbl_export_stl.grid(
-            row=2,
+            row=1,
             column=3,
             padx=(2, 5),
             pady=(2, 2),
@@ -633,19 +551,102 @@ class Layout:
             state=DISABLED,
         )
         self._chkbtn_export_jpg.grid(
-            row=2,
+            row=1,
             column=4,
             padx=(5, 2),
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_jpg = Label(frames.export, text="Export JPG", width=25)
+        lbl_export_jpg = Label(frames.export, text="Export JPG", width=21)
         lbl_export_jpg.grid(
-            row=2,
+            row=1,
             column=5,
             padx=(2, 5),
             pady=(2, 2),
             sticky="nsw",
+        )
+        # endregion
+
+        # region Bundle
+        self._chkbtn_bundle_data = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.bundle,
+            state=DISABLED,
+        )
+        self._chkbtn_bundle_data.grid(
+            row=2,
+            column=0,
+            padx=(16, 2),
+            pady=(20, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
+        lbl_bundle_option = Label(frames.export, text="Bundle Data", width=21)
+        lbl_bundle_option.grid(
+            row=2,
+            column=1,
+            padx=(2, 5),
+            pady=(20, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_bundle_zip = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.zip_bundle,
+            state=DISABLED,
+        )
+        self._chkbtn_bundle_zip.grid(
+            row=2,
+            column=2,
+            padx=(5, 2),
+            pady=(20, 2),
+            sticky="nsew",
+            columnspan=2,
+        )
+        lbl_bundle_zip_option = Label(frames.export, text="ZIP Bundle", width=21)
+        lbl_bundle_zip_option.grid(
+            row=2,
+            column=3,
+            padx=(2, 5),
+            pady=(20, 2),
+            sticky="nsew",
+        )
+
+        self._chkbtn_bundle_by_prop = Checkbutton(
+            frames.export,
+            bootstyle="round-toggle",  # type:ignore
+            variable=variables.bundle_by_prop,
+            state=DISABLED,
+        )
+        self._chkbtn_bundle_by_prop.grid(
+            row=2,
+            column=4,
+            padx=(5, 2),
+            pady=(20, 2),
+            sticky="nsw",
+        )
+        lbl_bundle_by_prop = Label(frames.export, text="Bundle by property:", width=21)
+        lbl_bundle_by_prop.grid(
+            row=2,
+            column=5,
+            padx=(2, 5),
+            pady=(20, 2),
+            sticky="nsw",
+        )
+        self._entry_bundle_by_prop = Entry(
+            frames.export,
+            textvariable=variables.bundle_by_prop_txt,
+            state=DISABLED,
+        )
+        self._entry_bundle_by_prop.grid(
+            row=2,
+            column=6,
+            padx=(2, Layout.MARGIN_X),
+            pady=(20, 2),
+            sticky="nsew",
+            columnspan=2,
         )
         # endregion
 
@@ -658,15 +659,15 @@ class Layout:
         )
         self._chkbtn_ignore_unknown.grid(
             row=3,
-            column=0,
-            padx=(Layout.MARGIN_X, 2),
+            column=2,
+            padx=(5, 2),
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
         )
-        lbl_ignore_unknown = Label(frames.export, text="Ignore Unknown", width=25)
+        lbl_ignore_unknown = Label(frames.export, text="Ignore Unknown", width=21)
         lbl_ignore_unknown.grid(
             row=3,
-            column=1,
+            column=3,
             padx=(2, 5),
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
@@ -682,17 +683,17 @@ class Layout:
         )
         self._chkbtn_ignore_prefixed.grid(
             row=3,
-            column=2,
+            column=4,
             padx=(5, 2),
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
         )
         lbl_ignore_prefixed = Label(
-            frames.export, text="Ignore Prefixed with:", width=25
+            frames.export, text="Ignore Prefixed with:", width=21
         )
         lbl_ignore_prefixed.grid(
             row=3,
-            column=3,
+            column=5,
             padx=(2, 5),
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
@@ -704,7 +705,7 @@ class Layout:
         )
         self._entry_ignore_prefix_txt.grid(
             row=3,
-            column=4,
+            column=6,
             padx=(2, Layout.MARGIN_X),
             pady=(20, Layout.MARGIN_Y),
             sticky="nsew",

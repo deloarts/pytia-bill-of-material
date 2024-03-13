@@ -100,66 +100,6 @@ class Traces:
 
         self._validate_button_export()
 
-    def trace_bundle(self, *_) -> None:
-        """Trace callback for the `bundle` BooleanVar."""
-
-        if self.vars.bundle.get():
-            self.layout.label_bundle_path.grid()
-            self.layout.input_bundle_export_path.grid()
-            self.layout.button_bundle_export_path.grid()
-
-            self.layout.label_docket_path.grid_remove()
-            self.layout.input_docket_export_path.grid_remove()
-            self.layout.button_docket_export_path.grid_remove()
-
-            self.layout.label_drawing_path.grid_remove()
-            self.layout.input_drawing_export_path.grid_remove()
-            self.layout.button_drawing_export_path.grid_remove()
-
-            self.layout.label_stp_path.grid_remove()
-            self.layout.input_stp_export_path.grid_remove()
-            self.layout.button_stp_export_path.grid_remove()
-
-            self.layout.label_stl_path.grid_remove()
-            self.layout.input_stl_export_path.grid_remove()
-            self.layout.button_stl_export_path.grid_remove()
-
-            self.layout.label_jpg_path.grid_remove()
-            self.layout.input_jpg_export_path.grid_remove()
-            self.layout.button_jpg_export_path.grid_remove()
-        else:
-            self.layout.label_bundle_path.grid_remove()
-            self.layout.input_bundle_export_path.grid_remove()
-            self.layout.button_bundle_export_path.grid_remove()
-
-            self.layout.label_docket_path.grid()
-            self.layout.input_docket_export_path.grid()
-            self.layout.button_docket_export_path.grid()
-
-            self.layout.label_drawing_path.grid()
-            self.layout.input_drawing_export_path.grid()
-            self.layout.button_drawing_export_path.grid()
-
-            self.layout.label_stp_path.grid()
-            self.layout.input_stp_export_path.grid()
-            self.layout.button_stp_export_path.grid()
-
-            self.layout.label_stl_path.grid()
-            self.layout.input_stl_export_path.grid()
-            self.layout.button_stl_export_path.grid()
-
-            self.layout.label_jpg_path.grid()
-            self.layout.input_jpg_export_path.grid()
-            self.layout.button_jpg_export_path.grid()
-
-        self.trace_docket_export_path()
-        self.trace_drawing_export_path()
-        self.trace_stp_export_path()
-        self.trace_stl_export_path()
-        self.trace_jpg_export_path()
-
-        self.trace_bundle_export_path()
-
     # @default_color
     def trace_bom_export_path(self, *_) -> None:
         """
@@ -386,6 +326,66 @@ class Traces:
             self.frames.paths.grid()
             self.frames.export.grid()
             self.frames.footer.grid()
+
+    def trace_bundle(self, *_) -> None:
+        """Trace callback for the `bundle` BooleanVar."""
+
+        if self.vars.bundle.get():
+            self.layout.label_bundle_path.grid()
+            self.layout.input_bundle_export_path.grid()
+            self.layout.button_bundle_export_path.grid()
+
+            self.layout.label_docket_path.grid_remove()
+            self.layout.input_docket_export_path.grid_remove()
+            self.layout.button_docket_export_path.grid_remove()
+
+            self.layout.label_drawing_path.grid_remove()
+            self.layout.input_drawing_export_path.grid_remove()
+            self.layout.button_drawing_export_path.grid_remove()
+
+            self.layout.label_stp_path.grid_remove()
+            self.layout.input_stp_export_path.grid_remove()
+            self.layout.button_stp_export_path.grid_remove()
+
+            self.layout.label_stl_path.grid_remove()
+            self.layout.input_stl_export_path.grid_remove()
+            self.layout.button_stl_export_path.grid_remove()
+
+            self.layout.label_jpg_path.grid_remove()
+            self.layout.input_jpg_export_path.grid_remove()
+            self.layout.button_jpg_export_path.grid_remove()
+        else:
+            self.layout.label_bundle_path.grid_remove()
+            self.layout.input_bundle_export_path.grid_remove()
+            self.layout.button_bundle_export_path.grid_remove()
+
+            self.layout.label_docket_path.grid()
+            self.layout.input_docket_export_path.grid()
+            self.layout.button_docket_export_path.grid()
+
+            self.layout.label_drawing_path.grid()
+            self.layout.input_drawing_export_path.grid()
+            self.layout.button_drawing_export_path.grid()
+
+            self.layout.label_stp_path.grid()
+            self.layout.input_stp_export_path.grid()
+            self.layout.button_stp_export_path.grid()
+
+            self.layout.label_stl_path.grid()
+            self.layout.input_stl_export_path.grid()
+            self.layout.button_stl_export_path.grid()
+
+            self.layout.label_jpg_path.grid()
+            self.layout.input_jpg_export_path.grid()
+            self.layout.button_jpg_export_path.grid()
+
+        self.trace_docket_export_path()
+        self.trace_drawing_export_path()
+        self.trace_stp_export_path()
+        self.trace_stl_export_path()
+        self.trace_jpg_export_path()
+
+        self.trace_bundle_export_path()
 
     def trace_zip_bundle(self, *_) -> None:
         """Trace callback for the `zip_bundle` StringVar"""
