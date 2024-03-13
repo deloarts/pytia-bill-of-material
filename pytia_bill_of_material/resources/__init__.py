@@ -9,6 +9,7 @@ import atexit
 import importlib.resources
 import json
 import os
+import re
 import tkinter.messagebox as tkmsg
 from dataclasses import asdict
 from dataclasses import dataclass
@@ -49,7 +50,6 @@ class SettingsExport:
     apply_username_in_docket: bool
     lock_drawing_views: bool
     jpg_views: List[List[float]]
-    bundle_by_prop: str
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)
@@ -228,6 +228,11 @@ class BOMHeaderItems:
     made: List[str] | None
     bought: List[str] | None
 
+    def summary_as_dict(self) -> dict:
+        return {
+            re.split(":|=", item)[0]: re.split(":|=", item)[-1] for item in self.summary
+        }
+
 
 @dataclass(slots=True, kw_only=True)
 class BOMFiles:
@@ -303,6 +308,8 @@ class AppData:
     theme: str = STYLES[0]
     zip_bundle: bool = True
     bundle_by_prop: bool = True
+    bundle_by_prop_txt: str = ""
+    bundle_by_prop_value: str = ""
 
     def __post_init__(self) -> None:
         self.version = (

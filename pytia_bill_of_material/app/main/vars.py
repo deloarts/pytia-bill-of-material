@@ -39,6 +39,7 @@ class Variables:
     bundle: BooleanVar
     zip_bundle: BooleanVar
     bundle_by_prop: BooleanVar
+    bundle_by_prop_value: StringVar
     bundle_by_prop_txt: StringVar
 
     export_docket: BooleanVar
@@ -94,7 +95,12 @@ class Variables:
         self.bundle_by_prop_txt = StringVar(
             master=root,
             name="bundle_by_prop_txt",
-            value=resource.settings.export.bundle_by_prop,
+            value=resource.appdata.bundle_by_prop_txt,
+        )
+        self.bundle_by_prop_value = StringVar(
+            master=root,
+            name="bundle_by_prop_value",
+            value=resource.appdata.bundle_by_prop_value,
         )
 
         self.export_documentation = BooleanVar(master=root, name="export_documentation")

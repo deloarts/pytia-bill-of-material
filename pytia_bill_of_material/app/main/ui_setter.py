@@ -85,7 +85,7 @@ class UISetter:
         self.layout.checkbox_bundle_data.configure(state=tk.NORMAL)
         self.layout.checkbox_bundle_zip.configure(state=tk.NORMAL)
         self.layout.checkbox_bundle_by_prop.configure(state=tk.NORMAL)
-        self.layout._entry_bundle_by_prop.configure(state=tk.NORMAL)
+        self.layout.input_bundle_by_prop_txt.configure(state="readonly")
 
         self.layout.input_bom_export_path.configure(state=tk.NORMAL)
         self.layout.button_bom_export_path.configure(state=tk.NORMAL)
@@ -189,7 +189,7 @@ class UISetter:
         self.layout.checkbox_bundle_data.configure(state=tk.DISABLED)
         self.layout.checkbox_bundle_zip.configure(state=tk.DISABLED)
         self.layout.checkbox_bundle_by_prop.configure(state=tk.DISABLED)
-        self.layout._entry_bundle_by_prop.configure(state=tk.DISABLED)
+        self.layout.input_bundle_by_prop_txt.configure(state=tk.DISABLED)
 
         self.layout.input_bom_export_path.configure(state=tk.DISABLED)
         self.layout.button_bom_export_path.configure(state=tk.DISABLED)

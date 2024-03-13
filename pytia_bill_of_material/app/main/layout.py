@@ -635,12 +635,12 @@ class Layout:
             pady=(20, 2),
             sticky="nsw",
         )
-        self._entry_bundle_by_prop = Entry(
+        self._combo_bundle_by_prop = Combobox(
             frames.export,
             textvariable=variables.bundle_by_prop_txt,
             state=DISABLED,
         )
-        self._entry_bundle_by_prop.grid(
+        self._combo_bundle_by_prop.grid(
             row=2,
             column=6,
             padx=(2, Layout.MARGIN_X),
@@ -648,6 +648,19 @@ class Layout:
             sticky="nsew",
             columnspan=2,
         )
+        # self._entry_bundle_by_prop = Entry(
+        #     frames.export,
+        #     textvariable=variables.bundle_by_prop_txt,
+        #     state=DISABLED,
+        # )
+        # self._entry_bundle_by_prop.grid(
+        #     row=2,
+        #     column=6,
+        #     padx=(2, Layout.MARGIN_X),
+        #     pady=(20, 2),
+        #     sticky="nsew",
+        #     columnspan=2,
+        # )
         # endregion
 
         # region ignore source "unknown"
@@ -879,8 +892,8 @@ class Layout:
         return self._chkbtn_bundle_by_prop
 
     @property
-    def input_bundle_by_prop_txt(self) -> Entry:
-        return self._entry_bundle_by_prop
+    def input_bundle_by_prop_txt(self) -> Combobox:
+        return self._combo_bundle_by_prop
 
     @property
     def input_bom_export_path(self) -> Entry:
