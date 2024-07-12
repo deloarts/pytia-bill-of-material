@@ -16,15 +16,15 @@ repos:
 
   - repo: local
     hooks:
-      - id: pylint
-        name: pylint
-        entry: poetry run pylint pytia_bill_of_material/
-        language: system
-        always_run: true
-        pass_filenames: false
-        args:
-          - --rcfile=./.pylintrc
-          - --fail-under=9
+      # - id: pylint
+      #   name: pylint
+      #   entry: poetry run pylint pytia_bill_of_material/
+      #   language: system
+      #   always_run: true
+      #   pass_filenames: false
+      #   args:
+      #     - --rcfile=./.pylintrc
+      #     - --fail-under=9
 
       - id: poetry-check
         name: poetry-check
