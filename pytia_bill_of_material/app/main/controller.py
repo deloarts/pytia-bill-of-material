@@ -114,17 +114,17 @@ class Controller:
 
     def _property_controller(self) -> None:
         """Run the property controller. Handles the main product's properties."""
-        # Set machine property
+        # Set product property
         if (
-            machine_property := self.doc_helper.get_property(
-                name=resource.props.machine
+            product_property := self.doc_helper.get_property(
+                name=resource.props.product
             )
         ) is None:
             raise PytiaPropertyNotFoundError(
-                f"Cannot find required property {resource.props.machine!r} in the main product. "
+                f"Cannot find required property {resource.props.product!r} in the main product. "
                 "Please run the Property Manager App first."
             )
-        self.vars.machine.set(machine_property)
+        self.vars.product.set(product_property)
 
     def _default_values_controller(self) -> None:
         """
@@ -147,7 +147,7 @@ class Controller:
         bom_name = get_bom_export_name(
             workspace=self.workspace,
             project=self.vars.project.get(),
-            machine=self.vars.machine.get(),
+            product=self.vars.product.get(),
         )
         if self.workspace.elements.bom_folder is not None:
             if os.path.isdir(self.workspace.elements.bom_folder):

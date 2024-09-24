@@ -127,7 +127,7 @@ class Props:
     """Dataclass for properties on the part (properties.json)."""
 
     project: str
-    machine: str
+    product: str
     creator: str
     modifier: str
 
@@ -203,7 +203,7 @@ class RequiredHeaderItems:
     """Required headers dataclass."""
 
     project: str
-    machine: str
+    product: str
     partnumber: str
     revision: str
     quantity: str

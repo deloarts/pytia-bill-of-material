@@ -1,6 +1,6 @@
 {
     "project": "pytia.project",
-    "machine": "pytia.machine",
+    "product": "pytia.product",
     "creator": "pytia.creator",
     "modifier": "pytia.modifier"
 }

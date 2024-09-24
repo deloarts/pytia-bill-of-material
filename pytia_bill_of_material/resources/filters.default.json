@@ -6,10 +6,10 @@
         "description": "The project number must start with a 'P', followed by a five digit number."
     },
     {
-        "property_name": "pytia.machine",
+        "property_name": "pytia.product",
         "criteria": "^M\\d{5}$",
         "condition": true,
-        "description": "The machine number must start with a 'M', followed by a five digit number."
+        "description": "The product number must start with a 'M', followed by a five digit number."
     },
     {
         "property_name": "$definition",
