@@ -228,7 +228,7 @@ class Callbacks:
                 initialfile=get_bom_export_name(
                     workspace=self.workspace,
                     project=self.vars.project.get(),
-                    machine=self.vars.machine.get(),
+                    product=self.vars.product.get(),
                 ),
                 title=resource.settings.title,
             )

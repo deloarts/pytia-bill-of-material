@@ -6,13 +6,13 @@
             "view": "bg"
         },
         {
-            "name": "text.machine",
-            "value": "Machine Number",
+            "name": "text.product",
+            "value": "Product Number",
             "view": "bg"
         },
         {
-            "name": "property.machine",
-            "value": "pytia.machine",
+            "name": "property.product",
+            "value": "pytia.product",
             "view": "bg"
         },
         {

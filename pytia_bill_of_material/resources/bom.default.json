@@ -10,7 +10,7 @@
     "header_items": {
         "summary": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -52,7 +52,7 @@
         ],
         "made": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -93,7 +93,7 @@
         ],
         "bought": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -115,7 +115,7 @@
     },
     "required_header_items": {
         "project": "pytia.project",
-        "machine": "pytia.machine",
+        "product": "pytia.product",
         "partnumber": "$partnumber",
         "revision": "$revision",
         "quantity": "$quantity",
