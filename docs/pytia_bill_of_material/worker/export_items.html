@@ -183,7 +183,7 @@ class ExportItemsTask(TaskProtocol):
     def _generate_qr(self, bom_item: BOMAssemblyItem) -&gt; Path:
         &#34;&#34;&#34;
         Generates a qr jpg file and saves it to the temp directory. Returns the path.
-        The QR ode contains a serialized json of: project, machine, partnumber and revision.
+        The QR ode contains a serialized json of: project, product, partnumber and revision.
 
         Args:
             bom_item (BOMAssemblyItem): An item of the BOM object, from which data to generate the \
@@ -193,14 +193,14 @@ class ExportItemsTask(TaskProtocol):
             Path: The path to the generated jpg file.
         &#34;&#34;&#34;
         project = bom_item.properties[resource.bom.required_header_items.project]
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         qr = QR()
         qr_data = {
             &#34;project&#34;: project,
-            &#34;machine&#34;: machine,
+            &#34;product&#34;: product,
             &#34;partnumber&#34;: partnumber,
             &#34;revision&#34;: revision,
         }
@@ -237,14 +237,14 @@ class ExportItemsTask(TaskProtocol):
 
         bundle = self.variables.bundle.get()
 
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
 
-        bundle_name = f&#34;{machine} {partnumber} Rev{revision}&#34;
+        bundle_name = f&#34;{product} {partnumber} Rev{revision}&#34;
         if self.variables.bundle_by_prop_value.get() in bom_item.properties:
             bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
         else:
@@ -284,8 +284,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -308,8 +308,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -367,8 +367,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -609,7 +609,7 @@ class ExportItemsTask(TaskProtocol):
     def _generate_qr(self, bom_item: BOMAssemblyItem) -&gt; Path:
         &#34;&#34;&#34;
         Generates a qr jpg file and saves it to the temp directory. Returns the path.
-        The QR ode contains a serialized json of: project, machine, partnumber and revision.
+        The QR ode contains a serialized json of: project, product, partnumber and revision.
 
         Args:
             bom_item (BOMAssemblyItem): An item of the BOM object, from which data to generate the \
@@ -619,14 +619,14 @@ class ExportItemsTask(TaskProtocol):
             Path: The path to the generated jpg file.
         &#34;&#34;&#34;
         project = bom_item.properties[resource.bom.required_header_items.project]
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         qr = QR()
         qr_data = {
             &#34;project&#34;: project,
-            &#34;machine&#34;: machine,
+            &#34;product&#34;: product,
             &#34;partnumber&#34;: partnumber,
             &#34;revision&#34;: revision,
         }
@@ -663,14 +663,14 @@ class ExportItemsTask(TaskProtocol):
 
         bundle = self.variables.bundle.get()
 
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
 
-        bundle_name = f&#34;{machine} {partnumber} Rev{revision}&#34;
+        bundle_name = f&#34;{product} {partnumber} Rev{revision}&#34;
         if self.variables.bundle_by_prop_value.get() in bom_item.properties:
             bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
         else:
@@ -710,8 +710,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -734,8 +734,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -793,8 +793,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber

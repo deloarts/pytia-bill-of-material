@@ -338,6 +338,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+[**v0.12.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.12.0): Rename machine and definition.  
 [**v0.11.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.11.0): Bundle export.  
 [**v0.10.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.10.1): Drawing export from workspace level.  
 [**v0.10.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.10.0): Add documentation docket, fix deprecation, fix logon.  

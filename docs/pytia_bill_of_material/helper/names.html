@@ -37,31 +37,33 @@ from pytia_ui_tools.handlers.workspace_handler import Workspace
 from resources import resource
 
 
-def get_bom_export_name(workspace: Workspace, project: str, machine: str) -&gt; str:
+def get_bom_export_name(workspace: Workspace, project: str, product: str) -&gt; str:
     &#34;&#34;&#34;
     Returns the name for the final excel bill of material file.
     The name set in the workspace config file will always be preferred to the name set in the
     settings.json file.
 
     The final file name will look like this:
-    `PROJECT_NUMBER MACHINE_NUMBER BOM_NAME`
+    `PROJECT_NUMBER PRODUCT_NUMBER BOM_NAME`
 
     The project number is omitted, if the number selection is set to KEEP.
 
     Args:
         workspace (Workspace): The workspace config.
         project (str): The project number for the final file.
-        machine (str): The machine number for the final file.
+        product (str): The product number for the final file.
 
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
     name = (
-        workspace.elements.bom_name
-        if workspace.elements.bom_name
-        else resource.settings.files.bom_export,
+        (
+            workspace.elements.bom_name
+            if workspace.elements.bom_name
+            else resource.settings.files.bom_export
+        ),
     )[0]
-    initial_file = f&#34;{machine} {name}&#34;
+    initial_file = f&#34;{product} {name}&#34;
 
     if project != KEEP:
         initial_file = f&#34;{project} {initial_file}&#34;
@@ -76,7 +78,7 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; st
     &#34;&#34;&#34;
     Returns the name for generated data to export (docket, step, stl, ...).
     The export name will look like this:
-    `MACHINE_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
+    `PRODUCT_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER PRODUCT_NUMBER PARTNUMBER REVISION`
 
     The revision will be prefixed with `Rev`.
 
@@ -88,7 +90,7 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; st
         str: The file name without extension.
     &#34;&#34;&#34;
     value = (
-        f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
+        f&#34;{bom_item.properties[resource.bom.required_header_items.product]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
     )
@@ -108,14 +110,14 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; st
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="pytia_bill_of_material.helper.names.get_bom_export_name"><code class="name flex">
-<span>def <span class="ident">get_bom_export_name</span></span>(<span>workspace: pytia_ui_tools.handlers.workspace_handler.Workspace, project: str, machine: str) ‑> str</span>
+<span>def <span class="ident">get_bom_export_name</span></span>(<span>workspace: pytia_ui_tools.handlers.workspace_handler.Workspace, project: str, product: str) ‑> str</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the name for the final excel bill of material file.
 The name set in the workspace config file will always be preferred to the name set in the
 settings.json file.</p>
 <p>The final file name will look like this:
-<code>PROJECT_NUMBER MACHINE_NUMBER BOM_NAME</code></p>
+<code>PROJECT_NUMBER PRODUCT_NUMBER BOM_NAME</code></p>
 <p>The project number is omitted, if the number selection is set to KEEP.</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -123,8 +125,8 @@ settings.json file.</p>
 <dd>The workspace config.</dd>
 <dt><strong><code>project</code></strong> :&ensp;<code>str</code></dt>
 <dd>The project number for the final file.</dd>
-<dt><strong><code>machine</code></strong> :&ensp;<code>str</code></dt>
-<dd>The machine number for the final file.</dd>
+<dt><strong><code>product</code></strong> :&ensp;<code>str</code></dt>
+<dd>The product number for the final file.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -135,31 +137,33 @@ settings.json file.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_bom_export_name(workspace: Workspace, project: str, machine: str) -&gt; str:
+<pre><code class="python">def get_bom_export_name(workspace: Workspace, project: str, product: str) -&gt; str:
     &#34;&#34;&#34;
     Returns the name for the final excel bill of material file.
     The name set in the workspace config file will always be preferred to the name set in the
     settings.json file.
 
     The final file name will look like this:
-    `PROJECT_NUMBER MACHINE_NUMBER BOM_NAME`
+    `PROJECT_NUMBER PRODUCT_NUMBER BOM_NAME`
 
     The project number is omitted, if the number selection is set to KEEP.
 
     Args:
         workspace (Workspace): The workspace config.
         project (str): The project number for the final file.
-        machine (str): The machine number for the final file.
+        product (str): The product number for the final file.
 
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
     name = (
-        workspace.elements.bom_name
-        if workspace.elements.bom_name
-        else resource.settings.files.bom_export,
+        (
+            workspace.elements.bom_name
+            if workspace.elements.bom_name
+            else resource.settings.files.bom_export
+        ),
     )[0]
-    initial_file = f&#34;{machine} {name}&#34;
+    initial_file = f&#34;{product} {name}&#34;
 
     if project != KEEP:
         initial_file = f&#34;{project} {initial_file}&#34;
@@ -176,7 +180,7 @@ settings.json file.</p>
 <dd>
 <div class="desc"><p>Returns the name for generated data to export (docket, step, stl, &hellip;).
 The export name will look like this:
-<code>MACHINE_NUMBER PARTNUMBER REVISION</code> or <code>PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION</code></p>
+<code>PRODUCT_NUMBER PARTNUMBER REVISION</code> or <code>PROJECT_NUMBER PRODUCT_NUMBER PARTNUMBER REVISION</code></p>
 <p>The revision will be prefixed with <code>Rev</code>.</p>
 <h2 id="args">Args</h2>
 <dl>
@@ -198,7 +202,7 @@ The export name will look like this:
     &#34;&#34;&#34;
     Returns the name for generated data to export (docket, step, stl, ...).
     The export name will look like this:
-    `MACHINE_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER MACHINE_NUMBER PARTNUMBER REVISION`
+    `PRODUCT_NUMBER PARTNUMBER REVISION` or `PROJECT_NUMBER PRODUCT_NUMBER PARTNUMBER REVISION`
 
     The revision will be prefixed with `Rev`.
 
@@ -210,7 +214,7 @@ The export name will look like this:
         str: The file name without extension.
     &#34;&#34;&#34;
     value = (
-        f&#34;{bom_item.properties[resource.bom.required_header_items.machine]} &#34;
+        f&#34;{bom_item.properties[resource.bom.required_header_items.product]} &#34;
         f&#34;{bom_item.properties[resource.bom.required_header_items.partnumber]} &#34;
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
     )

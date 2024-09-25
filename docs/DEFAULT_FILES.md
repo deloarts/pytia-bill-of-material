@@ -26,7 +26,7 @@ This file contains the configuration for the final bill of material excel file.
     "header_items": {
         "summary": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -39,6 +39,7 @@ This file contains the configuration for the final bill of material excel file.
             "Base Size Preset:pytia.base_size_preset",
             "Mass:pytia.mass",
             "Source:$source",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -67,7 +68,7 @@ This file contains the configuration for the final bill of material excel file.
         ],
         "made": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -79,6 +80,7 @@ This file contains the configuration for the final bill of material excel file.
             "Base Size:pytia.base_size",
             "Base Size Preset:pytia.base_size_preset",
             "Mass:pytia.mass",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -107,7 +109,7 @@ This file contains the configuration for the final bill of material excel file.
         ],
         "bought": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -116,6 +118,7 @@ This file contains the configuration for the final bill of material excel file.
             "Definition:$definition",
             "Rev:$revision",
             "Mass:pytia.mass",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -128,7 +131,7 @@ This file contains the configuration for the final bill of material excel file.
     },
     "required_header_items": {
         "project": "pytia.project",
-        "machine": "pytia.machine",
+        "product": "pytia.product",
         "partnumber": "$partnumber",
         "revision": "$revision",
         "quantity": "$quantity"
@@ -258,7 +261,7 @@ This file contains all part properties, which are required for this app.
 ```json
 {
     "project": "pytia.project",
-    "machine": "pytia.machine",
+    "product": "pytia.product",
     "creator": "pytia.creator",
     "modifier": "pytia.modifier"
 }

@@ -6,10 +6,16 @@
         "description": "The project number must start with a 'P', followed by a five digit number."
     },
     {
-        "property_name": "pytia.machine",
+        "property_name": "pytia.product",
         "criteria": "^M\\d{5}$",
         "condition": true,
-        "description": "The machine number must start with a 'M', followed by a five digit number."
+        "description": "The product number must start with a 'M', followed by a five digit number."
+    },
+    {
+        "property_name": "$definition",
+        "criteria": ".*",
+        "condition": true,
+        "description": "The definition must be set."
     },
     {
         "property_name": "$revision",
@@ -58,12 +64,12 @@
         "description": "At least the first process must be defined for 'made' parts and products."
     },
     {
-        "property_name": "$definition",
+        "property_name": "pytia.order_number",
         "criteria": ".*",
         "condition": {
             "$source": "$bought"
         },
-        "description": "The definition must be set for 'bought' parts and products."
+        "description": "The order number must be set for 'bought' parts and products."
     },
     {
         "property_name": "pytia.manufacturer",

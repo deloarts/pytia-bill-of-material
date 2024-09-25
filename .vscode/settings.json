@@ -87,6 +87,9 @@
         },
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
+    "python.analysis.extraPaths": [
+        "./pytia_bill_of_material"
+    ],
     "python.testing.pytestArgs": [
         "tests"
     ],

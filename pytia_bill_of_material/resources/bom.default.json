@@ -10,7 +10,7 @@
     "header_items": {
         "summary": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -23,6 +23,7 @@
             "Base Size Preset:pytia.base_size_preset",
             "Mass:pytia.mass",
             "Source:$source",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -51,7 +52,7 @@
         ],
         "made": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -63,6 +64,7 @@
             "Base Size:pytia.base_size",
             "Base Size Preset:pytia.base_size_preset",
             "Mass:pytia.mass",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -91,7 +93,7 @@
         ],
         "bought": [
             "Project:pytia.project",
-            "Machine:pytia.machine",
+            "Product:pytia.product",
             "Number:$number",
             "Type:$type",
             "Quantity:$quantity",
@@ -100,6 +102,7 @@
             "Definition:$definition",
             "Rev:$revision",
             "Mass:pytia.mass",
+            "Order Number:pytia.order_number",
             "Manufacturer:pytia.manufacturer",
             "Supplier:pytia.supplier",
             "Group:pytia.group",
@@ -112,7 +115,7 @@
     },
     "required_header_items": {
         "project": "pytia.project",
-        "machine": "pytia.machine",
+        "product": "pytia.product",
         "partnumber": "$partnumber",
         "revision": "$revision",
         "quantity": "$quantity",

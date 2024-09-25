@@ -154,7 +154,7 @@ class ExportItemsTask(TaskProtocol):
     def _generate_qr(self, bom_item: BOMAssemblyItem) -> Path:
         """
         Generates a qr jpg file and saves it to the temp directory. Returns the path.
-        The QR ode contains a serialized json of: project, machine, partnumber and revision.
+        The QR ode contains a serialized json of: project, product, partnumber and revision.
 
         Args:
             bom_item (BOMAssemblyItem): An item of the BOM object, from which data to generate the \
@@ -164,14 +164,14 @@ class ExportItemsTask(TaskProtocol):
             Path: The path to the generated jpg file.
         """
         project = bom_item.properties[resource.bom.required_header_items.project]
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         qr = QR()
         qr_data = {
             "project": project,
-            "machine": machine,
+            "product": product,
             "partnumber": partnumber,
             "revision": revision,
         }
@@ -208,14 +208,14 @@ class ExportItemsTask(TaskProtocol):
 
         bundle = self.variables.bundle.get()
 
-        machine = bom_item.properties[resource.bom.required_header_items.machine]
+        product = bom_item.properties[resource.bom.required_header_items.product]
         partnumber = bom_item.properties[resource.bom.required_header_items.partnumber]
         revision = bom_item.properties[resource.bom.required_header_items.revision]
 
         export_filename = get_data_export_name(bom_item, with_project=False)
         export_filename_with_project = get_data_export_name(bom_item, with_project=True)
 
-        bundle_name = f"{machine} {partnumber} Rev{revision}"
+        bundle_name = f"{product} {partnumber} Rev{revision}"
         if self.variables.bundle_by_prop_value.get() in bom_item.properties:
             bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
         else:
@@ -255,8 +255,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -279,8 +279,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber
@@ -338,8 +338,8 @@ class ExportItemsTask(TaskProtocol):
                         project=bom_item.properties[
                             resource.bom.required_header_items.project
                         ],
-                        machine=bom_item.properties[
-                            resource.bom.required_header_items.machine
+                        product=bom_item.properties[
+                            resource.bom.required_header_items.product
                         ],
                         partnumber=bom_item.properties[
                             resource.bom.required_header_items.partnumber

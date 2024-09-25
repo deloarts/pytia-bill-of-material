@@ -21,7 +21,7 @@ class Variables:
 
     # Infrastructure variables
     project: StringVar
-    machine: StringVar
+    product: StringVar
 
     # Path variables
     bom_export_path: StringVar
@@ -68,7 +68,7 @@ class Variables:
         """
 
         self.project = StringVar(master=root, name="project")
-        self.machine = StringVar(master=root, name="machine")
+        self.product = StringVar(master=root, name="product")
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
         self.documentation_export_path = StringVar(
