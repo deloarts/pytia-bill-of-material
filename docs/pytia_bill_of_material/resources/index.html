@@ -158,7 +158,7 @@ class Props:
     &#34;&#34;&#34;Dataclass for properties on the part (properties.json).&#34;&#34;&#34;
 
     project: str
-    machine: str
+    product: str
     creator: str
     modifier: str
 
@@ -234,7 +234,7 @@ class RequiredHeaderItems:
     &#34;&#34;&#34;Required headers dataclass.&#34;&#34;&#34;
 
     project: str
-    machine: str
+    product: str
     partnumber: str
     revision: str
     quantity: str
@@ -748,7 +748,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.11.0', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo', zip_bundle: bool = True, bundle_by_prop: bool = True, bundle_by_prop_txt: str = '', bundle_by_prop_value: str = '')</span>
+<span>(</span><span>*, version: str = '0.12.0', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo', zip_bundle: bool = True, bundle_by_prop: bool = True, bundle_by_prop_txt: str = '', bundle_by_prop_value: str = '')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -1278,7 +1278,7 @@ class Keywords:
 </dd>
 <dt id="pytia_bill_of_material.resources.Props"><code class="flex name class">
 <span>class <span class="ident">Props</span></span>
-<span>(</span><span>*, project: str, machine: str, creator: str, modifier: str)</span>
+<span>(</span><span>*, project: str, product: str, creator: str, modifier: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for properties on the part (properties.json).</p></div>
@@ -1291,7 +1291,7 @@ class Props:
     &#34;&#34;&#34;Dataclass for properties on the part (properties.json).&#34;&#34;&#34;
 
     project: str
-    machine: str
+    product: str
     creator: str
     modifier: str
 
@@ -1324,11 +1324,11 @@ def keys(self) -&gt; List[str]:
     return [f.name for f in fields(self)]</code></pre>
 </details>
 </dd>
-<dt id="pytia_bill_of_material.resources.Props.machine"><code class="name">var <span class="ident">machine</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.Props.modifier"><code class="name">var <span class="ident">modifier</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.resources.Props.modifier"><code class="name">var <span class="ident">modifier</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.Props.product"><code class="name">var <span class="ident">product</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1353,7 +1353,7 @@ def values(self) -&gt; List[str]:
 </dd>
 <dt id="pytia_bill_of_material.resources.RequiredHeaderItems"><code class="flex name class">
 <span>class <span class="ident">RequiredHeaderItems</span></span>
-<span>(</span><span>*, project: str, machine: str, partnumber: str, revision: str, quantity: str, source: str)</span>
+<span>(</span><span>*, project: str, product: str, partnumber: str, revision: str, quantity: str, source: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Required headers dataclass.</p></div>
@@ -1366,7 +1366,7 @@ class RequiredHeaderItems:
     &#34;&#34;&#34;Required headers dataclass.&#34;&#34;&#34;
 
     project: str
-    machine: str
+    product: str
     partnumber: str
     revision: str
     quantity: str
@@ -1397,11 +1397,11 @@ def keys(self) -&gt; List[str]:
     return [f.name for f in fields(self)]</code></pre>
 </details>
 </dd>
-<dt id="pytia_bill_of_material.resources.RequiredHeaderItems.machine"><code class="name">var <span class="ident">machine</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.RequiredHeaderItems.partnumber"><code class="name">var <span class="ident">partnumber</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
-<dt id="pytia_bill_of_material.resources.RequiredHeaderItems.partnumber"><code class="name">var <span class="ident">partnumber</span> : str</code></dt>
+<dt id="pytia_bill_of_material.resources.RequiredHeaderItems.product"><code class="name">var <span class="ident">product</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -2659,8 +2659,8 @@ def values(self) -&gt; List[str]:
 <ul class="two-column">
 <li><code><a title="pytia_bill_of_material.resources.Props.creator" href="#pytia_bill_of_material.resources.Props.creator">creator</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Props.keys" href="#pytia_bill_of_material.resources.Props.keys">keys</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.Props.machine" href="#pytia_bill_of_material.resources.Props.machine">machine</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Props.modifier" href="#pytia_bill_of_material.resources.Props.modifier">modifier</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.Props.product" href="#pytia_bill_of_material.resources.Props.product">product</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Props.project" href="#pytia_bill_of_material.resources.Props.project">project</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Props.values" href="#pytia_bill_of_material.resources.Props.values">values</a></code></li>
 </ul>
@@ -2669,8 +2669,8 @@ def values(self) -&gt; List[str]:
 <h4><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems" href="#pytia_bill_of_material.resources.RequiredHeaderItems">RequiredHeaderItems</a></code></h4>
 <ul class="two-column">
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.keys" href="#pytia_bill_of_material.resources.RequiredHeaderItems.keys">keys</a></code></li>
-<li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.machine" href="#pytia_bill_of_material.resources.RequiredHeaderItems.machine">machine</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.partnumber" href="#pytia_bill_of_material.resources.RequiredHeaderItems.partnumber">partnumber</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.product" href="#pytia_bill_of_material.resources.RequiredHeaderItems.product">product</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.project" href="#pytia_bill_of_material.resources.RequiredHeaderItems.project">project</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.quantity" href="#pytia_bill_of_material.resources.RequiredHeaderItems.quantity">quantity</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.RequiredHeaderItems.revision" href="#pytia_bill_of_material.resources.RequiredHeaderItems.revision">revision</a></code></li>
