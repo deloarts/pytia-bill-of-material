@@ -10,6 +10,7 @@ from tkinter import WORD
 from tkinter import BooleanVar
 from tkinter import Text
 from tkinter import Tk
+from tkinter import messagebox as tkmsg
 
 from app.main.frames import Frames
 from app.main.vars import Variables
@@ -17,6 +18,7 @@ from const import STYLES
 from helper.appearance import set_appearance_menu
 from helper.files import set_external_bom_file
 from helper.messages import show_help
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.widgets.tooltips import ToolTip
 from resources import resource
 from ttkbootstrap import Button
@@ -744,10 +746,15 @@ class Layout:
         )
 
         self._tree_report_failed_items = Treeview(
-            frames.report, columns=("failed_items",), show="headings", height=10
+            frames.report,
+            columns=("failed_items", "parent"),
+            show="headings",
+            height=10,
         )
         self._tree_report_failed_items.heading("failed_items", text="Failed Items")
-        self._tree_report_failed_items.column("failed_items", width=200, anchor="w")
+        self._tree_report_failed_items.heading("parent", text="Parent Assembly")
+        self._tree_report_failed_items.column("failed_items", width=100, anchor="w")
+        self._tree_report_failed_items.column("parent", width=100, anchor="w")
         self._tree_report_failed_items.grid(
             row=0,
             column=0,
@@ -758,10 +765,15 @@ class Layout:
         )
 
         self._tree_report_failed_props = Treeview(
-            frames.report, columns=("failed_props",), show="headings", height=10
+            frames.report,
+            columns=("failed_props", "user_ref_prop"),
+            show="headings",
+            height=10,
         )
         self._tree_report_failed_props.heading("failed_props", text="Failed Properties")
-        self._tree_report_failed_props.column("failed_props", width=200, anchor="w")
+        self._tree_report_failed_props.heading("user_ref_prop", text="Property Name")
+        self._tree_report_failed_props.column("failed_props", width=100, anchor="w")
+        self._tree_report_failed_props.column("user_ref_prop", width=100, anchor="w")
         self._tree_report_failed_props.grid(
             row=0,
             column=1,
@@ -879,7 +891,8 @@ class Layout:
         # endregion
         # endregion
 
-    def add_filters(self) -> None:
+    def add_filters(self, workspace: Workspace) -> None:
+        """Adds filter toggles to the window. Uses all items from the filter.json file"""
         for index, filter_element in enumerate(resource.filters):
             filter_element._enabled = BooleanVar(
                 master=self._root, value=True, name=f"filter_element_{index}"
@@ -899,6 +912,29 @@ class Layout:
                 sticky="nsw",
             )
             ToolTip(widget=self._chkbtn_filter_element, text=filter_element.description)
+
+            if filter_element.criteria.startswith("%WS:"):
+                workspace_element = filter_element.criteria.split("%WS:")[-1]
+                if not workspace.available:
+                    tkmsg.showwarning(
+                        resource.settings.title,
+                        f"The filter '{filter_element.name}' depends on the workspace "
+                        "file, but there is no workspace file found. Please create "
+                        "it.\n\nThe corresponding filter will be disabled for now.",
+                    )
+                    filter_element._enabled.set(False)
+                elif (
+                    not workspace_element in workspace.elements.__dict__
+                    or workspace.elements.__dict__[workspace_element] is None
+                ):
+                    tkmsg.showwarning(
+                        resource.settings.title,
+                        f"The filter '{filter_element.name}' depends on the workspace "
+                        f"element '{workspace_element}', but there is no element with "
+                        "that name. Please create it in the workspace file.\n\n"
+                        "The corresponding filter will be disabled for now.",
+                    )
+                    filter_element._enabled.set(False)
 
     @property
     def input_project(self) -> Combobox:

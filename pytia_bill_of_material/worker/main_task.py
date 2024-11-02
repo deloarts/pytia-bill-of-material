@@ -21,7 +21,6 @@ from pytia.utilities.docket import DocketConfig
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from resources import resource
-from utils.system import explorer
 
 from .catia_export import CatiaExportTask
 from .export_items import ExportItemsTask
@@ -117,14 +116,10 @@ class MainTask:
 
             if file_utility.all_moved:
                 log.info("Export completed successfully.")
-                if tkmsg.askyesno(
+                tkmsg.showinfo(
                     title=resource.settings.title,
-                    message=(
-                        "Successfully exported the bill of material.\n\n"
-                        "Do you want to open the export folder?"
-                    ),
-                ):
-                    explorer(Path(self.variables.bom_export_path.get()))
+                    message="Successfully exported the bill of material.",
+                )
             else:
                 log.info("Export completed with skipped files.")
                 tkmsg.showwarning(
@@ -206,7 +201,7 @@ class MainTask:
         self.bom = task.bom
 
     def _create_report(self, *_) -> None:
-        task = MakeReportTask(bom=self.bom)
+        task = MakeReportTask(bom=self.bom, workspace=self.workspace)
         task.run()
 
         self.status = task.status

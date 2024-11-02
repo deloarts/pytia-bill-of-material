@@ -56,11 +56,7 @@ class MainUI(tk.Tk):
         self.set_ui: UISetter  # Instantiate later, dependent on doc_helper
         self.vars = Variables(root=self)
         self.frames = Frames(root=self)
-        self.layout = Layout(
-            root=self,
-            frames=self.frames,
-            variables=self.vars,
-        )
+        self.layout = Layout(root=self, frames=self.frames, variables=self.vars)
 
         # UI TOOLS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.window_manager = WindowManager(self)
@@ -117,9 +113,6 @@ class MainUI(tk.Tk):
         # Setup doc helper
         self.doc_helper = LazyDocumentHelper()
 
-        # Add filters to ui
-        self.layout.add_filters()
-
         # Setup the workspace
         self.workspace = Workspace(
             path=self.doc_helper.path,
@@ -129,6 +122,9 @@ class MainUI(tk.Tk):
         self.workspace.read_yaml()
         if ws_title := self.workspace.elements.title:
             self.title(f"{self.title()}  -  {ws_title} (Workspace)")
+
+        # Add filters to ui
+        self.layout.add_filters(workspace=self.workspace)
 
         # Setup the ui state handler
         self.set_ui = UISetter(
