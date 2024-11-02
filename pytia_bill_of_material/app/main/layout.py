@@ -7,6 +7,7 @@
 from tkinter import DISABLED
 from tkinter import HORIZONTAL
 from tkinter import WORD
+from tkinter import BooleanVar
 from tkinter import Text
 from tkinter import Tk
 
@@ -16,6 +17,8 @@ from const import STYLES
 from helper.appearance import set_appearance_menu
 from helper.files import set_external_bom_file
 from helper.messages import show_help
+from pytia_ui_tools.widgets.tooltips import ToolTip
+from resources import resource
 from ttkbootstrap import Button
 from ttkbootstrap import Checkbutton
 from ttkbootstrap import Combobox
@@ -41,7 +44,11 @@ class Layout:
             root (Tk): The main window.
             frames (Frames): The frames of the main window.
             variables (Variables): The variables of the main window.
-        """ """"""
+        """
+        self._root = root
+        self._frames = frames
+        self._variables = variables
+
         # region FRAME Infra ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         # region MENU
@@ -435,9 +442,7 @@ class Layout:
             pady=(Layout.MARGIN_Y, 2),
             sticky="nsew",
         )
-        lbl_export_documentation = Label(
-            frames.export, text="Export Documentation", width=21
-        )
+        lbl_export_documentation = Label(frames.export, text="Export Docu", width=19)
         lbl_export_documentation.grid(
             row=0,
             column=1,
@@ -461,7 +466,7 @@ class Layout:
             pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
-        lbl_export_docket = Label(frames.export, text="Export Docket", width=21)
+        lbl_export_docket = Label(frames.export, text="Export Docket", width=19)
         lbl_export_docket.grid(
             row=0,
             column=3,
@@ -485,7 +490,7 @@ class Layout:
             pady=(Layout.MARGIN_Y, 2),
             sticky="nsw",
         )
-        lbl_export_drawing = Label(frames.export, text="Export Drawing", width=21)
+        lbl_export_drawing = Label(frames.export, text="Export Drawing", width=19)
         lbl_export_drawing.grid(
             row=0,
             column=5,
@@ -509,7 +514,7 @@ class Layout:
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_stp = Label(frames.export, text="Export STP", width=21)
+        lbl_export_stp = Label(frames.export, text="Export STP", width=19)
         lbl_export_stp.grid(
             row=1,
             column=1,
@@ -533,7 +538,7 @@ class Layout:
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_stl = Label(frames.export, text="Export STL", width=21)
+        lbl_export_stl = Label(frames.export, text="Export STL", width=19)
         lbl_export_stl.grid(
             row=1,
             column=3,
@@ -557,7 +562,7 @@ class Layout:
             pady=(2, 2),
             sticky="nsw",
         )
-        lbl_export_jpg = Label(frames.export, text="Export JPG", width=21)
+        lbl_export_jpg = Label(frames.export, text="Export JPG", width=19)
         lbl_export_jpg.grid(
             row=1,
             column=5,
@@ -582,7 +587,7 @@ class Layout:
             sticky="nsew",
             columnspan=2,
         )
-        lbl_bundle_option = Label(frames.export, text="Bundle Data", width=21)
+        lbl_bundle_option = Label(frames.export, text="Bundle Data", width=19)
         lbl_bundle_option.grid(
             row=2,
             column=1,
@@ -605,7 +610,7 @@ class Layout:
             sticky="nsew",
             columnspan=2,
         )
-        lbl_bundle_zip_option = Label(frames.export, text="ZIP Bundle", width=21)
+        lbl_bundle_zip_option = Label(frames.export, text="ZIP Bundle", width=19)
         lbl_bundle_zip_option.grid(
             row=2,
             column=3,
@@ -627,7 +632,7 @@ class Layout:
             pady=(20, 2),
             sticky="nsw",
         )
-        lbl_bundle_by_prop = Label(frames.export, text="Bundle by property:", width=21)
+        lbl_bundle_by_prop = Label(frames.export, text="Bundle by property:", width=19)
         lbl_bundle_by_prop.grid(
             row=2,
             column=5,
@@ -677,7 +682,7 @@ class Layout:
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
         )
-        lbl_ignore_unknown = Label(frames.export, text="Ignore Unknown", width=21)
+        lbl_ignore_unknown = Label(frames.export, text="Ignore Unknown", width=19)
         lbl_ignore_unknown.grid(
             row=3,
             column=3,
@@ -702,7 +707,7 @@ class Layout:
             sticky="nsw",
         )
         lbl_ignore_prefixed = Label(
-            frames.export, text="Ignore Prefixed with:", width=21
+            frames.export, text="Ignore Prefixed with:", width=19
         )
         lbl_ignore_prefixed.grid(
             row=3,
@@ -729,7 +734,7 @@ class Layout:
 
         # region FRAME Report ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        lbl_report = Label(frames.report, text="Foo", width=18)
+        lbl_report = Label(frames.report, text="Report", width=18)
         lbl_report.grid(
             row=0,
             column=0,
@@ -873,6 +878,27 @@ class Layout:
         self._btn_exit.grid(row=0, column=2, padx=(2, 0), pady=0, sticky="e")
         # endregion
         # endregion
+
+    def add_filters(self) -> None:
+        for index, filter_element in enumerate(resource.filters):
+            filter_element._enabled = BooleanVar(
+                master=self._root, value=True, name=f"filter_element_{index}"
+            )
+
+            self._chkbtn_filter_element = Checkbutton(
+                self._frames.filter_elements,
+                bootstyle="round-toggle",  # type:ignore
+                text=f"  {filter_element.property_name}",
+                variable=filter_element._enabled,
+            )
+            self._chkbtn_filter_element.grid(
+                row=index,
+                column=0,
+                padx=(6, 6),
+                pady=(10, 10),
+                sticky="nsw",
+            )
+            ToolTip(widget=self._chkbtn_filter_element, text=filter_element.description)
 
     @property
     def input_project(self) -> Combobox:

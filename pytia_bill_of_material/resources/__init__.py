@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from dataclasses import fields
 from pathlib import Path
+from tkinter import BooleanVar
 from typing import Dict
 from typing import List
 from typing import Literal
@@ -188,6 +189,8 @@ class FilterElement:
     criteria: str
     condition: Dict[str, str] | bool
     description: str
+
+    _enabled: BooleanVar | None = None
 
 
 @dataclass(slots=True, kw_only=True)

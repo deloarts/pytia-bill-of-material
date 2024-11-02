@@ -83,18 +83,26 @@ class MakeReportTask(TaskProtocol):
                     parent_path=assembly.path,
                 )
 
-                for filter_item in resource.filters:
-                    if filter_item.property_name in assembly_item.properties:
-                        conditions_satisfied = []
+                for filter_element in resource.filters:
+                    if not filter_element._enabled:
+                        raise ValueError(
+                            f"Filter element {filter_element.property_name} is not "
+                            "setup correctly: '_enabled' is None."
+                        )
 
-                        if isinstance((cond_item := filter_item.condition), bool):
+                    if filter_element.property_name in assembly_item.properties:
+                        conditions_satisfied = []
+                        conditions_satisfied.append(filter_element._enabled.get())
+
+                        if isinstance((cond_item := filter_element.condition), bool):
                             conditions_satisfied.append(cond_item)
 
                         elif isinstance(cond_item, dict):
                             for cond_key in cond_item:
                                 if not cond_key in assembly_item.properties:
                                     raise KeyError(
-                                        f"Condition key {cond_key!r} is not available in the BOM properties."
+                                        f"Condition key {cond_key!r} is not available "
+                                        "in the BOM properties."
                                     )
 
                                 if (
@@ -113,33 +121,37 @@ class MakeReportTask(TaskProtocol):
 
                         if all(conditions_satisfied):
                             if assembly_item.properties[
-                                filter_item.property_name
+                                filter_element.property_name
                             ] is not None and re.match(
-                                filter_item.criteria,
+                                filter_element.criteria,
                                 str(
-                                    assembly_item.properties[filter_item.property_name]
+                                    assembly_item.properties[
+                                        filter_element.property_name
+                                    ]
                                 ),
                             ):
-                                report_item.details[
-                                    filter_item.property_name
-                                ] = Status.OK
-                                log.debug(f"    - {filter_item.property_name}: OK.")
+                                report_item.details[filter_element.property_name] = (
+                                    Status.OK
+                                )
+                                log.debug(f"    - {filter_element.property_name}: OK.")
                             else:
-                                report_item.details[
-                                    filter_item.property_name
-                                ] = Status.FAILED
+                                report_item.details[filter_element.property_name] = (
+                                    Status.FAILED
+                                )
                                 report_item.status = Status.FAILED
                                 report.status = Status.FAILED
-                                log.debug(f"    - {filter_item.property_name}: FAILED.")
+                                log.debug(
+                                    f"    - {filter_element.property_name}: FAILED."
+                                )
                         else:
-                            report_item.details[
-                                filter_item.property_name
-                            ] = Status.SKIPPED
-                            log.debug(f"    - {filter_item.property_name}: SKIPPED.")
+                            report_item.details[filter_element.property_name] = (
+                                Status.SKIPPED
+                            )
+                            log.debug(f"    - {filter_element.property_name}: SKIPPED.")
 
                     else:
                         raise ValueError(
-                            f"Item {filter_item.property_name!r} not in BOM."
+                            f"Item {filter_element.property_name!r} not in BOM."
                         )
 
                 report.items.append(report_item)
