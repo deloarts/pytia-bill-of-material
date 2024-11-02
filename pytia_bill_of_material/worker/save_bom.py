@@ -89,11 +89,7 @@ class SaveBomTask(TaskProtocol):
             cls._write_worksheet(
                 worksheet=ws_made,
                 header=resource.bom.header_items.made,
-                data=[
-                    item
-                    for item in bom.summary.items
-                    if item.source == resource.applied_keywords.made
-                ],
+                data=[item for item in bom.summary.items if item.source == resource.applied_keywords.made],
                 strict=False,
             )
 
@@ -102,11 +98,7 @@ class SaveBomTask(TaskProtocol):
             cls._write_worksheet(
                 worksheet=ws_bought,
                 header=resource.bom.header_items.bought,
-                data=[
-                    item
-                    for item in bom.summary.items
-                    if item.source == resource.applied_keywords.bought
-                ],
+                data=[item for item in bom.summary.items if item.source == resource.applied_keywords.bought],
                 strict=False,
             )
 

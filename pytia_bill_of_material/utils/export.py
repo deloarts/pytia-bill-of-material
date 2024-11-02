@@ -62,11 +62,7 @@ def export_docket(
     # Translate creator username
     if document.properties.exists(resource.props.creator):
         if (
-            resource.user_exists(
-                creator_logon := document.properties.get_by_name(
-                    resource.props.creator
-                ).value
-            )
+            resource.user_exists(creator_logon := document.properties.get_by_name(resource.props.creator).value)
             and resource.settings.export.apply_username_in_docket
         ):
             creator = resource.get_user_by_logon(creator_logon).name
@@ -78,11 +74,7 @@ def export_docket(
     # Translate modifier username
     if document.properties.exists(resource.props.modifier):
         if (
-            resource.user_exists(
-                modifier_logon := document.properties.get_by_name(
-                    resource.props.modifier
-                ).value
-            )
+            resource.user_exists(modifier_logon := document.properties.get_by_name(resource.props.modifier).value)
             and resource.settings.export.apply_username_in_docket
         ):
             modifier = resource.get_user_by_logon(modifier_logon).name
@@ -92,10 +84,7 @@ def export_docket(
         modifier = "Unknown"
 
     # Translate publisher username
-    if (
-        resource.user_exists(LOGON)
-        and resource.settings.export.apply_username_in_docket
-    ):
+    if resource.user_exists(LOGON) and resource.settings.export.apply_username_in_docket:
         publisher = resource.get_user_by_logon(LOGON).name
     else:
         publisher = LOGON
@@ -160,12 +149,8 @@ def export_drawing(
 
             with PyDrawingDocument() as drawing_document:
                 drawing_document.open(drawing_path)
-                drawing_document.drawing_document.export_data(
-                    pdf_target_path, "pdf", overwrite=True
-                )
-                drawing_document.drawing_document.export_data(
-                    dxf_target_path, "dxf", overwrite=True
-                )
+                drawing_document.drawing_document.export_data(pdf_target_path, "pdf", overwrite=True)
+                drawing_document.drawing_document.export_data(dxf_target_path, "dxf", overwrite=True)
                 if resource.settings.export.lock_drawing_views:
                     sheets = drawing_document.drawing_document.sheets
                     for i_sheet in range(1, sheets.count + 1):
@@ -177,21 +162,12 @@ def export_drawing(
                         for i_view in range(3, sheet.views.count + 1):
                             view = sheet.views.item(i_view)
                             view.lock_status = True
-                            log.info(
-                                f"Locked view {view.name!r} of sheet {sheet.name!r}."
-                            )
+                            log.info(f"Locked view {view.name!r} of sheet {sheet.name!r}.")
                     drawing_document.save()
         else:
-            with open(
-                Path(folder, filename + " (failed).txt"), "w", encoding="utf8"
-            ) as f:
-                f.write(
-                    f"Failed to export drawing of file: {filename}.\n"
-                    f"Path not valid: {drawing_file_value}"
-                )
-            log.error(
-                f"Skipped drawing export of {document.document.name!r}: Path not valid."
-            )
+            with open(Path(folder, filename + " (failed).txt"), "w", encoding="utf8") as f:
+                f.write(f"Failed to export drawing of file: {filename}.\n" f"Path not valid: {drawing_file_value}")
+            log.error(f"Skipped drawing export of {document.document.name!r}: Path not valid.")
 
     else:
         log.info(f"Skipped drawing export of {document.document.name!r}: Path not set.")
@@ -216,9 +192,7 @@ def _export_stp_stl(
     if filetype not in filename:
         filename += f".{filetype}"
 
-    document.document.export_data(
-        file_name=Path(folder, filename), file_type=filetype, overwrite=True
-    )
+    document.document.export_data(file_name=Path(folder, filename), file_type=filetype, overwrite=True)
 
 
 def export_stp(
@@ -292,8 +266,7 @@ def export_jpg(
     for index, view in enumerate(views):
         export_path = Path(
             folder,
-            filename
-            + f"{' (View ' + str(index+1) + ')' if len(views) > 1 else ''}.jpg",
+            filename + f"{' (View ' + str(index+1) + ')' if len(views) > 1 else ''}.jpg",
         )
         log.debug(f"Exporting view {index} of {filename} to {export_path}...")
 
@@ -301,13 +274,9 @@ def export_jpg(
         active_viewer.update()
         active_viewer.reframe()  # Equivalent to "fit all in"
         # active_viewer.zoom_in()
-        active_viewer.capture_to_file(
-            cat_capture_format.index("catCaptureFormatJPEG"), str(export_path)
-        )
+        active_viewer.capture_to_file(cat_capture_format.index("catCaptureFormatJPEG"), str(export_path))
 
     # Reset background and show tree
     active_viewer.full_screen = current_fs
     active_viewer.put_background_color(current_bg_color)  # type: ignore
-    specs_and_geom.layout = cat_specs_and_geom_window_layout.index(
-        "catWindowSpecsAndGeom"
-    )
+    specs_and_geom.layout = cat_specs_and_geom_window_layout.index("catWindowSpecsAndGeom")

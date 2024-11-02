@@ -1,35 +1,41 @@
 [
     {
+        "name": "Project Number",
         "property_name": "pytia.project",
         "criteria": "^P\\d{5}$",
         "condition": true,
         "description": "The project number must start with a 'P', followed by a five digit number."
     },
     {
+        "name": "Product Number",
         "property_name": "pytia.product",
-        "criteria": "^M\\d{5}$",
+        "criteria": "%WS:product",
         "condition": true,
-        "description": "The product number must start with a 'M', followed by a five digit number."
+        "description": "The product number must match the value set in the workspace file. The product number must therefor exists in the workspace file."
     },
     {
+        "name": "Definition",
         "property_name": "$definition",
         "criteria": ".*",
         "condition": true,
         "description": "The definition must be set."
     },
     {
+        "name": "Revision",
         "property_name": "$revision",
         "criteria": "^\\d+$",
         "condition": true,
         "description": "The revision must be a number."
     },
     {
+        "name": "Part Number",
         "property_name": "$partnumber",
         "criteria": ".*",
         "condition": true,
         "description": "The partnumber must have a value."
     },
     {
+        "name": "Node Number",
         "property_name": "$number",
         "criteria": "^\\d+$",
         "condition": {
@@ -38,6 +44,7 @@
         "description": "The number must be set. Have you forgotten to run the 'Generate Numbering' command?"
     },
     {
+        "name": "Material",
         "property_name": "pytia.material",
         "criteria": ".*",
         "condition": {
@@ -47,6 +54,7 @@
         "description": "The material must be set for 'made' parts."
     },
     {
+        "name": "Base Size",
         "property_name": "pytia.base_size",
         "criteria": ".*",
         "condition": {
@@ -56,6 +64,7 @@
         "description": "The base size must be set for 'made' parts."
     },
     {
+        "name": "Process 1",
         "property_name": "pytia.process_1",
         "criteria": ".*",
         "condition": {
@@ -64,6 +73,7 @@
         "description": "At least the first process must be defined for 'made' parts and products."
     },
     {
+        "name": "Order Number",
         "property_name": "pytia.order_number",
         "criteria": ".*",
         "condition": {
@@ -72,6 +82,7 @@
         "description": "The order number must be set for 'bought' parts and products."
     },
     {
+        "name": "Manufacturer",
         "property_name": "pytia.manufacturer",
         "criteria": ".*",
         "condition": {

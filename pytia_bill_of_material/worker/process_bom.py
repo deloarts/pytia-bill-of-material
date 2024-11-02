@@ -155,9 +155,7 @@ class ProcessBomTask(TaskProtocol):
         # At this it's necessary to extract the PROPERTY_NAME first, to create the
         # correct output, because CATIA needs the property names to create the bill of
         # material.
-        header_items = ResourceCommons.get_property_names_from_config(
-            resource.bom.header_items.summary
-        )
+        header_items = ResourceCommons.get_property_names_from_config(resource.bom.header_items.summary)
 
         for ri in range(1, max_row + 2):
             log.debug(f"Working on row {ri} of {worksheet.max_row}.")
@@ -183,9 +181,7 @@ class ProcessBomTask(TaskProtocol):
             # assemblies.
             if row_is_empty(worksheet, ri) and assembly is not None and not is_summary:
                 bom.assemblies.append(assembly)
-                log.debug(
-                    f"Added assembly of {assembly.partnumber!r} to the list of assemblies."
-                )
+                log.debug(f"Added assembly of {assembly.partnumber!r} to the list of assemblies.")
                 assembly = None
 
             # Same as above, but we check here if the assembly object is the summary.
@@ -233,11 +229,7 @@ class ProcessBomTask(TaskProtocol):
             # can start treating the current row as data row.
             # All if-conditions before were only for validating the beginning or the end
             # of a bom-data-range.
-            if (
-                assembly is not None
-                and ri >= data_row
-                and not row_is_empty(worksheet, ri)
-            ):
+            if assembly is not None and ri >= data_row and not row_is_empty(worksheet, ri):
                 # The row data dict will contain the data from the current row (wow).
                 # It's keys are the header items names (from the bom.json) and it's
                 # values are the actual data.
@@ -267,21 +259,15 @@ class ProcessBomTask(TaskProtocol):
                         overwrite_number=overwrite_project,
                     )
 
-                    cell_value = self._translate_username(
-                        header_position=position, cell_value=cell_value
-                    )
+                    cell_value = self._translate_username(header_position=position, cell_value=cell_value)
 
-                    cell_value = self._apply_fixed_text(
-                        header_position=position, cell_value=cell_value
-                    )
+                    cell_value = self._apply_fixed_text(header_position=position, cell_value=cell_value)
 
                     # cell_value = self._apply_placeholder_header(
                     #     header_position=position, cell_value=cell_value
                     # )
 
-                    self._add_to_row_data(
-                        row_data, header_position=position, cell_value=cell_value
-                    )
+                    self._add_to_row_data(row_data, header_position=position, cell_value=cell_value)
 
                 # The partnumber must be available in the header. We use the partnumber
                 # to identify a part or product in the assembly.
@@ -299,41 +285,27 @@ class ProcessBomTask(TaskProtocol):
                 # Warn the user when a part or product is missing. This happens mostly
                 # when there are items in the catia tree, that aren't stored in a file.
                 # (Cameras, Simulations, etc.)
-                if (
-                    row_data[resource.applied_keywords.partnumber]
-                    not in self._paths.items
-                ):
+                if row_data[resource.applied_keywords.partnumber] not in self._paths.items:
                     item_path = None
-                    log.warning(
-                        "No path found for item "
-                        f"{row_data[resource.applied_keywords.partnumber]!r}."
-                    )
+                    log.warning("No path found for item " f"{row_data[resource.applied_keywords.partnumber]!r}.")
                 else:
-                    item_path = self._paths.items[
-                        row_data[resource.applied_keywords.partnumber]
-                    ]
+                    item_path = self._paths.items[row_data[resource.applied_keywords.partnumber]]
 
                 # Finally we check if the assembly item isn't tagged to be ignored.
                 # If not, it's added to the dataclass.
                 if (
                     self._ignore_source_unknown
-                    and row_data[resource.applied_keywords.source]
-                    == resource.applied_keywords.unknown
+                    and row_data[resource.applied_keywords.source] == resource.applied_keywords.unknown
                 ) or (
                     self._ignore_prefix_txt is not None
                     and any(
                         [
-                            str(
-                                row_data[resource.applied_keywords.partnumber]
-                            ).startswith(s)
+                            str(row_data[resource.applied_keywords.partnumber]).startswith(s)
                             for s in self._ignore_prefix_txt.split(";")
                         ]
                     )
                 ):
-                    log.info(
-                        " - Ignoring item "
-                        f"{row_data[resource.applied_keywords.partnumber]!r}."
-                    )
+                    log.info(" - Ignoring item " f"{row_data[resource.applied_keywords.partnumber]!r}.")
                 else:
                     assembly_item = BOMAssemblyItem(
                         partnumber=row_data[resource.applied_keywords.partnumber],
@@ -387,9 +359,7 @@ class ProcessBomTask(TaskProtocol):
         # Check if CATIA exported all headers from the provided header items dict from the bom.json
         for item in header_items:
             if item not in header.keys():
-                raise KeyError(
-                    f"Header item {item!r} not found in exported bill of material."
-                )
+                raise KeyError(f"Header item {item!r} not found in exported bill of material.")
 
         # Check if all required header items from the bom.json are in the exported headers
         # TODO: Put this into another function, this function has too many responsibilities.
@@ -404,9 +374,7 @@ class ProcessBomTask(TaskProtocol):
         return header
 
     @staticmethod
-    def _add_to_row_data(
-        row_data: dict, header_position: str, cell_value: str | Any | None
-    ) -> None:
+    def _add_to_row_data(row_data: dict, header_position: str, cell_value: str | Any | None) -> None:
         """
         Adds the cell value to the correct header position of the row_data dict.
 
@@ -438,17 +406,12 @@ class ProcessBomTask(TaskProtocol):
         Returns:
             str | Any | None: The cell value or the overwritten project number.
         """
-        if (
-            header_position == resource.bom.required_header_items.project
-            and overwrite_number != KEEP
-        ):
+        if header_position == resource.bom.required_header_items.project and overwrite_number != KEEP:
             return overwrite_number
         return cell_value
 
     @staticmethod
-    def _translate_username(
-        header_position: str, cell_value: str | Any | None
-    ) -> str | Any | None:
+    def _translate_username(header_position: str, cell_value: str | Any | None) -> str | Any | None:
         """
         Returns the translated username if the header position is creator or modifier.
         Otherwise returns the given cell_value without changes.
@@ -462,19 +425,14 @@ class ProcessBomTask(TaskProtocol):
         """
         if (
             resource.settings.export.apply_username_in_bom
-            and (
-                header_position == resource.props.creator
-                or header_position == resource.props.modifier
-            )
+            and (header_position == resource.props.creator or header_position == resource.props.modifier)
             and resource.user_exists(str(cell_value))
         ):
             return resource.get_user_by_logon(str(cell_value)).name
         return cell_value
 
     @staticmethod
-    def _apply_fixed_text(
-        header_position: str, cell_value: str | Any | None
-    ) -> str | Any | None:
+    def _apply_fixed_text(header_position: str, cell_value: str | Any | None) -> str | Any | None:
         """
         Returns the value of the fixed text accordingly to the header_items list.
 
@@ -528,8 +486,7 @@ class ProcessBomTask(TaskProtocol):
             log.debug(f"Sorting 'made' items by {resource.bom.sort.made!r}")
             return (
                 props[resource.bom.sort.made]
-                if props[resource.applied_keywords.source]
-                == resource.applied_keywords.made
+                if props[resource.applied_keywords.source] == resource.applied_keywords.made
                 else None
             )
 
@@ -538,8 +495,7 @@ class ProcessBomTask(TaskProtocol):
             log.debug(f"Sorting 'bought' items by {resource.bom.sort.bought!r}")
             return (
                 props[resource.bom.sort.bought]
-                if props[resource.applied_keywords.source]
-                == resource.applied_keywords.bought
+                if props[resource.applied_keywords.source] == resource.applied_keywords.bought
                 else None
             )
 

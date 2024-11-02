@@ -101,7 +101,5 @@ class MoveFilesTask(TaskProtocol):
         for abs_file in source.rglob("*.*"):
             rel_file = abs_file.relative_to(source)
             target_file = Path(target, rel_file)
-            os.makedirs(
-                target_file.parent, exist_ok=True
-            )  # TODO: Integrate this into file_utility
+            os.makedirs(target_file.parent, exist_ok=True)  # TODO: Integrate this into file_utility
             file_utility.add_move(source=abs_file, target=target_file)

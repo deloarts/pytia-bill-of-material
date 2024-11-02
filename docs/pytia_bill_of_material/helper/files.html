@@ -55,9 +55,7 @@ def set_external_bom_file(root: Tk, vars: Variables) -&gt; None:
         return
 
     if not Path(path).is_file():
-        tkmsg.showerror(
-            title=resource.settings.title, message=&#34;The given input is not a file.&#34;
-        )
+        tkmsg.showerror(title=resource.settings.title, message=&#34;The given input is not a file.&#34;)
         return
 
     if not &#34;.xls&#34; in path:
@@ -105,9 +103,7 @@ def set_external_bom_file(root: Tk, vars: Variables) -&gt; None:
         return
 
     if not Path(path).is_file():
-        tkmsg.showerror(
-            title=resource.settings.title, message=&#34;The given input is not a file.&#34;
-        )
+        tkmsg.showerror(title=resource.settings.title, message=&#34;The given input is not a file.&#34;)
         return
 
     if not &#34;.xls&#34; in path:

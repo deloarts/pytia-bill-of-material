@@ -62,9 +62,7 @@ class Traces:
         self.vars.bundle.trace_add("write", self.trace_bundle)
         self.vars.bom_export_path.trace_add("write", self.trace_bom_export_path)
         self.vars.docket_export_path.trace_add("write", self.trace_docket_export_path)
-        self.vars.documentation_export_path.trace_add(
-            "write", self.trace_docu_export_path
-        )
+        self.vars.documentation_export_path.trace_add("write", self.trace_docu_export_path)
         self.vars.drawing_export_path.trace_add("write", self.trace_drawing_export_path)
         self.vars.stp_export_path.trace_add("write", self.trace_stp_export_path)
         self.vars.stl_export_path.trace_add("write", self.trace_stl_export_path)
@@ -113,13 +111,9 @@ class Traces:
             and os.path.isabs(Path(self.vars.bom_export_path.get()).parent)
             and ".xlsx" in self.vars.bom_export_path.get()
         ):
-            self.layout.input_bom_export_path.configure(
-                foreground=self.style.colors.fg  # type: ignore
-            )
+            self.layout.input_bom_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
         else:
-            self.layout.input_bom_export_path.configure(
-                foreground=self.style.colors.danger  # type: ignore
-            )
+            self.layout.input_bom_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
 
         self._validate_button_export()
 
@@ -154,8 +148,7 @@ class Traces:
         """
         if (
             is_dir := bool(
-                os.path.isdir(self.vars.docket_export_path.get())
-                and os.path.isabs(self.vars.docket_export_path.get())
+                os.path.isdir(self.vars.docket_export_path.get()) and os.path.isabs(self.vars.docket_export_path.get())
             )
             and templates.docket_path is not None
             and os.path.isfile(templates.docket_path)
@@ -175,18 +168,12 @@ class Traces:
         Trace callback for the `drawing_export_path` StringVar.
         Validates the path and sets the state of the checkbox accordingly to the path variable.
         """
-        if os.path.isdir(self.vars.drawing_export_path.get()) and os.path.isabs(
-            self.vars.drawing_export_path.get()
-        ):
-            self.layout.input_drawing_export_path.configure(
-                foreground=self.style.colors.fg  # type: ignore
-            )
+        if os.path.isdir(self.vars.drawing_export_path.get()) and os.path.isabs(self.vars.drawing_export_path.get()):
+            self.layout.input_drawing_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
             self.layout.checkbox_export_drawing.configure(state=NORMAL)
             self.vars.export_drawing.set(True)
         else:
-            self.layout.input_drawing_export_path.configure(
-                foreground=self.style.colors.danger  # type: ignore
-            )
+            self.layout.input_drawing_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
             self.vars.export_drawing.set(False)
             self.layout.checkbox_export_drawing.configure(state=DISABLED)
 
@@ -194,18 +181,12 @@ class Traces:
         """Trace callback for the `stp_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         """
-        if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(
-            self.vars.stp_export_path.get()
-        ):
-            self.layout.input_stp_export_path.configure(
-                foreground=self.style.colors.fg  # type: ignore
-            )
+        if os.path.isdir(self.vars.stp_export_path.get()) and os.path.isabs(self.vars.stp_export_path.get()):
+            self.layout.input_stp_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
             self.layout.checkbox_export_stp.configure(state=NORMAL)
             self.vars.export_stp.set(True)
         else:
-            self.layout.input_stp_export_path.configure(
-                foreground=self.style.colors.danger  # type: ignore
-            )
+            self.layout.input_stp_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
             self.vars.export_stp.set(False)
             self.layout.checkbox_export_stp.configure(state=DISABLED)
 
@@ -213,18 +194,12 @@ class Traces:
         """Trace callback for the `stl_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         """
-        if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(
-            self.vars.stl_export_path.get()
-        ):
-            self.layout.input_stl_export_path.configure(
-                foreground=self.style.colors.fg  # type: ignore
-            )
+        if os.path.isdir(self.vars.stl_export_path.get()) and os.path.isabs(self.vars.stl_export_path.get()):
+            self.layout.input_stl_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
             self.layout.checkbox_export_stl.configure(state=NORMAL)
             self.vars.export_stl.set(True)
         else:
-            self.layout.input_stl_export_path.configure(
-                foreground=self.style.colors.danger  # type: ignore
-            )
+            self.layout.input_stl_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
             self.vars.export_stl.set(False)
             self.layout.checkbox_export_stl.configure(state=DISABLED)
 
@@ -232,18 +207,12 @@ class Traces:
         """Trace callback for the `jpg_export_path` StringVar. Validates the path and sets the state
         of the checkbox accordingly to the path variable.
         """
-        if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(
-            self.vars.jpg_export_path.get()
-        ):
-            self.layout.input_jpg_export_path.configure(
-                foreground=self.style.colors.fg  # type: ignore
-            )
+        if os.path.isdir(self.vars.jpg_export_path.get()) and os.path.isabs(self.vars.jpg_export_path.get()):
+            self.layout.input_jpg_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
             self.layout.checkbox_export_jpg.configure(state=NORMAL)
             self.vars.export_jpg.set(True)
         else:
-            self.layout.input_jpg_export_path.configure(
-                foreground=self.style.colors.danger  # type: ignore
-            )
+            self.layout.input_jpg_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
             self.vars.export_jpg.set(False)
             self.layout.checkbox_export_jpg.configure(state=DISABLED)
 
@@ -252,12 +221,8 @@ class Traces:
         of the checkbox accordingly to the path variable.
         """
         if self.vars.bundle.get():
-            if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(
-                self.vars.bundle_export_path.get()
-            ):
-                self.layout.input_bundle_export_path.configure(
-                    foreground=self.style.colors.fg  # type: ignore
-                )
+            if os.path.isdir(self.vars.bundle_export_path.get()) and os.path.isabs(self.vars.bundle_export_path.get()):
+                self.layout.input_bundle_export_path.configure(foreground=self.style.colors.fg)  # type: ignore
                 self.layout.checkbox_export_docket.configure(state=NORMAL)
                 self.layout.checkbox_export_drawing.configure(state=NORMAL)
                 self.layout.checkbox_export_stp.configure(state=NORMAL)
@@ -269,9 +234,7 @@ class Traces:
                 self.vars.export_stl.set(True)
                 self.vars.export_jpg.set(True)
             else:
-                self.layout.input_bundle_export_path.configure(
-                    foreground=self.style.colors.danger  # type: ignore
-                )
+                self.layout.input_bundle_export_path.configure(foreground=self.style.colors.danger)  # type: ignore
                 self.vars.export_docket.set(False)
                 self.vars.export_drawing.set(False)
                 self.vars.export_stp.set(False)
@@ -301,24 +264,21 @@ class Traces:
             for item in self.vars.report.items:
                 if item.status == Status.FAILED:
                     self.layout.tree_report_failed_items.insert(
-                        "", "end", values=(item.partnumber,)
+                        "", "end", values=(item.partnumber, item.parent_partnumber)
                     )
 
             self.frames.infrastructure.grid_remove()
             self.frames.paths.grid_remove()
             self.frames.export.grid_remove()
+            self.frames.filters.grid_remove()
             self.frames.log.grid_remove()
             self.frames.footer.grid_remove()
 
             self.frames.report.grid()
             self.frames.report_footer.grid()
         else:
-            self.layout.tree_report_failed_items.delete(
-                *self.layout.tree_report_failed_items.get_children()
-            )
-            self.layout.tree_report_failed_props.delete(
-                *self.layout.tree_report_failed_props.get_children()
-            )
+            self.layout.tree_report_failed_items.delete(*self.layout.tree_report_failed_items.get_children())
+            self.layout.tree_report_failed_props.delete(*self.layout.tree_report_failed_props.get_children())
 
             self.frames.report.grid_remove()
             self.frames.report_footer.grid_remove()
@@ -326,6 +286,7 @@ class Traces:
             self.frames.infrastructure.grid()
             self.frames.paths.grid()
             self.frames.export.grid()
+            self.frames.filters.grid()
             self.frames.footer.grid()
 
     def trace_bundle(self, *_) -> None:
@@ -407,9 +368,7 @@ class Traces:
     def trace_bundle_by_prop_txt(self, *_) -> None:
         """Trace callback for the `bundle_by_prop_txt` StringVar"""
         self.vars.bundle_by_prop_value.set(
-            resource.bom.header_items.summary_as_dict()[
-                self.vars.bundle_by_prop_txt.get()
-            ]
+            resource.bom.header_items.summary_as_dict()[self.vars.bundle_by_prop_txt.get()]
         )
         resource.appdata.bundle_by_prop_txt = self.vars.bundle_by_prop_txt.get()
         resource.appdata.bundle_by_prop_value = self.vars.bundle_by_prop_value.get()

@@ -49,8 +49,7 @@ class PackageInfo:
 
 
 class Environment:
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     @staticmethod
     def is_virtual() -> bool:
@@ -76,8 +75,7 @@ class Environment:
 class Dependencies:
     """Class for managing dependencies."""
 
-    def __init__(self) -> None:
-        ...
+    def __init__(self) -> None: ...
 
     @staticmethod
     def read_dependencies_file() -> List[PackageInfo]:
@@ -141,9 +139,7 @@ class Dependencies:
                     )
                     sys.exit()
             else:
-                pip_commands[
-                    missing_package.name
-                ] = f'"{missing_package.name}=={missing_package.version}"'
+                pip_commands[missing_package.name] = f'"{missing_package.name}=={missing_package.version}"'
         return pip_commands
 
     def install_dependencies(self) -> None:
@@ -232,9 +228,7 @@ class VisualInstaller(tk.Tk):
             if str(VENV_PYTHONW) in python_exe:
                 python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
             command = f"start /wait {python_exe} -m pip install {pip_commands[key]} --no-cache-dir"
-            self.message.set(
-                f"Installing package {index+1} of {len(pip_commands)}: {key}"
-            )
+            self.message.set(f"Installing package {index+1} of {len(pip_commands)}: {key}")
             self.update_idletasks()
             with subprocess.Popen(command, shell=True) as process:
                 while process.poll() is None:

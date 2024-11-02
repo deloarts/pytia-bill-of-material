@@ -107,9 +107,7 @@ class PrepareTask(TaskProtocol):
         # correct output, because CATIA needs the property names to create the bill of
         # material.
 
-        prop_names = ResourceCommons.get_property_names_from_config(
-            resource.bom.header_items.summary
-        )
+        prop_names = ResourceCommons.get_property_names_from_config(resource.bom.header_items.summary)
         set_current_format(prop_names)
         set_secondary_format(prop_names)
 
@@ -142,14 +140,10 @@ class PrepareTask(TaskProtocol):
                     current_partnumber = Product(current_product.com_object).part_number
                     current_path = Path(Product(current_product.com_object).full_name)
                     paths.items[current_partnumber] = current_path
-                    log.info(
-                        f"Indexed item {current_product.name!r} to {str(current_path)!r}."
-                    )
+                    log.info(f"Indexed item {current_product.name!r} to {str(current_path)!r}.")
                     iterate_tree(current_product)
                 except Exception as e:
-                    log.warning(
-                        f"Skipped adding item {current_product.name!r} to paths: {e}"
-                    )
+                    log.warning(f"Skipped adding item {current_product.name!r} to paths: {e}")
 
         iterate_tree(product.product)
         return paths

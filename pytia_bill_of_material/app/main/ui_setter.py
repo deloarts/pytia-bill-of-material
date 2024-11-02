@@ -73,12 +73,12 @@ class UISetter:
             self.frames.infrastructure.grid()
             self.frames.paths.grid()
             self.frames.export.grid()
+            self.frames.filters.grid()
 
         self.layout.input_project.configure(
             state=(
                 "readonly"
-                if resource.settings.restrictions.strict_project
-                and self.workspace.elements.projects
+                if resource.settings.restrictions.strict_project and self.workspace.elements.projects
                 else tk.NORMAL
             )
         )
@@ -119,16 +119,14 @@ class UISetter:
         self.layout.checkbox_export_docket.configure(
             state=(
                 self._state_checkbox_export_docket
-                if os.path.isdir(self.vars.docket_export_path.get())
-                and templates.docket_path is not None
+                if os.path.isdir(self.vars.docket_export_path.get()) and templates.docket_path is not None
                 else tk.DISABLED
             )
         )
         self.layout.checkbox_export_documentation.configure(
             state=(
                 self._state_checkbox_export_docu
-                if os.path.isdir(self.vars.documentation_export_path.get())
-                and templates.documentation_path is not None
+                if os.path.isdir(self.vars.documentation_export_path.get()) and templates.documentation_path is not None
                 else tk.DISABLED
             )
         )
@@ -140,35 +138,17 @@ class UISetter:
             )
         )
         self.layout.checkbox_export_stp.configure(
-            state=(
-                self._state_checkbox_export_stp
-                if os.path.isdir(self.vars.stp_export_path.get())
-                else tk.DISABLED
-            )
+            state=(self._state_checkbox_export_stp if os.path.isdir(self.vars.stp_export_path.get()) else tk.DISABLED)
         )
         self.layout.checkbox_export_stl.configure(
-            state=(
-                self._state_checkbox_export_stl
-                if os.path.isdir(self.vars.stl_export_path.get())
-                else tk.DISABLED
-            )
+            state=(self._state_checkbox_export_stl if os.path.isdir(self.vars.stl_export_path.get()) else tk.DISABLED)
         )
         self.layout.checkbox_export_jpg.configure(
-            state=(
-                self._state_checkbox_export_jpg
-                if os.path.isdir(self.vars.jpg_export_path.get())
-                else tk.DISABLED
-            )
+            state=(self._state_checkbox_export_jpg if os.path.isdir(self.vars.jpg_export_path.get()) else tk.DISABLED)
         )
-        self.layout.checkbox_ignore_source_unknown.configure(
-            state=self._state_checkbox_ignore_unknown
-        )
+        self.layout.checkbox_ignore_source_unknown.configure(state=self._state_checkbox_ignore_unknown)
         self.layout.checkbox_ignore_prefixed.configure(
-            state=(
-                self._state_checkbox_ignore_prefixed
-                if len(self.vars.ignore_prefix_txt.get()) > 0
-                else tk.DISABLED
-            )
+            state=(self._state_checkbox_ignore_prefixed if len(self.vars.ignore_prefix_txt.get()) > 0 else tk.DISABLED)
         )
         self.layout.input_ignore_prefixed_txt.configure(state=tk.NORMAL)
 
@@ -212,9 +192,7 @@ class UISetter:
         self._state_checkbox_export_docket = self.layout.checkbox_export_docket.state()
         self.layout.checkbox_export_docket.configure(state=tk.DISABLED)
 
-        self._state_checkbox_export_drawing = (
-            self.layout.checkbox_export_drawing.state()
-        )
+        self._state_checkbox_export_drawing = self.layout.checkbox_export_drawing.state()
         self.layout.checkbox_export_drawing.configure(state=tk.DISABLED)
 
         self._state_checkbox_export_stp = self.layout.checkbox_export_stp.state()
@@ -226,14 +204,10 @@ class UISetter:
         self._state_checkbox_export_jpg = self.layout.checkbox_export_jpg.state()
         self.layout.checkbox_export_jpg.configure(state=tk.DISABLED)
 
-        self._state_checkbox_ignore_unknown = (
-            self.layout.checkbox_ignore_source_unknown.state()
-        )
+        self._state_checkbox_ignore_unknown = self.layout.checkbox_ignore_source_unknown.state()
         self.layout.checkbox_ignore_source_unknown.configure(state=tk.DISABLED)
 
-        self._state_checkbox_ignore_prefixed = (
-            self.layout.checkbox_ignore_prefixed.state()
-        )
+        self._state_checkbox_ignore_prefixed = self.layout.checkbox_ignore_prefixed.state()
         self.layout.checkbox_ignore_prefixed.configure(state=tk.DISABLED)
         self.layout.input_ignore_prefixed_txt.configure(state=tk.DISABLED)
 
@@ -250,6 +224,7 @@ class UISetter:
         self.frames.infrastructure.grid_remove()
         self.frames.paths.grid_remove()
         self.frames.export.grid_remove()
+        self.frames.filters.grid_remove()
         self.layout.progress_bar.grid()
         self.frames.log.grid()
 

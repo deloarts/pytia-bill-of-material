@@ -21,7 +21,6 @@ from pytia.utilities.docket import DocketConfig
 from pytia_ui_tools.handlers.workspace_handler import Workspace
 from pytia_ui_tools.utils.files import file_utility
 from resources import resource
-from utils.system import explorer
 
 from .catia_export import CatiaExportTask
 from .export_items import ExportItemsTask
@@ -73,9 +72,7 @@ class MainTask:
         self.frames = frames
         self.workspace = workspace
 
-        self.export_folder = Path(
-            TEMP_EXPORT, datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        )
+        self.export_folder = Path(TEMP_EXPORT, datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
         self.project = variables.project.get()
         self.status = Status.SKIPPED
         self.xlsx_path: Path
@@ -113,20 +110,14 @@ class MainTask:
 
             if self.doc_helper.name not in self.doc_helper.get_all_open_documents():
                 log.info("Re-opening main document...")
-                self.doc_helper.framework.catia.documents.open(
-                    str(self.doc_helper.path)
-                )
+                self.doc_helper.framework.catia.documents.open(self.doc_helper.path)
 
             if file_utility.all_moved:
                 log.info("Export completed successfully.")
-                if tkmsg.askyesno(
+                tkmsg.showinfo(
                     title=resource.settings.title,
-                    message=(
-                        "Successfully exported the bill of material.\n\n"
-                        "Do you want to open the export folder?"
-                    ),
-                ):
-                    explorer(Path(self.variables.bom_export_path.get()))
+                    message="Successfully exported the bill of material.",
+                )
             else:
                 log.info("Export completed with skipped files.")
                 tkmsg.showwarning(
@@ -142,10 +133,7 @@ class MainTask:
             self.variables.show_report.set(
                 tkmsg.askyesno(
                     title=resource.settings.title,
-                    message=(
-                        "There are errors in the bill of material.\n\n"
-                        "Do you want to open the report?"
-                    ),
+                    message=("There are errors in the bill of material.\n\nDo you want to open the report?"),
                     icon="warning",
                 )
             )
@@ -197,8 +185,7 @@ class MainTask:
             paths=self.doc_paths,
             ignore_prefix_txt=(
                 self.variables.ignore_prefix_txt.get()
-                if len(self.variables.ignore_prefix_txt.get()) > 0
-                and self.variables.ignore_prefix.get()
+                if len(self.variables.ignore_prefix_txt.get()) > 0 and self.variables.ignore_prefix.get()
                 else None
             ),
             ignore_source_unknown=self.variables.ignore_source_unknown.get(),
@@ -208,7 +195,7 @@ class MainTask:
         self.bom = task.bom
 
     def _create_report(self, *_) -> None:
-        task = MakeReportTask(bom=self.bom)
+        task = MakeReportTask(bom=self.bom, workspace=self.workspace)
         task.run()
 
         self.status = task.status

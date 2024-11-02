@@ -61,19 +61,12 @@ class ToolTips:
             &#34;properties. Otherwise the project number in the bill of material and each &#34;
             &#34;docket will be overwritten with the value from this input field.&#34;
         )
-        if (
-            resource.settings.restrictions.strict_project
-            and workspace.elements.projects
-        ):
+        if resource.settings.restrictions.strict_project and workspace.elements.projects:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
                 &#34;You can only use project numbers that are set in the workspace file.&#34;
             )
-        elif (
-            resource.settings.restrictions.strict_project
-            and workspace.available
-            and not workspace.elements.projects
-        ):
+        elif resource.settings.restrictions.strict_project and workspace.available and not workspace.elements.projects:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
                 &#34;Warning: There are no project numbers set in the workspace file, you &#34;
@@ -96,13 +89,8 @@ class ToolTips:
             &#34;Defines the path (folder and filename) of the bill of material Excel &#34;
             &#34;file. An existing file will be overwritten.&#34;
         )
-        if (
-            workspace.elements.bom_folder is not None
-            and workspace.elements.bom_name is not None
-        ):
-            bom_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+        if workspace.elements.bom_folder is not None and workspace.elements.bom_name is not None:
+            bom_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_bom_export_path, text=bom_path_tooltip)
         ToolTip(
             widget=layout.button_bom_export_path,
@@ -110,17 +98,12 @@ class ToolTips:
         )
 
         docket_path_tooltip = (
-            &#34;Defines the export folder of the generated docket files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated docket files. Existing files are going to be overwritten.&#34;
         )
         if templates.docket_path is None:
-            docket_path_tooltip += (
-                &#34;\n\nDisabled because no docket template is available.&#34;
-            )
+            docket_path_tooltip += &#34;\n\nDisabled because no docket template is available.&#34;
         elif workspace.elements.docket_folder is not None:
-            docket_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            docket_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_docket_export_path, text=docket_path_tooltip)
         ToolTip(
             widget=layout.button_docket_export_path,
@@ -132,13 +115,9 @@ class ToolTips:
             &#34;Existing files are going to be overwritten.&#34;
         )
         if templates.documentation_path is None:
-            docu_path_tooltip += (
-                &#34;\n\nDisabled because no documentation docket template is available.&#34;
-            )
+            docu_path_tooltip += &#34;\n\nDisabled because no documentation docket template is available.&#34;
         elif workspace.elements.documentation_folder is not None:
-            docu_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            docu_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_documentation_export_path, text=docu_path_tooltip)
         ToolTip(
             widget=layout.button_documentation_export_path,
@@ -150,9 +129,7 @@ class ToolTips:
             &#34;Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.drawing_folder is not None:
-            drawing_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            drawing_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_drawing_export_path, text=drawing_path_tooltip)
         ToolTip(
             widget=layout.button_drawing_export_path,
@@ -160,13 +137,10 @@ class ToolTips:
         )
 
         stp_path_tooltip = (
-            &#34;Defines the export folder of the generated stp files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated stp files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.stp_folder is not None:
-            stp_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            stp_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_stp_export_path, text=stp_path_tooltip)
         ToolTip(
             widget=layout.button_stp_export_path,
@@ -174,13 +148,10 @@ class ToolTips:
         )
 
         stl_path_tooltip = (
-            &#34;Defines the export folder of the generated stl files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated stl files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.stl_folder is not None:
-            stl_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            stl_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_stl_export_path, text=stl_path_tooltip)
         ToolTip(
             widget=layout.button_stl_export_path,
@@ -188,13 +159,10 @@ class ToolTips:
         )
 
         jpg_path_tooltip = (
-            &#34;Defines the export folder of the generated jpg files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated jpg files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.image_folder is not None:
-            jpg_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            jpg_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_jpg_export_path, text=jpg_path_tooltip)
         ToolTip(
             widget=layout.button_jpg_export_path,
@@ -231,10 +199,7 @@ class ToolTips:
             &#34;overwritten.&#34;
         )
         if resource.settings.export.lock_drawing_views:
-            export_drawing_tooltip += (
-                &#34;\n\nLocks all drawing views after the export to lock the version of &#34;
-                &#34;the file.&#34;
-            )
+            export_drawing_tooltip += &#34;\n\nLocks all drawing views after the export to lock the version of the file.&#34;
         ToolTip(
             widget=layout.checkbox_export_drawing,
             text=export_drawing_tooltip,
@@ -316,10 +281,7 @@ class ToolTips:
         )
         ToolTip(
             widget=layout.input_ignore_prefixed_txt,
-            text=(
-                &#34;You can add multiple prefixes by separating them with a semicolon. &#34;
-                &#34;Entries are case sensitive.&#34;
-            ),
+            text=(&#34;You can add multiple prefixes by separating them with a semicolon. Entries are case sensitive.&#34;),
         )
         # endregion
 
@@ -395,19 +357,12 @@ class ToolTips:
             &#34;properties. Otherwise the project number in the bill of material and each &#34;
             &#34;docket will be overwritten with the value from this input field.&#34;
         )
-        if (
-            resource.settings.restrictions.strict_project
-            and workspace.elements.projects
-        ):
+        if resource.settings.restrictions.strict_project and workspace.elements.projects:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
                 &#34;You can only use project numbers that are set in the workspace file.&#34;
             )
-        elif (
-            resource.settings.restrictions.strict_project
-            and workspace.available
-            and not workspace.elements.projects
-        ):
+        elif resource.settings.restrictions.strict_project and workspace.available and not workspace.elements.projects:
             project_tooltip += (
                 &#34;\n\nThe rule for project numbers is set to &#39;strict&#39;.\n\n&#34;
                 &#34;Warning: There are no project numbers set in the workspace file, you &#34;
@@ -430,13 +385,8 @@ class ToolTips:
             &#34;Defines the path (folder and filename) of the bill of material Excel &#34;
             &#34;file. An existing file will be overwritten.&#34;
         )
-        if (
-            workspace.elements.bom_folder is not None
-            and workspace.elements.bom_name is not None
-        ):
-            bom_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+        if workspace.elements.bom_folder is not None and workspace.elements.bom_name is not None:
+            bom_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_bom_export_path, text=bom_path_tooltip)
         ToolTip(
             widget=layout.button_bom_export_path,
@@ -444,17 +394,12 @@ class ToolTips:
         )
 
         docket_path_tooltip = (
-            &#34;Defines the export folder of the generated docket files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated docket files. Existing files are going to be overwritten.&#34;
         )
         if templates.docket_path is None:
-            docket_path_tooltip += (
-                &#34;\n\nDisabled because no docket template is available.&#34;
-            )
+            docket_path_tooltip += &#34;\n\nDisabled because no docket template is available.&#34;
         elif workspace.elements.docket_folder is not None:
-            docket_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            docket_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_docket_export_path, text=docket_path_tooltip)
         ToolTip(
             widget=layout.button_docket_export_path,
@@ -466,13 +411,9 @@ class ToolTips:
             &#34;Existing files are going to be overwritten.&#34;
         )
         if templates.documentation_path is None:
-            docu_path_tooltip += (
-                &#34;\n\nDisabled because no documentation docket template is available.&#34;
-            )
+            docu_path_tooltip += &#34;\n\nDisabled because no documentation docket template is available.&#34;
         elif workspace.elements.documentation_folder is not None:
-            docu_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            docu_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_documentation_export_path, text=docu_path_tooltip)
         ToolTip(
             widget=layout.button_documentation_export_path,
@@ -484,9 +425,7 @@ class ToolTips:
             &#34;Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.drawing_folder is not None:
-            drawing_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            drawing_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_drawing_export_path, text=drawing_path_tooltip)
         ToolTip(
             widget=layout.button_drawing_export_path,
@@ -494,13 +433,10 @@ class ToolTips:
         )
 
         stp_path_tooltip = (
-            &#34;Defines the export folder of the generated stp files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated stp files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.stp_folder is not None:
-            stp_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            stp_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_stp_export_path, text=stp_path_tooltip)
         ToolTip(
             widget=layout.button_stp_export_path,
@@ -508,13 +444,10 @@ class ToolTips:
         )
 
         stl_path_tooltip = (
-            &#34;Defines the export folder of the generated stl files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated stl files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.stl_folder is not None:
-            stl_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            stl_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_stl_export_path, text=stl_path_tooltip)
         ToolTip(
             widget=layout.button_stl_export_path,
@@ -522,13 +455,10 @@ class ToolTips:
         )
 
         jpg_path_tooltip = (
-            &#34;Defines the export folder of the generated jpg files. &#34;
-            &#34;Existing files are going to be overwritten.&#34;
+            &#34;Defines the export folder of the generated jpg files. Existing files are going to be overwritten.&#34;
         )
         if workspace.elements.image_folder is not None:
-            jpg_path_tooltip += (
-                &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
-            )
+            jpg_path_tooltip += &#34;\n\nThe path has been pre-selected from the workspace file.&#34;
         ToolTip(widget=layout.input_jpg_export_path, text=jpg_path_tooltip)
         ToolTip(
             widget=layout.button_jpg_export_path,
@@ -565,10 +495,7 @@ class ToolTips:
             &#34;overwritten.&#34;
         )
         if resource.settings.export.lock_drawing_views:
-            export_drawing_tooltip += (
-                &#34;\n\nLocks all drawing views after the export to lock the version of &#34;
-                &#34;the file.&#34;
-            )
+            export_drawing_tooltip += &#34;\n\nLocks all drawing views after the export to lock the version of the file.&#34;
         ToolTip(
             widget=layout.checkbox_export_drawing,
             text=export_drawing_tooltip,
@@ -650,10 +577,7 @@ class ToolTips:
         )
         ToolTip(
             widget=layout.input_ignore_prefixed_txt,
-            text=(
-                &#34;You can add multiple prefixes by separating them with a semicolon. &#34;
-                &#34;Entries are case sensitive.&#34;
-            ),
+            text=(&#34;You can add multiple prefixes by separating them with a semicolon. Entries are case sensitive.&#34;),
         )
         # endregion
 

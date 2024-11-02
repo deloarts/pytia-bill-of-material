@@ -89,8 +89,7 @@ class PackageInfo:
 
 
 class Environment:
-    def __init__(self) -&gt; None:
-        ...
+    def __init__(self) -&gt; None: ...
 
     @staticmethod
     def is_virtual() -&gt; bool:
@@ -116,8 +115,7 @@ class Environment:
 class Dependencies:
     &#34;&#34;&#34;Class for managing dependencies.&#34;&#34;&#34;
 
-    def __init__(self) -&gt; None:
-        ...
+    def __init__(self) -&gt; None: ...
 
     @staticmethod
     def read_dependencies_file() -&gt; List[PackageInfo]:
@@ -181,9 +179,7 @@ class Dependencies:
                     )
                     sys.exit()
             else:
-                pip_commands[
-                    missing_package.name
-                ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+                pip_commands[missing_package.name] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
         return pip_commands
 
     def install_dependencies(self) -&gt; None:
@@ -272,9 +268,7 @@ class VisualInstaller(tk.Tk):
             if str(VENV_PYTHONW) in python_exe:
                 python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
             command = f&#34;start /wait {python_exe} -m pip install {pip_commands[key]} --no-cache-dir&#34;
-            self.message.set(
-                f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;
-            )
+            self.message.set(f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;)
             self.update_idletasks()
             with subprocess.Popen(command, shell=True) as process:
                 while process.poll() is None:
@@ -386,8 +380,7 @@ deps = Dependencies()</code></pre>
 <pre><code class="python">class Dependencies:
     &#34;&#34;&#34;Class for managing dependencies.&#34;&#34;&#34;
 
-    def __init__(self) -&gt; None:
-        ...
+    def __init__(self) -&gt; None: ...
 
     @staticmethod
     def read_dependencies_file() -&gt; List[PackageInfo]:
@@ -451,9 +444,7 @@ deps = Dependencies()</code></pre>
                     )
                     sys.exit()
             else:
-                pip_commands[
-                    missing_package.name
-                ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+                pip_commands[missing_package.name] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
         return pip_commands
 
     def install_dependencies(self) -&gt; None:
@@ -542,9 +533,7 @@ def get_pip_commands(cls) -&gt; dict:
                 )
                 sys.exit()
         else:
-            pip_commands[
-                missing_package.name
-            ] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
+            pip_commands[missing_package.name] = f&#39;&#34;{missing_package.name}=={missing_package.version}&#34;&#39;
     return pip_commands</code></pre>
 </details>
 </dd>
@@ -660,8 +649,7 @@ def web_resource_available(address: str) -&gt; bool:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Environment:
-    def __init__(self) -&gt; None:
-        ...
+    def __init__(self) -&gt; None: ...
 
     @staticmethod
     def is_virtual() -&gt; bool:
@@ -947,9 +935,7 @@ class PackageInfo:
             if str(VENV_PYTHONW) in python_exe:
                 python_exe = python_exe.replace(str(VENV_PYTHONW), str(VENV_PYTHON))
             command = f&#34;start /wait {python_exe} -m pip install {pip_commands[key]} --no-cache-dir&#34;
-            self.message.set(
-                f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;
-            )
+            self.message.set(f&#34;Installing package {index+1} of {len(pip_commands)}: {key}&#34;)
             self.update_idletasks()
             with subprocess.Popen(command, shell=True) as process:
                 while process.poll() is None:

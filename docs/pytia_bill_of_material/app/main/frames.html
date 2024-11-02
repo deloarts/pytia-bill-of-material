@@ -35,6 +35,7 @@ from tkinter import Tk
 
 from ttkbootstrap import Frame
 from ttkbootstrap import Labelframe
+from ttkbootstrap.scrolled import ScrolledFrame
 
 
 class Frames:
@@ -42,29 +43,39 @@ class Frames:
 
     def __init__(self, root: Tk) -&gt; None:
         self._frame_infra = Labelframe(master=root, text=&#34;Infrastructure&#34;)
-        self._frame_infra.grid(
-            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(10, 5)
-        )
+        self._frame_infra.grid(row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(10, 5))
         self._frame_infra.grid_columnconfigure(1, weight=1)
         # self._frame_infra.grid_remove()
 
         self._frame_paths = Labelframe(master=root, text=&#34;Paths&#34;)
-        self._frame_paths.grid(
-            row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 5)
-        )
+        self._frame_paths.grid(row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(5, 5))
         self._frame_paths.grid_columnconfigure(1, weight=1)
         # self._frame_paths.grid_remove()
 
         self._frame_export = Labelframe(master=root, text=&#34;Export&#34;)
-        self._frame_export.grid(
-            row=2, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
-        )
+        self._frame_export.grid(row=2, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(5, 10))
         self._frame_export.grid_columnconfigure(6, weight=1)
         # self._frame_export.grid_remove()
 
+        self._frame_filters_wrapper = Labelframe(master=root, text=&#34;Filters&#34;)
+        self._frame_filters_wrapper.grid(row=0, column=1, sticky=&#34;nsew&#34;, padx=(5, 10), pady=(10, 10), rowspan=3)
+        self._frame_filters_wrapper.grid_rowconfigure(0, weight=1)
+        self._frame_filters_wrapper.grid_columnconfigure(0, weight=1)
+
+        self._frame_filters_elements = ScrolledFrame(master=self._frame_filters_wrapper, autohide=True, padding=10)
+        self._frame_filters_elements.grid(row=0, column=0, sticky=&#34;nsew&#34;)
+        self._frame_filters_elements.grid_rowconfigure(0, weight=1)
+        self._frame_filters_elements.grid_columnconfigure(0, weight=1)
+
         self._frame_report = Labelframe(master=root, text=&#34;Report&#34;)
         self._frame_report.grid(
-            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+            row=0,
+            column=0,
+            sticky=&#34;nsew&#34;,
+            padx=(10, 10),
+            pady=(5, 10),
+            columnspan=2,
+            rowspan=3,
         )
         self._frame_report.grid_rowconfigure(0, weight=1)
         self._frame_report.grid_columnconfigure(0, weight=1)
@@ -72,25 +83,31 @@ class Frames:
         self._frame_report.grid_remove()
 
         self._frame_report_footer = Frame(master=root, height=30)
-        self._frame_report_footer.grid(
-            row=1, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10)
-        )
+        self._frame_report_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10), columnspan=2)
         self._frame_report_footer.grid_columnconfigure(0, weight=1)
         self._frame_report_footer.grid_remove()
 
         self._frame_log = Labelframe(master=root, text=&#34;Log&#34;)
         self._frame_log.grid(
-            row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+            row=0,
+            column=0,
+            sticky=&#34;nsew&#34;,
+            padx=(10, 10),
+            pady=(5, 10),
+            columnspan=2,
+            rowspan=3,
         )
         self._frame_log.grid_columnconfigure(0, weight=1)
         self._frame_log.grid_rowconfigure(0, weight=1)
         self._frame_log.grid_remove()
 
         self._frame_footer = Frame(master=root, height=30)
-        self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10))
+        self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10), columnspan=2)
         self._frame_footer.grid_columnconfigure(0, weight=1)
 
         root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(1, weight=1)
+        # root.grid_rowconfigure(0, weight=1)
         root.grid_rowconfigure(1, weight=1)
 
     @property
@@ -107,6 +124,16 @@ class Frames:
     def export(self) -&gt; Labelframe:
         &#34;&#34;&#34;Returns the export frame.&#34;&#34;&#34;
         return self._frame_export
+
+    @property
+    def filters(self) -&gt; Labelframe:
+        &#34;&#34;&#34;Returns the filters frame.&#34;&#34;&#34;
+        return self._frame_filters_wrapper
+
+    @property
+    def filter_elements(self) -&gt; ScrolledFrame:
+        &#34;&#34;&#34;Returns the filter elements.&#34;&#34;&#34;
+        return self._frame_filters_elements
 
     @property
     def report(self) -&gt; Labelframe:
@@ -153,29 +180,39 @@ class Frames:
 
     def __init__(self, root: Tk) -&gt; None:
         self._frame_infra = Labelframe(master=root, text=&#34;Infrastructure&#34;)
-        self._frame_infra.grid(
-            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(10, 5)
-        )
+        self._frame_infra.grid(row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(10, 5))
         self._frame_infra.grid_columnconfigure(1, weight=1)
         # self._frame_infra.grid_remove()
 
         self._frame_paths = Labelframe(master=root, text=&#34;Paths&#34;)
-        self._frame_paths.grid(
-            row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 5)
-        )
+        self._frame_paths.grid(row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(5, 5))
         self._frame_paths.grid_columnconfigure(1, weight=1)
         # self._frame_paths.grid_remove()
 
         self._frame_export = Labelframe(master=root, text=&#34;Export&#34;)
-        self._frame_export.grid(
-            row=2, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
-        )
+        self._frame_export.grid(row=2, column=0, sticky=&#34;nsew&#34;, padx=(10, 5), pady=(5, 10))
         self._frame_export.grid_columnconfigure(6, weight=1)
         # self._frame_export.grid_remove()
 
+        self._frame_filters_wrapper = Labelframe(master=root, text=&#34;Filters&#34;)
+        self._frame_filters_wrapper.grid(row=0, column=1, sticky=&#34;nsew&#34;, padx=(5, 10), pady=(10, 10), rowspan=3)
+        self._frame_filters_wrapper.grid_rowconfigure(0, weight=1)
+        self._frame_filters_wrapper.grid_columnconfigure(0, weight=1)
+
+        self._frame_filters_elements = ScrolledFrame(master=self._frame_filters_wrapper, autohide=True, padding=10)
+        self._frame_filters_elements.grid(row=0, column=0, sticky=&#34;nsew&#34;)
+        self._frame_filters_elements.grid_rowconfigure(0, weight=1)
+        self._frame_filters_elements.grid_columnconfigure(0, weight=1)
+
         self._frame_report = Labelframe(master=root, text=&#34;Report&#34;)
         self._frame_report.grid(
-            row=0, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+            row=0,
+            column=0,
+            sticky=&#34;nsew&#34;,
+            padx=(10, 10),
+            pady=(5, 10),
+            columnspan=2,
+            rowspan=3,
         )
         self._frame_report.grid_rowconfigure(0, weight=1)
         self._frame_report.grid_columnconfigure(0, weight=1)
@@ -183,25 +220,31 @@ class Frames:
         self._frame_report.grid_remove()
 
         self._frame_report_footer = Frame(master=root, height=30)
-        self._frame_report_footer.grid(
-            row=1, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10)
-        )
+        self._frame_report_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10), columnspan=2)
         self._frame_report_footer.grid_columnconfigure(0, weight=1)
         self._frame_report_footer.grid_remove()
 
         self._frame_log = Labelframe(master=root, text=&#34;Log&#34;)
         self._frame_log.grid(
-            row=1, column=0, sticky=&#34;nsew&#34;, padx=(10, 10), pady=(5, 10)
+            row=0,
+            column=0,
+            sticky=&#34;nsew&#34;,
+            padx=(10, 10),
+            pady=(5, 10),
+            columnspan=2,
+            rowspan=3,
         )
         self._frame_log.grid_columnconfigure(0, weight=1)
         self._frame_log.grid_rowconfigure(0, weight=1)
         self._frame_log.grid_remove()
 
         self._frame_footer = Frame(master=root, height=30)
-        self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10))
+        self._frame_footer.grid(row=4, column=0, sticky=&#34;swe&#34;, padx=10, pady=(5, 10), columnspan=2)
         self._frame_footer.grid_columnconfigure(0, weight=1)
 
         root.grid_columnconfigure(0, weight=1)
+        root.grid_columnconfigure(1, weight=1)
+        # root.grid_rowconfigure(0, weight=1)
         root.grid_rowconfigure(1, weight=1)
 
     @property
@@ -218,6 +261,16 @@ class Frames:
     def export(self) -&gt; Labelframe:
         &#34;&#34;&#34;Returns the export frame.&#34;&#34;&#34;
         return self._frame_export
+
+    @property
+    def filters(self) -&gt; Labelframe:
+        &#34;&#34;&#34;Returns the filters frame.&#34;&#34;&#34;
+        return self._frame_filters_wrapper
+
+    @property
+    def filter_elements(self) -&gt; ScrolledFrame:
+        &#34;&#34;&#34;Returns the filter elements.&#34;&#34;&#34;
+        return self._frame_filters_elements
 
     @property
     def report(self) -&gt; Labelframe:
@@ -252,6 +305,32 @@ class Frames:
 def export(self) -&gt; Labelframe:
     &#34;&#34;&#34;Returns the export frame.&#34;&#34;&#34;
     return self._frame_export</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.frames.Frames.filter_elements"><code class="name">var <span class="ident">filter_elements</span> : ttkbootstrap.scrolled.ScrolledFrame</code></dt>
+<dd>
+<div class="desc"><p>Returns the filter elements.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def filter_elements(self) -&gt; ScrolledFrame:
+    &#34;&#34;&#34;Returns the filter elements.&#34;&#34;&#34;
+    return self._frame_filters_elements</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.app.main.frames.Frames.filters"><code class="name">var <span class="ident">filters</span> : tkinter.ttk.Labelframe</code></dt>
+<dd>
+<div class="desc"><p>Returns the filters frame.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def filters(self) -&gt; Labelframe:
+    &#34;&#34;&#34;Returns the filters frame.&#34;&#34;&#34;
+    return self._frame_filters_wrapper</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.frames.Frames.footer"><code class="name">var <span class="ident">footer</span> : tkinter.ttk.Frame</code></dt>
@@ -354,6 +433,8 @@ def report_footer(self) -&gt; Frame:
 <h4><code><a title="pytia_bill_of_material.app.main.frames.Frames" href="#pytia_bill_of_material.app.main.frames.Frames">Frames</a></code></h4>
 <ul class="two-column">
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.export" href="#pytia_bill_of_material.app.main.frames.Frames.export">export</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.frames.Frames.filter_elements" href="#pytia_bill_of_material.app.main.frames.Frames.filter_elements">filter_elements</a></code></li>
+<li><code><a title="pytia_bill_of_material.app.main.frames.Frames.filters" href="#pytia_bill_of_material.app.main.frames.Frames.filters">filters</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.footer" href="#pytia_bill_of_material.app.main.frames.Frames.footer">footer</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.infrastructure" href="#pytia_bill_of_material.app.main.frames.Frames.infrastructure">infrastructure</a></code></li>
 <li><code><a title="pytia_bill_of_material.app.main.frames.Frames.log" href="#pytia_bill_of_material.app.main.frames.Frames.log">log</a></code></li>

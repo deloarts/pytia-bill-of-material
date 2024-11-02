@@ -26,9 +26,7 @@ class CallbackCommons:
         try:
             selection = self.layout.tree_report_failed_items.selection()[0]
             self.layout.tree_report_failed_items.delete(selection)
-            self.layout.tree_report_failed_props.delete(
-                *self.layout.tree_report_failed_props.get_children()
-            )
+            self.layout.tree_report_failed_props.delete(*self.layout.tree_report_failed_props.get_children())
             self.layout.text_description.configure(state=NORMAL)
             self.layout.text_description.delete("1.0", "end")
             self.layout.text_description.configure(state=DISABLED)

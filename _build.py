@@ -29,9 +29,7 @@ branch_name = Repository(".").head.shorthand
 class Build:
     def __init__(self) -> None:
         if not os.path.exists(settings_path):
-            console.error(
-                "Config file not found. Have you followed the setup instructions?"
-            )
+            console.error("Config file not found. Have you followed the setup instructions?")
             sys.exit()
 
         with open(settings_path, "r") as f:
@@ -39,15 +37,10 @@ class Build:
 
         self.dev_build = bool(
             self.settings["debug"]
-            or (
-                not re.match(r"^v\d+(\.\d+){2,3}$", branch_name)
-                and not branch_name.lower() in ["head", "main"]
-            )
+            or (not re.match(r"^v\d+(\.\d+){2,3}$", branch_name) and not branch_name.lower() in ["head", "main"])
         )
         if self.dev_build:
-            console.warning(
-                f"App is built in development mode from branch {branch_name!r}"
-            )
+            console.warning(f"App is built in development mode from branch {branch_name!r}")
 
     def provide(self):
         console.info("Providing folders ...")
@@ -73,9 +66,7 @@ class Build:
         console.info(f"Launcher build path is {str(self.build_launcher_path)!r}")
 
         self.release_app_path = (
-            WindowsPath(
-                self.settings["paths"]["release"], self.settings["files"]["app"]
-            )
+            WindowsPath(self.settings["paths"]["release"], self.settings["files"]["app"])
             if not self.dev_build
             else WindowsPath(self.build_folder, "dev_app.pyz")
         )

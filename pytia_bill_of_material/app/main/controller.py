@@ -74,18 +74,12 @@ class Controller:
             self.activate_ui = False
             tkmsg.showinfo(
                 title=resource.settings.title,
-                message=(
-                    "This workspace is disabled. You cannot export the bill of material of this "
-                    "document."
-                ),
+                message=("This workspace is disabled. You cannot export the bill of material of this document."),
             )
             return
 
         # Check user config permission.
-        if (
-            not resource.logon_exists()
-            and not resource.settings.restrictions.allow_all_users
-        ):
+        if not resource.logon_exists() and not resource.settings.restrictions.allow_all_users:
             self.activate_ui = False
             tkmsg.showinfo(
                 title=resource.settings.title,
@@ -115,11 +109,7 @@ class Controller:
     def _property_controller(self) -> None:
         """Run the property controller. Handles the main product's properties."""
         # Set product property
-        if (
-            product_property := self.doc_helper.get_property(
-                name=resource.props.product
-            )
-        ) is None:
+        if (product_property := self.doc_helper.get_property(name=resource.props.product)) is None:
             raise PytiaPropertyNotFoundError(
                 f"Cannot find required property {resource.props.product!r} in the main product. "
                 "Please run the Property Manager App first."
@@ -155,9 +145,7 @@ class Controller:
                 self.vars.bom_export_path.set(str(Path(bom_folder, bom_name)))
 
             elif self.workspace.workspace_folder is not None and os.path.isdir(
-                _bom_folder := Path(
-                    self.workspace.workspace_folder, self.workspace.elements.bom_folder
-                )
+                _bom_folder := Path(self.workspace.workspace_folder, self.workspace.elements.bom_folder)
             ):
                 self.vars.bom_export_path.set(str(Path(_bom_folder, bom_name)))
 

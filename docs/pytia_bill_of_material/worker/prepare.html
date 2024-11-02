@@ -136,9 +136,7 @@ class PrepareTask(TaskProtocol):
         # correct output, because CATIA needs the property names to create the bill of
         # material.
 
-        prop_names = ResourceCommons.get_property_names_from_config(
-            resource.bom.header_items.summary
-        )
+        prop_names = ResourceCommons.get_property_names_from_config(resource.bom.header_items.summary)
         set_current_format(prop_names)
         set_secondary_format(prop_names)
 
@@ -171,14 +169,10 @@ class PrepareTask(TaskProtocol):
                     current_partnumber = Product(current_product.com_object).part_number
                     current_path = Path(Product(current_product.com_object).full_name)
                     paths.items[current_partnumber] = current_path
-                    log.info(
-                        f&#34;Indexed item {current_product.name!r} to {str(current_path)!r}.&#34;
-                    )
+                    log.info(f&#34;Indexed item {current_product.name!r} to {str(current_path)!r}.&#34;)
                     iterate_tree(current_product)
                 except Exception as e:
-                    log.warning(
-                        f&#34;Skipped adding item {current_product.name!r} to paths: {e}&#34;
-                    )
+                    log.warning(f&#34;Skipped adding item {current_product.name!r} to paths: {e}&#34;)
 
         iterate_tree(product.product)
         return paths</code></pre>
@@ -290,9 +284,7 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
         # correct output, because CATIA needs the property names to create the bill of
         # material.
 
-        prop_names = ResourceCommons.get_property_names_from_config(
-            resource.bom.header_items.summary
-        )
+        prop_names = ResourceCommons.get_property_names_from_config(resource.bom.header_items.summary)
         set_current_format(prop_names)
         set_secondary_format(prop_names)
 
@@ -325,14 +317,10 @@ It sets up the catia bom format and retrieves all paths from all documents.</p>
                     current_partnumber = Product(current_product.com_object).part_number
                     current_path = Path(Product(current_product.com_object).full_name)
                     paths.items[current_partnumber] = current_path
-                    log.info(
-                        f&#34;Indexed item {current_product.name!r} to {str(current_path)!r}.&#34;
-                    )
+                    log.info(f&#34;Indexed item {current_product.name!r} to {str(current_path)!r}.&#34;)
                     iterate_tree(current_product)
                 except Exception as e:
-                    log.warning(
-                        f&#34;Skipped adding item {current_product.name!r} to paths: {e}&#34;
-                    )
+                    log.warning(f&#34;Skipped adding item {current_product.name!r} to paths: {e}&#34;)
 
         iterate_tree(product.product)
         return paths</code></pre>
@@ -368,9 +356,7 @@ def set_catia_bom_format() -&gt; None:
     # correct output, because CATIA needs the property names to create the bill of
     # material.
 
-    prop_names = ResourceCommons.get_property_names_from_config(
-        resource.bom.header_items.summary
-    )
+    prop_names = ResourceCommons.get_property_names_from_config(resource.bom.header_items.summary)
     set_current_format(prop_names)
     set_secondary_format(prop_names)</code></pre>
 </details>

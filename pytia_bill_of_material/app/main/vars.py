@@ -71,9 +71,7 @@ class Variables:
         self.product = StringVar(master=root, name="product")
 
         self.bom_export_path = StringVar(master=root, name="bom_export_path")
-        self.documentation_export_path = StringVar(
-            master=root, name="documentation_export_path"
-        )
+        self.documentation_export_path = StringVar(master=root, name="documentation_export_path")
         self.docket_export_path = StringVar(master=root, name="docket_export_path")
         self.drawing_export_path = StringVar(master=root, name="drawing_export_path")
         self.stp_export_path = StringVar(master=root, name="stp_export_path")
@@ -81,17 +79,11 @@ class Variables:
         self.jpg_export_path = StringVar(master=root, name="jpg_export_path")
         self.bundle_export_path = StringVar(master=root, name="bundle_export_path")
 
-        self.external_bom_path = StringVar(
-            master=root, name="external_bom_path", value=""
-        )
+        self.external_bom_path = StringVar(master=root, name="external_bom_path", value="")
 
         self.bundle = BooleanVar(master=root, name="bundle", value=False)
-        self.zip_bundle = BooleanVar(
-            master=root, name="zip_bundle", value=resource.appdata.zip_bundle
-        )
-        self.bundle_by_prop = BooleanVar(
-            master=root, name="bundle_by_prop", value=resource.appdata.bundle_by_prop
-        )
+        self.zip_bundle = BooleanVar(master=root, name="zip_bundle", value=resource.appdata.zip_bundle)
+        self.bundle_by_prop = BooleanVar(master=root, name="bundle_by_prop", value=resource.appdata.bundle_by_prop)
         self.bundle_by_prop_txt = StringVar(
             master=root,
             name="bundle_by_prop_txt",
@@ -112,9 +104,7 @@ class Variables:
 
         self.ignore_prefix_txt = StringVar(master=root, name="ignore_prefix_txt")
         self.ignore_prefix = BooleanVar(master=root, name="ignore_prefix")
-        self.ignore_source_unknown = BooleanVar(
-            master=root, name="ignore_source_unknown"
-        )
+        self.ignore_source_unknown = BooleanVar(master=root, name="ignore_source_unknown")
 
         self.progress = DoubleVar(master=root, name="progress", value=0)
 
