@@ -486,14 +486,16 @@ class Callbacks:
         self.layout.text_description.delete("1.0", "end")
         selection = self.layout.tree_report_failed_props.selection()
         for selection_item in selection:
-            if property_name := self.layout.tree_report_failed_props.item(
+            if filter_element_name := self.layout.tree_report_failed_props.item(
                 selection_item, "values"
             )[0]:
-                if filter_element := resource.get_filter_element_by_property_name(
-                    property_name
+                if filter_element := resource.get_filter_element_by_name(
+                    filter_element_name
                 ):
                     self.layout.text_description.insert(
-                        "end", filter_element.description
+                        "end",
+                        f"Property: {filter_element.property_name}\n"
+                        f"Description: {filter_element.description}",
                     )
                     return
                 else:

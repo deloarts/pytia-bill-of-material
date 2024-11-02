@@ -888,7 +888,7 @@ class Layout:
             self._chkbtn_filter_element = Checkbutton(
                 self._frames.filter_elements,
                 bootstyle="round-toggle",  # type:ignore
-                text=f"  {filter_element.property_name}",
+                text=f"  {filter_element.name}",
                 variable=filter_element._enabled,
             )
             self._chkbtn_filter_element.grid(

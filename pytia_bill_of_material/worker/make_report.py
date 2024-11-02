@@ -130,24 +130,16 @@ class MakeReportTask(TaskProtocol):
                                     ]
                                 ),
                             ):
-                                report_item.details[filter_element.property_name] = (
-                                    Status.OK
-                                )
-                                log.debug(f"    - {filter_element.property_name}: OK.")
+                                report_item.details[filter_element.name] = Status.OK
+                                log.debug(f"    - {filter_element.name}: OK.")
                             else:
-                                report_item.details[filter_element.property_name] = (
-                                    Status.FAILED
-                                )
+                                report_item.details[filter_element.name] = Status.FAILED
                                 report_item.status = Status.FAILED
                                 report.status = Status.FAILED
-                                log.debug(
-                                    f"    - {filter_element.property_name}: FAILED."
-                                )
+                                log.debug(f"    - {filter_element.name}: FAILED.")
                         else:
-                            report_item.details[filter_element.property_name] = (
-                                Status.SKIPPED
-                            )
-                            log.debug(f"    - {filter_element.property_name}: SKIPPED.")
+                            report_item.details[filter_element.name] = Status.SKIPPED
+                            log.debug(f"    - {filter_element.name}: SKIPPED.")
 
                     else:
                         raise ValueError(
