@@ -47,6 +47,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from dataclasses import fields
 from pathlib import Path
+from tkinter import BooleanVar
 from typing import Dict
 from typing import List
 from typing import Literal
@@ -215,10 +216,13 @@ class Keywords:
 class FilterElement:
     &#34;&#34;&#34;Filters dataclass.&#34;&#34;&#34;
 
+    name: str
     property_name: str
     criteria: str
     condition: Dict[str, str] | bool
     description: str
+
+    _enabled: BooleanVar | None = None
 
 
 @dataclass(slots=True, kw_only=True)
@@ -260,9 +264,7 @@ class BOMHeaderItems:
     bought: List[str] | None
 
     def summary_as_dict(self) -&gt; dict:
-        return {
-            re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
-        }
+        return {re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary}
 
 
 @dataclass(slots=True, kw_only=True)
@@ -343,9 +345,7 @@ class AppData:
     bundle_by_prop_value: str = &#34;&#34;
 
     def __post_init__(self) -&gt; None:
-        self.version = (
-            APP_VERSION  # Always store the latest version in the appdata json
-        )
+        self.version = APP_VERSION  # Always store the latest version in the appdata json
         self.counter += 1
 
 
@@ -438,9 +438,7 @@ class Resources:  # pylint: disable=R0902
     def _read_props(self) -&gt; None:
         &#34;&#34;&#34;Reads the props json from the resources folder.&#34;&#34;&#34;
         props_resource = (
-            CONFIG_PROPS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_PROPS)
-            else CONFIG_PROPS_DEFAULT
+            CONFIG_PROPS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_PROPS) else CONFIG_PROPS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, props_resource) as f:
             self._props = Props(**json.load(f))
@@ -462,20 +460,14 @@ class Resources:  # pylint: disable=R0902
 
     def _read_bom(self) -&gt; None:
         &#34;&#34;&#34;Reads the export json from the resources folder.&#34;&#34;&#34;
-        bom_resource = (
-            CONFIG_BOM
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_BOM)
-            else CONFIG_BOM_DEFAULT
-        )
+        bom_resource = CONFIG_BOM if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_BOM) else CONFIG_BOM_DEFAULT
         with importlib.resources.open_binary(&#34;resources&#34;, bom_resource) as f:
             self._bom = BOM(**json.load(f))
 
     def _read_filters(self) -&gt; None:
         &#34;&#34;&#34;Reads the filters json from the resources folder.&#34;&#34;&#34;
         filters_resource = (
-            CONFIG_FILTERS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_FILTERS)
-            else CONFIG_FILTERS_DEFAULT
+            CONFIG_FILTERS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_FILTERS) else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, filters_resource) as f:
             self._filters = [FilterElement(**i) for i in json.load(f)]
@@ -488,9 +480,7 @@ class Resources:  # pylint: disable=R0902
     def _read_infos(self) -&gt; None:
         &#34;&#34;&#34;Reads the information json from the resources folder.&#34;&#34;&#34;
         infos_resource = (
-            CONFIG_INFOS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_INFOS)
-            else CONFIG_INFOS_DEFAULT
+            CONFIG_INFOS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_INFOS) else CONFIG_INFOS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, infos_resource) as f:
             self._infos = [Info(**i) for i in json.load(f)]
@@ -581,15 +571,8 @@ class Resources:  # pylint: disable=R0902
                             object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
-                    if (
-                        &#34;$&#34; in object_item
-                        and (key := object_item.split(&#34;$&#34;)[1]) in keywords
-                    ):
-                        header_name = (
-                            object_item.split(&#34;:&#34;)[0] + &#34;:&#34;
-                            if &#34;:&#34; in object_item
-                            else &#34;&#34;
-                        )
+                    if &#34;$&#34; in object_item and (key := object_item.split(&#34;$&#34;)[1]) in keywords:
+                        header_name = object_item.split(&#34;:&#34;)[0] + &#34;:&#34; if &#34;:&#34; in object_item else &#34;&#34;
                         setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
@@ -625,10 +608,7 @@ class Resources:  # pylint: disable=R0902
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
         for item in self._filters:
             # translate the `property_name` value.
-            if (
-                item.property_name.startswith(&#34;$&#34;)
-                and (key := item.property_name.split(&#34;$&#34;)[1]) in keywords
-            ):
+            if item.property_name.startswith(&#34;$&#34;) and (key := item.property_name.split(&#34;$&#34;)[1]) in keywords:
                 item.property_name = keywords[key]
 
             # translate the condition dict (can be a bool, so check type first)
@@ -645,10 +625,7 @@ class Resources:  # pylint: disable=R0902
                     # translate condition keys
                     # since the keys can be translated as well, we need to create a new dict
                     # and overwrite the existing condition-dict with the new one.
-                    if (
-                        cond_key.startswith(&#34;$&#34;)
-                        and (key := cond_key.split(&#34;$&#34;)[1]) in keywords
-                    ):
+                    if cond_key.startswith(&#34;$&#34;) and (key := cond_key.split(&#34;$&#34;)[1]) in keywords:
                         new_condition[keywords[key]] = item.condition[cond_key]
                     else:
                         new_condition[cond_key] = item.condition[cond_key]
@@ -659,9 +636,7 @@ class Resources:  # pylint: disable=R0902
         self._apply_keywords_to_bom(language)  # type: ignore
         self._apply_keywords_to_filters(language)  # type: ignore
         self._applied_keywords = AppliedKeywords(
-            **asdict(
-                resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
-            )
+            **asdict(resource._keywords.en if language == &#34;en&#34; else resource._keywords.de)
         )
         self._language_applied = True
 
@@ -711,6 +686,21 @@ class Resources:  # pylint: disable=R0902
                 return True
         return False
 
+    def get_filter_element_by_name(self, name: str) -&gt; Optional[FilterElement]:
+        &#34;&#34;&#34;
+        Returns the filter dataclass that matches its name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements name.
+
+        Returns:
+            FilterElement: The filter element from the dataclass list that matches the provided name.
+        &#34;&#34;&#34;
+        for index, value in enumerate(self._filters):
+            if value.name == name:
+                return self._filters[index]
+        return None
+
     def get_filter_element_by_property_name(self, name: str) -&gt; Optional[FilterElement]:
         &#34;&#34;&#34;
         Returns the filter dataclass that matches its property name.
@@ -719,7 +709,7 @@ class Resources:  # pylint: disable=R0902
             name (str): The filter to fetch from the dataclass list by the elements property name.
 
         Returns:
-            User: The filter element from the dataclass list that matches the provided name.
+            FilterElement: The filter element from the dataclass list that matches the provided name.
         &#34;&#34;&#34;
         for index, value in enumerate(self._filters):
             if value.property_name == name:
@@ -748,7 +738,7 @@ resource = Resources()</code></pre>
 <dl>
 <dt id="pytia_bill_of_material.resources.AppData"><code class="flex name class">
 <span>class <span class="ident">AppData</span></span>
-<span>(</span><span>*, version: str = '0.12.0', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo', zip_bundle: bool = True, bundle_by_prop: bool = True, bundle_by_prop_txt: str = '', bundle_by_prop_value: str = '')</span>
+<span>(</span><span>*, version: str = '0.13.0', counter: int = 0, disable_volume_warning: bool = False, theme: str = 'cosmo', zip_bundle: bool = True, bundle_by_prop: bool = True, bundle_by_prop_txt: str = '', bundle_by_prop_value: str = '')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Dataclass for appdata settings.</p></div>
@@ -770,9 +760,7 @@ class AppData:
     bundle_by_prop_value: str = &#34;&#34;
 
     def __post_init__(self) -&gt; None:
-        self.version = (
-            APP_VERSION  # Always store the latest version in the appdata json
-        )
+        self.version = APP_VERSION  # Always store the latest version in the appdata json
         self.counter += 1</code></pre>
 </details>
 <h3>Instance variables</h3>
@@ -1005,9 +993,7 @@ class BOMHeaderItems:
     bought: List[str] | None
 
     def summary_as_dict(self) -&gt; dict:
-        return {
-            re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
-        }</code></pre>
+        return {re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary}</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1036,9 +1022,7 @@ class BOMHeaderItems:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def summary_as_dict(self) -&gt; dict:
-    return {
-        re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary
-    }</code></pre>
+    return {re.split(&#34;:|=&#34;, item)[0]: re.split(&#34;:|=&#34;, item)[-1] for item in self.summary}</code></pre>
 </details>
 </dd>
 </dl>
@@ -1074,7 +1058,7 @@ class BOMSort:
 </dd>
 <dt id="pytia_bill_of_material.resources.FilterElement"><code class="flex name class">
 <span>class <span class="ident">FilterElement</span></span>
-<span>(</span><span>*, property_name: str, criteria: str, condition: Union[Dict[str, str], bool], description: str)</span>
+<span>(</span><span>*, name: str, property_name: str, criteria: str, condition: Union[Dict[str, str], bool], description: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Filters dataclass.</p></div>
@@ -1086,10 +1070,13 @@ class BOMSort:
 class FilterElement:
     &#34;&#34;&#34;Filters dataclass.&#34;&#34;&#34;
 
+    name: str
     property_name: str
     criteria: str
     condition: Dict[str, str] | bool
-    description: str</code></pre>
+    description: str
+
+    _enabled: BooleanVar | None = None</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1102,6 +1089,10 @@ class FilterElement:
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
 <dt id="pytia_bill_of_material.resources.FilterElement.description"><code class="name">var <span class="ident">description</span> : str</code></dt>
+<dd>
+<div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
+</dd>
+<dt id="pytia_bill_of_material.resources.FilterElement.name"><code class="name">var <span class="ident">name</span> : str</code></dt>
 <dd>
 <div class="desc"><p>Return an attribute of instance, which is of type owner.</p></div>
 </dd>
@@ -1534,9 +1525,7 @@ def values(self) -&gt; List[str]:
     def _read_props(self) -&gt; None:
         &#34;&#34;&#34;Reads the props json from the resources folder.&#34;&#34;&#34;
         props_resource = (
-            CONFIG_PROPS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_PROPS)
-            else CONFIG_PROPS_DEFAULT
+            CONFIG_PROPS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_PROPS) else CONFIG_PROPS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, props_resource) as f:
             self._props = Props(**json.load(f))
@@ -1558,20 +1547,14 @@ def values(self) -&gt; List[str]:
 
     def _read_bom(self) -&gt; None:
         &#34;&#34;&#34;Reads the export json from the resources folder.&#34;&#34;&#34;
-        bom_resource = (
-            CONFIG_BOM
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_BOM)
-            else CONFIG_BOM_DEFAULT
-        )
+        bom_resource = CONFIG_BOM if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_BOM) else CONFIG_BOM_DEFAULT
         with importlib.resources.open_binary(&#34;resources&#34;, bom_resource) as f:
             self._bom = BOM(**json.load(f))
 
     def _read_filters(self) -&gt; None:
         &#34;&#34;&#34;Reads the filters json from the resources folder.&#34;&#34;&#34;
         filters_resource = (
-            CONFIG_FILTERS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_FILTERS)
-            else CONFIG_FILTERS_DEFAULT
+            CONFIG_FILTERS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_FILTERS) else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, filters_resource) as f:
             self._filters = [FilterElement(**i) for i in json.load(f)]
@@ -1584,9 +1567,7 @@ def values(self) -&gt; List[str]:
     def _read_infos(self) -&gt; None:
         &#34;&#34;&#34;Reads the information json from the resources folder.&#34;&#34;&#34;
         infos_resource = (
-            CONFIG_INFOS
-            if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_INFOS)
-            else CONFIG_INFOS_DEFAULT
+            CONFIG_INFOS if importlib.resources.is_resource(&#34;resources&#34;, CONFIG_INFOS) else CONFIG_INFOS_DEFAULT
         )
         with importlib.resources.open_binary(&#34;resources&#34;, infos_resource) as f:
             self._infos = [Info(**i) for i in json.load(f)]
@@ -1677,15 +1658,8 @@ def values(self) -&gt; List[str]:
                             object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
-                    if (
-                        &#34;$&#34; in object_item
-                        and (key := object_item.split(&#34;$&#34;)[1]) in keywords
-                    ):
-                        header_name = (
-                            object_item.split(&#34;:&#34;)[0] + &#34;:&#34;
-                            if &#34;:&#34; in object_item
-                            else &#34;&#34;
-                        )
+                    if &#34;$&#34; in object_item and (key := object_item.split(&#34;$&#34;)[1]) in keywords:
+                        header_name = object_item.split(&#34;:&#34;)[0] + &#34;:&#34; if &#34;:&#34; in object_item else &#34;&#34;
                         setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
@@ -1721,10 +1695,7 @@ def values(self) -&gt; List[str]:
         keywords = asdict(self._keywords.en if language == &#34;en&#34; else self._keywords.de)
         for item in self._filters:
             # translate the `property_name` value.
-            if (
-                item.property_name.startswith(&#34;$&#34;)
-                and (key := item.property_name.split(&#34;$&#34;)[1]) in keywords
-            ):
+            if item.property_name.startswith(&#34;$&#34;) and (key := item.property_name.split(&#34;$&#34;)[1]) in keywords:
                 item.property_name = keywords[key]
 
             # translate the condition dict (can be a bool, so check type first)
@@ -1741,10 +1712,7 @@ def values(self) -&gt; List[str]:
                     # translate condition keys
                     # since the keys can be translated as well, we need to create a new dict
                     # and overwrite the existing condition-dict with the new one.
-                    if (
-                        cond_key.startswith(&#34;$&#34;)
-                        and (key := cond_key.split(&#34;$&#34;)[1]) in keywords
-                    ):
+                    if cond_key.startswith(&#34;$&#34;) and (key := cond_key.split(&#34;$&#34;)[1]) in keywords:
                         new_condition[keywords[key]] = item.condition[cond_key]
                     else:
                         new_condition[cond_key] = item.condition[cond_key]
@@ -1755,9 +1723,7 @@ def values(self) -&gt; List[str]:
         self._apply_keywords_to_bom(language)  # type: ignore
         self._apply_keywords_to_filters(language)  # type: ignore
         self._applied_keywords = AppliedKeywords(
-            **asdict(
-                resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
-            )
+            **asdict(resource._keywords.en if language == &#34;en&#34; else resource._keywords.de)
         )
         self._language_applied = True
 
@@ -1807,6 +1773,21 @@ def values(self) -&gt; List[str]:
                 return True
         return False
 
+    def get_filter_element_by_name(self, name: str) -&gt; Optional[FilterElement]:
+        &#34;&#34;&#34;
+        Returns the filter dataclass that matches its name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements name.
+
+        Returns:
+            FilterElement: The filter element from the dataclass list that matches the provided name.
+        &#34;&#34;&#34;
+        for index, value in enumerate(self._filters):
+            if value.name == name:
+                return self._filters[index]
+        return None
+
     def get_filter_element_by_property_name(self, name: str) -&gt; Optional[FilterElement]:
         &#34;&#34;&#34;
         Returns the filter dataclass that matches its property name.
@@ -1815,7 +1796,7 @@ def values(self) -&gt; List[str]:
             name (str): The filter to fetch from the dataclass list by the elements property name.
 
         Returns:
-            User: The filter element from the dataclass list that matches the provided name.
+            FilterElement: The filter element from the dataclass list that matches the provided name.
         &#34;&#34;&#34;
         for index, value in enumerate(self._filters):
             if value.property_name == name:
@@ -1989,11 +1970,44 @@ def users(self) -&gt; List[User]:
     self._apply_keywords_to_bom(language)  # type: ignore
     self._apply_keywords_to_filters(language)  # type: ignore
     self._applied_keywords = AppliedKeywords(
-        **asdict(
-            resource._keywords.en if language == &#34;en&#34; else resource._keywords.de
-        )
+        **asdict(resource._keywords.en if language == &#34;en&#34; else resource._keywords.de)
     )
     self._language_applied = True</code></pre>
+</details>
+</dd>
+<dt id="pytia_bill_of_material.resources.Resources.get_filter_element_by_name"><code class="name flex">
+<span>def <span class="ident">get_filter_element_by_name</span></span>(<span>self, name: str) ‑> Optional[<a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the filter dataclass that matches its name.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The filter to fetch from the dataclass list by the elements name.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a></code></dt>
+<dd>The filter element from the dataclass list that matches the provided name.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_filter_element_by_name(self, name: str) -&gt; Optional[FilterElement]:
+    &#34;&#34;&#34;
+    Returns the filter dataclass that matches its name.
+
+    Args:
+        name (str): The filter to fetch from the dataclass list by the elements name.
+
+    Returns:
+        FilterElement: The filter element from the dataclass list that matches the provided name.
+    &#34;&#34;&#34;
+    for index, value in enumerate(self._filters):
+        if value.name == name:
+            return self._filters[index]
+    return None</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name"><code class="name flex">
@@ -2008,7 +2022,7 @@ def users(self) -&gt; List[User]:
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code><a title="pytia_bill_of_material.resources.User" href="#pytia_bill_of_material.resources.User">User</a></code></dt>
+<dt><code><a title="pytia_bill_of_material.resources.FilterElement" href="#pytia_bill_of_material.resources.FilterElement">FilterElement</a></code></dt>
 <dd>The filter element from the dataclass list that matches the provided name.</dd>
 </dl></div>
 <details class="source">
@@ -2023,7 +2037,7 @@ def users(self) -&gt; List[User]:
         name (str): The filter to fetch from the dataclass list by the elements property name.
 
     Returns:
-        User: The filter element from the dataclass list that matches the provided name.
+        FilterElement: The filter element from the dataclass list that matches the provided name.
     &#34;&#34;&#34;
     for index, value in enumerate(self._filters):
         if value.property_name == name:
@@ -2616,6 +2630,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.FilterElement.condition" href="#pytia_bill_of_material.resources.FilterElement.condition">condition</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.FilterElement.criteria" href="#pytia_bill_of_material.resources.FilterElement.criteria">criteria</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.FilterElement.description" href="#pytia_bill_of_material.resources.FilterElement.description">description</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.FilterElement.name" href="#pytia_bill_of_material.resources.FilterElement.name">name</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.FilterElement.property_name" href="#pytia_bill_of_material.resources.FilterElement.property_name">property_name</a></code></li>
 </ul>
 </li>
@@ -2688,6 +2703,7 @@ def values(self) -&gt; List[str]:
 <li><code><a title="pytia_bill_of_material.resources.Resources.docket" href="#pytia_bill_of_material.resources.Resources.docket">docket</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.documentation" href="#pytia_bill_of_material.resources.Resources.documentation">documentation</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.filters" href="#pytia_bill_of_material.resources.Resources.filters">filters</a></code></li>
+<li><code><a title="pytia_bill_of_material.resources.Resources.get_filter_element_by_name" href="#pytia_bill_of_material.resources.Resources.get_filter_element_by_name">get_filter_element_by_name</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name" href="#pytia_bill_of_material.resources.Resources.get_filter_element_by_property_name">get_filter_element_by_property_name</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.get_info_msg_by_counter" href="#pytia_bill_of_material.resources.Resources.get_info_msg_by_counter">get_info_msg_by_counter</a></code></li>
 <li><code><a title="pytia_bill_of_material.resources.Resources.get_user_by_logon" href="#pytia_bill_of_material.resources.Resources.get_user_by_logon">get_user_by_logon</a></code></li>

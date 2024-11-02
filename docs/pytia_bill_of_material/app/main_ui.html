@@ -70,26 +70,20 @@ from utils.handler import WidgetLogHandler
 class MainUI(tk.Tk):
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
-    WIDTH = 800
-    HEIGHT = 590
+    WIDTH = 950
+    HEIGHT = 600
 
     def __init__(self) -&gt; None:
         ttk.tk.Tk.__init__(self)
         self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.doc_helper: (
-            LazyDocumentHelper  # Instantiate later for performance improvement
-        )
+        self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
         self.workspace: Workspace  # Instantiate later, dependent on doc_helper
         self.set_ui: UISetter  # Instantiate later, dependent on doc_helper
         self.vars = Variables(root=self)
         self.frames = Frames(root=self)
-        self.layout = Layout(
-            root=self,
-            frames=self.frames,
-            variables=self.vars,
-        )
+        self.layout = Layout(root=self, frames=self.frames, variables=self.vars)
 
         # UI TOOLS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.window_manager = WindowManager(self)
@@ -113,10 +107,7 @@ class MainUI(tk.Tk):
         )
 
         # UI INIT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.title(
-            f&#34;{resource.settings.title} &#34;
-            f&#34;{&#39;(DEBUG MODE)&#39; if resource.settings.debug else APP_VERSION}&#34;
-        )
+        self.title(f&#34;{resource.settings.title} &#34; f&#34;{&#39;(DEBUG MODE)&#39; if resource.settings.debug else APP_VERSION}&#34;)
         self.attributes(&#34;-topmost&#34;, True)
         self.attributes(&#34;-toolwindow&#34;, True)
         self.config(cursor=&#34;wait&#34;)
@@ -156,6 +147,9 @@ class MainUI(tk.Tk):
         if ws_title := self.workspace.elements.title:
             self.title(f&#34;{self.title()}  -  {ws_title} (Workspace)&#34;)
 
+        # Add filters to ui
+        self.layout.add_filters(workspace=self.workspace)
+
         # Setup the ui state handler
         self.set_ui = UISetter(
             root=self,
@@ -184,9 +178,7 @@ class MainUI(tk.Tk):
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(
-            r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
-        )
+        log_format = logging.Formatter(r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;)
         widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)
@@ -247,26 +239,20 @@ class MainUI(tk.Tk):
 <pre><code class="python">class MainUI(tk.Tk):
     &#34;&#34;&#34;The user interface of the app.&#34;&#34;&#34;
 
-    WIDTH = 800
-    HEIGHT = 590
+    WIDTH = 950
+    HEIGHT = 600
 
     def __init__(self) -&gt; None:
         ttk.tk.Tk.__init__(self)
         self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.doc_helper: (
-            LazyDocumentHelper  # Instantiate later for performance improvement
-        )
+        self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
         self.workspace: Workspace  # Instantiate later, dependent on doc_helper
         self.set_ui: UISetter  # Instantiate later, dependent on doc_helper
         self.vars = Variables(root=self)
         self.frames = Frames(root=self)
-        self.layout = Layout(
-            root=self,
-            frames=self.frames,
-            variables=self.vars,
-        )
+        self.layout = Layout(root=self, frames=self.frames, variables=self.vars)
 
         # UI TOOLS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         self.window_manager = WindowManager(self)
@@ -290,10 +276,7 @@ class MainUI(tk.Tk):
         )
 
         # UI INIT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.title(
-            f&#34;{resource.settings.title} &#34;
-            f&#34;{&#39;(DEBUG MODE)&#39; if resource.settings.debug else APP_VERSION}&#34;
-        )
+        self.title(f&#34;{resource.settings.title} &#34; f&#34;{&#39;(DEBUG MODE)&#39; if resource.settings.debug else APP_VERSION}&#34;)
         self.attributes(&#34;-topmost&#34;, True)
         self.attributes(&#34;-toolwindow&#34;, True)
         self.config(cursor=&#34;wait&#34;)
@@ -333,6 +316,9 @@ class MainUI(tk.Tk):
         if ws_title := self.workspace.elements.title:
             self.title(f&#34;{self.title()}  -  {ws_title} (Workspace)&#34;)
 
+        # Add filters to ui
+        self.layout.add_filters(workspace=self.workspace)
+
         # Setup the ui state handler
         self.set_ui = UISetter(
             root=self,
@@ -361,9 +347,7 @@ class MainUI(tk.Tk):
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(
-            r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;
-        )
+        log_format = logging.Formatter(r&#34;%(asctime)s  %(levelname)s  %(message)s&#34;, datefmt=r&#34;%Y-%m-%d %H:%M:%S&#34;)
         widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)

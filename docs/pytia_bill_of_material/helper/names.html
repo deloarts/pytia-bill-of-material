@@ -56,13 +56,7 @@ def get_bom_export_name(workspace: Workspace, project: str, product: str) -&gt; 
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
-    name = (
-        (
-            workspace.elements.bom_name
-            if workspace.elements.bom_name
-            else resource.settings.files.bom_export
-        ),
-    )[0]
+    name = ((workspace.elements.bom_name if workspace.elements.bom_name else resource.settings.files.bom_export),)[0]
     initial_file = f&#34;{product} {name}&#34;
 
     if project != KEEP:
@@ -95,10 +89,7 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -&gt; st
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
     )
     if with_project:
-        value = (
-            f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
-            + value
-        )
+        value = f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34; + value
     return value</code></pre>
 </details>
 </section>
@@ -156,13 +147,7 @@ settings.json file.</p>
     Returns:
         str: The file name without extension.
     &#34;&#34;&#34;
-    name = (
-        (
-            workspace.elements.bom_name
-            if workspace.elements.bom_name
-            else resource.settings.files.bom_export
-        ),
-    )[0]
+    name = ((workspace.elements.bom_name if workspace.elements.bom_name else resource.settings.files.bom_export),)[0]
     initial_file = f&#34;{product} {name}&#34;
 
     if project != KEEP:
@@ -219,10 +204,7 @@ The export name will look like this:
         f&#34;Rev{bom_item.properties[resource.bom.required_header_items.revision]}&#34;
     )
     if with_project:
-        value = (
-            f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34;
-            + value
-        )
+        value = f&#34;{bom_item.properties[resource.bom.required_header_items.project]} &#34; + value
     return value</code></pre>
 </details>
 </dd>

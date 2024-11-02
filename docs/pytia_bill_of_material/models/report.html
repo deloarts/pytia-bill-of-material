@@ -46,6 +46,7 @@ from const import Status
 class ReportItem:
     partnumber: str
     path: Path | None
+    parent_partnumber: str
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)
@@ -95,10 +96,10 @@ class Report:
 </dd>
 <dt id="pytia_bill_of_material.models.report.ReportItem"><code class="flex name class">
 <span>class <span class="ident">ReportItem</span></span>
-<span>(</span><span>partnumber: str, path: pathlib.Path | None, parent_path: pathlib.Path, details: Dict[str, const.Status] = &lt;factory&gt;, status: const.Status = Status.OK)</span>
+<span>(</span><span>partnumber: str, path: pathlib.Path | None, parent_partnumber: str, parent_path: pathlib.Path, details: Dict[str, const.Status] = &lt;factory&gt;, status: const.Status = Status.OK)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>ReportItem(partnumber: str, path: pathlib.Path | None, parent_path: pathlib.Path, details: Dict[str, const.Status] = <factory>, status: const.Status = <Status.OK: 'ok'>)</p></div>
+<div class="desc"><p>ReportItem(partnumber: str, path: pathlib.Path | None, parent_partnumber: str, parent_path: pathlib.Path, details: Dict[str, const.Status] = <factory>, status: const.Status = <Status.OK: 'ok'>)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -107,6 +108,7 @@ class Report:
 class ReportItem:
     partnumber: str
     path: Path | None
+    parent_partnumber: str
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)</code></pre>
@@ -114,6 +116,10 @@ class ReportItem:
 <h3>Class variables</h3>
 <dl>
 <dt id="pytia_bill_of_material.models.report.ReportItem.details"><code class="name">var <span class="ident">details</span> : Dict[str, const.Status]</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pytia_bill_of_material.models.report.ReportItem.parent_partnumber"><code class="name">var <span class="ident">parent_partnumber</span> : str</code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -160,8 +166,9 @@ class ReportItem:
 </li>
 <li>
 <h4><code><a title="pytia_bill_of_material.models.report.ReportItem" href="#pytia_bill_of_material.models.report.ReportItem">ReportItem</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="pytia_bill_of_material.models.report.ReportItem.details" href="#pytia_bill_of_material.models.report.ReportItem.details">details</a></code></li>
+<li><code><a title="pytia_bill_of_material.models.report.ReportItem.parent_partnumber" href="#pytia_bill_of_material.models.report.ReportItem.parent_partnumber">parent_partnumber</a></code></li>
 <li><code><a title="pytia_bill_of_material.models.report.ReportItem.parent_path" href="#pytia_bill_of_material.models.report.ReportItem.parent_path">parent_path</a></code></li>
 <li><code><a title="pytia_bill_of_material.models.report.ReportItem.partnumber" href="#pytia_bill_of_material.models.report.ReportItem.partnumber">partnumber</a></code></li>
 <li><code><a title="pytia_bill_of_material.models.report.ReportItem.path" href="#pytia_bill_of_material.models.report.ReportItem.path">path</a></code></li>

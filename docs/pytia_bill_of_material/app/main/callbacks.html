@@ -106,10 +106,7 @@ class Callbacks:
 
     def _bind_widget_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Binds all callbacks to the main windows widgets.&#34;&#34;&#34;
-        if not (
-            resource.settings.restrictions.strict_project
-            and self.workspace.elements.projects
-        ):
+        if not (resource.settings.restrictions.strict_project and self.workspace.elements.projects):
             self.layout.input_project.bind(
                 &#34;&lt;FocusOut&gt;&#34;,
                 lambda _: add_current_value_to_combobox_list(self.layout.input_project),
@@ -124,53 +121,27 @@ class Callbacks:
         self.layout.button_open_parent.configure(command=self.on_btn_open_parent)
         self.layout.button_close_document.configure(command=self.on_btn_close_document)
 
-        self.layout.button_bom_export_path.configure(
-            command=self.on_btn_bom_export_path
-        )
-        self.layout.button_docket_export_path.configure(
-            command=self.on_btn_docket_export_path
-        )
-        self.layout.button_documentation_export_path.configure(
-            command=self.on_btn_docu_export_path
-        )
-        self.layout.button_drawing_export_path.configure(
-            command=self.on_btn_drawing_export_path
-        )
-        self.layout.button_stp_export_path.configure(
-            command=self.on_btn_stp_export_path
-        )
-        self.layout.button_stl_export_path.configure(
-            command=self.on_btn_stl_export_path
-        )
-        self.layout.button_jpg_export_path.configure(
-            command=self.on_btn_jpg_export_path
-        )
-        self.layout.button_bundle_export_path.configure(
-            command=self.on_btn_bundle_export_path
-        )
+        self.layout.button_bom_export_path.configure(command=self.on_btn_bom_export_path)
+        self.layout.button_docket_export_path.configure(command=self.on_btn_docket_export_path)
+        self.layout.button_documentation_export_path.configure(command=self.on_btn_docu_export_path)
+        self.layout.button_drawing_export_path.configure(command=self.on_btn_drawing_export_path)
+        self.layout.button_stp_export_path.configure(command=self.on_btn_stp_export_path)
+        self.layout.button_stl_export_path.configure(command=self.on_btn_stl_export_path)
+        self.layout.button_jpg_export_path.configure(command=self.on_btn_jpg_export_path)
+        self.layout.button_bundle_export_path.configure(command=self.on_btn_bundle_export_path)
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
-        self.layout.checkbox_export_docket.configure(
-            command=self.on_chkbox_export_docket
-        )
-        self.layout.checkbox_export_drawing.configure(
-            command=self.on_chkbox_export_drawing
-        )
+        self.layout.checkbox_export_docket.configure(command=self.on_chkbox_export_docket)
+        self.layout.checkbox_export_drawing.configure(command=self.on_chkbox_export_drawing)
         self.layout.checkbox_export_stp.configure(command=self.on_chkbox_export_stp)
         self.layout.checkbox_export_stl.configure(command=self.on_chkbox_export_stl)
 
     def _bind_tree_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Binds all callbacks to the main windows tree views.&#34;&#34;&#34;
-        self.layout.tree_report_failed_items.bind(
-            &#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_items_button_1
-        )
-        self.layout.tree_report_failed_items.bind(
-            &#34;&lt;ButtonRelease-3&gt;&#34;, self.on_tree_failed_items_button_3
-        )
-        self.layout.tree_report_failed_props.bind(
-            &#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_props_button_1
-        )
+        self.layout.tree_report_failed_items.bind(&#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_items_button_1)
+        self.layout.tree_report_failed_items.bind(&#34;&lt;ButtonRelease-3&gt;&#34;, self.on_tree_failed_items_button_3)
+        self.layout.tree_report_failed_props.bind(&#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_props_button_1)
 
     def on_btn_export(self) -&gt; None:
         &#34;&#34;&#34;
@@ -195,9 +166,7 @@ class Callbacks:
 
         if resource.settings.restrictions.enable_information:
             for msg in resource.get_info_msg_by_counter():
-                tkmsg.showinfo(
-                    title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;
-                )
+                tkmsg.showinfo(title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;)
 
         self.root.withdraw()
         self.root.destroy()
@@ -429,17 +398,13 @@ class Callbacks:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export docket&#39;. Does nothing.
         &#34;&#34;&#34;
-        log.info(
-            f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;
-        )
+        log.info(f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;)
 
     def on_chkbox_export_drawing(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export drawing&#39;. Does nothing.
         &#34;&#34;&#34;
-        log.info(
-            f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;
-        )
+        log.info(f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;)
 
     def on_chkbox_export_stp(self) -&gt; None:
         &#34;&#34;&#34;
@@ -465,23 +430,31 @@ class Callbacks:
         Handles the user selection of the failed item. Enables the open document buttons and
         adds the failed properties from the report to the &#39;failed props&#39; treeview widget.
         &#34;&#34;&#34;
-        self.layout.tree_report_failed_props.delete(
-            *self.layout.tree_report_failed_props.get_children()
-        )
+        self.layout.tree_report_failed_props.delete(*self.layout.tree_report_failed_props.get_children())
+        self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
 
         selection = self.layout.tree_report_failed_items.selection()
+
         for selection_item in selection:
-            if partnumber := self.layout.tree_report_failed_items.item(
-                selection_item, &#34;values&#34;
-            )[0]:
+            partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[0]
+            parent_partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[1]
+
+            if partnumber and parent_partnumber:
                 for item in self.vars.report.items:
-                    if item.partnumber == partnumber:
+                    if item.partnumber == partnumber and item.parent_partnumber == parent_partnumber:
                         self.report_selected_doc_path = item.path
                         self.report_selected_doc_parent_path = item.parent_path
                         for detail in item.details:
-                            if item.details[detail] == Status.FAILED:
+                            if item.details[detail] == Status.FAILED and (
+                                filter_element := resource.get_filter_element_by_name(detail)
+                            ):
                                 self.layout.tree_report_failed_props.insert(
-                                    &#34;&#34;, &#34;end&#34;, values=(detail,)
+                                    &#34;&#34;,
+                                    &#34;end&#34;,
+                                    values=(
+                                        filter_element.name,
+                                        filter_element.property_name,
+                                    ),
                                 )
 
                 if os.path.isfile(self.report_selected_doc_parent_path):
@@ -490,9 +463,7 @@ class Callbacks:
                 if self.report_selected_doc_path is None:
                     self.layout.text_description.configure(state=NORMAL)
                     self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-                    self.layout.text_description.insert(
-                        &#34;end&#34;, &#34;Path for element not found.&#34;
-                    )
+                    self.layout.text_description.insert(&#34;end&#34;, &#34;Path for element not found.&#34;)
                     self.layout.text_description.configure(state=DISABLED)
                 elif os.path.isfile(self.report_selected_doc_path):
                     self.layout.button_open_document.configure(state=NORMAL)
@@ -515,20 +486,16 @@ class Callbacks:
         self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
         selection = self.layout.tree_report_failed_props.selection()
         for selection_item in selection:
-            if property_name := self.layout.tree_report_failed_props.item(
-                selection_item, &#34;values&#34;
-            )[0]:
-                if filter_element := resource.get_filter_element_by_property_name(
-                    property_name
-                ):
+            if filter_element_name := self.layout.tree_report_failed_props.item(selection_item, &#34;values&#34;)[0]:
+                if filter_element := resource.get_filter_element_by_name(filter_element_name):
                     self.layout.text_description.insert(
-                        &#34;end&#34;, filter_element.description
+                        &#34;end&#34;,
+                        f&#34;{filter_element.description}\n\n&#34;
+                        f&#34;This results from an error in the document property &#39;{filter_element.property_name}&#39;.&#34;,
                     )
                     return
                 else:
-                    self.layout.text_description.insert(
-                        &#34;end&#34;, &#34;No description available.&#34;
-                    )
+                    self.layout.text_description.insert(&#34;end&#34;, &#34;No description available.&#34;)
         self.layout.text_description.configure(state=DISABLED)</code></pre>
 </details>
 </section>
@@ -617,10 +584,7 @@ class Callbacks:
 
     def _bind_widget_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Binds all callbacks to the main windows widgets.&#34;&#34;&#34;
-        if not (
-            resource.settings.restrictions.strict_project
-            and self.workspace.elements.projects
-        ):
+        if not (resource.settings.restrictions.strict_project and self.workspace.elements.projects):
             self.layout.input_project.bind(
                 &#34;&lt;FocusOut&gt;&#34;,
                 lambda _: add_current_value_to_combobox_list(self.layout.input_project),
@@ -635,53 +599,27 @@ class Callbacks:
         self.layout.button_open_parent.configure(command=self.on_btn_open_parent)
         self.layout.button_close_document.configure(command=self.on_btn_close_document)
 
-        self.layout.button_bom_export_path.configure(
-            command=self.on_btn_bom_export_path
-        )
-        self.layout.button_docket_export_path.configure(
-            command=self.on_btn_docket_export_path
-        )
-        self.layout.button_documentation_export_path.configure(
-            command=self.on_btn_docu_export_path
-        )
-        self.layout.button_drawing_export_path.configure(
-            command=self.on_btn_drawing_export_path
-        )
-        self.layout.button_stp_export_path.configure(
-            command=self.on_btn_stp_export_path
-        )
-        self.layout.button_stl_export_path.configure(
-            command=self.on_btn_stl_export_path
-        )
-        self.layout.button_jpg_export_path.configure(
-            command=self.on_btn_jpg_export_path
-        )
-        self.layout.button_bundle_export_path.configure(
-            command=self.on_btn_bundle_export_path
-        )
+        self.layout.button_bom_export_path.configure(command=self.on_btn_bom_export_path)
+        self.layout.button_docket_export_path.configure(command=self.on_btn_docket_export_path)
+        self.layout.button_documentation_export_path.configure(command=self.on_btn_docu_export_path)
+        self.layout.button_drawing_export_path.configure(command=self.on_btn_drawing_export_path)
+        self.layout.button_stp_export_path.configure(command=self.on_btn_stp_export_path)
+        self.layout.button_stl_export_path.configure(command=self.on_btn_stl_export_path)
+        self.layout.button_jpg_export_path.configure(command=self.on_btn_jpg_export_path)
+        self.layout.button_bundle_export_path.configure(command=self.on_btn_bundle_export_path)
 
     def _bind_checkbox_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Bind checkbox callbacks.&#34;&#34;&#34;
-        self.layout.checkbox_export_docket.configure(
-            command=self.on_chkbox_export_docket
-        )
-        self.layout.checkbox_export_drawing.configure(
-            command=self.on_chkbox_export_drawing
-        )
+        self.layout.checkbox_export_docket.configure(command=self.on_chkbox_export_docket)
+        self.layout.checkbox_export_drawing.configure(command=self.on_chkbox_export_drawing)
         self.layout.checkbox_export_stp.configure(command=self.on_chkbox_export_stp)
         self.layout.checkbox_export_stl.configure(command=self.on_chkbox_export_stl)
 
     def _bind_tree_callbacks(self) -&gt; None:
         &#34;&#34;&#34;Binds all callbacks to the main windows tree views.&#34;&#34;&#34;
-        self.layout.tree_report_failed_items.bind(
-            &#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_items_button_1
-        )
-        self.layout.tree_report_failed_items.bind(
-            &#34;&lt;ButtonRelease-3&gt;&#34;, self.on_tree_failed_items_button_3
-        )
-        self.layout.tree_report_failed_props.bind(
-            &#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_props_button_1
-        )
+        self.layout.tree_report_failed_items.bind(&#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_items_button_1)
+        self.layout.tree_report_failed_items.bind(&#34;&lt;ButtonRelease-3&gt;&#34;, self.on_tree_failed_items_button_3)
+        self.layout.tree_report_failed_props.bind(&#34;&lt;ButtonRelease-1&gt;&#34;, self.on_tree_failed_props_button_1)
 
     def on_btn_export(self) -&gt; None:
         &#34;&#34;&#34;
@@ -706,9 +644,7 @@ class Callbacks:
 
         if resource.settings.restrictions.enable_information:
             for msg in resource.get_info_msg_by_counter():
-                tkmsg.showinfo(
-                    title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;
-                )
+                tkmsg.showinfo(title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;)
 
         self.root.withdraw()
         self.root.destroy()
@@ -940,17 +876,13 @@ class Callbacks:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export docket&#39;. Does nothing.
         &#34;&#34;&#34;
-        log.info(
-            f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;
-        )
+        log.info(f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;)
 
     def on_chkbox_export_drawing(self) -&gt; None:
         &#34;&#34;&#34;
         Event handler for the checkbox &#39;export drawing&#39;. Does nothing.
         &#34;&#34;&#34;
-        log.info(
-            f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;
-        )
+        log.info(f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;)
 
     def on_chkbox_export_stp(self) -&gt; None:
         &#34;&#34;&#34;
@@ -976,23 +908,31 @@ class Callbacks:
         Handles the user selection of the failed item. Enables the open document buttons and
         adds the failed properties from the report to the &#39;failed props&#39; treeview widget.
         &#34;&#34;&#34;
-        self.layout.tree_report_failed_props.delete(
-            *self.layout.tree_report_failed_props.get_children()
-        )
+        self.layout.tree_report_failed_props.delete(*self.layout.tree_report_failed_props.get_children())
+        self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
 
         selection = self.layout.tree_report_failed_items.selection()
+
         for selection_item in selection:
-            if partnumber := self.layout.tree_report_failed_items.item(
-                selection_item, &#34;values&#34;
-            )[0]:
+            partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[0]
+            parent_partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[1]
+
+            if partnumber and parent_partnumber:
                 for item in self.vars.report.items:
-                    if item.partnumber == partnumber:
+                    if item.partnumber == partnumber and item.parent_partnumber == parent_partnumber:
                         self.report_selected_doc_path = item.path
                         self.report_selected_doc_parent_path = item.parent_path
                         for detail in item.details:
-                            if item.details[detail] == Status.FAILED:
+                            if item.details[detail] == Status.FAILED and (
+                                filter_element := resource.get_filter_element_by_name(detail)
+                            ):
                                 self.layout.tree_report_failed_props.insert(
-                                    &#34;&#34;, &#34;end&#34;, values=(detail,)
+                                    &#34;&#34;,
+                                    &#34;end&#34;,
+                                    values=(
+                                        filter_element.name,
+                                        filter_element.property_name,
+                                    ),
                                 )
 
                 if os.path.isfile(self.report_selected_doc_parent_path):
@@ -1001,9 +941,7 @@ class Callbacks:
                 if self.report_selected_doc_path is None:
                     self.layout.text_description.configure(state=NORMAL)
                     self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-                    self.layout.text_description.insert(
-                        &#34;end&#34;, &#34;Path for element not found.&#34;
-                    )
+                    self.layout.text_description.insert(&#34;end&#34;, &#34;Path for element not found.&#34;)
                     self.layout.text_description.configure(state=DISABLED)
                 elif os.path.isfile(self.report_selected_doc_path):
                     self.layout.button_open_document.configure(state=NORMAL)
@@ -1026,20 +964,16 @@ class Callbacks:
         self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
         selection = self.layout.tree_report_failed_props.selection()
         for selection_item in selection:
-            if property_name := self.layout.tree_report_failed_props.item(
-                selection_item, &#34;values&#34;
-            )[0]:
-                if filter_element := resource.get_filter_element_by_property_name(
-                    property_name
-                ):
+            if filter_element_name := self.layout.tree_report_failed_props.item(selection_item, &#34;values&#34;)[0]:
+                if filter_element := resource.get_filter_element_by_name(filter_element_name):
                     self.layout.text_description.insert(
-                        &#34;end&#34;, filter_element.description
+                        &#34;end&#34;,
+                        f&#34;{filter_element.description}\n\n&#34;
+                        f&#34;This results from an error in the document property &#39;{filter_element.property_name}&#39;.&#34;,
                     )
                     return
                 else:
-                    self.layout.text_description.insert(
-                        &#34;end&#34;, &#34;No description available.&#34;
-                    )
+                    self.layout.text_description.insert(&#34;end&#34;, &#34;No description available.&#34;)
         self.layout.text_description.configure(state=DISABLED)</code></pre>
 </details>
 <h3>Methods</h3>
@@ -1272,9 +1206,7 @@ into which to export the pdf and dxf files.</p></div>
 
     if resource.settings.restrictions.enable_information:
         for msg in resource.get_info_msg_by_counter():
-            tkmsg.showinfo(
-                title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;
-            )
+            tkmsg.showinfo(title=resource.settings.title, message=f&#34;Did you know:\n\n{msg}&#34;)
 
     self.root.withdraw()
     self.root.destroy()</code></pre>
@@ -1461,9 +1393,7 @@ into which to export the stp files.</p></div>
     &#34;&#34;&#34;
     Event handler for the checkbox &#39;export docket&#39;. Does nothing.
     &#34;&#34;&#34;
-    log.info(
-        f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;
-    )</code></pre>
+    log.info(f&#34;Callback for checkbox &#39;Export docket&#39;: {self.vars.export_docket.get()}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_drawing"><code class="name flex">
@@ -1479,9 +1409,7 @@ into which to export the stp files.</p></div>
     &#34;&#34;&#34;
     Event handler for the checkbox &#39;export drawing&#39;. Does nothing.
     &#34;&#34;&#34;
-    log.info(
-        f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;
-    )</code></pre>
+    log.info(f&#34;Callback for checkbox &#39;Export Drawing&#39;: {self.vars.export_drawing.get()}&#34;)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.app.main.callbacks.Callbacks.on_chkbox_export_jpg"><code class="name flex">
@@ -1549,23 +1477,31 @@ adds the failed properties from the report to the 'failed props' treeview widget
     Handles the user selection of the failed item. Enables the open document buttons and
     adds the failed properties from the report to the &#39;failed props&#39; treeview widget.
     &#34;&#34;&#34;
-    self.layout.tree_report_failed_props.delete(
-        *self.layout.tree_report_failed_props.get_children()
-    )
+    self.layout.tree_report_failed_props.delete(*self.layout.tree_report_failed_props.get_children())
+    self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
 
     selection = self.layout.tree_report_failed_items.selection()
+
     for selection_item in selection:
-        if partnumber := self.layout.tree_report_failed_items.item(
-            selection_item, &#34;values&#34;
-        )[0]:
+        partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[0]
+        parent_partnumber = self.layout.tree_report_failed_items.item(selection_item, &#34;values&#34;)[1]
+
+        if partnumber and parent_partnumber:
             for item in self.vars.report.items:
-                if item.partnumber == partnumber:
+                if item.partnumber == partnumber and item.parent_partnumber == parent_partnumber:
                     self.report_selected_doc_path = item.path
                     self.report_selected_doc_parent_path = item.parent_path
                     for detail in item.details:
-                        if item.details[detail] == Status.FAILED:
+                        if item.details[detail] == Status.FAILED and (
+                            filter_element := resource.get_filter_element_by_name(detail)
+                        ):
                             self.layout.tree_report_failed_props.insert(
-                                &#34;&#34;, &#34;end&#34;, values=(detail,)
+                                &#34;&#34;,
+                                &#34;end&#34;,
+                                values=(
+                                    filter_element.name,
+                                    filter_element.property_name,
+                                ),
                             )
 
             if os.path.isfile(self.report_selected_doc_parent_path):
@@ -1574,9 +1510,7 @@ adds the failed properties from the report to the 'failed props' treeview widget
             if self.report_selected_doc_path is None:
                 self.layout.text_description.configure(state=NORMAL)
                 self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
-                self.layout.text_description.insert(
-                    &#34;end&#34;, &#34;Path for element not found.&#34;
-                )
+                self.layout.text_description.insert(&#34;end&#34;, &#34;Path for element not found.&#34;)
                 self.layout.text_description.configure(state=DISABLED)
             elif os.path.isfile(self.report_selected_doc_path):
                 self.layout.button_open_document.configure(state=NORMAL)
@@ -1620,20 +1554,16 @@ the failed property.</p></div>
     self.layout.text_description.delete(&#34;1.0&#34;, &#34;end&#34;)
     selection = self.layout.tree_report_failed_props.selection()
     for selection_item in selection:
-        if property_name := self.layout.tree_report_failed_props.item(
-            selection_item, &#34;values&#34;
-        )[0]:
-            if filter_element := resource.get_filter_element_by_property_name(
-                property_name
-            ):
+        if filter_element_name := self.layout.tree_report_failed_props.item(selection_item, &#34;values&#34;)[0]:
+            if filter_element := resource.get_filter_element_by_name(filter_element_name):
                 self.layout.text_description.insert(
-                    &#34;end&#34;, filter_element.description
+                    &#34;end&#34;,
+                    f&#34;{filter_element.description}\n\n&#34;
+                    f&#34;This results from an error in the document property &#39;{filter_element.property_name}&#39;.&#34;,
                 )
                 return
             else:
-                self.layout.text_description.insert(
-                    &#34;end&#34;, &#34;No description available.&#34;
-                )
+                self.layout.text_description.insert(&#34;end&#34;, &#34;No description available.&#34;)
     self.layout.text_description.configure(state=DISABLED)</code></pre>
 </details>
 </dd>

@@ -70,15 +70,11 @@ class LazyDocumentHelper:
         self.framework = framework
         self.document = PyProductDocument(strict_naming=False)
         self.document.current()
-        self.document.product.part_number = self.document.document.name.split(
-            &#34;.CATProduct&#34;
-        )[0]
+        self.document.product.part_number = self.document.document.name.split(&#34;.CATProduct&#34;)[0]
         self.name = self.document.document.name
         resource.apply_language(get_ui_language(self.document))  # type: ignore
 
-        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(
-            self.document.document.full_name
-        ):
+        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(self.document.document.full_name):
             raise PytiaDocumentNotSavedError(
                 &#34;It is not allowed to export the bill of material of an unsaved document. &#34;
                 &#34;Please save the document first.&#34;
@@ -168,9 +164,7 @@ class LazyDocumentHelper:
         &#34;&#34;&#34;Returns True if the current part document has changed, False if not.&#34;&#34;&#34;
         part_document = self.document
         part_document.current()
-        log.warning(
-            f&#34;The document has changed: {part_document.document.name} -&gt; {self.name}&#34;
-        )
+        log.warning(f&#34;The document has changed: {part_document.document.name} -&gt; {self.name}&#34;)
         return part_document.document.name != self.name
 
     @staticmethod
@@ -229,9 +223,7 @@ class LazyDocumentHelper:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f&#34;Closed document {doc!r}.&#34;)
             except Exception:
-                log.warning(
-                    f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;
-                )</code></pre>
+                log.warning(f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -280,15 +272,11 @@ document changes all operations will be made on the original document.</p>
         self.framework = framework
         self.document = PyProductDocument(strict_naming=False)
         self.document.current()
-        self.document.product.part_number = self.document.document.name.split(
-            &#34;.CATProduct&#34;
-        )[0]
+        self.document.product.part_number = self.document.document.name.split(&#34;.CATProduct&#34;)[0]
         self.name = self.document.document.name
         resource.apply_language(get_ui_language(self.document))  # type: ignore
 
-        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(
-            self.document.document.full_name
-        ):
+        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(self.document.document.full_name):
             raise PytiaDocumentNotSavedError(
                 &#34;It is not allowed to export the bill of material of an unsaved document. &#34;
                 &#34;Please save the document first.&#34;
@@ -378,9 +366,7 @@ document changes all operations will be made on the original document.</p>
         &#34;&#34;&#34;Returns True if the current part document has changed, False if not.&#34;&#34;&#34;
         part_document = self.document
         part_document.current()
-        log.warning(
-            f&#34;The document has changed: {part_document.document.name} -&gt; {self.name}&#34;
-        )
+        log.warning(f&#34;The document has changed: {part_document.document.name} -&gt; {self.name}&#34;)
         return part_document.document.name != self.name
 
     @staticmethod
@@ -439,9 +425,7 @@ document changes all operations will be made on the original document.</p>
                 self.framework.catia.documents.item(doc).close()
                 log.info(f&#34;Closed document {doc!r}.&#34;)
             except Exception:
-                log.warning(
-                    f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;
-                )</code></pre>
+                log.warning(f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -554,9 +538,7 @@ def source(self) -&gt; int:
             self.framework.catia.documents.item(doc).close()
             log.info(f&#34;Closed document {doc!r}.&#34;)
         except Exception:
-            log.warning(
-                f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;
-            )</code></pre>
+            log.warning(f&#34;Failed closing document {doc!r}: Maybe it has been already closed.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="pytia_bill_of_material.helper.lazy_loaders.LazyDocumentHelper.get_all_open_documents"><code class="name flex">

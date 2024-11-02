@@ -74,13 +74,11 @@ class ReportDocument:
         &#34;&#34;&#34;Opens the document and waits unit it&#39;s closed by the user.&#34;&#34;&#34;
         if path and os.path.isfile(path):
             self.path = path
-            framework.catia.documents.open(str(self.path))
+            framework.catia.documents.open(self.path)
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)
             self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
+            self.layout.tree_report_failed_items.state((DISABLED,))  # FIXME: This doesn&#39;t really
             # disable the widget. Somehow
             # the user can still select
             # other items. This results
@@ -162,13 +160,11 @@ class ReportDocument:
         &#34;&#34;&#34;Opens the document and waits unit it&#39;s closed by the user.&#34;&#34;&#34;
         if path and os.path.isfile(path):
             self.path = path
-            framework.catia.documents.open(str(self.path))
+            framework.catia.documents.open(self.path)
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)
             self.layout.button_close_document.configure(state=NORMAL)
-            self.layout.tree_report_failed_items.state(
-                (DISABLED,)
-            )  # FIXME: This doesn&#39;t really
+            self.layout.tree_report_failed_items.state((DISABLED,))  # FIXME: This doesn&#39;t really
             # disable the widget. Somehow
             # the user can still select
             # other items. This results
@@ -224,13 +220,11 @@ class ReportDocument:
     &#34;&#34;&#34;Opens the document and waits unit it&#39;s closed by the user.&#34;&#34;&#34;
     if path and os.path.isfile(path):
         self.path = path
-        framework.catia.documents.open(str(self.path))
+        framework.catia.documents.open(self.path)
         self.layout.button_open_document.configure(state=DISABLED)
         self.layout.button_open_parent.configure(state=DISABLED)
         self.layout.button_close_document.configure(state=NORMAL)
-        self.layout.tree_report_failed_items.state(
-            (DISABLED,)
-        )  # FIXME: This doesn&#39;t really
+        self.layout.tree_report_failed_items.state((DISABLED,))  # FIXME: This doesn&#39;t really
         # disable the widget. Somehow
         # the user can still select
         # other items. This results
