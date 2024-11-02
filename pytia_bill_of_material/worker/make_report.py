@@ -104,72 +104,48 @@ class MakeReportTask(TaskProtocol):
                             for cond_key in cond_item:
                                 if not cond_key in assembly_item.properties:
                                     raise KeyError(
-                                        f"Condition key {cond_key!r} is not available "
-                                        "in the BOM properties."
+                                        f"Condition key {cond_key!r} is not available in the BOM properties."
                                     )
 
-                                if (
-                                    assembly_item.properties[cond_key]
-                                    == cond_item[cond_key]
-                                ):
+                                if assembly_item.properties[cond_key] == cond_item[cond_key]:
                                     conditions_satisfied.append(True)
                                 else:
                                     conditions_satisfied.append(False)
 
                         else:
                             raise TypeError(
-                                f"Type of conditions ({type(cond_item)}) not valid, "
-                                "must be 'bool' or 'dict'."
+                                f"Type of conditions ({type(cond_item)}) not valid, must be 'bool' or 'dict'."
                             )
 
                         if all(conditions_satisfied):
-                            if (
-                                assembly_item.properties[filter_element.property_name]
-                                is not None
-                            ):
+                            if assembly_item.properties[filter_element.property_name] is not None:
                                 if filter_element.criteria.startswith("%WS:"):
-                                    workspace_element = filter_element.criteria.split(
-                                        "%WS:"
-                                    )[-1]
+                                    workspace_element = filter_element.criteria.split("%WS:")[-1]
                                     workspace_dict = workspace.elements.__dict__
                                     if (
                                         workspace.available
                                         and workspace_element in workspace_dict
-                                        and assembly_item.properties[
-                                            filter_element.property_name
-                                        ]
+                                        and assembly_item.properties[filter_element.property_name]
                                         == workspace_dict[workspace_element]
                                     ):
-                                        report_item.details[filter_element.name] = (
-                                            Status.OK
-                                        )
+                                        report_item.details[filter_element.name] = Status.OK
                                         log.debug(f"    - {filter_element.name}: OK.")
                                     else:
 
-                                        report_item.details[filter_element.name] = (
-                                            Status.FAILED
-                                        )
+                                        report_item.details[filter_element.name] = Status.FAILED
                                         report_item.status = Status.FAILED
                                         report.status = Status.FAILED
-                                        log.debug(
-                                            f"    - {filter_element.name}: FAILED."
-                                        )
+                                        log.debug(f"    - {filter_element.name}: FAILED.")
 
                                 elif re.match(
                                     filter_element.criteria,
-                                    str(
-                                        assembly_item.properties[
-                                            filter_element.property_name
-                                        ]
-                                    ),
+                                    str(assembly_item.properties[filter_element.property_name]),
                                 ):
                                     report_item.details[filter_element.name] = Status.OK
                                     log.debug(f"    - {filter_element.name}: OK.")
 
                                 else:
-                                    report_item.details[filter_element.name] = (
-                                        Status.FAILED
-                                    )
+                                    report_item.details[filter_element.name] = Status.FAILED
                                     report_item.status = Status.FAILED
                                     report.status = Status.FAILED
                                     log.debug(f"    - {filter_element.name}: FAILED.")
@@ -184,8 +160,6 @@ class MakeReportTask(TaskProtocol):
                             log.debug(f"    - {filter_element.name}: SKIPPED.")
 
                     else:
-                        raise ValueError(
-                            f"Item {filter_element.property_name!r} not in BOM."
-                        )
+                        raise ValueError(f"Item {filter_element.property_name!r} not in BOM.")
                 report.items.append(report_item)
         return report

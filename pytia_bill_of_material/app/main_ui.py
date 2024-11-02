@@ -49,9 +49,7 @@ class MainUI(tk.Tk):
         self.style = ttk.Style(theme=resource.appdata.theme)
 
         # CLASS VARS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.doc_helper: (
-            LazyDocumentHelper  # Instantiate later for performance improvement
-        )
+        self.doc_helper: LazyDocumentHelper  # Instantiate later for performance improvement
         self.workspace: Workspace  # Instantiate later, dependent on doc_helper
         self.set_ui: UISetter  # Instantiate later, dependent on doc_helper
         self.vars = Variables(root=self)
@@ -80,10 +78,7 @@ class MainUI(tk.Tk):
         )
 
         # UI INIT ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        self.title(
-            f"{resource.settings.title} "
-            f"{'(DEBUG MODE)' if resource.settings.debug else APP_VERSION}"
-        )
+        self.title(f"{resource.settings.title} " f"{'(DEBUG MODE)' if resource.settings.debug else APP_VERSION}")
         self.attributes("-topmost", True)
         self.attributes("-toolwindow", True)
         self.config(cursor="wait")
@@ -154,9 +149,7 @@ class MainUI(tk.Tk):
         self.tooltips()
 
         # Add pytia logger to log Text widget
-        log_format = logging.Formatter(
-            r"%(asctime)s  %(levelname)s  %(message)s", datefmt=r"%Y-%m-%d %H:%M:%S"
-        )
+        log_format = logging.Formatter(r"%(asctime)s  %(levelname)s  %(message)s", datefmt=r"%Y-%m-%d %H:%M:%S")
         widget_handler = WidgetLogHandler(self, self.layout.text_log, style=self.style)
         widget_handler.setLevel(logging.INFO)
         widget_handler.setFormatter(log_format)

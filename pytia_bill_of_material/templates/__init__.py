@@ -43,12 +43,8 @@ class Templates:
             self._extract(filename=TEMPLATE_DOCKET, temp_path=temp_docket_path)
             self._extract(filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path)
 
-        self._docket_path = self._get_path(
-            filename=TEMPLATE_DOCKET, temp_path=temp_docket_path
-        )
-        self._docu_path = self._get_path(
-            filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path
-        )
+        self._docket_path = self._get_path(filename=TEMPLATE_DOCKET, temp_path=temp_docket_path)
+        self._docu_path = self._get_path(filename=TEMPLATE_DOCUMENTATION, temp_path=temp_docu_path)
 
     def _make_tempfolder(self, existing_templates: List[Path]) -> None:
         """Creates the temp-folder for the templates. Deletes existing templates."""
@@ -60,9 +56,7 @@ class Templates:
     def _extract(self, filename: str, temp_path: Path) -> None:
         """Extracts the templates from the zipped app."""
         try:
-            with zipfile.ZipFile(
-                Path(resource.settings.paths.release, resource.settings.files.app), "r"
-            ) as zfile:
+            with zipfile.ZipFile(Path(resource.settings.paths.release, resource.settings.files.app), "r") as zfile:
                 zfile.extract(member=f"templates/{filename}", path=self.tempfolder)
             file_utility.add_delete(path=temp_path, skip_silent=True, at_exit=True)
         except:

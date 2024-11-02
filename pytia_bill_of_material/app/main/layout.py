@@ -61,9 +61,7 @@ class Layout:
             self._appearance_menu.add_command(label=style)
 
         self._tools_menu = Menu(menubar, tearoff=False)
-        self._tools_menu.add_command(
-            label="Set BOM Format", command=PrepareTask.set_catia_bom_format
-        )
+        self._tools_menu.add_command(label="Set BOM Format", command=PrepareTask.set_catia_bom_format)
         self._tools_menu.add_command(
             label="Set external BOM",
             command=lambda: set_external_bom_file(root, variables),
@@ -107,9 +105,7 @@ class Layout:
         # endregion
 
         # region bom export path
-        lbl_bom_export_path = Label(
-            frames.paths, text="Bill of Material File", width=18
-        )
+        lbl_bom_export_path = Label(frames.paths, text="Bill of Material File", width=18)
         lbl_bom_export_path.grid(
             row=0,
             column=0,
@@ -187,9 +183,7 @@ class Layout:
         # endregion
 
         # region docket export path
-        self._lbl_docket_export_path = Label(
-            frames.paths, text="Docket Folder", width=18
-        )
+        self._lbl_docket_export_path = Label(frames.paths, text="Docket Folder", width=18)
         self._lbl_docket_export_path.grid(
             row=2,
             column=0,
@@ -228,9 +222,7 @@ class Layout:
         # endregion
 
         # region drawing export path
-        self._lbl_drawing_export_path = Label(
-            frames.paths, text="Drawing Folder", width=18
-        )
+        self._lbl_drawing_export_path = Label(frames.paths, text="Drawing Folder", width=18)
         self._lbl_drawing_export_path.grid(
             row=3,
             column=0,
@@ -386,9 +378,7 @@ class Layout:
         # endregion
 
         # region bundle export path
-        self._lbl_bundle_export_path = Label(
-            frames.paths, text="Bundle Folder", width=18
-        )
+        self._lbl_bundle_export_path = Label(frames.paths, text="Bundle Folder", width=18)
         self._lbl_bundle_export_path.grid(
             row=7,
             column=0,
@@ -708,9 +698,7 @@ class Layout:
             pady=(20, Layout.MARGIN_Y),
             sticky="nsw",
         )
-        lbl_ignore_prefixed = Label(
-            frames.export, text="Ignore Prefixed with:", width=19
-        )
+        lbl_ignore_prefixed = Label(frames.export, text="Ignore Prefixed with:", width=19)
         lbl_ignore_prefixed.grid(
             row=3,
             column=5,
@@ -791,13 +779,9 @@ class Layout:
             font=("Segoe UI", 9),
             wrap=WORD,
         )
-        self._text_description.grid(
-            row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky="sew"
-        )
+        self._text_description.grid(row=1, column=1, padx=(5, Layout.MARGIN_X), pady=(5, 5), sticky="sew")
 
-        self._btn_open_document = Button(
-            frames.report, text="Open Document", style="outline", state=DISABLED
-        )
+        self._btn_open_document = Button(frames.report, text="Open Document", style="outline", state=DISABLED)
         self._btn_open_document.grid(
             row=2,
             column=1,
@@ -806,9 +790,7 @@ class Layout:
             sticky="sew",
         )
 
-        self._btn_open_parent = Button(
-            frames.report, text="Open Parent", style="outline", state=DISABLED
-        )
+        self._btn_open_parent = Button(frames.report, text="Open Parent", style="outline", state=DISABLED)
         self._btn_open_parent.grid(
             row=3,
             column=1,
@@ -817,9 +799,7 @@ class Layout:
             sticky="sew",
         )
 
-        self._btn_close_document = Button(
-            frames.report, text="Close Document", style="outline", state=DISABLED
-        )
+        self._btn_close_document = Button(frames.report, text="Close Document", style="outline", state=DISABLED)
         self._btn_close_document.grid(
             row=4,
             column=1,
@@ -862,9 +842,7 @@ class Layout:
             mode="determinate",
             variable=variables.progress,
         )
-        self._progress_bar.grid(
-            row=0, column=0, padx=(1, 5), pady=(1, 1), sticky="nsew"
-        )
+        self._progress_bar.grid(row=0, column=0, padx=(1, 5), pady=(1, 1), sticky="nsew")
         self._progress_bar.grid_remove()
 
         # endregion
@@ -894,9 +872,7 @@ class Layout:
     def add_filters(self, workspace: Workspace) -> None:
         """Adds filter toggles to the window. Uses all items from the filter.json file"""
         for index, filter_element in enumerate(resource.filters):
-            filter_element._enabled = BooleanVar(
-                master=self._root, value=True, name=f"filter_element_{index}"
-            )
+            filter_element._enabled = BooleanVar(master=self._root, value=True, name=f"filter_element_{index}")
 
             self._chkbtn_filter_element = Checkbutton(
                 self._frames.filter_elements,

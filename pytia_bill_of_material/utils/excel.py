@@ -36,9 +36,7 @@ def get_excel() -> CDispatch:
         app = Dispatch("EXCEL.Application")
         return app  # type: ignore
     except COMException as e:
-        raise PytiaNotInstalledError(
-            f"Excel is not installed on this system: {e}"
-        ) from e
+        raise PytiaNotInstalledError(f"Excel is not installed on this system: {e}") from e
     except Exception as e:  # pylint: disable=broad-except
         raise PytiaDispatchError(f"Failed connecting to Excel: {e}") from e
 
@@ -61,9 +59,7 @@ def create_header(worksheet: Worksheet, header_items: list) -> None:
         log.info(f"Skipped creating header for worksheet {worksheet.title!r}.")
 
 
-def write_data(
-    worksheet: Worksheet, header_items: list, data: List[BOMAssemblyItem], strict: bool
-) -> None:
+def write_data(worksheet: Worksheet, header_items: list, data: List[BOMAssemblyItem], strict: bool) -> None:
     """
     Writes the properties from the given data object to the given worksheet.
     Takes care that each datum will be written to the corresponding header.
@@ -89,9 +85,7 @@ def write_data(
                 #     f"Did not find property {cv!r} in data (is this header missing in "
                 #     "the header_items.summary list of the bom.json config file?"
                 # )
-            worksheet.cell(
-                row=ri + resource.bom.data_row + 1, column=ci + 1
-            ).value = cell_value
+            worksheet.cell(row=ri + resource.bom.data_row + 1, column=ci + 1).value = cell_value
     log.info(f"Wrote all data to worksheet {worksheet.title!r}.")
 
 
@@ -108,25 +102,13 @@ def style_worksheet(worksheet: Worksheet) -> None:
         # Set format, font and size
         for index, cell in enumerate(column_cells):  # type: ignore
             if index > resource.bom.data_row - 1:
-                color = (
-                    resource.bom.data_color_1
-                    if index % 2 == 0
-                    else resource.bom.data_color_2
-                )
-                bg_color = (
-                    resource.bom.data_bg_color_1
-                    if index % 2 == 0
-                    else resource.bom.data_bg_color_2
-                )
-                cell.fill = PatternFill(
-                    start_color=bg_color, end_color=bg_color, fill_type="solid"
-                )
+                color = resource.bom.data_color_1 if index % 2 == 0 else resource.bom.data_color_2
+                bg_color = resource.bom.data_bg_color_1 if index % 2 == 0 else resource.bom.data_bg_color_2
+                cell.fill = PatternFill(start_color=bg_color, end_color=bg_color, fill_type="solid")
             else:
                 color = None
             cell.number_format = "@"
-            cell.font = Font(
-                name=resource.bom.font, size=resource.bom.size, color=color
-            )
+            cell.font = Font(name=resource.bom.font, size=resource.bom.size, color=color)
             cell.alignment = Alignment(horizontal="left", vertical="center")
 
         # Set font and height for the header row
@@ -149,8 +131,6 @@ def style_worksheet(worksheet: Worksheet) -> None:
 
         # Set cell width
         length = max(len(str(cell.value)) * 1.1 for cell in column_cells)  # type: ignore
-        worksheet.column_dimensions[column_cells[0].column_letter].width = (  # type: ignore
-            length if length > 2 else 2
-        )
+        worksheet.column_dimensions[column_cells[0].column_letter].width = length if length > 2 else 2  # type: ignore
 
     log.info(f"Styled worksheet {worksheet.title!r}.")

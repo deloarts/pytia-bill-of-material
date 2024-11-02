@@ -45,9 +45,7 @@ class Runner:
         for fn in self.runners:
             log.info(f"Running task {fn.name!r}.")
             fn.func(**fn.kwargs)
-            self._update_progress(
-                self.progress_callback.get() + int(100 / len(self.runners))
-            )
+            self._update_progress(self.progress_callback.get() + int(100 / len(self.runners)))
             self.root.update_idletasks()
         self._update_progress(100)
 

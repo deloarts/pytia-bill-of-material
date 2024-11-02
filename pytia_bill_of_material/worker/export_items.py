@@ -133,13 +133,8 @@ class ExportItemsTask(TaskProtocol):
 
             for partnumber, item in complete_items.items():
                 if not resource.applied_keywords.source in item.properties:
-                    raise Exception(
-                        f"Keyword {resource.applied_keywords.source!r} not in bill of material."
-                    )
-                if (
-                    item.properties[resource.applied_keywords.source]
-                    == resource.applied_keywords.made
-                ):
+                    raise Exception(f"Keyword {resource.applied_keywords.source!r} not in bill of material.")
+                if item.properties[resource.applied_keywords.source] == resource.applied_keywords.made:
                     self.runner.add(
                         func=self._export_item,
                         name=f"Export item {partnumber!r}",
@@ -199,9 +194,7 @@ class ExportItemsTask(TaskProtocol):
             PytiaWrongDocumentTypeError: Raised when the BOM item is neither a part nor a product.
         """
         if bom_item.path is None:
-            log.warning(
-                f"Skipped export of item {bom_item.partnumber!r}: Path of item not found."
-            )
+            log.warning(f"Skipped export of item {bom_item.partnumber!r}: Path of item not found.")
             return
 
         log.info(f"Exporting data of item {bom_item.partnumber!r}.")
@@ -219,10 +212,7 @@ class ExportItemsTask(TaskProtocol):
         if self.variables.bundle_by_prop_value.get() in bom_item.properties:
             bundle_prop = bom_item.properties[self.variables.bundle_by_prop_value.get()]
         else:
-            log.warning(
-                "Cannot bundle by property "
-                f"{self.variables.bundle_by_prop_txt.get()!r}: Doesn't exist."
-            )
+            log.warning("Cannot bundle by property " f"{self.variables.bundle_by_prop_txt.get()!r}: Doesn't exist.")
             bundle_prop = ""
 
         if self.variables.bundle_by_prop.get() and len(bundle_prop) > 0:
@@ -252,21 +242,11 @@ class ExportItemsTask(TaskProtocol):
                         folder=docu_path,
                         document=part_document,
                         config=self.documentation_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        product=bom_item.properties[
-                            resource.bom.required_header_items.product
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
+                        project=bom_item.properties[resource.bom.required_header_items.project],
+                        product=bom_item.properties[resource.bom.required_header_items.product],
+                        partnumber=bom_item.properties[resource.bom.required_header_items.partnumber],
+                        revision=bom_item.properties[resource.bom.required_header_items.revision],
+                        quantity=bom_item.properties[resource.bom.required_header_items.quantity],
                         qr_path=qr_path,
                     )
                 if self.variables.export_docket.get():
@@ -276,21 +256,11 @@ class ExportItemsTask(TaskProtocol):
                         folder=docket_path,
                         document=part_document,
                         config=self.docket_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        product=bom_item.properties[
-                            resource.bom.required_header_items.product
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
+                        project=bom_item.properties[resource.bom.required_header_items.project],
+                        product=bom_item.properties[resource.bom.required_header_items.product],
+                        partnumber=bom_item.properties[resource.bom.required_header_items.partnumber],
+                        revision=bom_item.properties[resource.bom.required_header_items.revision],
+                        quantity=bom_item.properties[resource.bom.required_header_items.quantity],
                         qr_path=qr_path,
                     )
                 if self.variables.export_drawing.get():
@@ -313,10 +283,7 @@ class ExportItemsTask(TaskProtocol):
                         document=part_document,
                     )
                 if self.variables.export_jpg.get():
-                    views = [
-                        (view[0], view[1], view[2])
-                        for view in resource.settings.export.jpg_views
-                    ]
+                    views = [(view[0], view[1], view[2]) for view in resource.settings.export.jpg_views]
                     export.export_jpg(
                         filename=export_filename,
                         folder=jpg_path,
@@ -335,21 +302,11 @@ class ExportItemsTask(TaskProtocol):
                         folder=docu_path,
                         document=product_document,
                         config=self.documentation_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        product=bom_item.properties[
-                            resource.bom.required_header_items.product
-                        ],
-                        partnumber=bom_item.properties[
-                            resource.bom.required_header_items.partnumber
-                        ],
-                        revision=bom_item.properties[
-                            resource.bom.required_header_items.revision
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
+                        project=bom_item.properties[resource.bom.required_header_items.project],
+                        product=bom_item.properties[resource.bom.required_header_items.product],
+                        partnumber=bom_item.properties[resource.bom.required_header_items.partnumber],
+                        revision=bom_item.properties[resource.bom.required_header_items.revision],
+                        quantity=bom_item.properties[resource.bom.required_header_items.quantity],
                         qr_path=qr_path,
                     )
                 if self.variables.export_docket.get():
@@ -359,12 +316,8 @@ class ExportItemsTask(TaskProtocol):
                         folder=docket_path,
                         document=product_document,
                         config=self.docket_config,
-                        project=bom_item.properties[
-                            resource.bom.required_header_items.project
-                        ],
-                        quantity=bom_item.properties[
-                            resource.bom.required_header_items.quantity
-                        ],
+                        project=bom_item.properties[resource.bom.required_header_items.project],
+                        quantity=bom_item.properties[resource.bom.required_header_items.quantity],
                         logon=LOGON,
                         qr_path=qr_path,
                     )
@@ -382,10 +335,7 @@ class ExportItemsTask(TaskProtocol):
                         document=product_document,
                     )
                 if self.variables.export_jpg.get():
-                    views = [
-                        (view[0], view[1], view[2])
-                        for view in resource.settings.export.jpg_views
-                    ]
+                    views = [(view[0], view[1], view[2]) for view in resource.settings.export.jpg_views]
                     export.export_jpg(
                         filename=export_filename,
                         folder=jpg_path,
@@ -395,8 +345,7 @@ class ExportItemsTask(TaskProtocol):
 
         else:
             raise PytiaWrongDocumentTypeError(
-                f"Failed exporting data: Document {str(bom_item.path)!r} is neither a part nor "
-                "a product."
+                f"Failed exporting data: Document {str(bom_item.path)!r} is neither a part nor a product."
             )
 
         if bundle and self.variables.zip_bundle.get():

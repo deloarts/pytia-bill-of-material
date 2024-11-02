@@ -27,13 +27,7 @@ def get_bom_export_name(workspace: Workspace, project: str, product: str) -> str
     Returns:
         str: The file name without extension.
     """
-    name = (
-        (
-            workspace.elements.bom_name
-            if workspace.elements.bom_name
-            else resource.settings.files.bom_export
-        ),
-    )[0]
+    name = ((workspace.elements.bom_name if workspace.elements.bom_name else resource.settings.files.bom_export),)[0]
     initial_file = f"{product} {name}"
 
     if project != KEEP:
@@ -66,8 +60,5 @@ def get_data_export_name(bom_item: BOMAssemblyItem, with_project: bool) -> str:
         f"Rev{bom_item.properties[resource.bom.required_header_items.revision]}"
     )
     if with_project:
-        value = (
-            f"{bom_item.properties[resource.bom.required_header_items.project]} "
-            + value
-        )
+        value = f"{bom_item.properties[resource.bom.required_header_items.project]} " + value
     return value

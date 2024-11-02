@@ -72,9 +72,7 @@ class MainTask:
         self.frames = frames
         self.workspace = workspace
 
-        self.export_folder = Path(
-            TEMP_EXPORT, datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-        )
+        self.export_folder = Path(TEMP_EXPORT, datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
         self.project = variables.project.get()
         self.status = Status.SKIPPED
         self.xlsx_path: Path
@@ -135,10 +133,7 @@ class MainTask:
             self.variables.show_report.set(
                 tkmsg.askyesno(
                     title=resource.settings.title,
-                    message=(
-                        "There are errors in the bill of material.\n\n"
-                        "Do you want to open the report?"
-                    ),
+                    message=("There are errors in the bill of material.\n\nDo you want to open the report?"),
                     icon="warning",
                 )
             )
@@ -190,8 +185,7 @@ class MainTask:
             paths=self.doc_paths,
             ignore_prefix_txt=(
                 self.variables.ignore_prefix_txt.get()
-                if len(self.variables.ignore_prefix_txt.get()) > 0
-                and self.variables.ignore_prefix.get()
+                if len(self.variables.ignore_prefix_txt.get()) > 0 and self.variables.ignore_prefix.get()
                 else None
             ),
             ignore_source_unknown=self.variables.ignore_source_unknown.get(),

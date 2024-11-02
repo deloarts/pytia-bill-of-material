@@ -42,10 +42,7 @@ def get_ui_language(product: PyProductDocument) -> Literal["en", "de"]:
     except:
         pass
 
-    raise PytiaLanguageError(
-        "The selected language is not supported. "
-        "Please select either 'English' or 'German'."
-    )
+    raise PytiaLanguageError("The selected language is not supported. Please select either 'English' or 'German'.")
 
 
 def get_doc_language() -> Literal["en", "de"]:
@@ -67,8 +64,7 @@ def get_doc_language() -> Literal["en", "de"]:
     match code:
         case 0:
             raise PytiaLanguageError(
-                "Cannot proceed with language setting 'default'. "
-                "Please select either 'English' or 'German'."
+                "Cannot proceed with language setting 'default'. Please select either 'English' or 'German'."
             )
         case 602:
             return "de"
@@ -76,6 +72,5 @@ def get_doc_language() -> Literal["en", "de"]:
             return "en"
         case _:
             raise PytiaLanguageError(
-                f"The selected language {code!r} is not supported. "
-                "Please select either 'English' or 'German'."
+                f"The selected language {code!r} is not supported. Please select either 'English' or 'German'."
             )

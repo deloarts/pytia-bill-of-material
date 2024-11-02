@@ -23,21 +23,14 @@ branch_name = Repository(".").head.shorthand
 class Release:
     def __init__(self) -> None:
         if not os.path.exists(settings_path):
-            console.error(
-                "Config file not found. Have you followed the setup instructions?"
-            )
+            console.error("Config file not found. Have you followed the setup instructions?")
             sys.exit()
 
         with open(settings_path, "r") as f:
             self.settings = json.load(f)
 
-        if not re.match(
-            r"^v\d+(\.\d+){2,3}$", branch_name
-        ) and not branch_name.lower() in ["head", "main"]:
-            console.error(
-                f"Cannot release from branch {branch_name!r}. "
-                "Please switch branch to a release tag."
-            )
+        if not re.match(r"^v\d+(\.\d+){2,3}$", branch_name) and not branch_name.lower() in ["head", "main"]:
+            console.error(f"Cannot release from branch {branch_name!r}. Please switch branch to a release tag.")
             sys.exit()
 
     def provide(self):
@@ -46,9 +39,7 @@ class Release:
         self.source_app = Path(f"./build/{self.settings['files']['app']}").resolve()
         console.info(f"App build source is {str(self.source_app)!r}")
 
-        self.source_launcher = Path(
-            f"./build/{self.settings['files']['launcher']}"
-        ).resolve()
+        self.source_launcher = Path(f"./build/{self.settings['files']['launcher']}").resolve()
         console.info(f"Launcher build source is {str(self.source_launcher)!r}")
 
         release_folder = expand_env_vars(self.settings["paths"]["release"])

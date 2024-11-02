@@ -41,15 +41,11 @@ class LazyDocumentHelper:
         self.framework = framework
         self.document = PyProductDocument(strict_naming=False)
         self.document.current()
-        self.document.product.part_number = self.document.document.name.split(
-            ".CATProduct"
-        )[0]
+        self.document.product.part_number = self.document.document.name.split(".CATProduct")[0]
         self.name = self.document.document.name
         resource.apply_language(get_ui_language(self.document))  # type: ignore
 
-        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(
-            self.document.document.full_name
-        ):
+        if not resource.settings.restrictions.allow_unsaved and not os.path.isabs(self.document.document.full_name):
             raise PytiaDocumentNotSavedError(
                 "It is not allowed to export the bill of material of an unsaved document. "
                 "Please save the document first."
@@ -139,9 +135,7 @@ class LazyDocumentHelper:
         """Returns True if the current part document has changed, False if not."""
         part_document = self.document
         part_document.current()
-        log.warning(
-            f"The document has changed: {part_document.document.name} -> {self.name}"
-        )
+        log.warning(f"The document has changed: {part_document.document.name} -> {self.name}")
         return part_document.document.name != self.name
 
     @staticmethod
@@ -200,6 +194,4 @@ class LazyDocumentHelper:
                 self.framework.catia.documents.item(doc).close()
                 log.info(f"Closed document {doc!r}.")
             except Exception:
-                log.warning(
-                    f"Failed closing document {doc!r}: Maybe it has been already closed."
-                )
+                log.warning(f"Failed closing document {doc!r}: Maybe it has been already closed.")

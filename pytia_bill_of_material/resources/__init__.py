@@ -233,9 +233,7 @@ class BOMHeaderItems:
     bought: List[str] | None
 
     def summary_as_dict(self) -> dict:
-        return {
-            re.split(":|=", item)[0]: re.split(":|=", item)[-1] for item in self.summary
-        }
+        return {re.split(":|=", item)[0]: re.split(":|=", item)[-1] for item in self.summary}
 
 
 @dataclass(slots=True, kw_only=True)
@@ -316,9 +314,7 @@ class AppData:
     bundle_by_prop_value: str = ""
 
     def __post_init__(self) -> None:
-        self.version = (
-            APP_VERSION  # Always store the latest version in the appdata json
-        )
+        self.version = APP_VERSION  # Always store the latest version in the appdata json
         self.counter += 1
 
 
@@ -411,9 +407,7 @@ class Resources:  # pylint: disable=R0902
     def _read_props(self) -> None:
         """Reads the props json from the resources folder."""
         props_resource = (
-            CONFIG_PROPS
-            if importlib.resources.is_resource("resources", CONFIG_PROPS)
-            else CONFIG_PROPS_DEFAULT
+            CONFIG_PROPS if importlib.resources.is_resource("resources", CONFIG_PROPS) else CONFIG_PROPS_DEFAULT
         )
         with importlib.resources.open_binary("resources", props_resource) as f:
             self._props = Props(**json.load(f))
@@ -435,20 +429,14 @@ class Resources:  # pylint: disable=R0902
 
     def _read_bom(self) -> None:
         """Reads the export json from the resources folder."""
-        bom_resource = (
-            CONFIG_BOM
-            if importlib.resources.is_resource("resources", CONFIG_BOM)
-            else CONFIG_BOM_DEFAULT
-        )
+        bom_resource = CONFIG_BOM if importlib.resources.is_resource("resources", CONFIG_BOM) else CONFIG_BOM_DEFAULT
         with importlib.resources.open_binary("resources", bom_resource) as f:
             self._bom = BOM(**json.load(f))
 
     def _read_filters(self) -> None:
         """Reads the filters json from the resources folder."""
         filters_resource = (
-            CONFIG_FILTERS
-            if importlib.resources.is_resource("resources", CONFIG_FILTERS)
-            else CONFIG_FILTERS_DEFAULT
+            CONFIG_FILTERS if importlib.resources.is_resource("resources", CONFIG_FILTERS) else CONFIG_FILTERS_DEFAULT
         )
         with importlib.resources.open_binary("resources", filters_resource) as f:
             self._filters = [FilterElement(**i) for i in json.load(f)]
@@ -461,9 +449,7 @@ class Resources:  # pylint: disable=R0902
     def _read_infos(self) -> None:
         """Reads the information json from the resources folder."""
         infos_resource = (
-            CONFIG_INFOS
-            if importlib.resources.is_resource("resources", CONFIG_INFOS)
-            else CONFIG_INFOS_DEFAULT
+            CONFIG_INFOS if importlib.resources.is_resource("resources", CONFIG_INFOS) else CONFIG_INFOS_DEFAULT
         )
         with importlib.resources.open_binary("resources", infos_resource) as f:
             self._infos = [Info(**i) for i in json.load(f)]
@@ -554,15 +540,8 @@ class Resources:  # pylint: disable=R0902
                             object_item[index] = header_name + keywords[key]
 
                 elif isinstance(object_item, str):
-                    if (
-                        "$" in object_item
-                        and (key := object_item.split("$")[1]) in keywords
-                    ):
-                        header_name = (
-                            object_item.split(":")[0] + ":"
-                            if ":" in object_item
-                            else ""
-                        )
+                    if "$" in object_item and (key := object_item.split("$")[1]) in keywords:
+                        header_name = object_item.split(":")[0] + ":" if ":" in object_item else ""
                         setattr(_item, object_fields.name, header_name + keywords[key])
 
         _apply_to_object(self._bom.header_items)
@@ -598,10 +577,7 @@ class Resources:  # pylint: disable=R0902
         keywords = asdict(self._keywords.en if language == "en" else self._keywords.de)
         for item in self._filters:
             # translate the `property_name` value.
-            if (
-                item.property_name.startswith("$")
-                and (key := item.property_name.split("$")[1]) in keywords
-            ):
+            if item.property_name.startswith("$") and (key := item.property_name.split("$")[1]) in keywords:
                 item.property_name = keywords[key]
 
             # translate the condition dict (can be a bool, so check type first)
@@ -618,10 +594,7 @@ class Resources:  # pylint: disable=R0902
                     # translate condition keys
                     # since the keys can be translated as well, we need to create a new dict
                     # and overwrite the existing condition-dict with the new one.
-                    if (
-                        cond_key.startswith("$")
-                        and (key := cond_key.split("$")[1]) in keywords
-                    ):
+                    if cond_key.startswith("$") and (key := cond_key.split("$")[1]) in keywords:
                         new_condition[keywords[key]] = item.condition[cond_key]
                     else:
                         new_condition[cond_key] = item.condition[cond_key]
@@ -632,9 +605,7 @@ class Resources:  # pylint: disable=R0902
         self._apply_keywords_to_bom(language)  # type: ignore
         self._apply_keywords_to_filters(language)  # type: ignore
         self._applied_keywords = AppliedKeywords(
-            **asdict(
-                resource._keywords.en if language == "en" else resource._keywords.de
-            )
+            **asdict(resource._keywords.en if language == "en" else resource._keywords.de)
         )
         self._language_applied = True
 

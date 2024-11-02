@@ -111,9 +111,7 @@ class CatiaExportTask(TaskProtocol):
         excel_dispatch = get_excel()
         workbook = excel_dispatch.Workbooks.Open(str(xls_path))
         try:
-            workbook.SaveAs(
-                str(xlsx_path), FileFormat=51
-            )  # 51: Format of xlsx extension
+            workbook.SaveAs(str(xlsx_path), FileFormat=51)  # 51: Format of xlsx extension
             log.info(f"Converted bill of material to {str(xlsx_path)!r}.")
             return xlsx_path
         except Exception as e:
