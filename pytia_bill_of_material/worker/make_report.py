@@ -10,6 +10,7 @@ from models.report import Report
 from models.report import ReportItem
 from protocols.task_protocol import TaskProtocol
 from pytia.log import log
+from pytia_ui_tools.handlers.workspace_handler import Workspace
 from resources import resource
 
 
@@ -29,7 +30,8 @@ class MakeReportTask(TaskProtocol):
 
     __slots__ = ("_bom", "_report", "_status")
 
-    def __init__(self, bom: BOM) -> None:
+    def __init__(self, bom: BOM, workspace: Workspace) -> None:
+        self._workspace = workspace
         self._bom = bom
 
     @property
@@ -44,11 +46,11 @@ class MakeReportTask(TaskProtocol):
         """Runs the task."""
         log.info("Creating report.")
 
-        self._report = self._generate_report(bom=self._bom)
+        self._report = self._generate_report(bom=self._bom, workspace=self._workspace)
         self._status = self._report.status
 
     @staticmethod
-    def _generate_report(bom: BOM) -> Report:
+    def _generate_report(bom: BOM, workspace: Workspace) -> Report:
         """
         Verifies the BOM model against the criteria of the filters.json.
         The verification is only performed if the conditions of the filters.json are met.
@@ -80,6 +82,7 @@ class MakeReportTask(TaskProtocol):
                 report_item = ReportItem(
                     partnumber=assembly_item.partnumber,
                     path=assembly_item.path,
+                    parent_partnumber=assembly.partnumber,
                     parent_path=assembly.path,
                 )
 
@@ -120,18 +123,57 @@ class MakeReportTask(TaskProtocol):
                             )
 
                         if all(conditions_satisfied):
-                            if assembly_item.properties[
-                                filter_element.property_name
-                            ] is not None and re.match(
-                                filter_element.criteria,
-                                str(
-                                    assembly_item.properties[
-                                        filter_element.property_name
-                                    ]
-                                ),
+                            if (
+                                assembly_item.properties[filter_element.property_name]
+                                is not None
                             ):
-                                report_item.details[filter_element.name] = Status.OK
-                                log.debug(f"    - {filter_element.name}: OK.")
+                                if filter_element.criteria.startswith("%WS:"):
+                                    workspace_element = filter_element.criteria.split(
+                                        "%WS:"
+                                    )[-1]
+                                    workspace_dict = workspace.elements.__dict__
+                                    if (
+                                        workspace.available
+                                        and workspace_element in workspace_dict
+                                        and assembly_item.properties[
+                                            filter_element.property_name
+                                        ]
+                                        == workspace_dict[workspace_element]
+                                    ):
+                                        report_item.details[filter_element.name] = (
+                                            Status.OK
+                                        )
+                                        log.debug(f"    - {filter_element.name}: OK.")
+                                    else:
+
+                                        report_item.details[filter_element.name] = (
+                                            Status.FAILED
+                                        )
+                                        report_item.status = Status.FAILED
+                                        report.status = Status.FAILED
+                                        log.debug(
+                                            f"    - {filter_element.name}: FAILED."
+                                        )
+
+                                elif re.match(
+                                    filter_element.criteria,
+                                    str(
+                                        assembly_item.properties[
+                                            filter_element.property_name
+                                        ]
+                                    ),
+                                ):
+                                    report_item.details[filter_element.name] = Status.OK
+                                    log.debug(f"    - {filter_element.name}: OK.")
+
+                                else:
+                                    report_item.details[filter_element.name] = (
+                                        Status.FAILED
+                                    )
+                                    report_item.status = Status.FAILED
+                                    report.status = Status.FAILED
+                                    log.debug(f"    - {filter_element.name}: FAILED.")
+
                             else:
                                 report_item.details[filter_element.name] = Status.FAILED
                                 report_item.status = Status.FAILED
@@ -145,6 +187,5 @@ class MakeReportTask(TaskProtocol):
                         raise ValueError(
                             f"Item {filter_element.property_name!r} not in BOM."
                         )
-
                 report.items.append(report_item)
         return report

@@ -9,9 +9,9 @@
     {
         "name": "Product Number",
         "property_name": "pytia.product",
-        "criteria": "^M\\d{5}$",
+        "criteria": "%WS:product",
         "condition": true,
-        "description": "The product number must start with a 'M', followed by a five digit number."
+        "description": "The product number must match the value set in the workspace file. The product number must therefor exists in the workspace file."
     },
     {
         "name": "Definition",

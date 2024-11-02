@@ -301,7 +301,7 @@ class Traces:
             for item in self.vars.report.items:
                 if item.status == Status.FAILED:
                     self.layout.tree_report_failed_items.insert(
-                        "", "end", values=(item.partnumber,)
+                        "", "end", values=(item.partnumber, item.parent_partnumber)
                     )
 
             self.frames.infrastructure.grid_remove()

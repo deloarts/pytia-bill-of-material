@@ -439,20 +439,39 @@ class Callbacks:
         self.layout.tree_report_failed_props.delete(
             *self.layout.tree_report_failed_props.get_children()
         )
+        self.layout.text_description.delete("1.0", "end")
 
         selection = self.layout.tree_report_failed_items.selection()
+
         for selection_item in selection:
-            if partnumber := self.layout.tree_report_failed_items.item(
+            partnumber = self.layout.tree_report_failed_items.item(
                 selection_item, "values"
-            )[0]:
+            )[0]
+            parent_partnumber = self.layout.tree_report_failed_items.item(
+                selection_item, "values"
+            )[1]
+
+            if partnumber and parent_partnumber:
                 for item in self.vars.report.items:
-                    if item.partnumber == partnumber:
+                    if (
+                        item.partnumber == partnumber
+                        and item.parent_partnumber == parent_partnumber
+                    ):
                         self.report_selected_doc_path = item.path
                         self.report_selected_doc_parent_path = item.parent_path
                         for detail in item.details:
-                            if item.details[detail] == Status.FAILED:
+                            if item.details[detail] == Status.FAILED and (
+                                filter_element := resource.get_filter_element_by_name(
+                                    detail
+                                )
+                            ):
                                 self.layout.tree_report_failed_props.insert(
-                                    "", "end", values=(detail,)
+                                    "",
+                                    "end",
+                                    values=(
+                                        filter_element.name,
+                                        filter_element.property_name,
+                                    ),
                                 )
 
                 if os.path.isfile(self.report_selected_doc_parent_path):
@@ -494,8 +513,8 @@ class Callbacks:
                 ):
                     self.layout.text_description.insert(
                         "end",
-                        f"Property: {filter_element.property_name}\n"
-                        f"Description: {filter_element.description}",
+                        f"{filter_element.description}\n\n"
+                        f"This results from an error in the document property '{filter_element.property_name}'.",
                     )
                     return
                 else:

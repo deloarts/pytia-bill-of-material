@@ -17,6 +17,7 @@ from const import Status
 class ReportItem:
     partnumber: str
     path: Path | None
+    parent_partnumber: str
     parent_path: Path
     details: Dict[str, Status] = field(default_factory=dict)
     status: Status = field(default=Status.OK)
