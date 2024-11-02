@@ -73,6 +73,7 @@ class UISetter:
             self.frames.infrastructure.grid()
             self.frames.paths.grid()
             self.frames.export.grid()
+            self.frames.filters.grid()
 
         self.layout.input_project.configure(
             state=(
@@ -250,6 +251,7 @@ class UISetter:
         self.frames.infrastructure.grid_remove()
         self.frames.paths.grid_remove()
         self.frames.export.grid_remove()
+        self.frames.filters.grid_remove()
         self.layout.progress_bar.grid()
         self.frames.log.grid()
 

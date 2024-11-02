@@ -41,8 +41,8 @@ from utils.handler import WidgetLogHandler
 class MainUI(tk.Tk):
     """The user interface of the app."""
 
-    WIDTH = 800
-    HEIGHT = 590
+    WIDTH = 950
+    HEIGHT = 600
 
     def __init__(self) -> None:
         ttk.tk.Tk.__init__(self)
@@ -116,6 +116,9 @@ class MainUI(tk.Tk):
 
         # Setup doc helper
         self.doc_helper = LazyDocumentHelper()
+
+        # Add filters to ui
+        self.layout.add_filters()
 
         # Setup the workspace
         self.workspace = Workspace(

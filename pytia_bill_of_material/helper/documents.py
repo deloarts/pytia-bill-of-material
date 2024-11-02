@@ -45,7 +45,7 @@ class ReportDocument:
         """Opens the document and waits unit it's closed by the user."""
         if path and os.path.isfile(path):
             self.path = path
-            framework.catia.documents.open(str(self.path))
+            framework.catia.documents.open(self.path)
             self.layout.button_open_document.configure(state=DISABLED)
             self.layout.button_open_parent.configure(state=DISABLED)
             self.layout.button_close_document.configure(state=NORMAL)

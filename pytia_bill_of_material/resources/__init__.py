@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from dataclasses import field
 from dataclasses import fields
 from pathlib import Path
+from tkinter import BooleanVar
 from typing import Dict
 from typing import List
 from typing import Literal
@@ -184,10 +185,13 @@ class Keywords:
 class FilterElement:
     """Filters dataclass."""
 
+    name: str
     property_name: str
     criteria: str
     condition: Dict[str, str] | bool
     description: str
+
+    _enabled: BooleanVar | None = None
 
 
 @dataclass(slots=True, kw_only=True)
@@ -680,6 +684,21 @@ class Resources:  # pylint: disable=R0902
                 return True
         return False
 
+    def get_filter_element_by_name(self, name: str) -> Optional[FilterElement]:
+        """
+        Returns the filter dataclass that matches its name.
+
+        Args:
+            name (str): The filter to fetch from the dataclass list by the elements name.
+
+        Returns:
+            FilterElement: The filter element from the dataclass list that matches the provided name.
+        """
+        for index, value in enumerate(self._filters):
+            if value.name == name:
+                return self._filters[index]
+        return None
+
     def get_filter_element_by_property_name(self, name: str) -> Optional[FilterElement]:
         """
         Returns the filter dataclass that matches its property name.
@@ -688,7 +707,7 @@ class Resources:  # pylint: disable=R0902
             name (str): The filter to fetch from the dataclass list by the elements property name.
 
         Returns:
-            User: The filter element from the dataclass list that matches the provided name.
+            FilterElement: The filter element from the dataclass list that matches the provided name.
         """
         for index, value in enumerate(self._filters):
             if value.property_name == name:
