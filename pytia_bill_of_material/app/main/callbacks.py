@@ -15,7 +15,6 @@ from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
-from const import BuiltInFilter
 from const import Status
 from helper.callbacks import CallbackCommons
 from helper.documents import ReportDocument
