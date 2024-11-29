@@ -95,5 +95,10 @@ class Status(Enum):
     SKIPPED = "skipped"
 
 
+class BuiltInFilter(Enum):
+    NOT_FOUND = "Not Found"
+    NAME_CONVENTION = "Name Convention"
+
+
 os.makedirs(TEMP_EXPORT, exist_ok=True)
 os.makedirs(TEMP_TEMPLATES, exist_ok=True)

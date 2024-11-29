@@ -15,6 +15,7 @@ from app.main.frames import Frames
 from app.main.layout import Layout
 from app.main.ui_setter import UISetter
 from app.main.vars import Variables
+from const import BuiltInFilter
 from const import Status
 from helper.callbacks import CallbackCommons
 from helper.documents import ReportDocument
@@ -416,17 +417,18 @@ class Callbacks:
                         self.report_selected_doc_path = item.path
                         self.report_selected_doc_parent_path = item.parent_path
                         for detail in item.details:
-                            if item.details[detail] == Status.FAILED and (
-                                filter_element := resource.get_filter_element_by_name(detail)
-                            ):
-                                self.layout.tree_report_failed_props.insert(
-                                    "",
-                                    "end",
-                                    values=(
-                                        filter_element.name,
-                                        filter_element.property_name,
-                                    ),
-                                )
+                            if item.details[detail] == Status.FAILED:
+                                if filter_element := resource.get_filter_element_by_name(detail):
+                                    self.layout.tree_report_failed_props.insert(
+                                        "",
+                                        "end",
+                                        values=(
+                                            filter_element.name,
+                                            filter_element.property_name,
+                                        ),
+                                    )
+                                else:
+                                    self.layout.tree_report_failed_props.insert("", "end", values=(detail, "-"))
 
                 if os.path.isfile(self.report_selected_doc_parent_path):
                     self.layout.button_open_parent.configure(state=NORMAL)
