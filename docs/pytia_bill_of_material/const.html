@@ -35,7 +35,7 @@ import os
 from enum import Enum
 from pathlib import Path
 
-__version__ = &#34;0.13.0&#34;
+__version__ = &#34;0.13.1&#34;
 
 PYTIA = &#34;pytia&#34;
 PYTIA_BILL_OF_MATERIAL = &#34;pytia_bill_of_material&#34;
@@ -124,6 +124,11 @@ class Status(Enum):
     SKIPPED = &#34;skipped&#34;
 
 
+class BuiltInFilter(Enum):
+    NOT_FOUND = &#34;Not Found&#34;
+    NAME_CONVENTION = &#34;Name Convention&#34;
+
+
 os.makedirs(TEMP_EXPORT, exist_ok=True)
 os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
 </details>
@@ -137,6 +142,36 @@ os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="pytia_bill_of_material.const.BuiltInFilter"><code class="flex name class">
+<span>class <span class="ident">BuiltInFilter</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BuiltInFilter(Enum):
+    NOT_FOUND = &#34;Not Found&#34;
+    NAME_CONVENTION = &#34;Name Convention&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="pytia_bill_of_material.const.BuiltInFilter.NAME_CONVENTION"><code class="name">var <span class="ident">NAME_CONVENTION</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="pytia_bill_of_material.const.BuiltInFilter.NOT_FOUND"><code class="name">var <span class="ident">NOT_FOUND</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="pytia_bill_of_material.const.Status"><code class="flex name class">
 <span>class <span class="ident">Status</span></span>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
@@ -188,6 +223,13 @@ os.makedirs(TEMP_TEMPLATES, exist_ok=True)</code></pre>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="pytia_bill_of_material.const.BuiltInFilter" href="#pytia_bill_of_material.const.BuiltInFilter">BuiltInFilter</a></code></h4>
+<ul class="">
+<li><code><a title="pytia_bill_of_material.const.BuiltInFilter.NAME_CONVENTION" href="#pytia_bill_of_material.const.BuiltInFilter.NAME_CONVENTION">NAME_CONVENTION</a></code></li>
+<li><code><a title="pytia_bill_of_material.const.BuiltInFilter.NOT_FOUND" href="#pytia_bill_of_material.const.BuiltInFilter.NOT_FOUND">NOT_FOUND</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="pytia_bill_of_material.const.Status" href="#pytia_bill_of_material.const.Status">Status</a></code></h4>
 <ul class="">

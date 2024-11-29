@@ -4,6 +4,7 @@
 
 import re
 
+from const import BuiltInFilter
 from const import Status
 from models.bom import BOM
 from models.report import Report
@@ -85,6 +86,16 @@ class MakeReportTask(TaskProtocol):
                     parent_partnumber=assembly.partnumber,
                     parent_path=assembly.path,
                 )
+
+                if not assembly_item.path:
+                    report_item.details[BuiltInFilter.NOT_FOUND.value] = Status.FAILED
+                    report_item.status = Status.FAILED
+                    report.status = Status.FAILED
+
+                if assembly_item.path and assembly_item.partnumber != assembly_item.path.stem:
+                    report_item.details[BuiltInFilter.NAME_CONVENTION.value] = Status.FAILED
+                    report_item.status = Status.FAILED
+                    report.status = Status.FAILED
 
                 for filter_element in resource.filters:
                     if not filter_element._enabled:

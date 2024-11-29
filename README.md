@@ -1,13 +1,28 @@
 # pytia bill of material
 
-A python app for exporting the bill of material from a CATIA V5 product.
-
 ![state](https://img.shields.io/badge/State-beta-brown.svg?style=for-the-badge)
 ![version](https://img.shields.io/github/v/release/deloarts/pytia-bill-of-material?style=for-the-badge&color=orange)
 
 [![python](https://img.shields.io/badge/Python-3.10-blue.svg?style=for-the-badge)](https://www.python.org/downloads/)
 ![catia](https://img.shields.io/badge/CATIA-V5%206R2017-blue.svg?style=for-the-badge)
 ![OS](https://img.shields.io/badge/OS-WIN11-blue.svg?style=for-the-badge)
+
+*Export your all your data effortless and without mistakes.*
+
+The bill of material app allows you to not only export the bill of material in a format of your choice as **xlsx** file, but:
+
+- every part as **step** and **stl** file
+- every linked drawing as **pdf** and **dxf**
+- a **pdf** docket for your production processes
+- a **pdf** for your documentation
+
+The app also checks all your parts' and products' metadata (those from the [property manager](https://github.com/deloarts/pytia-property-manager)) against filters you choose:
+
+- don't want made parts without material applied? Set it up!
+- want your product number to match a specific regular expression? Set it up!
+- you bought parts require an order number? Again, set it up!
+
+![Banner](assets/images/banner.png)
 
 > ⚠️ The layout of this app is heavily biased towards the workflow and needs of my companies' engineering team. Although almost everything can be changed via config files and presets, the apps basic functionality is built to work in the environment of said company.
 
@@ -338,6 +353,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+[**v0.13.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.13.1): Add report for name convention error.  
 [**v0.13.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.13.0): Add optional filters and workspace filters.  
 [**v0.12.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.12.0): Rename machine and definition.  
 [**v0.11.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.11.0): Bundle export.  
