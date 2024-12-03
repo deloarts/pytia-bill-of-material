@@ -28,14 +28,14 @@ The app also checks all your parts' and products' metadata (those from the [prop
 
 Check out the pytia ecosystem:
 
-- **pytia** ([web](https://pytia.deloarts.com/), [repo](https://github.com/deloarts/pytia)): The heart of this project.
-- **pytia-property-manager** ([web](https://pytia.deloarts.com/property-manager/v0.html), [repo](https://github.com/deloarts/pytia-property-manager)) : An app to edit part and product properties.
-- **pytia-bounding-box** ([web](https://pytia.deloarts.com/bounding-box/v0.html), [repo](https://github.com/deloarts/pytia-bounding-box)): For retrieving the bounding box of a part.
-- **pytia-bill-of-material** ([web](https://pytia.deloarts.com/bill-of-material/v0.html), [repo](https://github.com/deloarts/pytia-bill-of-material)): Exports the bill of material and data of a product.
-- **pytia-title-block** ([web](https://pytia.deloarts.com/title-block/v0.html), [repo](https://github.com/deloarts/pytia-title-block)): An app to edit a drawing's title block.
-- **pytia-quick-export** ([web](https://pytia.deloarts.com/quick-export/v0.html), [repo](https://github.com/deloarts/pytia-quick-export)): Single file export with useful features.
-- **pytia-reorder-tree** ([web](https://pytia.deloarts.com/reorder-tree/v0.html), [repo](https://github.com/deloarts/pytia-reorder-tree)): Brings order in your product graph tree.
-- **pytia-ui-tools** ([web](https://pytia.deloarts.com/), [repo](https://github.com/deloarts/pytia-ui-tools)): A toolbox for all pytia apps.
+- **[pytia](https://github.com/deloarts/pytia)**: The heart of this project
+- **[pytia-property-manager](https://github.com/deloarts/pytia-property-manager)**: An app to edit part and product properties
+- **[pytia-bounding-box](https://github.com/deloarts/pytia-bounding-box)**: For retrieving the bounding box of a part
+- **[pytia-bill-of-material](https://github.com/deloarts/pytia-bill-of-material)**: Exports the bill of material and data of a product
+- **[pytia-title-block](https://github.com/deloarts/pytia-title-block)**: An app to edit a drawing's title block
+- **[pytia-quick-export](https://github.com/deloarts/pytia-quick-export)**: Single file export with useful features
+- **[pytia-reorder-tree](https://github.com/deloarts/pytia-reorder-tree)**: Brings order in your product graph tree
+- **[pytia-ui-tools](https://github.com/deloarts/pytia-ui-tools)**: A toolbox for all pytia apps
 
 Table of contents:
 
@@ -52,7 +52,6 @@ Table of contents:
     - [2.5 release](#25-release)
     - [2.6 docs](#26-docs)
   - [3 usage](#3-usage)
-    - [3.1 report](#31-report)
   - [4 workspace](#4-workspace)
   - [5 developing](#5-developing)
     - [5.1 repository](#51-repository)
@@ -73,15 +72,14 @@ Table of contents:
 
 ## 1 installation
 
-> ✏️ For a guided installation visit [https://pytia.deloarts.com](https://pytia.deloarts.com/installation/v0.html)
->
+For a guided installation visit the [installation guide](/docs/INSTALLATION.md).
+
 > ⚠️ Do not manually install any dependencies. The app installs all required packages on its own.
 
 On the users machine you need to install the following:
 
 - CATIA
 - [Python](https://www.python.org/downloads/)
-- [Git](https://gitforwindows.org/)
 
 When the user starts the app it will automatically install all its requirements. Further the app also updates outdated dependencies if needed. The apps environment will be created in the users appdata-folder: `C:\Users\User\AppData\Roaming\pytia\pytia_bill_of_material`
 
@@ -90,8 +88,6 @@ Recommended python install options for the user:
 ```powershell
 python-installer.exe /passive PrependPath=1 Include_doc=0 Include_test=0 SimpleInstall=1 SimpleInstallDescription="python for pytia"
 ```
-
-For convenience there is a powershell script that will install the required python version for you, see [assets/python_installer.ps1](assets/python_installer.ps1).
 
 ## 2 setup
 
@@ -157,36 +153,11 @@ You can find the documentation in the [docs folder](/docs).
 
 ## 3 usage
 
-Use the launcher (a.k.a the catvbs-file) to launch the app. On the first run all required dependencies will be installed:
-
-![Installer](assets/images/installer.png)
-
-After the installation the app starts automatically:
+For a complete overview of the apps functionality see the [usage](/docs/USAGE.md) readme file.
 
 ![App](assets/images/app.png)
 
 The app retrieves all information from the documents properties, except the material value, which is fetched from the applied material.
-
-The usage itself is pretty straight forward, as long as all config files are setup properly.
-
-Object | Description
---- | ---
-Project | The user can overwrite the project number for all items of the bill of material. If set to `Keep` no project number will be overwritten.
-Bill of Material File | The full path to the bill of material xlsx file. The folder must exist, otherwise the `Export` button will be disabled.
-Docket Folder | The folder into which all generated docket files will be stored. The folder must exist, otherwise the `Export Docket` checkbox will be disabled.
-Documentation Folder | The folder into which all generated documentation docket files will be stored. The folder must exist, otherwise the `Export Documentation` checkbox will be disabled.
-Drawing Folder | The folder into which all drawing files (pdf and dxf) will be stored. The folder must exist, otherwise the `Export Drawings` checkbox will be disabled. Note: Drawings can only be exported, if the Title Block Editor app has written the correct path to the linked document.
-STP Folder | The folder into which all generated step files will be stored. The folder must exist, otherwise the `Export STP` checkbox will be disabled.
-STL Folder | The folder into which all generated stl files will be stored. The folder must exist, otherwise the `Export STL` checkbox will be disabled.
-JPG Folder | The folder into which all generated jpg files will be stored. The folder must exist, otherwise the `Export JPG` checkbox will be disabled.
-Ignore Unknown | Ignores all product tree nodes with the source `unknown`.
-Ignore Prefixed | Ignores all product tree nodes which start with the given prefixes. Prefixes can be separated by a semicolon.
-
-### 3.1 report
-
-If the export fails because any criteria from the `filters.json` aren't satisfied, the report window will be opened. This allows the user to see which item from the bill of material fails:
-
-![Report](assets/images/report.png)
 
 ## 4 workspace
 
