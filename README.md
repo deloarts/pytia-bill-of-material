@@ -157,8 +157,6 @@ For a complete overview of the apps functionality see the [usage](/docs/USAGE.md
 
 ![App](assets/images/app.png)
 
-The app retrieves all information from the documents properties, except the material value, which is fetched from the applied material.
-
 ## 4 workspace
 
 The workspace is an **optional** config file, that can be used to alter the behavior of the app. The workspace file is a yaml-file, which must be saved somewhere in the project directory, where the catia document, from which to manage the properties, is also stored:
@@ -324,6 +322,7 @@ On a new revision, do the following:
 
 ## 7 changelog
 
+[**v0.13.2**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.13.2): Update deps & docs.  
 [**v0.13.1**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.13.1): Add report for name convention error.  
 [**v0.13.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.13.0): Add optional filters and workspace filters.  
 [**v0.12.0**](https://github.com/deloarts/pytia-bill-of-material/releases/tag/v0.12.0): Rename machine and definition.  
